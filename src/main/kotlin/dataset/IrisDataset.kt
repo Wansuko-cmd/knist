@@ -8,12 +8,6 @@ data class IrisDataset(
     val label: Int,
 )
 
-//sealed interface Label {
-//    object Setosa : Label
-//    object Versicolor : Label
-//    object Virginica : Label
-//}
-
 val datasets = listOf(
     IrisDataset(5.1, 3.5, 1.4, 0.2, 0),
     IrisDataset(4.9, 3.0, 1.4, 0.2, 0),
