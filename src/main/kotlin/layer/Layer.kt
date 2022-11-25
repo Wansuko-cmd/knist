@@ -1,12 +1,7 @@
 package layer
 
-import Memoizer
-import TrainNode
 import relu
 import sigmoid
-import toNodesTree
-import toTrainNodesTree
-import java.util.UUID
 import kotlin.random.Random
 
 class Layer(
@@ -28,7 +23,7 @@ class Layer(
      * Nodesは順伝播を計算するのに長けたツリー状になっている
      * しかし、逆伝播を計算することはできない
      * そこで、一度ツリーをリスト状にした上で逆ツリー状にする
-     * その形で逆伝播の計算を行う
+     * 逆ツリー状にすることで逆伝播の計算を行うことができるようになる
      * 逆伝播の計算を行い重みの更新を行なった後はもう一度ツリーを逆にし、Layerにする
      */
     fun train(input: List<Double>, label: Int): Layer =
@@ -36,7 +31,7 @@ class Layer(
             .fromNodeTreeToList()
             .slideWeightToLeft()
             .toTrainNodesTree(input, label, rate)
-            .map { it.copy(second = (it.second as TrainNode.NormalN).fixWeight()) }
+            .map { it.copy(second = (it.second as TrainNode.NormalNode).fixWeight()) }
             .fromTrainTreeToList()
             .slideWeightToRight()
             .toNodesTree()
@@ -51,6 +46,7 @@ class Layer(
 
     /**
      * Nodeでは[Node, Double]の形で保管しているが、逆伝播を行うときは[Double, Node]の方が望ましい
+     * ノードの数より重みの数の方が少ないため、数合わせのためにNEGATIVE_INFINITYを用いる（使うことはないため無視で良い）
      */
     private fun List<List<Pair<Node, Double>>>.slideWeightToLeft(): List<List<Pair<Double, Node>>> =
         this.map { node ->
@@ -60,6 +56,7 @@ class Layer(
 
     /**
      * 学習用の木構造を元のNode Treeに戻すためにまずリスト化する
+     * ノードの数より重みの数の方が少ないため、数合わせのためにNEGATIVE_INFINITYを用いる（使うことはないため無視で良い）
      */
     private fun List<Pair<Double, TrainNode>>.fromTrainTreeToList(): List<List<Pair<Double, TrainNode>>> =
         this.flatMap { node ->
@@ -68,6 +65,7 @@ class Layer(
 
     /**
      * Nodeでの[Node, Double]の形に戻す
+     * ノードの数より重みの数の方が少ないため、数合わせのためにNEGATIVE_INFINITYを用いる（使うことはないため無視で良い）
      */
     private fun List<List<Pair<Double, TrainNode>>>.slideWeightToRight(): List<List<Pair<TrainNode, Double>>> =
         this.map { node ->
@@ -81,74 +79,28 @@ class Layer(
             center: List<Int>,
             output: Int,
             rate: Double,
-            random: Random,
+            random: Random = Random,
         ): Layer {
-            val inputNode = List(input) { Node.input(::relu, it) }
-            val centerNode = center.fold(inputNode) { acc, i ->
-                List(i) {
-                    Node.create(acc, f = ::relu, random = random)
-                }
+            val inputNodes = Node.createInputNodes(
+                size = input,
+                activationFunction = ::relu,
+            )
+            val centerNodes = center.fold(inputNodes) { acc, size ->
+                Node.createCenterNodes(
+                    before = acc,
+                    size = size,
+                    activationFunction = ::relu,
+                    random = random,
+                )
             }
-            val outputNode = List(output) { index ->
-                Node.create(centerNode, id = index.toString(), f = ::sigmoid, random = random)
-            }
-            return Layer(outputNode, rate)
+            val outputNodes = Node.createOutputNodes(
+                before = centerNodes,
+                size = output,
+                activationFunction = ::sigmoid,
+                random = random,
+            )
+            return Layer(outputNodes, rate)
         }
-    }
-}
-
-class Node(
-    val before: List<Pair<Node, Double>>?,
-    val activationFunction: (Double) -> Double,
-    val id: String = UUID.randomUUID().toString(),
-) {
-    override fun toString() = before.toString()
-
-    private val memoizer = Memoizer<List<Double>, Pair<Double, Double>>()
-
-    /**
-     * ノードに入ってきた信号及び出力信号を取得する
-     */
-    fun getVY(input: List<Double>): Pair<Double, Double> =
-        memoizer(input) {
-            when {
-                before == null -> 0.0 to input[id.toInt() - 33]
-                before.map { it.first.before }.all { it == null } -> {
-                    val v = before.zip(input) { (_, weight), input -> input * weight }.sum()
-                    v to activationFunction(v)
-                }
-                else -> {
-                    before
-                        .sumOf { (node, weight) -> node.getVY(input).second * weight }
-                        .let { it to activationFunction(it) }
-                }
-            }
-        }
-
-    fun toList(): List<List<Pair<Node, Double>>> =
-        before?.flatMap { (node, weight) ->
-            node.toList().map { it + (node to weight) }
-        } ?: listOf(listOf())
-
-    companion object {
-        fun create(
-            node: List<Node>,
-            id: String = UUID.randomUUID().toString(),
-            f: (Double) -> Double,
-            random: Random,
-        ): Node = Node(
-            before = node.map { it to random.nextDouble(from = -1.0, until = 1.0) },
-            activationFunction = f,
-            id = id,
-        )
-
-        fun create(f: (Double) -> Double, id: String) = Node(null, activationFunction = f, id)
-
-        fun input(f: (Double) -> Double, index: Int) = Node(
-            null,
-            activationFunction = f,
-            id = "${index + 33}",
-        )
     }
 }
 

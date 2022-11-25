@@ -1,11 +1,11 @@
 import dataset.IrisDataset
 import dataset.datasets
-import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import layer.Layer
+import kotlin.random.Random
 
 const val SEED = 12
 val random = Random(SEED)
@@ -37,8 +37,7 @@ suspend fun createModel(
     train: List<IrisDataset>,
     test: List<IrisDataset>,
     seed: Int,
-): Int = withContext(Dispatchers.Default){
-
+): Int = withContext(Dispatchers.Default) {
     val model = (1..50).fold(
         Layer.create(input = 4, center = listOf(5, 8), output = 3, rate = 0.01, random = Random(seed)),
     ) { model, index ->

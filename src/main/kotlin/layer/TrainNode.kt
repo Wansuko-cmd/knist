@@ -1,13 +1,13 @@
-
-import layer.Node
-import kotlin.math.pow
+package layer
+import sigmoid
+import step
 
 sealed interface TrainNode {
     val delta: Double
     val id: String
     val activationFunction: (Double) -> Double
 
-    class OutputN(
+    class OutputNode(
         val v: Double,
         val y: Double,
         val t: Double,
@@ -20,7 +20,7 @@ sealed interface TrainNode {
         override fun toList(): List<List<Pair<Double, TrainNode>>> = listOf(listOf())
     }
 
-    class NormalN(
+    class NormalNode(
         val v: Double,
         val y: Double,
         val nodes: List<Pair<Double, TrainNode>>,
@@ -35,7 +35,7 @@ sealed interface TrainNode {
         override fun fixWeight(): TrainNode =
             nodes
                 .map { (weight, node) -> (weight - rate * node.delta * y) to node.fixWeight() }
-                .let { NormalN(v, y, it, rate, id, activationFunction) }
+                .let { NormalNode(v, y, it, rate, id, activationFunction) }
 
         override fun toList(): List<List<Pair<Double, TrainNode>>> =
             nodes.flatMap { (weight, node) -> node.toList().map { listOf((weight to node)) + it } }
@@ -55,7 +55,7 @@ fun List<List<Pair<Double, Node>>>.toTrainNodesTree(
         val (weight, node) = it.first()
         val (v, y) = node.getVY(input)
         val error = if (node.id == label.toString()) 1.0 else 0.0
-        weight to TrainNode.OutputN(v = v, y = y, t = error, node.id, node.activationFunction)
+        weight to TrainNode.OutputNode(v = v, y = y, t = error, node.id, node.activationFunction)
     }
     else ->
         this
@@ -64,7 +64,7 @@ fun List<List<Pair<Double, Node>>>.toTrainNodesTree(
             .mapValues { (_, value) -> value.map { it.drop(1) }.toTrainNodesTree(input, label, rate) }
             .map {
                 val (v, y) = it.key.second.getVY(input)
-                it.key.first to TrainNode.NormalN(
+                it.key.first to TrainNode.NormalNode(
                     v = v,
                     y = y,
                     nodes = it.value,
@@ -78,7 +78,7 @@ fun List<List<Pair<Double, Node>>>.toTrainNodesTree(
 fun List<List<Pair<TrainNode, Double>>>.toNodesTree(): List<Pair<Node, Double>> = when {
     this.all { it.size == 1 } -> this.map {
         val (node, weight) = it.first()
-        Node.create(node.activationFunction, id = node.id) to weight
+        Node(null, node.activationFunction, id = node.id) to weight
     }
     else ->
         this
@@ -89,5 +89,3 @@ fun List<List<Pair<TrainNode, Double>>>.toNodesTree(): List<Pair<Node, Double>> 
                 Node(it.value, it.key.first.activationFunction, id = it.key.first.id) to it.key.second
             }
 }
-
-fun error(label: Double, output: Double) = 0.5 * (output - label).pow(2.0)
