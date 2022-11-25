@@ -1,6 +1,5 @@
 package layer
 
-import common.maxIndex
 import common.relu
 import common.sigmoid
 import kotlin.random.Random
@@ -13,9 +12,8 @@ class Layer private constructor(
      * 入力値を元にラベルを予想する関数
      * 学習は行わない
      */
-    fun forward(input: List<Double>): Int = output
+    fun forward(input: List<Double>) = output
         .map { it.getVY(input).second }
-        .maxIndex()
 
     /**
      * 学習を行った後のLayerを返す関数

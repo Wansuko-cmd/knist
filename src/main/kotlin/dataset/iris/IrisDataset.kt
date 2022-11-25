@@ -1,4 +1,4 @@
-package dataset
+package dataset.iris
 
 data class IrisDataset(
     val sepalLength: Double,

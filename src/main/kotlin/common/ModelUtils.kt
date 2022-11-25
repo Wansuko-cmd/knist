@@ -1,7 +1,7 @@
 package common
 
-import dataset.IrisDataset
-import dataset.datasets
+import dataset.iris.IrisDataset
+import dataset.iris.datasets
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -44,7 +44,7 @@ suspend fun createModel(
                 data.sepalLength,
                 data.sepalWidth,
             ),
-        ) == data.label
+        ).also { println("$it, except: ${it.maxIndex()} label: ${data.label}") }.maxIndex() == data.label
     }.also { println(it.toDouble() / test.size.toDouble()) }
 }
 
