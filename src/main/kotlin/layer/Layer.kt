@@ -1,21 +1,26 @@
 package layer
 
-import relu
-import sigmoid
+import common.maxIndex
+import common.relu
+import common.sigmoid
 import kotlin.random.Random
 
 class Layer(
     private val output: List<Node>,
     private val rate: Double,
 ) {
-    fun forward(input: List<Double>) = output
+    /**
+     * 入力値を元にラベルを予想する関数
+     * 学習は行わない
+     */
+    fun forward(input: List<Double>): Int = output
         .map { it.getVY(input).second }
         .maxIndex()
 
     /**
      * 学習を行った後のLayerを返す関数
      * * 引数
-     * input: 入力データ
+     * input: 入力データ(一つのみ)
      * label: 正解ラベル
      * * 返り値
      * 引数の値を元に学習を行なった後のLayer
@@ -31,7 +36,7 @@ class Layer(
             .fromNodeTreeToList()
             .slideWeightToLeft()
             .toTrainNodesTree(input, label, rate)
-            .map { it.copy(second = (it.second as TrainNode.NormalNode).fixWeight()) }
+            .map { (weight, node) -> weight to (node as TrainNode.NormalNode).fixWeight() }
             .fromTrainTreeToList()
             .slideWeightToRight()
             .toNodesTree()
@@ -55,6 +60,40 @@ class Layer(
         }
 
     /**
+     * リスト状にしたノードをTrainNodesの木構造に変換するための関数
+     */
+    fun List<List<Pair<Double, Node>>>.toTrainNodesTree(
+        input: List<Double>,
+        label: Int,
+        rate: Double,
+    ): List<Pair<Double, TrainNode>> = when {
+        // 次の要素がなければ出力層として処理
+        this.all { it.size == 1 } -> this.map {
+            val (weight, node) = it.first()
+            val (v, y) = node.getVY(input)
+            val error = if (node.id == label.toString()) 1.0 else 0.0
+            weight to TrainNode.OutputNode(v = v, y = y, t = error, node.id, node.activationFunction)
+        }
+        else ->
+            this
+                // 先頭の同じIDの要素を括り出し
+                .groupBy { it.first().second.id }
+                .mapKeys { it.value.first().first() }
+                .mapValues { (_, value) -> value.map { it.drop(1) }.toTrainNodesTree(input, label, rate) }
+                .map {
+                    val (v, y) = it.key.second.getVY(input)
+                    it.key.first to TrainNode.NormalNode(
+                        v = v,
+                        y = y,
+                        after = it.value,
+                        rate = rate,
+                        it.key.second.id,
+                        it.key.second.activationFunction,
+                    )
+                }
+    }
+
+    /**
      * 学習用の木構造を元のNode Treeに戻すためにまずリスト化する
      * ノードの数より重みの数の方が少ないため、数合わせのためにNEGATIVE_INFINITYを用いる（使うことはないため無視で良い）
      */
@@ -72,6 +111,26 @@ class Layer(
             node.windowed(2) { (left, right) -> left.second to right.first } +
                 (node.last().second to Double.NEGATIVE_INFINITY)
         }
+
+    /**
+     * リスト状にしたノードをNodesの木構造に変換するための関数
+     */
+    fun List<List<Pair<TrainNode, Double>>>.toNodesTree(): List<Pair<Node, Double>> = when {
+        // 次の要素がなければ入力層として処理
+        this.all { it.size == 1 } -> this.map {
+            val (node, weight) = it.first()
+            Node(null, node.activationFunction, id = node.id) to weight
+        }
+        else ->
+            this
+                // 末尾の同じIDの要素を括り出し
+                .groupBy { it.last().first.id }
+                .mapKeys { it.value.last().last() }
+                .mapValues { (_, value) -> value.map { it.dropLast(1) }.toNodesTree() }
+                .map {
+                    Node(it.value, it.key.first.activationFunction, id = it.key.first.id) to it.key.second
+                }
+    }
 
     companion object {
         fun create(
@@ -103,12 +162,3 @@ class Layer(
         }
     }
 }
-
-fun <T : Comparable<T>> List<T>.maxIndex(): Int =
-    this.foldIndexed(null) { index: Int, acc: Pair<Int, T>?, element: T ->
-        when {
-            acc == null -> index to element
-            acc.second > element -> acc
-            else -> index to element
-        }
-    }?.first ?: throw Exception()

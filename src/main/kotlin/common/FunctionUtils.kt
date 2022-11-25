@@ -1,3 +1,5 @@
+package common
+
 import kotlin.math.exp
 
 fun step(x: Double) = if (x > 0.0) 1.0 else 0.0
