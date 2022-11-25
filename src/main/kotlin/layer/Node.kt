@@ -4,7 +4,15 @@ import common.Memoizer
 import java.util.UUID
 import kotlin.random.Random
 
-class Node(
+/**
+ * before: 前の層のノードと重み
+ * activationFunction: 活性化関数
+ * id: 元々のNodeと同じか確かめる際に利用
+ *   入力層 -> InputNode + indexとすることで、どの入力に対応していたかを判別
+ *   中間層 -> 特になし
+ *   出力層 -> OutputNode + index(label)とすることで、どの出力に対応していたかを判別
+ */
+class Node private constructor(
     val before: List<Pair<Node, Double>>?,
     val activationFunction: (Double) -> Double,
     val id: String = UUID.randomUUID().toString(),
@@ -21,7 +29,7 @@ class Node(
         getVYMemoizer(input) {
             when {
                 // 入力層だった場合、ノードに入ってきた値は0として扱う
-                before == null -> 0.0 to input[id.toInt() - 33]
+                before == null -> 0.0 to input[id.removePrefix(INPUT_NODE_PREFIX).toInt()]
 
                 // 入力層の次の層の場合は、入力層の合計に重みを掛けたものを入力として扱う
                 before.map { it.first.before }.all { it == null } -> {
@@ -36,6 +44,9 @@ class Node(
             }
         }
 
+    fun isCorrespondOutputNode(label: Int) =
+        id.removePrefix(OUTPUT_NODE_PREFIX).toIntOrNull() == label
+
     /**
      * ツリー構造状に保存しているnodeをList型に変換する
      */
@@ -45,6 +56,8 @@ class Node(
         } ?: listOf(listOf())
 
     companion object {
+        private const val INPUT_NODE_PREFIX = "InputNode"
+        private const val OUTPUT_NODE_PREFIX = "OutputNode"
 
         /**
          * 入力層作成用Factory
@@ -57,7 +70,7 @@ class Node(
             Node(
                 before = null,
                 activationFunction = activationFunction,
-                id = "${index + 33}",
+                id = "$INPUT_NODE_PREFIX$index",
             )
         }
 
@@ -93,8 +106,18 @@ class Node(
             Node(
                 before = before.map { it to random.nextDouble(from, to) },
                 activationFunction = activationFunction,
-                id = index.toString(),
+                id = "$OUTPUT_NODE_PREFIX$index",
             )
         }
+
+        fun reconstruct(
+            before: List<Pair<Node, Double>>?,
+            activationFunction: (Double) -> Double,
+            id: String = UUID.randomUUID().toString(),
+        ) = Node(
+            before = before,
+            activationFunction = activationFunction,
+            id = id,
+        )
     }
 }

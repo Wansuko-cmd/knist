@@ -5,7 +5,7 @@ import common.relu
 import common.sigmoid
 import kotlin.random.Random
 
-class Layer(
+class Layer private constructor(
     private val output: List<Node>,
     private val rate: Double,
 ) {
@@ -62,7 +62,7 @@ class Layer(
     /**
      * リスト状にしたノードをTrainNodesの木構造に変換するための関数
      */
-    fun List<List<Pair<Double, Node>>>.toTrainNodesTree(
+    private fun List<List<Pair<Double, Node>>>.toTrainNodesTree(
         input: List<Double>,
         label: Int,
         rate: Double,
@@ -71,7 +71,7 @@ class Layer(
         this.all { it.size == 1 } -> this.map {
             val (weight, node) = it.first()
             val (v, y) = node.getVY(input)
-            val error = if (node.id == label.toString()) 1.0 else 0.0
+            val error = if (node.isCorrespondOutputNode(label)) 1.0 else 0.0
             weight to TrainNode.OutputNode(v = v, y = y, t = error, node.id, node.activationFunction)
         }
         else ->
@@ -115,11 +115,15 @@ class Layer(
     /**
      * リスト状にしたノードをNodesの木構造に変換するための関数
      */
-    fun List<List<Pair<TrainNode, Double>>>.toNodesTree(): List<Pair<Node, Double>> = when {
+    private fun List<List<Pair<TrainNode, Double>>>.toNodesTree(): List<Pair<Node, Double>> = when {
         // 次の要素がなければ入力層として処理
         this.all { it.size == 1 } -> this.map {
             val (node, weight) = it.first()
-            Node(null, node.activationFunction, id = node.id) to weight
+            Node.reconstruct(
+                null,
+                activationFunction = node.activationFunction,
+                id = node.id,
+            ) to weight
         }
         else ->
             this
@@ -128,7 +132,11 @@ class Layer(
                 .mapKeys { it.value.last().last() }
                 .mapValues { (_, value) -> value.map { it.dropLast(1) }.toNodesTree() }
                 .map {
-                    Node(it.value, it.key.first.activationFunction, id = it.key.first.id) to it.key.second
+                    Node.reconstruct(
+                        before = it.value,
+                        activationFunction = it.key.first.activationFunction,
+                        id = it.key.first.id,
+                    ) to it.key.second
                 }
     }
 
