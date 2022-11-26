@@ -25,7 +25,7 @@ sealed interface TrainNode {
         override val id: String,
         override val activationFunction: (Double) -> Double,
     ) : TrainNode {
-        override val delta: Double = (y - t) * sigmoid(v) * (1 - sigmoid(v))
+        override val delta: Double by lazy { (y - t) * sigmoid(v) * (1 - sigmoid(v)) }
         override fun fixWeight(): TrainNode = this
         override fun toList(): List<List<Pair<Double, TrainNode>>> = listOf(listOf())
     }
@@ -44,8 +44,7 @@ sealed interface TrainNode {
         override val id: String,
         override val activationFunction: (Double) -> Double,
     ) : TrainNode {
-        override val delta: Double =
-            (step(v) * after.sumOf { (weight, node) -> node.delta * weight })
+        override val delta: Double by lazy { (step(v) * after.sumOf { (weight, node) -> node.delta * weight }) }
 
         override fun fixWeight(): TrainNode =
             after

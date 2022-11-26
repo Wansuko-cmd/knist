@@ -3,7 +3,7 @@ import kotlinx.coroutines.runBlocking
 import kotlin.system.measureTimeMillis
 
 fun main(): Unit = runBlocking {
-    measureTimeMillis { checkAverage(12, 10, 50) }.also { println(it) }
+    measureTimeMillis { checkAverage(12, 30, 50) }.also { println(it) }
 //    val (train, test) = MnistDataset.read().chunked(5000)
 //    val model = (1..10).fold(
 //        Layer.create(

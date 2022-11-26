@@ -17,7 +17,7 @@ suspend fun createModel(
     val model = (1..epoc).fold(
         Layer.create(
             input = 4,
-            center = listOf(7, 8),
+            center = listOf(20, 10),
             output = 3,
             rate = 0.01,
             random = seed?.let { Random(it) } ?: Random,
