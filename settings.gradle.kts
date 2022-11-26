@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 rootProject.name = "perceptron"
 
 include(":functional")
+include(":optimize")
