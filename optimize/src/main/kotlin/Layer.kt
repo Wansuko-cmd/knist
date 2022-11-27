@@ -3,12 +3,20 @@ import common.maxIndex
 import common.relu
 import common.sigmoid
 import common.step
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 class Network(
     private val layers: List<Int>,
     private val weights: MutableMap<WParam, Double>,
+    private val rate: Double,
 ) {
+    private val windowedLayers = layers.windowed(2) { (before, after) -> before to after }
+
     fun expect(input: List<Double>): Int {
         val output = forward(input)
         return (0 until layers.last()).map { output[layers.size - 1 to it]!! }.maxIndex()
@@ -22,8 +30,7 @@ class Network(
     private fun forward(input: List<Double>): Map<Pair<Int, Int>, Double> {
         val output = mutableMapOf<Pair<Int, Int>, Double>()
         (0 until layers.first()).forEach { output[0 to it] = input[it] }
-        layers
-            .windowed(2) { (before, after) -> before to after }
+        windowedLayers
             .mapIndexed { index, (before, after) ->
                 (0 until after).forEach { a ->
                     if (index == layers.size - 2) {
@@ -39,13 +46,12 @@ class Network(
     }
 
     private fun backward(output: Map<Pair<Int, Int>, Double>, delta: Map<Pair<Int, Int>, Double>) {
-        layers
-            .windowed(2) { (before, after) -> before to after }
+        windowedLayers
             .mapIndexed { index, (before, after) ->
                 (0 until before).forEach { b ->
                     (0 until after).forEach { a ->
                         weights[WParam(index, b, a)] =
-                            weights[WParam(index, b, a)]!! - 0.01 * delta[index + 1 to a]!! * output[index to b]!!
+                            weights[WParam(index, b, a)]!! - rate * delta[index + 1 to a]!! * output[index to b]!!
                     }
                 }
             }
@@ -59,8 +65,7 @@ class Network(
             val y = output[layers.size - 1 to it]
             delta[layers.size - 1 to it] = (y!! - teacher[it]) * (1 - y) * y
         }
-        layers
-            .windowed(2) { (before, after) -> before to after }
+        windowedLayers
             .mapDownIndexed { index, (before, after) ->
                 (0 until before).forEach { b ->
                     delta[index to b] = step(output[index to b]!!) *
@@ -71,7 +76,7 @@ class Network(
     }
 
     companion object {
-        fun create(layers: List<Int>, random: Random): Network {
+        fun create(layers: List<Int>, random: Random, rate: Double): Network {
             val weights: MutableMap<WParam, Double> = mutableMapOf()
             layers
                 .windowed(2) { (before, after) -> before to after }
@@ -83,7 +88,7 @@ class Network(
                     }
                 }
 
-            return Network(layers, weights)
+            return Network(layers, weights, rate)
         }
     }
 }
