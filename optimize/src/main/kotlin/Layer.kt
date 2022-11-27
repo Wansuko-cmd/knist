@@ -5,8 +5,6 @@ import common.sigmoid
 import common.step
 import kotlin.random.Random
 
-val random = Random
-
 class Network(
     private val layers: List<Int>,
     private val weights: MutableMap<WParam, Double>,
@@ -73,7 +71,7 @@ class Network(
     }
 
     companion object {
-        fun create(layers: List<Int>): Network {
+        fun create(layers: List<Int>, random: Random): Network {
             val weights: MutableMap<WParam, Double> = mutableMapOf()
             layers
                 .windowed(2) { (before, after) -> before to after }

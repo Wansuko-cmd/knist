@@ -1,30 +1,13 @@
-import dataset.iris.datasets
 
-fun main() {
-    val network = Network.create(listOf(4, 50, 3))
-    val (train, test) = datasets.shuffled().chunked(120)
-    (1..1000).forEach { epoc ->
-        println("epoc: $epoc")
-        train.forEach { data ->
-            network.train(
-                input = listOf(
-                    data.petalLength,
-                    data.petalWidth,
-                    data.sepalLength,
-                    data.sepalWidth,
-                ),
-                label = data.label,
-            )
-        }
-    }
-    test.count { data ->
-        network.expect(
-            input = listOf(
-                data.petalLength,
-                data.petalWidth,
-                data.sepalLength,
-                data.sepalWidth,
-            ),
-        ).also { println("Except: $it, label: ${data.label}") } == data.label
-    }.also { println(it.toDouble() / test.size.toDouble()) }
+import common.checkAverage
+import common.searchGoodSeed
+import kotlinx.coroutines.runBlocking
+import kotlin.system.measureTimeMillis
+
+fun main(): Unit = runBlocking {
+    println("Score: ${checkAverage(0, 100, 1000)}")
+//    searchGoodSeed(10000, 10050, 100)
+//        .map { checkAverage(it, 30, 100) to it }
+//        .maxBy { it.first }
+//        .let { (score, seed) -> println("Best Seed: $seed, Best Score: $score") }
 }

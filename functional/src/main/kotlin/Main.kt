@@ -3,7 +3,7 @@ import kotlinx.coroutines.runBlocking
 import kotlin.system.measureTimeMillis
 
 fun main(): Unit = runBlocking {
-    measureTimeMillis { checkAverage(12, 30, 50) }.also { println(it) }
+    measureTimeMillis { checkAverage(12, 30, 100) }.also { println(it) }
 }
 
 /**
