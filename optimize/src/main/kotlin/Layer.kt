@@ -3,11 +3,8 @@ import common.maxIndex
 import common.relu
 import common.sigmoid
 import common.step
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
+import kotlin.math.pow
+import kotlin.math.sqrt
 import kotlin.random.Random
 
 class Network(
@@ -16,6 +13,8 @@ class Network(
     private val rate: Double,
 ) {
     private val windowedLayers = layers.windowed(2) { (before, after) -> before to after }
+    private val beforeAmountOfChange = mutableMapOf<Pair<Int, Int>, Double>()
+    private val beforeRMSProp = mutableMapOf<Pair<Int, Int>, Double>()
 
     fun expect(input: List<Double>): Int {
         val output = forward(input)
@@ -45,21 +44,30 @@ class Network(
         return output
     }
 
-    private fun backward(output: Map<Pair<Int, Int>, Double>, delta: Map<Pair<Int, Int>, Double>) {
+    private fun backward(
+        output: Map<Pair<Int, Int>, Double>,
+        delta: Map<Pair<Int, Int>, Double>,
+    ) {
         windowedLayers
             .mapIndexed { index, (before, after) ->
                 (0 until before).forEach { b ->
                     (0 until after).forEach { a ->
+                        val g = delta[index + 1 to a]!! * output[index to b]!!
+                        val amountOfChange =
+                            0.9 * (beforeAmountOfChange[index + 1 to a] ?: 0.0) - rate * g
+                        val rmsProp = (0.99 * (beforeRMSProp[index + 1 to a] ?: 0.0)) + 0.01 * g.pow(2)
                         weights[WParam(index, b, a)] =
-                            weights[WParam(index, b, a)]!! - rate * delta[index + 1 to a]!! * output[index to b]!!
+                            weights[WParam(index, b, a)]!! + rate * (amountOfChange / sqrt(rmsProp + 1e-7))
+                        beforeAmountOfChange[index + 1 to a] = amountOfChange
+                        beforeRMSProp[index + 1 to a] = rmsProp
                     }
                 }
             }
     }
 
     private fun calcDelta(output: Map<Pair<Int, Int>, Double>, label: Int): Map<Pair<Int, Int>, Double> {
-        val teacher = MutableList(layers.last()) { 0.0 }
-        teacher[label] = 1.0
+        val teacher = MutableList(layers.last()) { 0.1 }
+        teacher[label] = 0.9
         val delta = mutableMapOf<Pair<Int, Int>, Double>()
         (0 until layers.last()).forEach {
             val y = output[layers.size - 1 to it]

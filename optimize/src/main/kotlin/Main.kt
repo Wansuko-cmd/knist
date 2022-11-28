@@ -1,12 +1,14 @@
 
+import common.checkAverage
 import dataset.mnist.MnistDataset
 import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
 
 fun main(): Unit = runBlocking {
-//    println("Score: ${checkAverage(0, 100, 100)}")
-    val (train, test) = MnistDataset.read().chunked(2000)
+//    println("Score: ${checkAverage(0, 100, 500)}")
+//    println("Score: ${checkAverage(0, 100, 50)}")
+    val (train, test) = MnistDataset.read().chunked(20000)
     val network = Network.create(listOf(train.first().imageSize * train.first().imageSize, 32, 64, 512, 10), Random, 0.03)
     (1..5).forEach { epoc ->
         println("epoc: $epoc")
