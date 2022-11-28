@@ -54,9 +54,9 @@ suspend fun searchGoodSeed(from: Int, to: Int, epoc: Int): List<Int> = withConte
     val (train, test) = datasets.shuffled().chunked(120)
     (from..to)
         .map { async { createModel(train = train, test = test, epoc = epoc, seed = it) to it } }
-        .map { it.await() }
-        .sortedBy { it.first }
+        .map { it.await().also { println("${it.second} Done") } }
+        .sortedByDescending { it.first }
         .take(10)
-        .also { println(it.joinToString("\n") {  (score, seed) -> "Seed: $seed, Score: ${score.toDouble() / test.size}" }) }
+        .also { println(it.joinToString("\n") { (score, seed) -> "Seed: $seed, Score: ${score.toDouble() / test.size}" }) }
         .map { it.second }
 }

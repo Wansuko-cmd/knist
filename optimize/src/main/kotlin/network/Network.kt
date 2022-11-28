@@ -5,6 +5,8 @@ import common.maxIndex
 import common.relu
 import common.sigmoid
 import common.step
+import java.awt.image.ConvolveOp
+import java.awt.image.Kernel
 import kotlin.random.Random
 
 /**
