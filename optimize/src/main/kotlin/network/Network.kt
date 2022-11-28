@@ -1,3 +1,5 @@
+package network
+
 import common.mapDownIndexed
 import common.maxIndex
 import common.relu
@@ -5,23 +7,44 @@ import common.sigmoid
 import common.step
 import kotlin.random.Random
 
-class Network(
+/**
+ * layers: 各層の情報を保持する
+ * Int -> 層のニューロン数
+ *
+ * weight: 重みを保持する
+ * List[層][前のニューロン][後ろのニューロン]
+ * 0からカウントを開始する
+ *
+ * rate: 学習率
+ */
+class Network private constructor(
     private val layers: List<Int>,
     private val weights: List<List<MutableList<Double>>>,
     private val rate: Double,
 ) {
     private val windowedLayers = layers.windowed(2) { (before, after) -> before to after }
 
+    /**
+     * 推定を行う関数
+     * inputからラベル値を返す
+     */
     fun expect(input: List<Double>): Int {
         val output = forward(input)
         return (0 until layers.last()).map { output[layers.size - 1][it] }.maxIndex()
     }
 
+    /**
+     * 学習を行う関数
+     * inputの値とラベルを用いてSGD学習を行う
+     */
     fun train(input: List<Double>, label: Int) {
         val output = forward(input)
         backward(output, calcDelta(output, label))
     }
 
+    /**
+     * 順伝搬を行う関数
+     */
     private fun forward(input: List<Double>): List<List<Double>> {
         val output = mutableListOf<List<Double>>()
         output.add(input)
@@ -39,6 +62,9 @@ class Network(
         return output
     }
 
+    /**
+     * 誤差逆伝搬を行う関数
+     */
     private fun backward(
         output: List<List<Double>>,
         delta: List<List<Double>>,
@@ -54,6 +80,9 @@ class Network(
             }
     }
 
+    /**
+     * 誤差逆伝搬のためのdeltaを取得する関数
+     */
     private fun calcDelta(output: List<List<Double>>, label: Int): List<List<Double>> {
         val delta = mutableListOf<List<Double>>()
         (0 until layers.last()).map {

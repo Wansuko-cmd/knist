@@ -5,6 +5,7 @@ import dataset.iris.datasets
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import network.Network
 import kotlin.random.Random
 
 suspend fun createModel(
