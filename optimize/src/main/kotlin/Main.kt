@@ -1,9 +1,7 @@
 @file:Suppress("DuplicatedCode")
 
-import common.add
 import common.relu
 import common.sigmoid
-import dataset.iris.datasets
 import dataset.mnist.MnistDataset
 import kotlinx.coroutines.runBlocking
 import network.DevNetwork
@@ -47,21 +45,21 @@ fun main(): Unit = runBlocking {
 //            ),
 //        ) == data.label
 //    }.let { println(it.toDouble() / test.size) }
-    val (train, test) = MnistDataset.read().chunked(200)
-    val network = DevNetwork.create<Nothing>(
-        InputConfig(1),
+    val (train, test) = MnistDataset.read().chunked(2000)
+    val network = DevNetwork.create(
+        InputConfig(size = 1),
         listOf(
-            LayerConfig(32, ::relu, LayerType.Conv),
-            LayerConfig(64, ::relu, LayerType.Conv),
-            LayerConfig(30, ::relu, LayerType.MatMul),
-            LayerConfig(10, ::sigmoid, LayerType.MatMul),
+            LayerConfig(size = 32, activationFunction = ::relu, type = LayerType.Conv),
+            LayerConfig(size = 64, activationFunction = ::relu, type = LayerType.Conv),
+            LayerConfig(size = 30, activationFunction = ::relu, type = LayerType.MatMul),
+            LayerConfig(size = 10, activationFunction = ::sigmoid, type = LayerType.MatMul),
         ),
-        Random(1652),
-        0.01,
+        random = Random(1652),
+        rate = 0.01,
     )
     (1..5).forEach { epoc ->
         println("epoc: $epoc")
-        train.forEach { data ->
+        train.shuffled().take(1000).forEach { data ->
             network.trains(
                 input = listOf(data.pixels.chunked(train.first().imageSize)),
                 label = data.label,

@@ -5,7 +5,6 @@ package network
 import common.add
 import common.conv
 import common.foreachDownIndexed
-import common.mapDownIndexed
 import common.maxIndex
 import common.step
 import kotlin.random.Random
@@ -20,7 +19,7 @@ import kotlin.random.Random
  *
  * rate: 学習率
  */
-class DevNetwork<T> private constructor(
+class DevNetwork private constructor(
     private val layers: List<LayerConfig>,
     private val weights: List<List<MutableList<Any>>>,
     private val rate: Double,
@@ -93,7 +92,7 @@ class DevNetwork<T> private constructor(
                             layer = layer,
                             before = before,
                             after = after,
-                        )
+                        ).let { pool(it) }
                 }.let { output.add(it) }
             }
         return output
@@ -112,9 +111,6 @@ class DevNetwork<T> private constructor(
 
     /**
      * 畳み込みの結果を出す
-     *
-     * TODO: 入力と出力が1チャンネルしか対応していない
-     * そのため、複数のフィルターで画像をとってもそのうちの1つしか出力できないため意味がない
      */
     private fun conv(
         input: List<List<List<Double>>>,
@@ -126,6 +122,17 @@ class DevNetwork<T> private constructor(
             (0 until before.size)
                 .map { b -> input[b].conv(weights[layer][b][a] as List<List<Double>>, after.activationFunction) }
                 .reduce { acc, element -> acc.add(element) }
+        }
+
+    private fun pool(
+        input: List<List<List<Double>>>,
+    ): List<List<List<Double>>> =
+        input.map { i ->
+            (0 until i.size - 1).map { j ->
+                (0 until i.size - 1).map { k ->
+                    maxOf(i[j][k], i[j][k + 1], i[j + 1][k], i[j + 1][k + 1])
+                }
+            }
         }
 
     /**
@@ -168,7 +175,6 @@ class DevNetwork<T> private constructor(
                                             }
                                         }
                             }
-
                         }
                     }
                 }.let { delta.add(0, it) }
@@ -217,12 +223,12 @@ class DevNetwork<T> private constructor(
     }
 
     companion object {
-        fun <T> create(
+        fun create(
             input: InputConfig,
             layerConfigs: List<LayerConfig>,
             random: Random,
             rate: Double,
-        ): DevNetwork<T> {
+        ): DevNetwork {
             val weights = mutableListOf<List<MutableList<Any>>>()
             val layers = listOf(input.toLayoutConfig()) + layerConfigs
             layers

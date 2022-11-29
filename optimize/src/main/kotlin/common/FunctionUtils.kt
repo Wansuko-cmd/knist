@@ -14,17 +14,28 @@ fun sigmoid(x: Double) = 1 / (1 + exp(-x))
  */
 fun List<List<Double>>.conv(kernel: List<List<Double>>, f: (Double) -> Double = { it }): List<List<Double>> {
     val output = mutableListOf<List<Double>>()
-    (0 until (this.size - kernel.size)).map { i ->
-        (0 until (this.size - kernel.size)).map { j ->
+    for (i in 0 until (this.size - kernel.size)) {
+        val o = mutableListOf<Double>()
+        for (j in 0 until (this.size - kernel.size)) {
             kernel.indices.sumOf { p ->
                 kernel.indices.sumOf { q ->
                     f(this[i + p][j + q] * kernel[p][q])
                 }
-            }
-        }.let { output.add(it) }
+            }.let { o.add(it) }
+        }
+        output.add(o)
     }
     return output
 }
 
-fun List<List<Double>>.add(other: List<List<Double>>): List<List<Double>> =
-    this.zip(other).map { (i, j) -> i.zip(j).map { (l, r) -> l + r } }
+fun List<List<Double>>.add(other: List<List<Double>>): List<List<Double>> {
+    val output = mutableListOf<List<Double>>()
+    for ((i, e) in this.withIndex()) {
+        val o = mutableListOf<Double>()
+        for ((j, _) in e.withIndex()) {
+            o.add(this[i][j] + other[i][j])
+        }
+        output.add(o)
+    }
+    return output
+}
