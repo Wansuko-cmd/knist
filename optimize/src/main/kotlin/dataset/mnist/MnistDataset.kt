@@ -40,11 +40,10 @@ data class MnistDataset(
                 .map {
                     (1..imageHeight * imageWidth)
                         .map { imageStream.readUnsignedByte() }
-                        .filterIndexed { index, _ -> index % 2 == 0 }
                         .map { it.toDouble() - (PIXEL_DEPTH / 2.0) }
                         .map { it / PIXEL_DEPTH }
-                }.filterIndexed { index, _ -> index % 2 == 0 }
-            return labels.zip(images) { label, image -> MnistDataset(image, label, imageWidth / 2) }
+                }
+            return labels.zip(images) { label, image -> MnistDataset(image, label, imageWidth) }
         }
     }
 }
