@@ -2,7 +2,9 @@
 
 package network
 
+import common.add
 import common.conv
+import common.foreachDownIndexed
 import common.mapDownIndexed
 import common.maxIndex
 import common.step
@@ -18,7 +20,7 @@ import kotlin.random.Random
  *
  * rate: 学習率
  */
-class DevNetwork private constructor(
+class DevNetwork<T> private constructor(
     private val layers: List<LayerConfig>,
     private val weights: List<List<MutableList<Any>>>,
     private val rate: Double,
@@ -58,25 +60,46 @@ class DevNetwork private constructor(
      */
     private fun forward(input: List<Any>): List<List<Any>> {
         val output = mutableListOf<List<Any>>()
+
+        // 入力を第1層の出力とする
         output.add(input)
 
         windowedLayers
             .mapIndexed { layer, (before, after) ->
+                // 後ろのレイヤーに合わせて処理を変える
                 when (after.type) {
-                    is LayerType.MatMul -> {
-                        val o: List<Double> =
-                            if (before.type is LayerType.Conv) {
-                                (output[layer] as List<List<List<Double>>>).map { it.flatten() }.flatten()
-                            } else output[layer] as List<Double>
-                        matMul(input = o, layer = layer, before = before, after = after)
-                    }
+                    // Input層は最初以外ないはずだからエラーとなる
+                    is LayerType.Input -> throw Exception()
+                    // 全結合層
+                    is LayerType.MatMul ->
+                        matMul(
+                            input = when (before.type) {
+                                // 入力層の次に全結合なのでList<Double>が来るはず
+                                is LayerType.Input -> output[layer] as List<Double>
+                                is LayerType.MatMul -> output[layer] as List<Double>
+                                is LayerType.Conv ->
+                                    (output[layer] as List<List<List<Double>>>)
+                                        .map { it.flatten() }
+                                        .flatten()
+                            },
+                            layer = layer,
+                            before = before,
+                            after = after,
+                        )
                     is LayerType.Conv ->
-                        conv(input = output[layer] as List<List<List<Double>>>, layer = layer, before = before, after = after)
+                        conv(
+                            // TODO: 全結合の次にConvがくる場合を想定していない
+                            input = output[layer] as List<List<List<Double>>>,
+                            layer = layer,
+                            before = before,
+                            after = after,
+                        )
                 }.let { output.add(it) }
             }
         return output
     }
 
+    // 全結合の計算結果を出す
     private fun matMul(
         input: List<Double>,
         layer: Int,
@@ -87,6 +110,12 @@ class DevNetwork private constructor(
             after.activationFunction((0 until before.size).sumOf { b -> input[b] * weights[layer][b][a] as Double })
         }
 
+    /**
+     * 畳み込みの結果を出す
+     *
+     * TODO: 入力と出力が1チャンネルしか対応していない
+     * そのため、複数のフィルターで画像をとってもそのうちの1つしか出力できないため意味がない
+     */
     private fun conv(
         input: List<List<List<Double>>>,
         layer: Int,
@@ -94,8 +123,58 @@ class DevNetwork private constructor(
         after: LayerConfig,
     ): List<List<List<Double>>> =
         (0 until after.size).map { a ->
-            (0 until before.size).map { b -> input[b].conv(weights[layer][b][a] as List<List<Double>>, after.activationFunction) }.flatten()
+            (0 until before.size)
+                .map { b -> input[b].conv(weights[layer][b][a] as List<List<Double>>, after.activationFunction) }
+                .reduce { acc, element -> acc.add(element) }
         }
+
+    /**
+     * 誤差逆伝搬のためのdeltaを取得する関数
+     */
+    private fun calcDelta(output: List<List<Any>>, label: Int): List<List<Double>> {
+        val delta = mutableListOf<List<Double>>()
+
+        // 最終層のDeltaを計算
+        (0 until layers.last().size).map {
+            val y = output[layers.size - 1][it] as Double
+            (y - if (it == label) 0.9 else 0.1) * (1 - y) * y
+        }.let { delta.add(it) }
+
+        windowedLayers
+            .foreachDownIndexed { index, (before, after) ->
+                (0 until before.size).map { b ->
+                    when (before.type) {
+                        // Input層は計算する必要がないため除外
+                        is LayerType.Input -> 0.0
+                        is LayerType.MatMul -> step(output[index][b] as Double) *
+                            (0 until after.size).sumOf { a -> delta[0][a] * weights[index][b][a] as Double }
+                        is LayerType.Conv -> {
+                            when (after.type) {
+                                is LayerType.Input, LayerType.MatMul ->
+                                    (output[index][b] as List<List<Double>>)
+                                        .sumOf {
+                                            it.sumOf { x ->
+                                                step(x) * (0 until after.size).sumOf { a -> delta[0][a] * weights[index][b][a] as Double }
+                                            }
+                                        }
+                                is LayerType.Conv ->
+                                    (output[index][b] as List<List<Double>>)
+                                        .sumOf { row ->
+                                            row.sumOf { x ->
+                                                step(x) * (0 until after.size).sumOf { a ->
+                                                    (weights[index][b][a] as List<List<Double>>)
+                                                        .sumOf { weightRow -> weightRow.sumOf { delta[0][a] * it } }
+                                                }
+                                            }
+                                        }
+                            }
+
+                        }
+                    }
+                }.let { delta.add(0, it) }
+            }
+        return delta
+    }
 
     /**
      * 誤差逆伝搬を行う関数
@@ -109,18 +188,26 @@ class DevNetwork private constructor(
                 (0 until before.size).forEach { b ->
                     (0 until after.size).forEach { a ->
                         weights[index][b][a] = when (after.type) {
+                            // Input層には更新する値はないはずだからエラーとなる
+                            is LayerType.Input -> throw Exception()
                             is LayerType.MatMul ->
                                 weights[index][b][a] as Double - rate * delta[index + 1][a] *
-                                    if (output[index][b] is Double) output[index][b] as Double
-                                    else (output[index] as List<List<List<Double>>>).map { it.flatten() }.flatten()[b]
+                                    when (before.type) {
+                                        is LayerType.Input, LayerType.MatMul ->
+                                            output[index][b] as Double
+                                        is LayerType.Conv ->
+                                            (output[index] as List<List<List<Double>>>).map { it.flatten() }
+                                                .flatten()[b]
+                                    }
                             is LayerType.Conv ->
-                                (weights[index][b][a] as List<List<Double>>).map {
-                                    it.map { w ->
-                                        w - (output[index][b] as List<List<Double>>).sumOf {
-                                            it.sumOf {
-                                                it * rate * delta[index + 1][a]
+                                (weights[index][b][a] as List<List<Double>>).map { weightMatrix ->
+                                    weightMatrix.map { weight ->
+                                        weight - (output[index][b] as List<List<Double>>)
+                                            .sumOf { row ->
+                                                row.sumOf { column ->
+                                                    column * rate * delta[index + 1][a]
+                                                }
                                             }
-                                        }
                                     }
                                 }
                         }
@@ -129,47 +216,22 @@ class DevNetwork private constructor(
             }
     }
 
-    /**
-     * 誤差逆伝搬のためのdeltaを取得する関数
-     */
-    private fun calcDelta(output: List<List<Any>>, label: Int): List<List<Double>> {
-        val delta = mutableListOf<List<Double>>()
-        (0 until layers.last().size).map {
-            val y = output[layers.size - 1][it] as Double
-            (y - if (it == label) 0.9 else 0.1) * (1 - y) * y
-        }.let { delta.add(it) }
-        windowedLayers
-            .mapDownIndexed { index, (before, after) ->
-                if (index == 0) {
-                    delta.add(0, listOf())
-                    return@mapDownIndexed
-                }
-                (0 until before.size).map { b ->
-                    when (before.type) {
-                        is LayerType.MatMul -> step(output[index][b] as Double) *
-                            (0 until after.size).sumOf { a -> delta[0][a] * weights[index][b][a] as Double }
-                        is LayerType.Conv -> {
-                            (output[index][b] as List<List<Double>>).sumOf {
-                                it.sumOf { x ->
-                                    step(x) * (0 until after.size).sumOf { a -> delta[0][a] * weights[index][b][a] as Double }
-                                }
-                            }
-                        }
-                    }
-                }.let { delta.add(0, it) }
-            }
-        return delta
-    }
-
     companion object {
-        fun create(layers: List<LayerConfig>, random: Random, rate: Double): DevNetwork {
+        fun <T> create(
+            input: InputConfig,
+            layerConfigs: List<LayerConfig>,
+            random: Random,
+            rate: Double,
+        ): DevNetwork<T> {
             val weights = mutableListOf<List<MutableList<Any>>>()
+            val layers = listOf(input.toLayoutConfig()) + layerConfigs
             layers
                 .windowed(2) { (before, after) -> before to after }
                 .map { (before, after) ->
                     (0 until before.size).map {
                         (0 until after.size).map {
                             when (after.type) {
+                                is LayerType.Input -> throw Exception()
                                 is LayerType.MatMul -> random.nextDouble(from = -1.0, until = 1.0)
                                 is LayerType.Conv -> (0..4).map { (0..4).map { random.nextDouble(-1.0, 1.0) } }
                             }
@@ -187,8 +249,12 @@ data class LayerConfig(
     val type: LayerType,
 )
 
+data class InputConfig(val size: Int) {
+    fun toLayoutConfig() = LayerConfig(size, { it }, LayerType.Input)
+}
+
 sealed class LayerType {
-    object Input: LayerType()
+    internal object Input : LayerType()
     object MatMul : LayerType()
     object Conv : LayerType()
 }

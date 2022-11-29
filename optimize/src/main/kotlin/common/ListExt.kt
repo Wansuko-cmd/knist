@@ -9,6 +9,13 @@ fun <T : Comparable<T>> List<T>.maxIndex(): Int =
         }
     }?.first ?: throw Exception()
 
+inline fun <T> List<T>.foreachDownIndexed(transform: (index: Int, T) -> Unit) {
+    var index = this.size - 1
+    for (item in this.reversed()) {
+        transform(index--, item)
+    }
+}
+
 inline fun <T, R> List<T>.mapDownIndexed(transform: (index: Int, T) -> R): List<R> {
     var index = this.size - 1
     val destination = ArrayList<R>()

@@ -25,3 +25,6 @@ fun List<List<Double>>.conv(kernel: List<List<Double>>, f: (Double) -> Double = 
     }
     return output
 }
+
+fun List<List<Double>>.add(other: List<List<Double>>): List<List<Double>> =
+    this.zip(other).map { (i, j) -> i.zip(j).map { (l, r) -> l + r } }
