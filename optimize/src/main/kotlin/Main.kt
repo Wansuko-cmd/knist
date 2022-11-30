@@ -2,73 +2,90 @@
 
 import common.relu
 import common.sigmoid
-import dataset.mnist.MnistDataset
+import dataset.wine.WineDataset
+import dataset.wine.wineDatasets
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import network.DevNetwork
 import network.InputConfig
 import network.LayerConfig
 import network.LayerType
+import network.WineNearest
 import kotlin.random.Random
 
 fun main(): Unit = runBlocking {
-//    val network = DevNetwork.create<Nothing>(
-//        InputConfig(4),
-//        listOf(
-//            LayerConfig(50, ::relu, LayerType.MatMul),
-//            LayerConfig(3, ::sigmoid, LayerType.MatMul),
-//        ),
-//        Random(1652),
-//        0.01
-//    )
-//    val (train, test) = datasets.shuffled().chunked(120)
-//    (1..1000).forEach { epoc ->
-//        println("epoc: $epoc")
-//        train.forEach { data ->
-//            network.train(
-//                input = listOf(
-//                    data.petalLength,
-//                    data.petalWidth,
-//                    data.sepalWidth,
-//                    data.sepalLength,
-//                ),
-//                label = data.label
-//            )
-//        }
-//    }
-//    test.count { data ->
-//        network.expect(
-//            input = listOf(
-//                data.petalLength,
-//                data.petalWidth,
-//                data.sepalWidth,
-//                data.sepalLength,
-//            ),
-//        ) == data.label
-//    }.let { println(it.toDouble() / test.size) }
-    val (train, test) = MnistDataset.read().chunked(2000)
+    val (train, test) = wineDatasets.map { it.centering() }.shuffled().chunked(120)
+    val nearest = WineNearest(train)
+    test.count { data ->
+        nearest.expect(data) == data.label
+    }.also { println(it.toDouble() / test.size) }
+    createWineModel(train, test, 1000, 19)
+//    (0..30)
+//        .map { async { createWineModel(train = train, test = test, epoc = 1000, seed = it) to it } }
+//        .map { it.await().also { println("${it.second} Done") } }
+//        .sortedByDescending { it.first }
+//        .take(10)
+//        .also { println(it.joinToString("\n") { (score, seed) -> "Seed: $seed, Score: ${score.toDouble() / test.size}" }) }
+//        .map { it.second }
+}
+
+suspend fun createWineModel(
+    train: List<WineDataset>,
+    test: List<WineDataset>,
+    epoc: Int,
+    seed: Int? = null,
+): Int = withContext(Dispatchers.Default) {
     val network = DevNetwork.create(
-        InputConfig(size = 1),
+        InputConfig(13),
         listOf(
-            LayerConfig(size = 32, activationFunction = ::relu, type = LayerType.Conv),
-            LayerConfig(size = 64, activationFunction = ::relu, type = LayerType.Conv),
-            LayerConfig(size = 30, activationFunction = ::relu, type = LayerType.MatMul),
-            LayerConfig(size = 10, activationFunction = ::sigmoid, type = LayerType.MatMul),
+            LayerConfig(100, ::relu, LayerType.MatMul),
+            LayerConfig(30, ::relu, LayerType.MatMul),
+            LayerConfig(3, ::sigmoid, LayerType.MatMul),
         ),
-        random = Random(1652),
-        rate = 0.01,
+        seed?.let { Random(it) } ?: Random,
+        0.01
     )
-    (1..5).forEach { epoc ->
-        println("epoc: $epoc")
-        train.shuffled().take(1000).forEach { data ->
-            network.trains(
-                input = listOf(data.pixels.chunked(train.first().imageSize)),
+    (1..epoc).forEach { epoc ->
+        train.forEach { data ->
+            network.train(
+                input = listOf(
+                    data.alcohol,
+                    data.malicAcid,
+                    data.ash,
+                    data.alcalinityOfAsh,
+                    data.magnesium,
+                    data.totalPhenols,
+                    data.flavanoids,
+                    data.nonflavAnoidPhenols,
+                    data.proanthocyanins,
+                    data.colorIntensity,
+                    data.hue,
+                    data.wines,
+                    data.proline,
+                ),
                 label = data.label,
             )
         }
     }
     test.count { data ->
-        network.expects(
-            input = listOf(data.pixels.chunked(train.first().imageSize)),
+        network.expect(
+            input = listOf(
+                data.alcohol,
+                data.malicAcid,
+                data.ash,
+                data.alcalinityOfAsh,
+                data.magnesium,
+                data.totalPhenols,
+                data.flavanoids,
+                data.nonflavAnoidPhenols,
+                data.proanthocyanins,
+                data.colorIntensity,
+                data.hue,
+                data.wines,
+                data.proline,
+            ),
         ) == data.label
-    }.let { println(it.toDouble() / test.size) }
+    }.also { println(it.toDouble() / test.size) }
 }

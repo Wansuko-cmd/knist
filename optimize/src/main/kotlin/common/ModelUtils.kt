@@ -14,7 +14,7 @@ suspend fun createModel(
     epoc: Int,
     seed: Int? = null,
 ): Int = withContext(Dispatchers.Default) {
-    val network = Network.create(listOf(4, 50, 3), seed?.let { Random(it) } ?: Random, 0.01)
+    val network = Network.create(listOf(4, 20, 50, 20, 3), seed?.let { Random(it) } ?: Random, 0.01)
     (1..epoc).forEach { _ ->
         train.forEach { data ->
             network.train(

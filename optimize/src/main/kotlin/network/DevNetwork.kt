@@ -104,10 +104,14 @@ class DevNetwork private constructor(
         layer: Int,
         before: LayerConfig,
         after: LayerConfig,
-    ): List<Double> =
-        (0 until after.size).map { a ->
+    ): List<Double> {
+        val out = mutableListOf<Double>()
+        for (a in 0 until after.size) {
             after.activationFunction((0 until before.size).sumOf { b -> input[b] * weights[layer][b][a] as Double })
+                .let { out.add(it) }
         }
+        return out
+    }
 
     /**
      * 畳み込みの結果を出す
