@@ -2,33 +2,44 @@
 
 import common.relu
 import common.sigmoid
+import dataset.mnist.MnistDataset
 import dataset.wine.WineDataset
-import dataset.wine.wineDatasets
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import network.DevNetwork
 import network.InputConfig
 import network.LayerConfig
 import network.LayerType
-import network.WineNearest
 import kotlin.random.Random
 
 fun main(): Unit = runBlocking {
-    val (train, test) = wineDatasets.map { it.centering() }.shuffled().chunked(120)
-    val nearest = WineNearest(train)
+    val (train, test) = MnistDataset.read().chunked(10)
+    val network = DevNetwork.create(
+        InputConfig(1),
+        listOf(
+            LayerConfig(32, ::relu, LayerType.Conv),
+            LayerConfig(64, ::relu, LayerType.Conv),
+            LayerConfig(30, ::relu, LayerType.MatMul),
+            LayerConfig(10, ::sigmoid, LayerType.MatMul),
+        ),
+        Random(1652),
+        0.01,
+    )
+    (1..5).forEach { epoc ->
+        println("epoc: $epoc")
+        train.forEach { data ->
+            network.trains(
+                input = listOf(data.pixels.chunked(train.first().imageSize)),
+                label = data.label,
+            )
+        }
+    }
     test.count { data ->
-        nearest.expect(data) == data.label
-    }.also { println(it.toDouble() / test.size) }
-    createWineModel(train, test, 1000, 19)
-//    (0..30)
-//        .map { async { createWineModel(train = train, test = test, epoc = 1000, seed = it) to it } }
-//        .map { it.await().also { println("${it.second} Done") } }
-//        .sortedByDescending { it.first }
-//        .take(10)
-//        .also { println(it.joinToString("\n") { (score, seed) -> "Seed: $seed, Score: ${score.toDouble() / test.size}" }) }
-//        .map { it.second }
+        network.expects(
+            input = listOf(data.pixels.chunked(train.first().imageSize)),
+        ) == data.label
+    }.let { println(it.toDouble() / test.size) }
 }
 
 suspend fun createWineModel(
@@ -45,7 +56,7 @@ suspend fun createWineModel(
             LayerConfig(3, ::sigmoid, LayerType.MatMul),
         ),
         seed?.let { Random(it) } ?: Random,
-        0.01
+        0.01,
     )
     (1..epoc).forEach { epoc ->
         train.forEach { data ->
