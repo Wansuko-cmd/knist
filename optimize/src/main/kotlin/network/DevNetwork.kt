@@ -3,10 +3,7 @@
 package network
 
 import common.add
-import common.conv
-import common.convA
 import common.convArray
-import common.foreachDownIndexed
 import common.maxIndex
 import common.step
 import kotlin.random.Random
@@ -27,14 +24,13 @@ class DevNetwork private constructor(
     private val weights: Array<Array<Array<Any>>>,
     private val rate: Double,
 ) {
-    private val windowedLayers = layers.windowed(2) { (before, after) -> before to after }
 
     /**
      * 推定を行う関数
      * inputからラベル値を返す
      */
     fun expect(input: List<Double>): Int {
-        val output = forward(input.toTypedArray())
+        val output = forward(input.toTypedArray() as Array<Any>)
         return (0 until layers.last().size).map { output[layers.size - 1][it] as Double }.maxIndex()
     }
 
@@ -49,7 +45,7 @@ class DevNetwork private constructor(
      * inputの値とラベルを用いてSGD学習を行う
      */
     fun train(input: List<Double>, label: Int) {
-        val output = forward(input.toTypedArray())
+        val output = forward(input.toTypedArray() as Array<Any>)
         backward(output, calcDelta(output, label))
     }
 
@@ -63,46 +59,41 @@ class DevNetwork private constructor(
      * 順伝搬を行う関数
      */
     private fun forward(input: Array<Any>): Array<Array<Any>> {
-        val output: Array<Array<Any>> = Array(layers.size) { Array(layers[it].size) {  } }
+        val output: Array<Array<Any>> = Array(layers.size) { Array(layers[it].size) { } }
 
         measureNanoTime {
             // 入力を第1層の出力とする
             output[0] = input
 
-            windowedLayers
-                .mapIndexed { layer, (before, after) ->
-                    // 後ろのレイヤーに合わせて処理を変える
-                    when (after.type) {
-                        // Input層は最初以外ないはずだからエラーとなる
-                        is LayerType.Input -> throw Exception()
-                        // 全結合層
-                        is LayerType.MatMul ->
-                            matMul(
-                                input = when (before.type) {
-                                    // 入力層の次に全結合なのでList<Double>が来るはず
-                                    is LayerType.Input -> output[layer] as Array<Double>
-                                    is LayerType.MatMul -> output[layer] as Array<Double>
-                                    is LayerType.Conv ->
-                                        (output[layer] as Array<Array<Array<Double>>>)
-                                            .map { it.flatten() }
-                                            .flatten()
-                                            .toTypedArray()
-                                },
-                                layer = layer,
-                                before = before,
-                                after = after,
-                            ).toTypedArray()
-                        is LayerType.Conv ->
-                            conv(
-                                // TODO: 全結合の次にConvがくる場合を想定していない
-                                input = output[layer] as Array<Array<Array<Double>>>,
-                                layer = layer,
-                                before = before,
-                                after = after,
-                            )
-                    }.let { output[layer + 1] = it as Array<Any> }
-                }
-        }.let { println("forward: $it") }
+            for (i in 0 until layers.size - 1) {
+                output[i + 1] = when (layers[i + 1].type) {
+                    is LayerType.Input -> throw Exception()
+                    is LayerType.MatMul -> {
+                        matMul(
+                            input = when (layers[i].type) {
+                                // 入力層の次に全結合なのでArray<Double>が来るはず
+                                is LayerType.Input, LayerType.MatMul ->
+                                    output[i] as Array<Double>
+                                is LayerType.Conv ->
+                                    (output[i] as Array<Array<Array<Double>>>)
+                                        .map { it.flatten() }
+                                        .flatten()
+                                        .toTypedArray()
+                            },
+                            layer = i,
+                        )
+                    }
+                    is LayerType.Conv -> {
+                        conv(
+                            // TODO: 全結合の次にConvがくる場合を想定していない
+                            input = output[i] as Array<Array<Array<Double>>>,
+                            layer = i,
+                        ).also { pool(it) }
+                    }
+                } as Array<Any>
+            }
+        }
+//            .let { println("forward: $it") }
         return output
     }
 
@@ -110,16 +101,15 @@ class DevNetwork private constructor(
     private fun matMul(
         input: Array<Double>,
         layer: Int,
-        before: LayerConfig,
-        after: LayerConfig,
-    ): List<Double> {
-        val out = mutableListOf<Double>()
+    ): Array<Double> {
+        val out = Array(layers[layer + 1].size) { 0.0 }
         measureNanoTime {
-            for (a in 0 until after.size) {
-                after.activationFunction((0 until before.size).sumOf { b -> input[b] * weights[layer][b][a] as Double })
-                    .let { out.add(it) }
+            for (a in 0 until layers[layer + 1].size) {
+                layers[layer + 1].activationFunction((0 until layers[layer].size).sumOf { b -> input[b] * weights[layer][b][a] as Double })
+                    .let { out[a] = it }
             }
-        }.let { println("matMul: $it") }
+        }
+//            .let { println("matMul: $it") }
         return out
     }
 
@@ -129,78 +119,83 @@ class DevNetwork private constructor(
     private fun conv(
         input: Array<Array<Array<Double>>>,
         layer: Int,
-        before: LayerConfig,
-        after: LayerConfig,
     ): Array<Array<Array<Double>>> {
         val outputSize = input.first().size - (weights[layer][0][0] as Array<Array<Double>>).size + 1
-        val output: Array<Array<Array<Double>>> = Array(after.size) { Array(outputSize) { Array(outputSize) { 0.0 } } }
+        val output: Array<Array<Array<Double>>> = Array(layers[layer + 1].size) { Array(outputSize) { Array(outputSize) { 0.0 } } }
         measureNanoTime {
-            for (a in 0 until after.size) {
-                for (b in 0 until before.size) {
-                    output[a].add(input[b].convArray(weights[layer][b][a] as Array<Array<Double>>))
+            for (a in 0 until layers[layer + 1].size) {
+                for (b in 0 until layers[layer].size) {
+                    output[a].add(input[b].convArray(weights[layer][b][a] as Array<Array<Double>>, layers[layer + 1].activationFunction))
                 }
             }
-        }.let { println("conv: $it") }
+        }
+//            .let { println("conv: $it") }
         return output
     }
 
     private fun pool(
-        input: List<List<List<Double>>>,
-    ): List<List<List<Double>>> =
+        input: Array<Array<Array<Double>>>,
+    ): Array<Array<Array<Double>>> =
         input.map { i ->
             (0 until i.size - 1).map { j ->
                 (0 until i.size - 1).map { k ->
                     maxOf(i[j][k], i[j][k + 1], i[j + 1][k], i[j + 1][k + 1])
-                }
-            }
-        }
+                }.toTypedArray()
+            }.toTypedArray()
+        }.toTypedArray()
 
     /**
      * 誤差逆伝搬のためのdeltaを取得する関数
      */
-    private fun calcDelta(output: Array<Array<Any>>, label: Int): List<List<Double>> {
-        val delta = mutableListOf<List<Double>>()
+    private fun calcDelta(output: Array<Array<Any>>, label: Int): Array<Array<Double>> {
+        val delta = Array(layers.size) { Array(layers[it].size) { 0.0 } }
 
         measureNanoTime {
             // 最終層のDeltaを計算
-            (0 until layers.last().size).map {
-                val y = output[layers.size - 1][it] as Double
-                (y - if (it == label) 0.9 else 0.1) * (1 - y) * y
-            }.let { delta.add(it) }
-
-            windowedLayers
-                .foreachDownIndexed { index, (before, after) ->
-                    (0 until before.size).map { b ->
-                        when (before.type) {
-                            // Input層は計算する必要がないため除外
-                            is LayerType.Input -> 0.0
-                            is LayerType.MatMul -> step(output[index][b] as Double) *
-                                    (0 until after.size).sumOf { a -> delta[0][a] * weights[index][b][a] as Double }
+            for (i in 0 until layers.last().size) {
+                val y = output[layers.size - 1][i] as Double
+                delta[layers.size - 1][i] = (y - if (i == label) 0.9 else 0.1) * (1 - y) * y
+            }
+            for (i in layers.size - 2 downTo 1) {
+                when (layers[i].type) {
+                    is LayerType.Input -> break
+                    is LayerType.MatMul -> {
+                        for (b in 0 until layers[i].size) {
+                            delta[i][b] = step(output[i][b] as Double) *
+                                (0 until layers[i + 1].size).sumOf { a -> delta[i + 1][a] * weights[i][b][a] as Double }
+                        }
+                    }
+                    is LayerType.Conv -> {
+                        when (layers[i + 1].type) {
+                            is LayerType.Input, LayerType.MatMul -> {
+                                for (b in 0 until layers[i].size) {
+                                    delta[i][b] = (output[i][b] as Array<Array<Double>>)
+                                        .sumOf {
+                                            it.sumOf { x ->
+                                                step(x) * (0 until layers[i + 1].size).sumOf { a -> delta[i + 1][a] * weights[i][b][a] as Double }
+                                            }
+                                        }
+                                }
+                            }
                             is LayerType.Conv -> {
-                                when (after.type) {
-                                    is LayerType.Input, LayerType.MatMul ->
-                                        (output[index][b] as Array<Array<Double>>)
-                                            .sumOf {
-                                                it.sumOf { x ->
-                                                    step(x) * (0 until after.size).sumOf { a -> delta[0][a] * weights[index][b][a] as Double }
+                                for (b in 0 until layers[i].size) {
+                                    delta[i][b] = (output[i][b] as Array<Array<Double>>)
+                                        .sumOf { row ->
+                                            row.sumOf { x ->
+                                                step(x) * (0 until layers[i + 1].size).sumOf { a ->
+                                                    (weights[i][b][a] as Array<Array<Double>>)
+                                                        .sumOf { weightRow -> weightRow.sumOf { delta[i + 1][a] * it } }
                                                 }
                                             }
-                                    is LayerType.Conv ->
-                                        (output[index][b] as Array<Array<Double>>)
-                                            .sumOf { row ->
-                                                row.sumOf { x ->
-                                                    step(x) * (0 until after.size).sumOf { a ->
-                                                        (weights[index][b][a] as Array<Array<Double>>)
-                                                            .sumOf { weightRow -> weightRow.sumOf { delta[0][a] * it } }
-                                                    }
-                                                }
-                                            }
+                                        }
                                 }
                             }
                         }
-                    }.let { delta.add(0, it) }
+                    }
                 }
-        }.let { println("calcDelta: $it") }
+            }
+        }
+//            .let { println("calcDelta: $it") }
 
         return delta
     }
@@ -210,42 +205,54 @@ class DevNetwork private constructor(
      */
     private fun backward(
         output: Array<Array<Any>>,
-        delta: List<List<Double>>,
+        delta: Array<Array<Double>>,
     ) {
         measureNanoTime {
-            windowedLayers
-                .mapIndexed { index, (before, after) ->
-                    (0 until before.size).forEach { b ->
-                        (0 until after.size).forEach { a ->
-                            weights[index][b][a] = when (after.type) {
-                                // Input層には更新する値はないはずだからエラーとなる
-                                is LayerType.Input -> throw Exception()
-                                is LayerType.MatMul ->
-                                    weights[index][b][a] as Double - rate * delta[index + 1][a] *
-                                            when (before.type) {
-                                                is LayerType.Input, LayerType.MatMul ->
-                                                    output[index][b] as Double
-                                                is LayerType.Conv ->
-                                                    (output[index] as Array<Array<Array<Double>>>)
-                                                        .map { it.flatten() }
-                                                        .flatten()[b]
-                                            }
-                                is LayerType.Conv ->
-                                    (weights[index][b][a] as Array<Array<Double>>).map { weightMatrix ->
-                                        weightMatrix.map { weight ->
-                                            weight - (output[index][b] as Array<Array<Double>>)
-                                                .sumOf { row ->
-                                                    row.sumOf { column ->
-                                                        column * rate * delta[index + 1][a]
-                                                    }
-                                                }
-                                        }.toTypedArray()
-                                    }.toTypedArray()
+            for (i in 0 until layers.size - 1) {
+                when (layers[i + 1].type) {
+                    is LayerType.Input -> throw Exception()
+                    is LayerType.MatMul -> {
+                        val out = when (layers[i].type) {
+                            is LayerType.Input, LayerType.MatMul ->
+                                output[i] as Array<Double>
+                            is LayerType.Conv ->
+                                (output[i] as Array<Array<Array<Double>>>)
+                                    .map { it.flatten() }
+                                    .flatten()
+                                    .toTypedArray()
+                        }
+                        for (b in 0 until layers[i].size) {
+                            for (a in 0 until layers[i + 1].size) {
+                                weights[i][b][a] = (weights[i][b][a] as Double) - rate * delta[i + 1][a] * out[b]
+                            }
+                        }
+                    }
+                    is LayerType.Conv -> {
+                        for (b in 0 until layers[i].size) {
+                            for (a in 0 until layers[i + 1].size) {
+                                val w = (weights[i][b][a] as Array<Array<Double>>)
+
+                                var d = 0.0
+                                val del = delta[i + 1][a]
+                                val ou = output[i][b] as Array<Array<Double>>
+                                for (u in ou.indices) {
+                                    for (v in ou[u].indices) {
+                                        d += ou[u][v] * rate * del
+                                    }
+                                }
+
+                                for (u in w.indices) {
+                                    for (v in w[u].indices) {
+                                        w[u][v] -= d
+                                    }
+                                }
                             }
                         }
                     }
                 }
-        }.let { println("backward: $it") }
+            }
+        }
+//            .let { println("backward: $it") }
     }
 
     companion object {

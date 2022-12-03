@@ -26,18 +26,19 @@ inline fun List<List<Double>>.convA(kernel: Array<Array<Double>>, f: (Double) ->
         .map { a -> a.map { f(it) }.toTypedArray() }.toTypedArray()
 }
 
-// TODO: activation追加
-fun Array<Array<Double>>.convArray(kernel: Array<Array<Double>>): Array<Array<Double>> {
+inline fun Array<Array<Double>>.convArray(kernel: Array<Array<Double>>, f: (Double) -> Double = { it }): Array<Array<Double>> {
     val outputSize = this.size - kernel.size + 1
     val output = Array(outputSize) { Array(outputSize) { 0.0 } }
 
-    for (ku in kernel.indices) {
-        for (kv in kernel.indices) {
-            for (ou in 0 until outputSize) {
-                for (ov in 0 until outputSize) {
-                    output[ou][ov] += this[ku + ou][kv + ov] * kernel[ku][kv]
+    for (ou in 0 until outputSize) {
+        for (ov in 0 until outputSize) {
+            var o = 0.0
+            for (ku in kernel.indices) {
+                for (kv in kernel.indices) {
+                    o += this[ku + ou][kv + ov] * kernel[ku][kv]
                 }
             }
+            output[ou][ov] = f(o)
         }
     }
 
@@ -56,7 +57,7 @@ fun List<List<Double>>.add(other: List<List<Double>>): List<List<Double>> {
     return output
 }
 
-fun Array<Array<Double>>.add(other: Array<Array<Double>>) {
+inline fun Array<Array<Double>>.add(other: Array<Array<Double>>) {
     for (i in 0 until this.size) {
         for (j in 0 until this.size) {
             this[i][j] += other[i][j]

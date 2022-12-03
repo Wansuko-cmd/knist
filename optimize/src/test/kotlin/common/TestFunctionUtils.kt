@@ -50,9 +50,10 @@ class TestFunctionUtils {
             arrayOf(636.0, 681.0, 726.0),
             arrayOf(861.0, 906.0, 951.0),
         )
-        measureNanoTime { (1..100).forEach { _ -> input.convArray(kernel) } }.let { println(it) }
+        measureNanoTime { (1..1000).forEach { _ -> input.convArray(kernel) } }.let { println(it) }
         assertThat(input.convArray(kernel)).isEqualTo(expect)
     }
+    //4890900
 
     @Test
     fun addArray() {
@@ -68,5 +69,5 @@ class TestFunctionUtils {
         input.add(other)
         assertThat(input).isEqualTo(expect)
     }
-    // 4910037
+    // 2725500
 }
