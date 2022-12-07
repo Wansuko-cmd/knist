@@ -39,7 +39,7 @@ sealed interface Output0dConfig {
                 numOfNeuron = size,
                 activationFunction = { it },
                 type = object : LayerType by Affine {
-                    override fun forward(
+                    override inline fun forward(
                         input: IOType,
                         output: IOType,
                         weight: Array<IOType>,

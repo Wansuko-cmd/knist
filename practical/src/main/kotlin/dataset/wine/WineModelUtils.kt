@@ -1,7 +1,6 @@
 package dataset.wine
 
 import common.relu
-import common.sigmoid
 import layers.layer0d.Affine
 import layers.layer0d.Input0dConfig
 import layers.layer0d.Layer0dConfig
