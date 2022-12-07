@@ -8,35 +8,23 @@ import layers.layer0d.Output0dConfig
 import layers.layer1d.Input1dConfig
 import kotlin.random.Random
 
-class Network(
+class Network<T>(
     private val weights: Array<Array<IOType>>,
     private val output: Array<IOType>,
     private val delta: Array<Array<Double>>,
     private val forward: () -> Unit,
     private val calcDelta: (label: Int) -> Unit,
     private val backward: () -> Unit,
+    private val toIOType: T.() -> IOType,
 ) {
-    fun expect(input: List<Double>): Int {
-        output[0] = input.toTypedArray().let { IOType.IOType0d(it) }
+    fun expect(input: T): Int {
+        output[0] = input.toIOType()
         forward()
         return output.last().asIOType0d().value.toList().maxIndex()
     }
 
-    fun expects(input: List<List<Double>>): Int {
-        output[0] = input.map { it.toTypedArray() }.toTypedArray().let { IOType.IOType1d(it) }
-        forward()
-        return output.last().asIOType0d().value.toList().maxIndex()
-    }
-
-    fun train(input: List<Double>, label: Int) {
-        output[0] = input.toTypedArray().let { IOType.IOType0d(it) }
-        forward()
-        calcDelta(label)
-        backward()
-    }
-
-    fun trains(input: List<List<Double>>, label: Int) {
-        output[0] = input.map { it.toTypedArray() }.toTypedArray().let { IOType.IOType1d(it) }
+    fun train(input: T, label: Int) {
+        output[0] = input.toIOType()
         forward()
         calcDelta(label)
         backward()
@@ -49,9 +37,14 @@ class Network(
             outputConfig: Output0dConfig,
             random: Random,
             rate: Double,
-        ): Network {
+        ): Network<List<Double>> {
             val layers = listOf(inputConfig.toLayoutConfig()) + centerConfig + listOf(outputConfig.toLayoutConfig())
-            return create(layers, random, rate)
+            return create(
+                layers = layers,
+                random = random,
+                rate = rate,
+                toIOType = { IOType.IOType0d(this.toTypedArray()) }
+            )
         }
 
         fun create1d(
@@ -60,16 +53,22 @@ class Network(
             outputConfig: Output0dConfig,
             random: Random,
             rate: Double,
-        ): Network {
+        ): Network<List<List<Double>>> {
             val layers = listOf(inputConfig.toLayoutConfig()) + centerConfig + listOf(outputConfig.toLayoutConfig())
-            return create(layers, random, rate)
+            return create(
+                layers = layers,
+                random = random,
+                rate = rate,
+                toIOType = { IOType.IOType1d(this.map { it.toTypedArray() }.toTypedArray()) }
+            )
         }
 
-        private fun create(
+        private fun <T> create(
             layers: List<LayerConfig<*>>,
             random: Random,
             rate: Double,
-        ): Network {
+            toIOType: T.() -> IOType,
+        ): Network<T> {
             // 値を全てバラバラにするために分割
             val weights: Array<Array<IOType>> =
                 Array(layers.size - 1) { i ->
@@ -123,6 +122,7 @@ class Network(
                 forward = forward,
                 calcDelta = calcDelta,
                 backward = backward,
+                toIOType = toIOType,
             )
         }
     }
