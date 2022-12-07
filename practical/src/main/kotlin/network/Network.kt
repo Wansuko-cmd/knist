@@ -2,26 +2,27 @@ package network
 
 import common.maxIndex
 import kotlin.random.Random
+import layers.IOType
 import layers.layer0d.Input0dConfig
 import layers.layer0d.Layer0dConfig
 import layers.layer0d.Output0dConfig
 
 class Network(
-    private val weights: Array<Array<Array<Double>>>,
-    private val output: Array<Array<Double>>,
+    private val weights: Array<Array<Array<IOType>>>,
+    private val output: Array<Array<IOType>>,
     private val delta: Array<Array<Double>>,
     private val forward: () -> Unit,
     private val calcDelta: (label: Int) -> Unit,
     private val backward: () -> Unit,
 ) {
     fun expect(input: List<Double>): Int {
-        output[0] = input.toTypedArray()
+        output[0] = input.map { IOType.IOType0d(it) }.toTypedArray()
         forward()
-        return (0 until output.last().size).map { output.last()[it] }.maxIndex()
+        return (0 until output.last().size).map { output.last()[it].asIOType0d().value }.maxIndex()
     }
 
     fun train(input: List<Double>, label: Int) {
-        output[0] = input.toTypedArray()
+        output[0] = input.map { IOType.IOType0d(it) }.toTypedArray()
         forward()
         calcDelta(label)
         backward()
@@ -38,12 +39,12 @@ class Network(
             val layers = listOf(inputConfig.toLayoutConfig()) + centerConfig + listOf(outputConfig.toLayoutConfig())
 
             // 値を全てバラバラにするために分割
-            val weights: Array<Array<Array<Double>>> =
+            val weights: Array<Array<Array<IOType>>> =
                 Array(layers.size - 1) { i ->
                     Array(layers[i].numOfNeuron) { Array(layers[i + 1].numOfNeuron) { layers[i + 1].createWeight(random) } }
                 }
 
-            val output: Array<Array<Double>> = Array(layers.size) { i -> layers[i].createOutput() }
+            val output: Array<Array<IOType>> = Array(layers.size) { i -> layers[i].createOutput() }
             val delta: Array<Array<Double>> = Array(layers.size + 1) { i ->
                 Array(layers.getOrElse(i) { layers.last() }.numOfNeuron) { 0.0 }
             }
