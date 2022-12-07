@@ -1,39 +1,29 @@
-@file:Suppress("DuplicatedCode")
+package dataset.wine
 
 import common.relu
 import common.sigmoid
-import dataset.mnist.MnistDataset
-import dataset.wine.WineDataset
-import dataset.wine.wineDatasets
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import network.DevNetwork
 import network.InputConfig
 import network.LayerConfig
 import network.LayerType
+import network.Network
 import kotlin.random.Random
-import kotlin.system.measureTimeMillis
-
-fun main(): Unit = runBlocking {
-    measureTimeMillis { (0..10).forEach { _ -> createWineModel(epoc = 1000) } }.also { println(it) }
-}
 
 fun createWineModel(
     epoc: Int,
     seed: Int? = null,
 ) {
     val (train, test) = wineDatasets.shuffled().map { it.centering() }.chunked(120)
-    val network = DevNetwork.create(
+    val network = Network.create(
         InputConfig(13),
         listOf(
-            LayerConfig(50, ::relu, LayerType.MatMul),
-            LayerConfig(3, ::sigmoid, LayerType.MatMul),
+            LayerConfig(50, ::relu, LayerType.Affine),
+            LayerConfig(3, ::sigmoid, LayerType.Affine),
         ),
-        seed?.let { Random(it) } ?: Random,
-        0.01,
+        random = seed?.let { Random(it) } ?: Random,
+        rate = 0.01,
     )
     (1..epoc).forEach { epoc ->
+//        println("epoc: $epoc")
         train.forEach { data ->
             network.train(
                 input = listOf(
