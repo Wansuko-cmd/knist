@@ -2,12 +2,8 @@
 
 import common.relu
 import common.sigmoid
-import dataset.mnist.MnistDataset
-import dataset.wine.WineDataset
 import dataset.wine.wineDatasets
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import network.DevNetwork
 import network.InputConfig
 import network.LayerConfig

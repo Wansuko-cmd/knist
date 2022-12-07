@@ -2,25 +2,29 @@ package dataset.iris
 
 import common.relu
 import common.sigmoid
-import kotlin.random.Random
-import network.InputConfig
-import network.LayerConfig
-import network.LayerType
+import layers.InputConfig
+import layers.LayerConfig
+import layers.OutputConfig
+import layers.affine.Affine
 import network.Network
+import kotlin.random.Random
 
-fun createIrisModel() {
+fun createIrisModel(
+    epoc: Int,
+    seed: Int? = null,
+) {
     val (train, test) = irisDatasets.shuffled().chunked(120)
     val network = Network.create(
         InputConfig(4),
         listOf(
-            LayerConfig(50, ::relu, LayerType.Affine),
-            LayerConfig(3, ::sigmoid, LayerType.Affine),
+            LayerConfig(50, ::relu, Affine),
         ),
-        random = Random(0),
+        OutputConfig(3, ::sigmoid),
+        random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )
-    (1..1000).forEach { epoc ->
-        println("epoc: $epoc")
+    (1..epoc).forEach { epoc ->
+//        println("epoc: $epoc")
         train.forEach { data ->
             network.train(
                 input = listOf(
