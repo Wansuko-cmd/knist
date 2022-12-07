@@ -38,12 +38,12 @@ class Network<T>(
             random: Random,
             rate: Double,
         ): Network<List<Double>> {
-            val layers = listOf(inputConfig.toLayoutConfig()) + centerConfig + listOf(outputConfig.toLayoutConfig())
+            val layers = listOf(inputConfig.toLayoutConfig()) + centerConfig + listOf(outputConfig.toLayer0dConfig())
             return create(
                 layers = layers,
                 random = random,
                 rate = rate,
-                toIOType = { IOType.IOType0d(this.toTypedArray()) }
+                toIOType = { IOType.IOType0d(this.toTypedArray()) },
             )
         }
 
@@ -54,12 +54,12 @@ class Network<T>(
             random: Random,
             rate: Double,
         ): Network<List<List<Double>>> {
-            val layers = listOf(inputConfig.toLayoutConfig()) + centerConfig + listOf(outputConfig.toLayoutConfig())
+            val layers = listOf(inputConfig.toLayoutConfig()) + centerConfig + listOf(outputConfig.toLayer0dConfig())
             return create(
                 layers = layers,
                 random = random,
                 rate = rate,
-                toIOType = { IOType.IOType1d(this.map { it.toTypedArray() }.toTypedArray()) }
+                toIOType = { IOType.IOType1d(this.map { it.toTypedArray() }.toTypedArray()) },
             )
         }
 

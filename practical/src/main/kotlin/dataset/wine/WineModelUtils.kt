@@ -19,7 +19,7 @@ fun createWineModel(
         listOf(
             Layer0dConfig(50, ::relu, Affine),
         ),
-        Output0dConfig(3, ::sigmoid),
+        Output0dConfig.Softmax(3),
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )
