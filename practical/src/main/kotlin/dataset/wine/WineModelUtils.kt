@@ -2,13 +2,12 @@ package dataset.wine
 
 import common.relu
 import common.sigmoid
-import layers.InputConfig
-import layers.LayerConfig
-import layers.LayerType
 import network.Network
 import kotlin.random.Random
-import layers.OutputConfig
-import layers.affine.Affine
+import layers.layer0d.Affine
+import layers.layer0d.Input0dConfig
+import layers.layer0d.Layer0dConfig
+import layers.layer0d.Output0dConfig
 
 fun createWineModel(
     epoc: Int,
@@ -16,11 +15,11 @@ fun createWineModel(
 ) {
     val (train, test) = wineDatasets.shuffled().map { it.centering() }.chunked(120)
     val network = Network.create(
-        InputConfig(13),
+        Input0dConfig(13),
         listOf(
-            LayerConfig(50, ::relu, Affine),
+            Layer0dConfig(50, ::relu, Affine),
         ),
-        OutputConfig(3, ::sigmoid),
+        Output0dConfig(3, ::sigmoid),
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )

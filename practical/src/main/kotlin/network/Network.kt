@@ -1,10 +1,10 @@
 package network
 
 import common.maxIndex
-import layers.InputConfig
-import layers.LayerConfig
-import layers.OutputConfig
 import kotlin.random.Random
+import layers.layer0d.Input0dConfig
+import layers.layer0d.Layer0dConfig
+import layers.layer0d.Output0dConfig
 
 class Network(
     private val weights: Array<Array<Array<Double>>>,
@@ -29,9 +29,9 @@ class Network(
 
     companion object {
         fun create(
-            inputConfig: InputConfig,
-            centerConfig: List<LayerConfig>,
-            outputConfig: OutputConfig,
+            inputConfig: Input0dConfig,
+            centerConfig: List<Layer0dConfig>,
+            outputConfig: Output0dConfig,
             random: Random,
             rate: Double,
         ): Network {
@@ -40,21 +40,21 @@ class Network(
             // 値を全てバラバラにするために分割
             val weights: Array<Array<Array<Double>>> =
                 Array(layers.size - 1) { i ->
-                    Array(layers[i].size) { Array(layers[i + 1].size) { 0.0 } }
+                    Array(layers[i].numOfNeuron) { Array(layers[i + 1].numOfNeuron) { 0.0 } }
                 }
             layers
                 .windowed(2) { (before, after) -> before to after }
                 .mapIndexed { index, (before, after) ->
-                    for (b in 0 until before.size) {
-                        for (a in 0 until after.size) {
+                    for (b in 0 until before.numOfNeuron) {
+                        for (a in 0 until after.numOfNeuron) {
                             weights[index][b][a] = random.nextDouble(-1.0, 1.0)
                         }
                     }
                 }
 
-            val output: Array<Array<Double>> = Array(layers.size) { i -> Array(layers[i].size) { 0.0 } }
+            val output: Array<Array<Double>> = Array(layers.size) { i -> Array(layers[i].numOfNeuron) { 0.0 } }
             val delta: Array<Array<Double>> = Array(layers.size + 1) { i ->
-                Array(layers.getOrElse(i) { layers.last() }.size) { 0.0 }
+                Array(layers.getOrElse(i) { layers.last() }.numOfNeuron) { 0.0 }
             }
             val forward = {
                 for (index in 0 until layers.size - 1) {

@@ -1,9 +1,8 @@
-package layers.affine
+package layers.layer0d
 
 import common.step
-import layers.LayerType
 
-object Affined : LayerType {
+object Affine : Layer0dType {
     override inline fun forward(
         input: Array<Double>,
         output: Array<Double>,

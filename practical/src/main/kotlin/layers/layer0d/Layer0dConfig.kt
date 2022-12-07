@@ -1,11 +1,19 @@
-package layers
+package layers.layer0d
 
-interface LayerConfig {
-    val numOfNeuron: Int
-    val activationFunction: (Double) -> Double
+import layers.LayerConfig
+import kotlin.random.Random
+
+class Layer0dConfig(
+    override val numOfNeuron: Int,
+    override val activationFunction: (Double) -> Double,
+    val type: Layer0dType,
+) : LayerConfig {
+    fun createWeight(random: Random) = random.nextDouble(-1.0, 1.0)
+
+    fun createOutput(): Array<Double> = Array(numOfNeuron) { 0.0 }
 }
 
-interface LayerType {
+interface Layer0dType {
     fun forward(
         input: Array<Double>,
         output: Array<Double>,
