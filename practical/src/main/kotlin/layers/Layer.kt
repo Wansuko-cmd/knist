@@ -1,3 +1,0 @@
-package layers
-
-interface Layer

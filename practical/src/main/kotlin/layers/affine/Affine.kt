@@ -23,7 +23,7 @@ object Affine : LayerType {
      * delta -> 計算結果を格納するdelta
      * output -> 自分の層の出力
      * afterDelta -> 後ろの層のdelta
-     * weight -> 自分と後ろの層の重み
+     * afterWeight -> 自分と後ろの層の重み Array[前の層のニューロン][後ろの層のニューロン]
      */
     override inline fun calcDelta(
         delta: Array<Double>,
