@@ -1,3 +1,5 @@
+@file:Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
+
 package layers.layer1d
 
 import common.step
@@ -14,12 +16,16 @@ object Conv1d : LayerType {
         weight: Array<IOType>,
         activationFunction: (Double) -> Double,
     ) {
-        for (outputChannel in output.asIOType1d().value.indices) {
-            for (i in output.asIOType1d().value[outputChannel].indices) { output.asIOType1d().value[outputChannel][i] = 0.0 }
-            for (inputChannel in input.asIOType1d().value.indices) {
-                input.asIOType1d().value[inputChannel].conv1d(
+        val inputArray = input.asIOType1d().value
+        val outputArray = output.asIOType1d().value
+        for (outputChannel in outputArray.indices) {
+            for (t in outputArray[outputChannel].indices) {
+                outputArray[outputChannel][t] = 0.0
+            }
+            for (inputChannel in inputArray.indices) {
+                inputArray[inputChannel].conv1d(
                     kernel = weight[inputChannel].asIOType1d().value[outputChannel],
-                    output = output.asIOType1d().value[outputChannel],
+                    output = outputArray[outputChannel],
                     activationFunction = activationFunction,
                 )
             }
@@ -30,16 +36,18 @@ object Conv1d : LayerType {
         delta: Array<Double>,
         output: IOType,
         afterDelta: Array<Double>,
-        afterWeight: Array<IOType>
+        afterWeight: Array<IOType>,
     ) {
         // 畳み込みの出力ニューロンを一列にした時のindexを表す
         var index = 0
+        val outputArray = output.asIOType1d().value
 
         for (i in delta.indices) {
             var sum = 0.0
-            for (t in output.asIOType1d().value[i].indices) {
-                sum += step(output.asIOType1d().value[i][t]) * (0 until afterWeight[index++].asIOType0d().value.size)
-                    .sumOf { afterDelta[it] * afterWeight[i].asIOType0d().value[it] }
+            val afterWeightArray = afterWeight[i].asIOType0d().value
+            for (t in outputArray[i].indices) {
+                sum += step(outputArray[i][t]) * (0 until afterWeight[index++].asIOType0d().value.size)
+                    .sumOf { afterDelta[it] * afterWeightArray[it] }
             }
             delta[i] = sum
         }
@@ -54,15 +62,17 @@ object Conv1d : LayerType {
         input: IOType,
         rate: Double,
     ) {
+        val inputArray = input.asIOType1d().value
         for (inputChannel in weight.indices) {
-            for (outputChannel in weight[inputChannel].asIOType1d().value.indices) {
-                for (t in weight[inputChannel].asIOType1d().value[outputChannel].indices) {
+            val weightArray = weight[inputChannel].asIOType1d().value
+            for (outputChannel in weightArray.indices) {
+                for (t in weightArray[outputChannel].indices) {
                     var sum = 0.0
-                    val kernelSize = input.asIOType1d().value[inputChannel].size - weight[inputChannel].asIOType1d().value[outputChannel].size + 1
+                    val kernelSize = inputArray[inputChannel].size - weightArray[outputChannel].size + 1
                     for (outputIndex in 0 until kernelSize) {
-                        sum += input.asIOType1d().value[inputChannel][t + outputIndex]
+                        sum += inputArray[inputChannel][t + outputIndex]
                     }
-                    weight[inputChannel].asIOType1d().value[outputChannel][t] -= rate * delta[outputChannel] * sum
+                    weightArray[outputChannel][t] -= rate * delta[outputChannel] * sum
                 }
             }
         }

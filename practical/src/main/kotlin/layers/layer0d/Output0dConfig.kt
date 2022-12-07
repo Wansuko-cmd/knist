@@ -1,3 +1,5 @@
+@file:Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
+
 package layers.layer0d
 
 import layers.IOType
@@ -18,9 +20,9 @@ data class Output0dConfig(
                     afterDelta: Array<Double>,
                     afterWeight: Array<IOType>,
                 ) {
-                    val output = output.asIOType0d().value
+                    val outputArray = output.asIOType0d().value
                     for (i in delta.indices) {
-                        val y = output[i]
+                        val y = outputArray[i]
                         delta[i] = (y - afterDelta[i]) * (1 - y) * y
                     }
                 }

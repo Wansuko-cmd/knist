@@ -22,7 +22,12 @@ data class Input0dConfig(val size: Int) {
                     afterDelta: Array<Double>,
                     afterWeight: Array<IOType>,
                 ) = throw DomainException.UnreachableCodeException()
-                override fun backward(weight: Array<IOType>, delta: Array<Double>, input: IOType, rate: Double) = throw DomainException.UnreachableCodeException()
+                override fun backward(
+                    weight: Array<IOType>,
+                    delta: Array<Double>,
+                    input: IOType,
+                    rate: Double,
+                ) = throw DomainException.UnreachableCodeException()
             },
         )
 }

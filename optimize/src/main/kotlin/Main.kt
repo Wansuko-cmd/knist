@@ -23,6 +23,7 @@ fun createWineModel(
     val network = DevNetwork.create(
         InputConfig(13),
         listOf(
+            LayerConfig(100, ::relu, LayerType.MatMul),
             LayerConfig(50, ::relu, LayerType.MatMul),
             LayerConfig(3, ::sigmoid, LayerType.MatMul),
         ),

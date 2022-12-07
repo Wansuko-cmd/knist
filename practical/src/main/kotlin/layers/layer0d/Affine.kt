@@ -1,3 +1,5 @@
+@file:Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
+
 package layers.layer0d
 
 import common.step
@@ -11,12 +13,14 @@ object Affine : LayerType {
         weight: Array<IOType>,
         activationFunction: (Double) -> Double,
     ) {
-        for (outputIndex in output.asIOType0d().value.indices) {
+        val inputArray = input.asIOType0d().value
+        val outputArray = output.asIOType0d().value
+        for (outputIndex in outputArray.indices) {
             var sum = 0.0
-            for (inputIndex in input.asIOType0d().value.indices) {
-                sum += input.asIOType0d().value[inputIndex] * weight[inputIndex].asIOType0d().value[outputIndex]
+            for (inputIndex in inputArray.indices) {
+                sum += inputArray[inputIndex] * weight[inputIndex].asIOType0d().value[outputIndex]
             }
-            output.asIOType0d().value[outputIndex] = activationFunction(sum)
+            outputArray[outputIndex] = activationFunction(sum)
         }
     }
 
@@ -32,18 +36,24 @@ object Affine : LayerType {
         afterDelta: Array<Double>,
         afterWeight: Array<IOType>,
     ) {
-        val output = output.asIOType0d().value
+        val outputArray = output.asIOType0d().value
         for (i in delta.indices) {
-            delta[i] = step(output[i]) * (0 until afterWeight[i].asIOType0d().value.size)
-                .sumOf { afterDelta[it] * afterWeight[i].asIOType0d().value[it] }
+            val afterWeightArray = afterWeight[i].asIOType0d().value
+            delta[i] = step(outputArray[i]) * (afterWeightArray.indices)
+                .sumOf { afterDelta[it] * afterWeightArray[it] }
         }
     }
 
-    override inline fun backward(weight: Array<IOType>, delta: Array<Double>, input: IOType, rate: Double) {
-        val input = input.asIOType0d().value
+    override inline fun backward(
+        weight: Array<IOType>,
+        delta: Array<Double>,
+        input: IOType,
+        rate: Double,
+    ) {
+        val inputArray = input.asIOType0d().value
         for (before in weight.indices) {
             for (after in weight[before].asIOType0d().value.indices) {
-                weight[before].asIOType0d().value[after] -= rate * delta[after] * input[before]
+                weight[before].asIOType0d().value[after] -= rate * delta[after] * inputArray[before]
             }
         }
     }

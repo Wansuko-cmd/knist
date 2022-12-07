@@ -24,7 +24,12 @@ data class Input1dConfig(val channel: Int) {
                     afterDelta: Array<Double>,
                     afterWeight: Array<IOType>,
                 ) = throw DomainException.UnreachableCodeException()
-                override fun backward(weight: Array<IOType>, delta: Array<Double>, input: IOType, rate: Double) = throw DomainException.UnreachableCodeException()
+                override fun backward(
+                    weight: Array<IOType>,
+                    delta: Array<Double>,
+                    input: IOType,
+                    rate: Double,
+                ) = throw DomainException.UnreachableCodeException()
             },
         )
 }

@@ -2,12 +2,11 @@ package network
 
 import common.maxIndex
 import layers.IOType
-import layers.layer0d.Input0dConfig
-import layers.layer0d.Layer0dConfig
-import layers.layer0d.Output0dConfig
-import kotlin.random.Random
 import layers.LayerConfig
+import layers.layer0d.Input0dConfig
+import layers.layer0d.Output0dConfig
 import layers.layer1d.Input1dConfig
+import kotlin.random.Random
 
 class Network(
     private val weights: Array<Array<IOType>>,
