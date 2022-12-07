@@ -13,12 +13,13 @@ data class Output0dConfig(
             type = object : Layer0dType by Affine {
                 override inline fun calcDelta(
                     delta: Array<Double>,
-                    output: Array<IOType>,
+                    output: IOType,
                     afterDelta: Array<Double>,
-                    afterWeight: Array<Array<IOType>>,
+                    afterWeight: Array<IOType>,
                 ) {
+                    val output = output.asIOType0d().value
                     for (i in delta.indices) {
-                        val y = output[i].asIOType0d().value
+                        val y = output[i]
                         delta[i] = (y - afterDelta[i]) * (1 - y) * y
                     }
                 }

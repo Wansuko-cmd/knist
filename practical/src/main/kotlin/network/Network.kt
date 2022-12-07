@@ -8,21 +8,21 @@ import layers.layer0d.Layer0dConfig
 import layers.layer0d.Output0dConfig
 
 class Network(
-    private val weights: Array<Array<Array<IOType>>>,
-    private val output: Array<Array<IOType>>,
+    private val weights: Array<Array<IOType>>,
+    private val output: Array<IOType>,
     private val delta: Array<Array<Double>>,
     private val forward: () -> Unit,
     private val calcDelta: (label: Int) -> Unit,
     private val backward: () -> Unit,
 ) {
     fun expect(input: List<Double>): Int {
-        output[0] = input.map { IOType.IOType0d(it) }.toTypedArray()
+        output[0] = input.toTypedArray().let { IOType.IOType0d(it) }
         forward()
-        return (0 until output.last().size).map { output.last()[it].asIOType0d().value }.maxIndex()
+        return output.last().asIOType0d().value.toList().maxIndex()
     }
 
     fun train(input: List<Double>, label: Int) {
-        output[0] = input.map { IOType.IOType0d(it) }.toTypedArray()
+        output[0] = input.toTypedArray().let { IOType.IOType0d(it) }
         forward()
         calcDelta(label)
         backward()
@@ -39,12 +39,12 @@ class Network(
             val layers = listOf(inputConfig.toLayoutConfig()) + centerConfig + listOf(outputConfig.toLayoutConfig())
 
             // 値を全てバラバラにするために分割
-            val weights: Array<Array<Array<IOType>>> =
+            val weights: Array<Array<IOType>> =
                 Array(layers.size - 1) { i ->
-                    Array(layers[i].numOfNeuron) { Array(layers[i + 1].numOfNeuron) { layers[i + 1].createWeight(random) } }
+                    Array(layers[i].numOfNeuron) { layers[i + 1].createWeight(random) }
                 }
 
-            val output: Array<Array<IOType>> = Array(layers.size) { i -> layers[i].createOutput() }
+            val output: Array<IOType> = Array(layers.size) { i -> layers[i].createOutput() }
             val delta: Array<Array<Double>> = Array(layers.size + 1) { i ->
                 Array(layers.getOrElse(i) { layers.last() }.numOfNeuron) { 0.0 }
             }

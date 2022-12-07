@@ -1,7 +1,7 @@
 package layers.layer1d
 
-import kotlin.random.Random
 import layers.LayerConfig
+import kotlin.random.Random
 
 data class Layer1dConfig(
     val channel: Int,
