@@ -8,8 +8,9 @@ import kotlin.random.Random
 class Layer0dConfig(
     override val numOfNeuron: Int,
     override val activationFunction: (Double) -> Double,
-    val type: LayerType,
+    override val type: LayerType,
 ) : LayerConfig<IOType.IOType0d> {
+    override val numOfOutput: Int = numOfNeuron
     override fun createWeight(random: Random): IOType.IOType0d =
         IOType.IOType0d(Array(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
 

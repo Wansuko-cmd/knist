@@ -1,11 +1,13 @@
 package network
 
 import common.maxIndex
-import kotlin.random.Random
 import layers.IOType
 import layers.layer0d.Input0dConfig
 import layers.layer0d.Layer0dConfig
 import layers.layer0d.Output0dConfig
+import kotlin.random.Random
+import layers.LayerConfig
+import layers.layer1d.Input1dConfig
 
 class Network(
     private val weights: Array<Array<IOType>>,
@@ -21,6 +23,12 @@ class Network(
         return output.last().asIOType0d().value.toList().maxIndex()
     }
 
+    fun expects(input: List<List<Double>>): Int {
+        output[0] = input.map { it.toTypedArray() }.toTypedArray().let { IOType.IOType1d(it) }
+        forward()
+        return output.last().asIOType0d().value.toList().maxIndex()
+    }
+
     fun train(input: List<Double>, label: Int) {
         output[0] = input.toTypedArray().let { IOType.IOType0d(it) }
         forward()
@@ -28,20 +36,45 @@ class Network(
         backward()
     }
 
+    fun trains(input: List<List<Double>>, label: Int) {
+        output[0] = input.map { it.toTypedArray() }.toTypedArray().let { IOType.IOType1d(it) }
+        forward()
+        calcDelta(label)
+        backward()
+    }
+
     companion object {
-        fun create(
+        fun create0d(
             inputConfig: Input0dConfig,
-            centerConfig: List<Layer0dConfig>,
+            centerConfig: List<LayerConfig<*>>,
             outputConfig: Output0dConfig,
             random: Random,
             rate: Double,
         ): Network {
             val layers = listOf(inputConfig.toLayoutConfig()) + centerConfig + listOf(outputConfig.toLayoutConfig())
+            return create(layers, random, rate)
+        }
 
+        fun create1d(
+            inputConfig: Input1dConfig,
+            centerConfig: List<LayerConfig<*>>,
+            outputConfig: Output0dConfig,
+            random: Random,
+            rate: Double,
+        ): Network {
+            val layers = listOf(inputConfig.toLayoutConfig()) + centerConfig + listOf(outputConfig.toLayoutConfig())
+            return create(layers, random, rate)
+        }
+
+        private fun create(
+            layers: List<LayerConfig<*>>,
+            random: Random,
+            rate: Double,
+        ): Network {
             // 値を全てバラバラにするために分割
             val weights: Array<Array<IOType>> =
                 Array(layers.size - 1) { i ->
-                    Array(layers[i].numOfNeuron) { layers[i + 1].createWeight(random) }
+                    Array(layers[i].numOfOutput) { layers[i + 1].createWeight(random) }
                 }
 
             val output: Array<IOType> = Array(layers.size) { i -> layers[i].createOutput() }

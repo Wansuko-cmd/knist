@@ -12,7 +12,7 @@ object Conv1d : LayerType {
         input: IOType,
         output: IOType,
         weight: Array<IOType>,
-        activationFunction: (Double) -> Double
+        activationFunction: (Double) -> Double,
     ) {
         for (outputChannel in output.asIOType1d().value.indices) {
             for (i in output.asIOType1d().value[outputChannel].indices) { output.asIOType1d().value[outputChannel][i] = 0.0 }
@@ -38,7 +38,7 @@ object Conv1d : LayerType {
         for (i in delta.indices) {
             var sum = 0.0
             for (t in output.asIOType1d().value[i].indices) {
-                sum += step(output.asIOType1d().value[i][t]) * (0 until afterWeight[index++].asIOType1d().value.size)
+                sum += step(output.asIOType1d().value[i][t]) * (0 until afterWeight[index++].asIOType0d().value.size)
                     .sumOf { afterDelta[it] * afterWeight[i].asIOType0d().value[it] }
             }
             delta[i] = sum

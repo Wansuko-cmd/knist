@@ -10,12 +10,13 @@ data class Layer1dConfig(
     val inputSize: Int,
     val kernelSize: Int,
     override val activationFunction: (Double) -> Double,
-    val type: LayerType,
+    override val type: LayerType,
 ) : LayerConfig<IOType.IOType1d> {
     override val numOfNeuron = channel
+    override val numOfOutput = channel * (inputSize - kernelSize + 1)
     override fun createWeight(random: Random): IOType.IOType1d =
         IOType.IOType1d(Array(channel) { Array(kernelSize) { random.nextDouble(-1.0, 1.0) } })
 
     override fun createOutput(): IOType.IOType1d =
-        IOType.IOType1d(Array(numOfNeuron) { Array(inputSize - kernelSize + 1) { 0.0 } })
+        IOType.IOType1d(Array(channel) { Array(inputSize - kernelSize + 1) { 0.0 } })
 }

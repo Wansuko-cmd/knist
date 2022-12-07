@@ -14,7 +14,7 @@ fun createIrisModel(
     seed: Int? = null,
 ) {
     val (train, test) = irisDatasets.shuffled().chunked(120)
-    val network = Network.create(
+    val network = Network.create0d(
         Input0dConfig(4),
         listOf(
             Layer0dConfig(50, ::relu, Affine),
