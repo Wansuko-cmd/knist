@@ -40,19 +40,10 @@ class Network(
             // 値を全てバラバラにするために分割
             val weights: Array<Array<Array<Double>>> =
                 Array(layers.size - 1) { i ->
-                    Array(layers[i].numOfNeuron) { Array(layers[i + 1].numOfNeuron) { 0.0 } }
-                }
-            layers
-                .windowed(2) { (before, after) -> before to after }
-                .mapIndexed { index, (before, after) ->
-                    for (b in 0 until before.numOfNeuron) {
-                        for (a in 0 until after.numOfNeuron) {
-                            weights[index][b][a] = random.nextDouble(-1.0, 1.0)
-                        }
-                    }
+                    Array(layers[i].numOfNeuron) { Array(layers[i + 1].numOfNeuron) { layers[i + 1].createWeight(random) } }
                 }
 
-            val output: Array<Array<Double>> = Array(layers.size) { i -> Array(layers[i].numOfNeuron) { 0.0 } }
+            val output: Array<Array<Double>> = Array(layers.size) { i -> layers[i].createOutput() }
             val delta: Array<Array<Double>> = Array(layers.size + 1) { i ->
                 Array(layers.getOrElse(i) { layers.last() }.numOfNeuron) { 0.0 }
             }
