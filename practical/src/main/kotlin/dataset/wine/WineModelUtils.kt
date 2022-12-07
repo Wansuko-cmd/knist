@@ -2,12 +2,12 @@ package dataset.wine
 
 import common.relu
 import common.sigmoid
-import network.Network
-import kotlin.random.Random
 import layers.layer0d.Affine
 import layers.layer0d.Input0dConfig
 import layers.layer0d.Layer0dConfig
 import layers.layer0d.Output0dConfig
+import network.Network
+import kotlin.random.Random
 
 fun createWineModel(
     epoc: Int,

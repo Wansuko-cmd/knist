@@ -2,22 +2,21 @@ package layers.layer0d
 
 import common.step
 import layers.IOType
+import layers.LayerType
 
-object Affine : Layer0dType {
+object Affine : LayerType {
     override inline fun forward(
         input: IOType,
         output: IOType,
         weight: Array<IOType>,
         activationFunction: (Double) -> Double,
     ) {
-        val output = output.asIOType0d().value
-        val input = input.asIOType0d().value
-        for (outputIndex in output.indices) {
+        for (outputIndex in output.asIOType0d().value.indices) {
             var sum = 0.0
-            for (inputIndex in input.indices) {
-                sum += input[inputIndex] * weight[inputIndex].asIOType0d().value[outputIndex]
+            for (inputIndex in input.asIOType0d().value.indices) {
+                sum += input.asIOType0d().value[inputIndex] * weight[inputIndex].asIOType0d().value[outputIndex]
             }
-            output[outputIndex] = activationFunction(sum)
+            output.asIOType0d().value[outputIndex] = activationFunction(sum)
         }
     }
 

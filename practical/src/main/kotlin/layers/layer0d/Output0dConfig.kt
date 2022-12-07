@@ -1,6 +1,7 @@
 package layers.layer0d
 
 import layers.IOType
+import layers.LayerType
 
 data class Output0dConfig(
     val size: Int,
@@ -10,7 +11,7 @@ data class Output0dConfig(
         Layer0dConfig(
             numOfNeuron = size,
             activationFunction = activationFunction,
-            type = object : Layer0dType by Affine {
+            type = object : LayerType by Affine {
                 override inline fun calcDelta(
                     delta: Array<Double>,
                     output: IOType,

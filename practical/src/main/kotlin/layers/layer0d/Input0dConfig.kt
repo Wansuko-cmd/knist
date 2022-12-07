@@ -2,13 +2,14 @@ package layers.layer0d
 
 import exception.DomainException
 import layers.IOType
+import layers.LayerType
 
 data class Input0dConfig(val size: Int) {
     fun toLayoutConfig() =
         Layer0dConfig(
             numOfNeuron = size,
             activationFunction = { throw DomainException.UnreachableCodeException() },
-            type = object : Layer0dType {
+            type = object : LayerType {
                 override fun forward(
                     input: IOType,
                     output: IOType,

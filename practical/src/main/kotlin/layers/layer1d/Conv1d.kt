@@ -1,23 +1,25 @@
 package layers.layer1d
 
 import common.step
+import layers.IOType
+import layers.LayerType
 
-object Conv1d : Layer1dType {
+object Conv1d : LayerType {
     /**
      * weight: Array[入力チャンネル][出力チャンネル][kernelの横要素]
      */
     override inline fun forward(
-        input: Array<Array<Double>>,
-        output: Array<Array<Double>>,
-        weight: Array<Array<Array<Double>>>,
-        activationFunction: (Double) -> Double,
+        input: IOType,
+        output: IOType,
+        weight: Array<IOType>,
+        activationFunction: (Double) -> Double
     ) {
-        for (outputChannel in output.indices) {
-            for (i in output[outputChannel].indices) { output[outputChannel][i] = 0.0 }
-            for (inputChannel in input.indices) {
-                input[inputChannel].conv1d(
-                    kernel = weight[inputChannel][outputChannel],
-                    output = output[outputChannel],
+        for (outputChannel in output.asIOType1d().value.indices) {
+            for (i in output.asIOType1d().value[outputChannel].indices) { output.asIOType1d().value[outputChannel][i] = 0.0 }
+            for (inputChannel in input.asIOType1d().value.indices) {
+                input.asIOType1d().value[inputChannel].conv1d(
+                    kernel = weight[inputChannel].asIOType1d().value[outputChannel],
+                    output = output.asIOType1d().value[outputChannel],
                     activationFunction = activationFunction,
                 )
             }
@@ -26,18 +28,18 @@ object Conv1d : Layer1dType {
 
     override inline fun calcDelta(
         delta: Array<Double>,
-        output: Array<Array<Double>>,
+        output: IOType,
         afterDelta: Array<Double>,
-        afterWeight: Array<Array<Double>>,
+        afterWeight: Array<IOType>
     ) {
         // 畳み込みの出力ニューロンを一列にした時のindexを表す
         var index = 0
 
         for (i in delta.indices) {
             var sum = 0.0
-            for (t in output[i].indices) {
-                sum += step(output[i][t]) * (0 until afterWeight[index++].size)
-                    .sumOf { afterDelta[it] * afterWeight[i][it] }
+            for (t in output.asIOType1d().value[i].indices) {
+                sum += step(output.asIOType1d().value[i][t]) * (0 until afterWeight[index++].asIOType1d().value.size)
+                    .sumOf { afterDelta[it] * afterWeight[i].asIOType0d().value[it] }
             }
             delta[i] = sum
         }
@@ -47,20 +49,20 @@ object Conv1d : Layer1dType {
      * weight: Array[入力チャンネル][出力チャンネル][kernelの横要素]
      */
     override inline fun backward(
-        weight: Array<Array<Array<Double>>>,
+        weight: Array<IOType>,
         delta: Array<Double>,
-        input: Array<Array<Double>>,
+        input: IOType,
         rate: Double,
     ) {
         for (inputChannel in weight.indices) {
-            for (outputChannel in weight[inputChannel].indices) {
-                for (t in weight[inputChannel][outputChannel].indices) {
+            for (outputChannel in weight[inputChannel].asIOType1d().value.indices) {
+                for (t in weight[inputChannel].asIOType1d().value[outputChannel].indices) {
                     var sum = 0.0
-                    val kernelSize = input[inputChannel].size - weight[inputChannel][outputChannel].size + 1
+                    val kernelSize = input.asIOType1d().value[inputChannel].size - weight[inputChannel].asIOType1d().value[outputChannel].size + 1
                     for (outputIndex in 0 until kernelSize) {
-                        sum += input[inputChannel][t + outputIndex]
+                        sum += input.asIOType1d().value[inputChannel][t + outputIndex]
                     }
-                    weight[inputChannel][outputChannel][t] -= rate * delta[outputChannel] * sum
+                    weight[inputChannel].asIOType1d().value[outputChannel][t] -= rate * delta[outputChannel] * sum
                 }
             }
         }
