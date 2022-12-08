@@ -38,7 +38,7 @@ class Network<T>(
             random: Random,
             rate: Double,
         ): Network<List<Double>> {
-            val layers = listOf(inputConfig.toLayoutConfig()) + centerConfig + listOf(outputConfig.toLayer0dConfig())
+            val layers = listOf(inputConfig) + centerConfig + listOf(outputConfig.toLayer0dConfig())
             return create(
                 layers = layers,
                 random = random,
