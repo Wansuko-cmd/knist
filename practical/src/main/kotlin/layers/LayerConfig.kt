@@ -7,6 +7,6 @@ interface LayerConfig<T : IOType> {
     val numOfOutput: Int
     val activationFunction: (Double) -> Double
     val type: LayerType
-    fun createWeight(random: Random): T
+    fun createWeight(random: Random, input: IOType): Array<IOType>
     fun createOutput(): T
 }

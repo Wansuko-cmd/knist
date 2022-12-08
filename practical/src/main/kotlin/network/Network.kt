@@ -69,13 +69,10 @@ class Network<T>(
             rate: Double,
             toIOType: T.() -> IOType,
         ): Network<T> {
-            // 値を全てバラバラにするために分割
-            val weights: Array<Array<IOType>> =
-                Array(layers.size - 1) { i ->
-                    Array(layers[i].numOfOutput) { layers[i + 1].createWeight(random) }
-                }
-
             val output: Array<IOType> = Array(layers.size) { i -> layers[i].createOutput() }
+            val weights: Array<Array<IOType>> =
+                Array(layers.size - 1) { i -> layers[i + 1].createWeight(random, output[i]) }
+
             val delta: Array<Array<Double>> = Array(layers.size + 1) { i ->
                 Array(layers.getOrElse(i) { layers.last() }.numOfNeuron) { 0.0 }
             }

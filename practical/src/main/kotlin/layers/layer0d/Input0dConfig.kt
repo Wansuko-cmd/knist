@@ -30,6 +30,6 @@ data class Input0dConfig(val size: Int) : LayerConfig<IOType.IOType0d> {
             rate: Double,
         ) = throw DomainException.UnreachableCodeException()
     }
-    override fun createWeight(random: Random) = throw DomainException.UnreachableCodeException()
+    override fun createWeight(random: Random, input: IOType): Array<IOType> = throw DomainException.UnreachableCodeException()
     override fun createOutput() = IOType.IOType0d(Array(numOfNeuron) { 0.0 })
 }

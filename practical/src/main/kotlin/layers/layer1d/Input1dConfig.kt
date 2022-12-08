@@ -30,6 +30,6 @@ data class Input1dConfig(val channel: Int, val inputSize: Int) : LayerConfig<IOT
             rate: Double,
         ) = throw DomainException.UnreachableCodeException()
     }
-    override fun createWeight(random: Random) = throw DomainException.UnreachableCodeException()
+    override fun createWeight(random: Random, input: IOType): Array<IOType> = throw DomainException.UnreachableCodeException()
     override fun createOutput() = IOType.IOType1d(Array(channel) { Array(inputSize) { 0.0 } })
 }
