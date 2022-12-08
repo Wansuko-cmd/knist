@@ -8,7 +8,6 @@ import kotlin.random.Random
 
 data class Input1dConfig(val channel: Int, val inputSize: Int) : LayerConfig<IOType.IOType1d> {
     override val numOfNeuron: Int = channel
-    override val numOfOutput: Int = channel * inputSize
     override val activationFunction: (Double) -> Double = { throw DomainException.UnreachableCodeException() }
     override val type: LayerType = object : LayerType {
         override fun forward(
