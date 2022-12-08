@@ -69,9 +69,13 @@ class Network<T>(
             rate: Double,
             toIOType: T.() -> IOType,
         ): Network<T> {
-            val output: Array<IOType> = Array(layers.size) { i -> layers[i].createOutput() }
+            // 前の層の出力（次の層の入力）の個数を数えるために利用
+            var beforeOutput: IOType = IOType.IOType0d(arrayOf())
+            val output: Array<IOType> = Array(layers.size) { i ->
+                layers[i].createOutput(beforeOutput).also { beforeOutput = it }
+            }
             val weights: Array<Array<IOType>> =
-                Array(layers.size - 1) { i -> layers[i + 1].createWeight(random, output[i]) }
+                Array(layers.size - 1) { i -> layers[i + 1].createWeight(output[i], random) }
 
             val delta: Array<Array<Double>> = Array(layers.size + 1) { i ->
                 Array(layers.getOrElse(i) { layers.last() }.numOfNeuron) { 0.0 }

@@ -6,6 +6,6 @@ interface LayerConfig<T : IOType> {
     val numOfNeuron: Int
     val activationFunction: (Double) -> Double
     val type: LayerType
-    fun createWeight(random: Random, input: IOType): Array<IOType>
-    fun createOutput(): T
+    fun createWeight(input: IOType, random: Random): Array<IOType>
+    fun createOutput(input: IOType): T
 }

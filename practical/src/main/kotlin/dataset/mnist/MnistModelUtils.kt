@@ -20,7 +20,6 @@ fun createMnistModel(
         centerConfig = listOf(
             Layer1dConfig(
                 channel = 32,
-                inputSize = train.first().imageSize * train.first().imageSize,
                 kernelSize = 5,
                 activationFunction = ::relu,
                 type = Conv1d,
