@@ -2,10 +2,10 @@
 
 package layers.layer1d
 
+import common.step
+import jdk.incubator.vector.DoubleVector
 import layers.IOType
 import layers.LayerType
-import kotlin.system.measureNanoTime
-import kotlin.system.measureTimeMillis
 
 object Conv1d : LayerType {
     /**
@@ -25,8 +25,10 @@ object Conv1d : LayerType {
                 inputArray[inputChannel].conv1d(
                     kernel = weight[inputChannel].asIOType1d().value[outputChannel],
                     output = outputArray[outputChannel],
-                    activationFunction = activationFunction,
                 )
+            }
+            for (outputTime in outputArray[outputChannel].indices) {
+                outputArray[outputChannel][outputTime] = activationFunction(outputArray[outputChannel][outputTime])
             }
         }
     }
@@ -96,14 +98,13 @@ object Conv1d : LayerType {
 inline fun Array<Double>.conv1d(
     kernel: Array<Double>,
     output: Array<Double>,
-    activationFunction: (Double) -> Double,
 ) {
     for (outputIndex in output.indices) {
         var sum = 0.0
         for (kernelIndex in kernel.indices) {
             sum += this[outputIndex + kernelIndex] * kernel[kernelIndex]
         }
-        output[outputIndex] += activationFunction(sum)
+        output[outputIndex] += sum
     }
 }
 
@@ -111,11 +112,11 @@ inline fun Array<Double>.deConv1d(
     kernel: Array<Double>,
     output: Array<Double>,
 ) {
-    val t = arrayOf(*Array(kernel.size - 1) { 0.0 }, *this, *Array(kernel.size - 1) { 0.0 },)
+    val resizedInput = arrayOf(*Array(kernel.size - 1) { 0.0 }, *this, *Array(kernel.size - 1) { 0.0 },)
     for (outputIndex in output.indices) {
         var sum = 0.0
         for (kernelIndex in kernel.indices) {
-            sum += t[outputIndex + kernelIndex] * kernel[kernelIndex]
+            sum += step(resizedInput[outputIndex + kernelIndex]) * kernel[kernelIndex]
         }
         output[outputIndex] += sum
     }
