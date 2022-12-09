@@ -2,7 +2,6 @@
 
 package layers.layer1d
 
-import common.step
 import layers.IOType
 import layers.LayerType
 
@@ -19,9 +18,7 @@ object Conv1d : LayerType {
         val inputArray = input.asIOType1d().value
         val outputArray = output.asIOType1d().value
         for (outputChannel in outputArray.indices) {
-            for (t in outputArray[outputChannel].indices) {
-                outputArray[outputChannel][t] = 0.0
-            }
+            outputArray[outputChannel].fill(0.0)
             for (inputChannel in inputArray.indices) {
                 inputArray[inputChannel].conv1d(
                     kernel = weight[inputChannel].asIOType1d().value[outputChannel],
@@ -39,15 +36,26 @@ object Conv1d : LayerType {
         weight: Array<IOType>,
     ) {
         // 畳み込みの出力ニューロンを一列にした時のindexを表す
-        var index = 0
-        val outputArray = beforeOutput.asIOType1d().value
+        var beforeDeltaIndex = 0
+        val beforeOutputArray = beforeOutput.asIOType1d().value
 
-        for (targetNeuron in outputArray.indices) {
-            for (t in outputArray[targetNeuron].indices) {
-                val afterWeightArray = weight[index].asIOType0d().value
-                beforeDelta[index++] = step(outputArray[targetNeuron][t]) *
-                    (afterWeightArray.indices).sumOf { delta[it] * afterWeightArray[it] }
+        // deltaの初期化
+        beforeDelta.fill(0.0)
+
+        // 入力チャンネル順に計算を行う
+        for (inputChannelIndex in beforeOutputArray.indices) {
+            val weightArray = weight[inputChannelIndex].asIOType1d().value
+            var deltaIndex = 0
+            for (outputChannelIndex in weightArray.indices) {
+                // 出力信号の大きさ
+                val outputSize = beforeOutputArray[inputChannelIndex].size - weightArray[outputChannelIndex].size + 1
+                weightArray[outputChannelIndex].deConv1d(
+                    kernel = delta.sliceArray(deltaIndex until deltaIndex + outputSize).reversedArray(),
+                    output = beforeDelta.sliceArray(beforeDeltaIndex until beforeDeltaIndex + beforeOutputArray[inputChannelIndex].size),
+                )
+                deltaIndex += outputSize
             }
+            beforeDeltaIndex += beforeOutputArray[inputChannelIndex].size
         }
     }
 
@@ -62,18 +70,18 @@ object Conv1d : LayerType {
     ) {
         val inputArray = input.asIOType1d().value
 
-        // 畳み込みの出力ニューロンを一列にした時のindexを表す
-        var index = 0
         for (inputChannel in weight.indices) {
+            // 畳み込みの出力ニューロンを一列にした時のindexを表す
+            var index = 0
             val weightArray = weight[inputChannel].asIOType1d().value
             for (outputChannel in weightArray.indices) {
                 val outputSize = inputArray[inputChannel].size - weightArray[outputChannel].size + 1
-                for (t in weightArray[outputChannel].indices) {
+                for (time in weightArray[outputChannel].indices) {
                     var sum = 0.0
                     for (outputIndex in 0 until outputSize) {
-                        sum += inputArray[inputChannel][t + outputIndex] * delta[index + outputIndex]
+                        sum += inputArray[inputChannel][time + outputIndex] * delta[index + outputIndex]
                     }
-                    weightArray[outputChannel][t] -= rate * sum
+                    weightArray[outputChannel][time] -= rate * sum
                 }
                 index += outputSize
             }
@@ -92,5 +100,19 @@ inline fun Array<Double>.conv1d(
             sum += this[outputIndex + kernelIndex] * kernel[kernelIndex]
         }
         output[outputIndex] += activationFunction(sum)
+    }
+}
+
+inline fun Array<Double>.deConv1d(
+    kernel: Array<Double>,
+    output: Array<Double>,
+) {
+    for (outputIndex in output.indices) {
+        var sum = 0.0
+        val expandOutputIndex = outputIndex - kernel.size + 1
+        for (kernelIndex in kernel.indices) {
+            sum += this.getOrElse(expandOutputIndex + kernelIndex) { 0.0 } * kernel[kernelIndex]
+        }
+        output[outputIndex] += sum
     }
 }

@@ -24,6 +24,12 @@ fun createMnistModel(
                 activationFunction = ::relu,
                 type = Conv1d,
             ),
+            Layer1dConfig(
+                channel = 32,
+                kernelSize = 64,
+                activationFunction = ::relu,
+                type = Conv1d,
+            ),
             Layer0dConfig(
                 numOfNeuron = 50,
                 activationFunction = ::relu,
