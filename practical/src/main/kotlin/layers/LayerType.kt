@@ -8,10 +8,10 @@ interface LayerType {
         activationFunction: (Double) -> Double,
     )
     fun calcDelta(
+        beforeDelta: Array<Double>,
+        beforeOutput: IOType,
         delta: Array<Double>,
-        output: IOType,
-        afterDelta: Array<Double>,
-        afterWeight: Array<IOType>,
+        weight: Array<IOType>,
     )
     fun backward(
         weight: Array<IOType>,

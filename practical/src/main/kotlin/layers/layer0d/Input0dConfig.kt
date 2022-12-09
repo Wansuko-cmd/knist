@@ -17,10 +17,10 @@ data class Input0dConfig(val size: Int) : LayerConfig<IOType.IOType0d> {
             activationFunction: (Double) -> Double,
         ) = throw DomainException.UnreachableCodeException()
         override fun calcDelta(
+            beforeDelta: Array<Double>,
+            beforeOutput: IOType,
             delta: Array<Double>,
-            output: IOType,
-            afterDelta: Array<Double>,
-            afterWeight: Array<IOType>,
+            weight: Array<IOType>,
         ) = throw DomainException.UnreachableCodeException()
         override fun backward(
             weight: Array<IOType>,
@@ -32,4 +32,5 @@ data class Input0dConfig(val size: Int) : LayerConfig<IOType.IOType0d> {
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         throw DomainException.UnreachableCodeException()
     override fun createOutput(input: IOType): IOType.IOType0d = IOType.IOType0d(Array(numOfNeuron) { 0.0 })
+    override fun createDelta(input: IOType): Array<Double> = Array(numOfNeuron) { 0.0 }
 }

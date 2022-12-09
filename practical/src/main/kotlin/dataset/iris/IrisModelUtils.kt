@@ -19,7 +19,7 @@ fun createIrisModel(
         listOf(
             Layer0dConfig(50, ::relu, Affine),
         ),
-        Output0dConfig.Sigmoid(3),
+        Output0dConfig.Sigmoid(3, Affine),
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )

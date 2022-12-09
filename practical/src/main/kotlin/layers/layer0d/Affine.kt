@@ -31,16 +31,16 @@ object Affine : LayerType {
      * afterWeight -> 自分と後ろの層の重み Array[前の層のニューロン][後ろの層のニューロン]
      */
     override inline fun calcDelta(
+        beforeDelta: Array<Double>,
+        beforeOutput: IOType,
         delta: Array<Double>,
-        output: IOType,
-        afterDelta: Array<Double>,
-        afterWeight: Array<IOType>,
+        weight: Array<IOType>,
     ) {
-        val outputArray = output.asIOType0d().value
-        for (i in delta.indices) {
-            val afterWeightArray = afterWeight[i].asIOType0d().value
-            delta[i] = step(outputArray[i]) * (afterWeightArray.indices)
-                .sumOf { afterDelta[it] * afterWeightArray[it] }
+        val beforeOutputArray = beforeOutput.asIOType0d().value
+        for (i in beforeDelta.indices) {
+            val weightArray = weight[i].asIOType0d().value
+            beforeDelta[i] = step(beforeOutputArray[i]) *
+                (weightArray.indices).sumOf { delta[it] * weightArray[it] }
         }
     }
 

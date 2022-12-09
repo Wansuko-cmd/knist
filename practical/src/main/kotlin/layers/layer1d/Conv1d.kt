@@ -33,24 +33,21 @@ object Conv1d : LayerType {
     }
 
     override inline fun calcDelta(
+        beforeDelta: Array<Double>,
+        beforeOutput: IOType,
         delta: Array<Double>,
-        output: IOType,
-        afterDelta: Array<Double>,
-        afterWeight: Array<IOType>,
+        weight: Array<IOType>,
     ) {
         // 畳み込みの出力ニューロンを一列にした時のindexを表す
         var index = 0
-        val outputArray = output.asIOType1d().value
+        val outputArray = beforeOutput.asIOType1d().value
 
-        for (targetNeuron in delta.indices) {
-            var sum = 0.0
+        for (targetNeuron in outputArray.indices) {
             for (t in outputArray[targetNeuron].indices) {
-                val afterWeightArray = afterWeight[index].asIOType0d().value
-                sum += step(outputArray[targetNeuron][t]) * (afterWeightArray.indices)
-                    .sumOf { afterDelta[it] * afterWeightArray[it] }
-                index++
+                val afterWeightArray = weight[index].asIOType0d().value
+                beforeDelta[index++] = step(outputArray[targetNeuron][t]) *
+                    (afterWeightArray.indices).sumOf { delta[it] * afterWeightArray[it] }
             }
-            delta[targetNeuron] = sum
         }
     }
 
@@ -64,17 +61,21 @@ object Conv1d : LayerType {
         rate: Double,
     ) {
         val inputArray = input.asIOType1d().value
+
+        // 畳み込みの出力ニューロンを一列にした時のindexを表す
+        var index = 0
         for (inputChannel in weight.indices) {
             val weightArray = weight[inputChannel].asIOType1d().value
             for (outputChannel in weightArray.indices) {
+                val outputSize = inputArray[inputChannel].size - weightArray[outputChannel].size + 1
                 for (t in weightArray[outputChannel].indices) {
                     var sum = 0.0
-                    val kernelSize = inputArray[inputChannel].size - weightArray[outputChannel].size + 1
-                    for (outputIndex in 0 until kernelSize) {
-                        sum += inputArray[inputChannel][t + outputIndex]
+                    for (outputIndex in 0 until outputSize) {
+                        sum += inputArray[inputChannel][t + outputIndex] * delta[index + outputIndex]
                     }
-                    weightArray[outputChannel][t] -= rate * delta[outputChannel] * sum
+                    weightArray[outputChannel][t] -= rate * sum
                 }
+                index += outputSize
             }
         }
     }

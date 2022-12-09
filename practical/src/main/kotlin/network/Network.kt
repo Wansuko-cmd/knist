@@ -38,7 +38,7 @@ class Network<T>(
             random: Random,
             rate: Double,
         ): Network<List<Double>> {
-            val layers = listOf(inputConfig) + centerConfig + listOf(outputConfig.toLayer0dConfig())
+            val layers = listOf(inputConfig) + centerConfig + outputConfig.toLayer0dConfig()
             return create(
                 layers = layers,
                 random = random,
@@ -54,7 +54,7 @@ class Network<T>(
             random: Random,
             rate: Double,
         ): Network<List<List<Double>>> {
-            val layers = listOf(inputConfig) + centerConfig + listOf(outputConfig.toLayer0dConfig())
+            val layers = listOf(inputConfig) + centerConfig + outputConfig.toLayer0dConfig()
             return create(
                 layers = layers,
                 random = random,
@@ -77,8 +77,10 @@ class Network<T>(
             val weights: Array<Array<IOType>> =
                 Array(layers.size - 1) { i -> layers[i + 1].createWeight(output[i], random) }
 
-            val delta: Array<Array<Double>> = Array(layers.size + 1) { i ->
-                Array(layers.getOrElse(i) { layers.last() }.numOfNeuron) { 0.0 }
+            val delta: Array<Array<Double>> = Array(layers.size) { i ->
+                // 最終層は delta = 教師信号とする
+                layers.getOrElse(i) { layers.last() }
+                    .createDelta(output.getOrElse(i - 1) { IOType.IOType0d(arrayOf()) })
             }
             val forward = {
                 for (index in 0 until layers.size - 1) {
@@ -95,12 +97,12 @@ class Network<T>(
                 for (index in delta.last().indices) {
                     delta.last()[index] = if (index == label) 0.9 else 0.1
                 }
-                for (index in layers.size - 1 downTo 1) {
+                for (index in layers.size - 1 downTo 2) {
                     layers[index].type.calcDelta(
+                        beforeDelta = delta[index - 1],
+                        beforeOutput = output[index - 1],
                         delta = delta[index],
-                        output = output[index],
-                        afterDelta = delta[index + 1],
-                        afterWeight = weights.getOrElse(index) { arrayOf() },
+                        weight = weights.getOrElse(index - 1) { arrayOf() },
                     )
                 }
             }

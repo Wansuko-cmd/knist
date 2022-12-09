@@ -17,10 +17,10 @@ data class Input1dConfig(val channel: Int, val inputSize: Int) : LayerConfig<IOT
             activationFunction: (Double) -> Double,
         ) = throw DomainException.UnreachableCodeException()
         override fun calcDelta(
+            beforeDelta: Array<Double>,
+            beforeOutput: IOType,
             delta: Array<Double>,
-            output: IOType,
-            afterDelta: Array<Double>,
-            afterWeight: Array<IOType>,
+            weight: Array<IOType>,
         ) = throw DomainException.UnreachableCodeException()
         override fun backward(
             weight: Array<IOType>,
@@ -33,4 +33,8 @@ data class Input1dConfig(val channel: Int, val inputSize: Int) : LayerConfig<IOT
         throw DomainException.UnreachableCodeException()
     override fun createOutput(input: IOType): IOType.IOType1d =
         IOType.IOType1d(Array(channel) { Array(inputSize) { 0.0 } })
+
+    // 実際にこのdelta配列が使われることはない
+    override fun createDelta(input: IOType): Array<Double> =
+        Array(input.asIOType0d().value.size) { 0.0 }
 }
