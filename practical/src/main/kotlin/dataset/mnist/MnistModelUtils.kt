@@ -30,7 +30,7 @@ fun createMnistModel(
                 type = Affine,
             ),
         ),
-        outputConfig = Output0dConfig.Softmax(10),
+        outputConfig = Output0dConfig.Sigmoid(10, Affine),
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )

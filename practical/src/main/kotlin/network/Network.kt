@@ -38,7 +38,7 @@ class Network<T>(
             random: Random,
             rate: Double,
         ): Network<List<Double>> {
-            val layers = listOf(inputConfig) + centerConfig + listOf(outputConfig.toLayer0dConfig())
+            val layers = listOf(inputConfig) + centerConfig + outputConfig.toLayer0dConfig()
             return create(
                 layers = layers,
                 random = random,
@@ -54,7 +54,7 @@ class Network<T>(
             random: Random,
             rate: Double,
         ): Network<List<List<Double>>> {
-            val layers = listOf(inputConfig) + centerConfig + listOf(outputConfig.toLayer0dConfig())
+            val layers = listOf(inputConfig) + centerConfig + outputConfig.toLayer0dConfig()
             return create(
                 layers = layers,
                 random = random,
@@ -77,7 +77,7 @@ class Network<T>(
             val weights: Array<Array<IOType>> =
                 Array(layers.size - 1) { i -> layers[i + 1].createWeight(output[i], random) }
 
-            val delta: Array<Array<Double>> = Array(layers.size + 1) { i ->
+            val delta: Array<Array<Double>> = Array(layers.size) { i ->
                 // 最終層は delta = 教師信号とする
                 layers.getOrElse(i) { layers.last() }
                     .createDelta(output.getOrElse(i - 1) { IOType.IOType0d(arrayOf()) })
