@@ -26,9 +26,9 @@ object MaxPool1d : LayerType {
     }
 
     override inline fun calcDelta(
-        beforeDelta: Array<Double>,
+        beforeDelta: DoubleArray,
         beforeOutput: IOType,
-        delta: Array<Double>,
+        delta: DoubleArray,
         weight: Array<IOType>,
     ) {
         // 畳み込みの出力ニューロンを一列にした時のindexを表す
@@ -48,7 +48,7 @@ object MaxPool1d : LayerType {
 
     override inline fun backward(
         weight: Array<IOType>,
-        delta: Array<Double>,
+        delta: DoubleArray,
         input: IOType,
         rate: Double,
     ) = Unit

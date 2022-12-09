@@ -17,20 +17,20 @@ data class Input0dConfig(val size: Int) : LayerConfig<IOType.IOType0d> {
             activationFunction: (Double) -> Double,
         ) = throw DomainException.UnreachableCodeException()
         override fun calcDelta(
-            beforeDelta: Array<Double>,
+            beforeDelta: DoubleArray,
             beforeOutput: IOType,
-            delta: Array<Double>,
+            delta: DoubleArray,
             weight: Array<IOType>,
         ) = throw DomainException.UnreachableCodeException()
         override fun backward(
             weight: Array<IOType>,
-            delta: Array<Double>,
+            delta: DoubleArray,
             input: IOType,
             rate: Double,
         ) = throw DomainException.UnreachableCodeException()
     }
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         throw DomainException.UnreachableCodeException()
-    override fun createOutput(input: IOType): IOType.IOType0d = IOType.IOType0d(Array(numOfNeuron) { 0.0 })
-    override fun createDelta(input: IOType): Array<Double> = Array(numOfNeuron) { 0.0 }
+    override fun createOutput(input: IOType): IOType.IOType0d = IOType.IOType0d(DoubleArray(numOfNeuron) { 0.0 })
+    override fun createDelta(input: IOType): DoubleArray = DoubleArray(numOfNeuron) { 0.0 }
 }

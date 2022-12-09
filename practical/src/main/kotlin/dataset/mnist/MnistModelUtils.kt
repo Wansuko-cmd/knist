@@ -10,6 +10,7 @@ import layers.layer1d.Input1dConfig
 import layers.layer1d.Layer1dConfig
 import network.Network
 import kotlin.random.Random
+import kotlin.system.measureNanoTime
 
 fun createMnistModel(
     epoc: Int,
@@ -19,6 +20,12 @@ fun createMnistModel(
     val network = Network.create1d(
         inputConfig = Input1dConfig(channel = 1, inputSize = train.first().imageSize * train.first().imageSize),
         centerConfig = listOf(
+            Layer1dConfig(
+                channel = 32,
+                kernelSize = 64,
+                activationFunction = ::relu,
+                type = Conv1d,
+            ),
             Layer1dConfig(
                 channel = 32,
                 kernelSize = 64,
@@ -38,7 +45,7 @@ fun createMnistModel(
     (1..epoc).forEach { epoc ->
         println("epoc: $epoc")
         train.forEachIndexed { index, data ->
-            if (index % 100 == 0) println("i: $index")
+            if (index % 10 == 0) println("i: $index")
             network.train(input = listOf(data.pixels), label = data.label)
         }
     }

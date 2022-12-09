@@ -37,9 +37,9 @@ sealed interface Output0dConfig {
                         }
 
                         override inline fun calcDelta(
-                            beforeDelta: Array<Double>,
+                            beforeDelta: DoubleArray,
                             beforeOutput: IOType,
-                            delta: Array<Double>,
+                            delta: DoubleArray,
                             weight: Array<IOType>,
                         ) {
                             val beforeOutputArray = beforeOutput.asIOType0d().value
@@ -51,7 +51,7 @@ sealed interface Output0dConfig {
 
                         override inline fun backward(
                             weight: Array<IOType>,
-                            delta: Array<Double>,
+                            delta: DoubleArray,
                             input: IOType,
                             rate: Double,
                         ) = Unit
@@ -90,9 +90,9 @@ sealed interface Output0dConfig {
                         }
 
                         override inline fun calcDelta(
-                            beforeDelta: Array<Double>,
+                            beforeDelta: DoubleArray,
                             beforeOutput: IOType,
-                            delta: Array<Double>,
+                            delta: DoubleArray,
                             weight: Array<IOType>,
                         ) {
                             val outputArray = beforeOutput.asIOType0d().value
@@ -105,7 +105,7 @@ sealed interface Output0dConfig {
 
                         override inline fun backward(
                             weight: Array<IOType>,
-                            delta: Array<Double>,
+                            delta: DoubleArray,
                             input: IOType,
                             rate: Double,
                         ) = Unit

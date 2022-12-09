@@ -14,12 +14,12 @@ data class Layer1dConfig(
     override val numOfNeuron = channel
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         Array(input.asIOType1d().value.size) {
-            IOType.IOType1d(Array(channel) { Array(kernelSize) { random.nextDouble(-1.0, 1.0) } })
+            IOType.IOType1d(Array(channel) { DoubleArray(kernelSize) { random.nextDouble(-1.0, 1.0) } })
         }
 
     override fun createOutput(input: IOType): IOType.IOType1d =
-        IOType.IOType1d(Array(channel) { Array(input.asIOType1d().value.first().size - kernelSize + 1) { 0.0 } })
+        IOType.IOType1d(Array(channel) { DoubleArray(input.asIOType1d().value.first().size - kernelSize + 1) { 0.0 } })
 
-    override fun createDelta(input: IOType): Array<Double> =
-        Array(channel * (input.asIOType1d().value.first().size - kernelSize + 1)) { 0.0 }
+    override fun createDelta(input: IOType): DoubleArray =
+        DoubleArray(channel * (input.asIOType1d().value.first().size - kernelSize + 1)) { 0.0 }
 }
