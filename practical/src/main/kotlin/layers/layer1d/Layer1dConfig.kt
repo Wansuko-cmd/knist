@@ -23,4 +23,7 @@ data class Layer1dConfig(
                 Array(input.asIOType1d().value.first().size - kernelSize + 1) { 0.0 }
             }
         )
+
+    override fun createDelta(input: IOType): Array<Double> =
+        Array(input.asIOType0d().value.size) { 0.0 }
 }

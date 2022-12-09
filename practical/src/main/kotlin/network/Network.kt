@@ -78,7 +78,9 @@ class Network<T>(
                 Array(layers.size - 1) { i -> layers[i + 1].createWeight(output[i], random) }
 
             val delta: Array<Array<Double>> = Array(layers.size + 1) { i ->
-                Array(layers.getOrElse(i) { layers.last() }.numOfNeuron) { 0.0 }
+                // 最終層は delta = 教師信号とする
+                layers.getOrElse(i) { layers.last() }
+                    .createDelta(output.getOrElse(i - 1) { IOType.IOType0d(arrayOf()) })
             }
             val forward = {
                 for (index in 0 until layers.size - 1) {

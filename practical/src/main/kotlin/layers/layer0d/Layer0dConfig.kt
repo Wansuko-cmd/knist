@@ -16,4 +16,5 @@ class Layer0dConfig(
         }
 
     override fun createOutput(input: IOType): IOType.IOType0d = IOType.IOType0d(Array(numOfNeuron) { 0.0 })
+    override fun createDelta(input: IOType): Array<Double> = Array(numOfNeuron) { 0.0 }
 }

@@ -33,4 +33,7 @@ data class Input1dConfig(val channel: Int, val inputSize: Int) : LayerConfig<IOT
         throw DomainException.UnreachableCodeException()
     override fun createOutput(input: IOType): IOType.IOType1d =
         IOType.IOType1d(Array(channel) { Array(inputSize) { 0.0 } })
+
+    override fun createDelta(input: IOType): Array<Double> =
+        throw DomainException.UnreachableCodeException()
 }
