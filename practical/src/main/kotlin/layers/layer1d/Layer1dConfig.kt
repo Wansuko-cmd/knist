@@ -18,12 +18,8 @@ data class Layer1dConfig(
         }
 
     override fun createOutput(input: IOType): IOType.IOType1d =
-        IOType.IOType1d(
-            Array(channel) {
-                Array(input.asIOType1d().value.first().size - kernelSize + 1) { 0.0 }
-            }
-        )
+        IOType.IOType1d(Array(channel) { Array(input.asIOType1d().value.first().size - kernelSize + 1) { 0.0 } })
 
     override fun createDelta(input: IOType): Array<Double> =
-        Array(input.asIOType0d().value.size) { 0.0 }
+        Array(channel * (input.asIOType1d().value.first().size - kernelSize + 1)) { 0.0 }
 }

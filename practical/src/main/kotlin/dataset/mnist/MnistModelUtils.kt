@@ -14,19 +14,13 @@ fun createMnistModel(
     epoc: Int,
     seed: Int? = null,
 ) {
-    val (train, test) = MnistDataset.read().shuffled().chunked(20000)
+    val (train, test) = MnistDataset.read().shuffled().chunked(500)
     val network = Network.create1d(
         inputConfig = Input1dConfig(channel = 1, inputSize = train.first().imageSize * train.first().imageSize),
         centerConfig = listOf(
             Layer1dConfig(
                 channel = 32,
-                kernelSize = 5,
-                activationFunction = ::relu,
-                type = Conv1d,
-            ),
-            Layer1dConfig(
-                channel = 32,
-                kernelSize = 5,
+                kernelSize = 64,
                 activationFunction = ::relu,
                 type = Conv1d,
             ),
