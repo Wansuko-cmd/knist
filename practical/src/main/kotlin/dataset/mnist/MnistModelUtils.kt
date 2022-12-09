@@ -26,7 +26,7 @@ fun createMnistModel(
             ),
             Layer1dConfig(
                 channel = 32,
-                kernelSize = 64,
+                kernelSize = 128,
                 activationFunction = ::relu,
                 type = Conv1d,
             ),
@@ -43,7 +43,7 @@ fun createMnistModel(
     (1..epoc).forEach { epoc ->
         println("epoc: $epoc")
         train.forEachIndexed { index, data ->
-            if (index % 100 == 0) println("i: $index")
+            if (index % 10 == 0) println("i: $index")
             network.train(input = listOf(data.pixels), label = data.label)
         }
     }

@@ -4,6 +4,8 @@ package layers.layer1d
 
 import layers.IOType
 import layers.LayerType
+import kotlin.system.measureNanoTime
+import kotlin.system.measureTimeMillis
 
 object Conv1d : LayerType {
     /**
@@ -39,6 +41,9 @@ object Conv1d : LayerType {
         var beforeDeltaIndex = 0
         val beforeOutputArray = beforeOutput.asIOType1d().value
 
+        // 出力信号の大きさ(どの層の組み合わせでも固定になる)
+        val outputSize = beforeOutputArray.first().size - weight.first().asIOType1d().value.first().size + 1
+
         // deltaの初期化
         beforeDelta.fill(0.0)
 
@@ -47,8 +52,6 @@ object Conv1d : LayerType {
             val weightArray = weight[inputChannelIndex].asIOType1d().value
             var deltaIndex = 0
             for (outputChannelIndex in weightArray.indices) {
-                // 出力信号の大きさ
-                val outputSize = beforeOutputArray[inputChannelIndex].size - weightArray[outputChannelIndex].size + 1
                 weightArray[outputChannelIndex].deConv1d(
                     kernel = delta.sliceArray(deltaIndex until deltaIndex + outputSize).reversedArray(),
                     output = beforeDelta.sliceArray(beforeDeltaIndex until beforeDeltaIndex + beforeOutputArray[inputChannelIndex].size),
@@ -69,21 +72,22 @@ object Conv1d : LayerType {
         rate: Double,
     ) {
         val inputArray = input.asIOType1d().value
+        // 出力信号の大きさ(どの層の組み合わせでも固定になる)
+        val outputSize = inputArray.first().size - weight.first().asIOType1d().value.first().size + 1
 
         for (inputChannel in weight.indices) {
             // 畳み込みの出力ニューロンを一列にした時のindexを表す
-            var index = 0
+            var outputIndex = 0
             val weightArray = weight[inputChannel].asIOType1d().value
             for (outputChannel in weightArray.indices) {
-                val outputSize = inputArray[inputChannel].size - weightArray[outputChannel].size + 1
-                for (time in weightArray[outputChannel].indices) {
+                for (kernelTime in weightArray[outputChannel].indices) {
                     var sum = 0.0
-                    for (outputIndex in 0 until outputSize) {
-                        sum += inputArray[inputChannel][time + outputIndex] * delta[index + outputIndex]
+                    for (outputTime in 0 until outputSize) {
+                        sum += inputArray[inputChannel][kernelTime + outputTime] * delta[outputIndex + outputTime]
                     }
-                    weightArray[outputChannel][time] -= rate * sum
+                    weightArray[outputChannel][kernelTime] -= rate * sum
                 }
-                index += outputSize
+                outputIndex += outputSize
             }
         }
     }
@@ -107,11 +111,11 @@ inline fun Array<Double>.deConv1d(
     kernel: Array<Double>,
     output: Array<Double>,
 ) {
+    val t = arrayOf(*Array(kernel.size - 1) { 0.0 }, *this, *Array(kernel.size - 1) { 0.0 },)
     for (outputIndex in output.indices) {
         var sum = 0.0
-        val expandOutputIndex = outputIndex - kernel.size + 1
         for (kernelIndex in kernel.indices) {
-            sum += this.getOrElse(expandOutputIndex + kernelIndex) { 0.0 } * kernel[kernelIndex]
+            sum += t[outputIndex + kernelIndex] * kernel[kernelIndex]
         }
         output[outputIndex] += sum
     }
