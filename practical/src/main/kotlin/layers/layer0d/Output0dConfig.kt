@@ -3,27 +3,27 @@
 package layers.layer0d
 
 import common.sigmoid
-import kotlin.math.exp
 import layers.IOType
 import layers.LayerType
+import kotlin.math.exp
 
 sealed interface Output0dConfig {
 
     fun toLayer0dConfig(): List<Layer0dConfig>
 
-    data class Sigmoid(val size: Int) : Output0dConfig {
+    data class Sigmoid(val size: Int, val type: LayerType) : Output0dConfig {
         override fun toLayer0dConfig() =
             listOf(
                 Layer0dConfig(
                     numOfNeuron = size,
                     activationFunction = ::sigmoid,
-                    type = Affine,
+                    type = type,
                 ),
                 Layer0dConfig(
                     numOfNeuron = size,
                     activationFunction = { it },
                     type = object : LayerType {
-                        override fun forward(
+                        override inline fun forward(
                             input: IOType,
                             output: IOType,
                             weight: Array<IOType>,
@@ -49,7 +49,7 @@ sealed interface Output0dConfig {
                             }
                         }
 
-                        override fun backward(
+                        override inline fun backward(
                             weight: Array<IOType>,
                             delta: Array<Double>,
                             input: IOType,
@@ -66,29 +66,7 @@ sealed interface Output0dConfig {
                 Layer0dConfig(
                     numOfNeuron = size,
                     activationFunction = { it },
-                    type = object : LayerType by Affine {
-                        override inline fun forward(
-                            input: IOType,
-                            output: IOType,
-                            weight: Array<IOType>,
-                            activationFunction: (Double) -> Double,
-                        ) {
-                            val inputArray = input.asIOType0d().value
-                            val outputArray = output.asIOType0d().value
-                            for (outputIndex in outputArray.indices) {
-                                var sum = 0.0
-                                for (inputIndex in inputArray.indices) {
-                                    sum += inputArray[inputIndex] * weight[inputIndex].asIOType0d().value[outputIndex]
-                                }
-                                outputArray[outputIndex] = sum
-                            }
-                            val max = outputArray.max()
-                            val sum = outputArray.sumOf { exp(it + max) }
-                            for (outputIndex in outputArray.indices) {
-                                outputArray[outputIndex] = exp(outputArray[outputIndex] + max) / sum
-                            }
-                        }
-                    },
+                    type = type,
                 ),
                 Layer0dConfig(
                     numOfNeuron = size,
@@ -102,8 +80,12 @@ sealed interface Output0dConfig {
                         ) {
                             val inputArray = input.asIOType0d().value
                             val outputArray = output.asIOType0d().value
-                            for (i in inputArray.indices) {
-                                outputArray[i] = inputArray[i]
+                            val max = inputArray.max()
+                            val exp = inputArray.map { exp(it - max) }
+                            val sum = exp.sum()
+                            for (inputIndex in inputArray.indices) {
+                                inputArray[inputIndex] = exp[inputIndex] / sum
+                                outputArray[inputIndex] = inputArray[inputIndex]
                             }
                         }
 
@@ -121,7 +103,7 @@ sealed interface Output0dConfig {
                             }
                         }
 
-                        override fun backward(
+                        override inline fun backward(
                             weight: Array<IOType>,
                             delta: Array<Double>,
                             input: IOType,

@@ -1,5 +1,4 @@
 
-import dataset.mnist.createMnistModel
 import dataset.wine.createWineModel
 import kotlin.system.measureTimeMillis
 

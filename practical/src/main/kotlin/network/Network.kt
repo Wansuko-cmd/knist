@@ -97,7 +97,7 @@ class Network<T>(
                 for (index in delta.last().indices) {
                     delta.last()[index] = if (index == label) 0.9 else 0.1
                 }
-                for (index in layers.size - 1 downTo 1) {
+                for (index in layers.size - 1 downTo 2) {
                     layers[index].type.calcDelta(
                         beforeDelta = delta[index - 1],
                         beforeOutput = output[index - 1],
