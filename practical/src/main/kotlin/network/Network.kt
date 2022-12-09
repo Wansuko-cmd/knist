@@ -38,7 +38,7 @@ class Network<T>(
             random: Random,
             rate: Double,
         ): Network<List<Double>> {
-            val layers = listOf(inputConfig.toLayoutConfig()) + centerConfig + listOf(outputConfig.toLayer0dConfig())
+            val layers = listOf(inputConfig) + centerConfig + listOf(outputConfig.toLayer0dConfig())
             return create(
                 layers = layers,
                 random = random,
@@ -54,7 +54,7 @@ class Network<T>(
             random: Random,
             rate: Double,
         ): Network<List<List<Double>>> {
-            val layers = listOf(inputConfig.toLayoutConfig()) + centerConfig + listOf(outputConfig.toLayer0dConfig())
+            val layers = listOf(inputConfig) + centerConfig + listOf(outputConfig.toLayer0dConfig())
             return create(
                 layers = layers,
                 random = random,
@@ -69,13 +69,14 @@ class Network<T>(
             rate: Double,
             toIOType: T.() -> IOType,
         ): Network<T> {
-            // 値を全てバラバラにするために分割
+            // 前の層の出力（次の層の入力）の個数を数えるために利用
+            var beforeOutput: IOType = IOType.IOType0d(arrayOf())
+            val output: Array<IOType> = Array(layers.size) { i ->
+                layers[i].createOutput(beforeOutput).also { beforeOutput = it }
+            }
             val weights: Array<Array<IOType>> =
-                Array(layers.size - 1) { i ->
-                    Array(layers[i].numOfOutput) { layers[i + 1].createWeight(random) }
-                }
+                Array(layers.size - 1) { i -> layers[i + 1].createWeight(output[i], random) }
 
-            val output: Array<IOType> = Array(layers.size) { i -> layers[i].createOutput() }
             val delta: Array<Array<Double>> = Array(layers.size + 1) { i ->
                 Array(layers.getOrElse(i) { layers.last() }.numOfNeuron) { 0.0 }
             }

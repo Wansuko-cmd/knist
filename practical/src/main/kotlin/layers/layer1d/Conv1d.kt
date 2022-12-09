@@ -42,14 +42,15 @@ object Conv1d : LayerType {
         var index = 0
         val outputArray = output.asIOType1d().value
 
-        for (i in delta.indices) {
+        for (targetNeuron in delta.indices) {
             var sum = 0.0
-            val afterWeightArray = afterWeight[i].asIOType0d().value
-            for (t in outputArray[i].indices) {
-                sum += step(outputArray[i][t]) * (0 until afterWeight[index++].asIOType0d().value.size)
+            for (t in outputArray[targetNeuron].indices) {
+                val afterWeightArray = afterWeight[index].asIOType0d().value
+                sum += step(outputArray[targetNeuron][t]) * (afterWeightArray.indices)
                     .sumOf { afterDelta[it] * afterWeightArray[it] }
+                index++
             }
-            delta[i] = sum
+            delta[targetNeuron] = sum
         }
     }
 
