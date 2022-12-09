@@ -99,10 +99,10 @@ class Network<T>(
                 }
                 for (index in layers.size - 1 downTo 1) {
                     layers[index].type.calcDelta(
+                        beforeDelta = delta[index - 1],
+                        beforeOutput = output[index - 1],
                         delta = delta[index],
-                        output = output[index],
-                        afterDelta = delta[index + 1],
-                        afterWeight = weights.getOrElse(index) { arrayOf() },
+                        weight = weights.getOrElse(index - 1) { arrayOf() },
                     )
                 }
             }

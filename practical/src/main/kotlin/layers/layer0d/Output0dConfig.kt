@@ -18,15 +18,15 @@ sealed interface Output0dConfig {
                 activationFunction = ::sigmoid,
                 type = object : LayerType by Affine {
                     override inline fun calcDelta(
+                        beforeDelta: Array<Double>,
+                        beforeOutput: IOType,
                         delta: Array<Double>,
-                        output: IOType,
-                        afterDelta: Array<Double>,
-                        afterWeight: Array<IOType>,
+                        weight: Array<IOType>,
                     ) {
-                        val outputArray = output.asIOType0d().value
-                        for (i in delta.indices) {
+                        val outputArray = beforeOutput.asIOType0d().value
+                        for (i in beforeDelta.indices) {
                             val y = outputArray[i]
-                            delta[i] = (y - afterDelta[i]) * (1 - y) * y
+                            beforeDelta[i] = (y - delta[i]) * (1 - y) * y
                         }
                     }
                 },
@@ -62,16 +62,16 @@ sealed interface Output0dConfig {
                     }
 
                     override inline fun calcDelta(
+                        beforeDelta: Array<Double>,
+                        beforeOutput: IOType,
                         delta: Array<Double>,
-                        output: IOType,
-                        afterDelta: Array<Double>,
-                        afterWeight: Array<IOType>,
+                        weight: Array<IOType>,
                     ) {
-                        val outputArray = output.asIOType0d().value
-                        for (i in delta.indices) {
-                            val q = if (afterDelta[i] > 0.5) 1.0 else 0.0
+                        val outputArray = beforeOutput.asIOType0d().value
+                        for (i in beforeDelta.indices) {
+                            val q = if (delta[i] > 0.5) 1.0 else 0.0
                             val y = outputArray[i]
-                            delta[i] = y - q
+                            beforeDelta[i] = y - q
                         }
                     }
                 },

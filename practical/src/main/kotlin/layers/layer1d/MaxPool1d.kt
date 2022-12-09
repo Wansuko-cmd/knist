@@ -26,23 +26,23 @@ object MaxPool1d : LayerType {
     }
 
     override inline fun calcDelta(
+        beforeDelta: Array<Double>,
+        beforeOutput: IOType,
         delta: Array<Double>,
-        output: IOType,
-        afterDelta: Array<Double>,
-        afterWeight: Array<IOType>,
+        weight: Array<IOType>,
     ) {
         // 畳み込みの出力ニューロンを一列にした時のindexを表す
         var index = 0
-        val outputArray = output.asIOType1d().value
+        val outputArray = beforeOutput.asIOType1d().value
 
-        for (i in delta.indices) {
+        for (i in beforeDelta.indices) {
             var sum = 0.0
-            val afterWeightArray = afterWeight[i].asIOType0d().value
+            val afterWeightArray = weight[i].asIOType0d().value
             for (t in outputArray[i].indices) {
-                sum += step(outputArray[i][t]) * (0 until afterWeight[index++].asIOType0d().value.size)
-                    .sumOf { afterDelta[it] * afterWeightArray[it] }
+                sum += step(outputArray[i][t]) * (0 until weight[index++].asIOType0d().value.size)
+                    .sumOf { delta[it] * afterWeightArray[it] }
             }
-            delta[i] = sum
+            beforeDelta[i] = sum
         }
     }
 

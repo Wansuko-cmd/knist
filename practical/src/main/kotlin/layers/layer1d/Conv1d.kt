@@ -33,20 +33,20 @@ object Conv1d : LayerType {
     }
 
     override inline fun calcDelta(
+        beforeDelta: Array<Double>,
+        beforeOutput: IOType,
         delta: Array<Double>,
-        output: IOType,
-        afterDelta: Array<Double>,
-        afterWeight: Array<IOType>,
+        weight: Array<IOType>,
     ) {
         // 畳み込みの出力ニューロンを一列にした時のindexを表す
         var index = 0
-        val outputArray = output.asIOType1d().value
+        val outputArray = beforeOutput.asIOType1d().value
 
         for (targetNeuron in outputArray.indices) {
             for (t in outputArray[targetNeuron].indices) {
-                val afterWeightArray = afterWeight[index].asIOType0d().value
-                delta[index++] = step(outputArray[targetNeuron][t]) *
-                    (afterWeightArray.indices).sumOf { afterDelta[it] * afterWeightArray[it] }
+                val afterWeightArray = weight[index].asIOType0d().value
+                beforeDelta[index++] = step(outputArray[targetNeuron][t]) *
+                    (afterWeightArray.indices).sumOf { delta[it] * afterWeightArray[it] }
             }
         }
     }

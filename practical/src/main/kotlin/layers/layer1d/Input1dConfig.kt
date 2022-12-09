@@ -17,10 +17,10 @@ data class Input1dConfig(val channel: Int, val inputSize: Int) : LayerConfig<IOT
             activationFunction: (Double) -> Double,
         ) = throw DomainException.UnreachableCodeException()
         override fun calcDelta(
+            beforeDelta: Array<Double>,
+            beforeOutput: IOType,
             delta: Array<Double>,
-            output: IOType,
-            afterDelta: Array<Double>,
-            afterWeight: Array<IOType>,
+            weight: Array<IOType>,
         ) = throw DomainException.UnreachableCodeException()
         override fun backward(
             weight: Array<IOType>,
