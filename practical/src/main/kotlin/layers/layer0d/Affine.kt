@@ -46,7 +46,7 @@ object Affine : LayerType {
             for (w in 0 until sp.loopBound(weightArray.size) step sp.length()) {
                 val d = DoubleVector.fromArray(sp, delta, w)
                 val we = DoubleVector.fromArray(sp, weightArray, w)
-                sum += d.add(we).reduceLanes(VectorOperators.ADD)
+                sum += d.mul(we).reduceLanes(VectorOperators.ADD)
             }
             beforeDelta[i] = step(beforeOutputArray[i]) * sum
         }

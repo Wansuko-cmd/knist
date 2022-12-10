@@ -109,7 +109,7 @@ inline fun DoubleArray.conv1d(
         for (kernelIndex in 0 until sp.loopBound(kernel.size) step sp.length()) {
             val i = DoubleVector.fromArray(sp, this, outputIndex + kernelIndex)
             val k = DoubleVector.fromArray(sp, kernel, kernelIndex)
-            sum += i.add(k).reduceLanes(VectorOperators.MUL)
+            sum += i.mul(k).reduceLanes(VectorOperators.ADD)
         }
         output[outputIndex] += sum
     }
@@ -129,7 +129,7 @@ inline fun DoubleArray.deConv1d(
         for (kernelIndex in 0 until sp.loopBound(kernel.size) step sp.length()) {
             val i = DoubleVector.fromArray(sp, resizedInput, outputIndex + kernelIndex)
             val k = DoubleVector.fromArray(sp, kernel, kernelIndex)
-            sum += i.add(k).reduceLanes(VectorOperators.MUL)
+            sum += i.mul(k).reduceLanes(VectorOperators.ADD)
         }
         output[outputIndex] += sum
     }

@@ -16,7 +16,7 @@ fun createMnistModel(
     epoc: Int,
     seed: Int? = null,
 ) {
-    val (train, test) = MnistDataset.read().shuffled().chunked(2000)
+    val (train, test) = MnistDataset.read().shuffled().chunked(20000)
     val network = Network.create1d(
         inputConfig = Input1dConfig(channel = 1, inputSize = train.first().imageSize * train.first().imageSize),
         centerConfig = listOf(
