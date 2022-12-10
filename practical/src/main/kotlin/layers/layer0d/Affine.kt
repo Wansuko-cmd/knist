@@ -40,15 +40,21 @@ object Affine : LayerType {
         weight: Array<IOType>,
     ) {
         val beforeOutputArray = beforeOutput.asIOType0d().value
-        for (i in beforeDelta.indices) {
-            val weightArray = weight[i].asIOType0d().value
+        for (inputIndex in beforeDelta.indices) {
+            val weightArray = weight[inputIndex].asIOType0d().value
             var sum = 0.0
-            for (w in 0 until sp.loopBound(weightArray.size) step sp.length()) {
-                val d = DoubleVector.fromArray(sp, delta, w)
-                val we = DoubleVector.fromArray(sp, weightArray, w)
+            var outputIndex = 0
+            while (outputIndex < sp.loopBound(weightArray.size)) {
+                val d = DoubleVector.fromArray(sp, delta, outputIndex)
+                val we = DoubleVector.fromArray(sp, weightArray, outputIndex)
                 sum += d.mul(we).reduceLanes(VectorOperators.ADD)
+                outputIndex += sp.length()
             }
-            beforeDelta[i] = step(beforeOutputArray[i]) * sum
+            while (outputIndex < weightArray.size) {
+                sum += delta[outputIndex] * weightArray[outputIndex]
+                outputIndex++
+            }
+            beforeDelta[inputIndex] = step(beforeOutputArray[inputIndex]) * sum
         }
     }
 
