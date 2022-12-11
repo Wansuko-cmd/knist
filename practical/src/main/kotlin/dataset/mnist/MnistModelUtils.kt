@@ -22,6 +22,11 @@ fun createMnistModel(
                 kernelSize = 5,
                 activationFunction = ::relu,
             ),
+            Conv1d(
+                channel = 3,
+                kernelSize = 5,
+                activationFunction = ::relu,
+            ),
             Affine(
                 numOfNeuron = 50,
                 activationFunction = ::relu,

@@ -41,7 +41,7 @@ class Conv1d(
         }
     }
 
-    override inline fun calcDelta(
+    override fun calcDelta(
         beforeDelta: DoubleArray,
         beforeOutput: IOType,
         delta: DoubleArray,
@@ -52,7 +52,7 @@ class Conv1d(
         val beforeOutputArray = beforeOutput.asIOType1d().value
 
         // 出力信号の大きさ(どの層の組み合わせでも固定になる)
-        val outputSize = beforeOutputArray.first().size - weight.first().asIOType1d().value.first().size + 1
+        val outputSize = beforeOutputArray.first().size - kernelSize + 1
 
         // deltaの初期化
         beforeDelta.fill(0.0)
@@ -75,7 +75,7 @@ class Conv1d(
     /**
      * weight: Array[入力チャンネル][出力チャンネル][kernelの横要素]
      */
-    override inline fun backward(
+    override fun backward(
         weight: Array<IOType>,
         delta: DoubleArray,
         input: IOType,
@@ -83,7 +83,7 @@ class Conv1d(
     ) {
         val inputArray = input.asIOType1d().value
         // 出力信号の大きさ(どの層の組み合わせでも固定になる)
-        val outputSize = inputArray.first().size - weight.first().asIOType1d().value.first().size + 1
+        val outputSize = inputArray.first().size - kernelSize + 1
 
         for (inputChannel in weight.indices) {
             // 畳み込みの出力ニューロンを一列にした時のindexを表す
