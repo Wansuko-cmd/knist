@@ -2,9 +2,8 @@ package dataset.wine
 
 import common.relu
 import layers.layer0d.Affine
-import layers.layer0d.Input0dConfig
-import layers.layer0d.Layer0dConfig
-import layers.layer0d.Output0dConfig
+import layers.layer0d.Input0dLayer
+import layers.layer0d.output.Softmax
 import network.Network
 import kotlin.random.Random
 
@@ -14,11 +13,11 @@ fun createWineModel(
 ) {
     val (train, test) = wineDatasets.shuffled().map { it.centering() }.chunked(120)
     val network = Network.create0d(
-        Input0dConfig(13),
+        Input0dLayer(13),
         listOf(
-            Layer0dConfig(50, ::relu, Affine),
+            Affine(50, ::relu),
         ),
-        Output0dConfig.Softmax(3, Affine),
+        Softmax(3) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )

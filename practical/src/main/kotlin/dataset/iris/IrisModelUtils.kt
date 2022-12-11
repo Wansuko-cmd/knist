@@ -1,13 +1,11 @@
 package dataset.iris
 
 import common.relu
-import common.sigmoid
+import layers.layer0d.Affine
+import layers.layer0d.Input0dLayer
+import layers.layer0d.output.Softmax
 import network.Network
 import kotlin.random.Random
-import layers.layer0d.Affine
-import layers.layer0d.Input0dConfig
-import layers.layer0d.Layer0dConfig
-import layers.layer0d.Output0dConfig
 
 fun createIrisModel(
     epoc: Int,
@@ -15,11 +13,11 @@ fun createIrisModel(
 ) {
     val (train, test) = irisDatasets.shuffled().chunked(120)
     val network = Network.create0d(
-        Input0dConfig(4),
+        Input0dLayer(4),
         listOf(
-            Layer0dConfig(50, ::relu, Affine),
+            Affine(50, ::relu),
         ),
-        Output0dConfig.Sigmoid(3, Affine),
+        Softmax(3) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )

@@ -2,15 +2,12 @@ package dataset.mnist
 
 import common.relu
 import layers.layer0d.Affine
-import layers.layer0d.Input0dConfig
-import layers.layer0d.Layer0dConfig
-import layers.layer0d.Output0dConfig
+import layers.layer0d.Input0dLayer
+import layers.layer0d.output.Softmax
 import layers.layer1d.Conv1d
-import layers.layer1d.Input1dConfig
-import layers.layer1d.Layer1dConfig
+import layers.layer1d.Input1dLayer
 import network.Network
 import kotlin.random.Random
-import kotlin.system.measureNanoTime
 
 fun createMnistModel(
     epoc: Int,
@@ -18,27 +15,19 @@ fun createMnistModel(
 ) {
     val (train, test) = MnistDataset.read().shuffled().chunked(20000)
     val network = Network.create1d(
-        inputConfig = Input1dConfig(channel = 1, inputSize = train.first().imageSize * train.first().imageSize),
+        inputConfig = Input1dLayer(channel = 1, inputSize = train.first().imageSize * train.first().imageSize),
         centerConfig = listOf(
-            Layer1dConfig(
+            Conv1d(
                 channel = 3,
                 kernelSize = 5,
                 activationFunction = ::relu,
-                type = Conv1d,
             ),
-//            Layer1dConfig(
-//                channel = 1,
-//                kernelSize = 1,
-//                activationFunction = ::relu,
-//                type = Conv1d,
-//            ),
-            Layer0dConfig(
+            Affine(
                 numOfNeuron = 50,
                 activationFunction = ::relu,
-                type = Affine,
             ),
         ),
-        outputConfig = Output0dConfig.Softmax(10, Affine),
+        outputConfig = Softmax(10) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )
@@ -60,11 +49,11 @@ fun createMnistModel0d(
 ) {
     val (train, test) = MnistDataset.read().shuffled().chunked(20000)
     val network = Network.create0d(
-        inputConfig = Input0dConfig(train.first().imageSize * train.first().imageSize),
+        inputConfig = Input0dLayer(train.first().imageSize * train.first().imageSize),
         centerConfig = listOf(
-            Layer0dConfig(numOfNeuron = 50, activationFunction = ::relu, type = Affine),
+            Affine(numOfNeuron = 50, activationFunction = ::relu),
         ),
-        outputConfig = Output0dConfig.Softmax(10, Affine),
+        outputConfig = Softmax(10) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )

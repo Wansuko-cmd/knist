@@ -6,11 +6,17 @@ import jdk.incubator.vector.DoubleVector
 import jdk.incubator.vector.VectorOperators
 import jdk.incubator.vector.VectorSpecies
 import layers.IOType
-import layers.LayerType
+import layers.Layer
+import kotlin.random.Random
 
 val sp: VectorSpecies<Double> = DoubleVector.SPECIES_PREFERRED
 
-object Conv1d : LayerType {
+class Conv1d(
+    private val channel: Int,
+    private val kernelSize: Int,
+    override val activationFunction: (Double) -> Double,
+) : Layer<IOType.IOType1d> {
+
     /**
      * weight: Array[入力チャンネル][出力チャンネル][kernelの横要素]
      */
@@ -18,7 +24,6 @@ object Conv1d : LayerType {
         input: IOType,
         output: IOType,
         weight: Array<IOType>,
-        activationFunction: (Double) -> Double,
     ) {
         val inputArray = input.asIOType1d().value
         val outputArray = output.asIOType1d().value
@@ -104,6 +109,17 @@ object Conv1d : LayerType {
             }
         }
     }
+
+    override fun createWeight(input: IOType, random: Random): Array<IOType> =
+        Array(input.asIOType1d().value.size) {
+            IOType.IOType1d(Array(channel) { DoubleArray(kernelSize) { random.nextDouble(-1.0, 1.0) } })
+        }
+
+    override fun createOutput(input: IOType): IOType.IOType1d =
+        IOType.IOType1d(Array(channel) { DoubleArray(input.asIOType1d().value.first().size - kernelSize + 1) { 0.0 } })
+
+    override fun createDelta(input: IOType): DoubleArray =
+        DoubleArray(channel * (input.asIOType1d().value.first().size - kernelSize + 1)) { 0.0 }
 }
 
 inline fun DoubleArray.conv1d(

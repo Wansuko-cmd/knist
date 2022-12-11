@@ -6,15 +6,18 @@ import common.step
 import jdk.incubator.vector.DoubleVector
 import jdk.incubator.vector.VectorOperators
 import layers.IOType
-import layers.LayerType
+import layers.Layer
 import layers.layer1d.sp
+import kotlin.random.Random
 
-object Affine : LayerType {
-    override inline fun forward(
+class Affine(
+    private val numOfNeuron: Int,
+    override val activationFunction: (Double) -> Double,
+) : Layer<IOType.IOType0d> {
+    override fun forward(
         input: IOType,
         output: IOType,
         weight: Array<IOType>,
-        activationFunction: (Double) -> Double,
     ) {
         val inputArray = input.asIOType0d().value
         val outputArray = output.asIOType0d().value
@@ -71,4 +74,12 @@ object Affine : LayerType {
             }
         }
     }
+
+    override fun createWeight(input: IOType, random: Random): Array<IOType> =
+        Array(input.asIOType0d().value.size) {
+            IOType.IOType0d(DoubleArray(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
+        }
+
+    override fun createOutput(input: IOType): IOType.IOType0d = IOType.IOType0d(DoubleArray(numOfNeuron) { 0.0 })
+    override fun createDelta(input: IOType): DoubleArray = DoubleArray(numOfNeuron) { 0.0 }
 }

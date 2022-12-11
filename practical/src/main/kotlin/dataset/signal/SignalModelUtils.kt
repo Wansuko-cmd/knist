@@ -1,14 +1,11 @@
 package dataset.signal
 
 import common.relu
-import dataset.mnist.MnistDataset
 import layers.layer0d.Affine
-import layers.layer0d.Input0dConfig
-import layers.layer0d.Layer0dConfig
-import layers.layer0d.Output0dConfig
+import layers.layer0d.Input0dLayer
+import layers.layer0d.output.Sigmoid
 import layers.layer1d.Conv1d
-import layers.layer1d.Input1dConfig
-import layers.layer1d.Layer1dConfig
+import layers.layer1d.Input1dLayer
 import network.Network
 import kotlin.random.Random
 
@@ -18,32 +15,28 @@ fun createSignalModel(
 ) {
     val (train, test) = signalDatasets.shuffled().chunked((signalDatasets.size * 0.8).toInt())
     val network = Network.create1d(
-        inputConfig = Input1dConfig(channel = 1, inputSize = train.first().signal.size),
+        inputConfig = Input1dLayer(channel = 1, inputSize = train.first().signal.size),
         centerConfig = listOf(
-            Layer1dConfig(
+            Conv1d(
                 channel = 32,
                 kernelSize = 5,
                 activationFunction = ::relu,
-                type = Conv1d,
             ),
-            Layer1dConfig(
+            Conv1d(
                 channel = 64,
                 kernelSize = 5,
                 activationFunction = ::relu,
-                type = Conv1d,
             ),
-            Layer0dConfig(
+            Affine(
                 numOfNeuron = 50,
                 activationFunction = ::relu,
-                type = Affine,
             ),
-            Layer0dConfig(
+            Affine(
                 numOfNeuron = 32,
                 activationFunction = ::relu,
-                type = Affine,
             ),
         ),
-        outputConfig = Output0dConfig.Sigmoid(2, Affine),
+        outputConfig = Sigmoid(2) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )
@@ -65,11 +58,11 @@ fun createSignalModel0d(
 ) {
     val (train, test) = signalDatasets.shuffled().chunked((signalDatasets.size * 0.8).toInt())
     val network = Network.create0d(
-        inputConfig = Input0dConfig(train.first().signal.size),
+        inputConfig = Input0dLayer(train.first().signal.size),
         centerConfig = listOf(
-            Layer0dConfig(numOfNeuron = 50, activationFunction = ::relu, type = Affine),
+            Affine(numOfNeuron = 50, activationFunction = ::relu),
         ),
-        outputConfig = Output0dConfig.Softmax(2, Affine),
+        outputConfig = Sigmoid(2) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )

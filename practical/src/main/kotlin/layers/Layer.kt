@@ -1,11 +1,14 @@
 package layers
 
-interface LayerType {
+import kotlin.random.Random
+
+interface Layer<T : IOType> {
+    val activationFunction: (Double) -> Double
+
     fun forward(
         input: IOType,
         output: IOType,
         weight: Array<IOType>,
-        activationFunction: (Double) -> Double,
     )
     fun calcDelta(
         beforeDelta: DoubleArray,
@@ -19,4 +22,7 @@ interface LayerType {
         input: IOType,
         rate: Double,
     )
+    fun createWeight(input: IOType, random: Random): Array<IOType>
+    fun createOutput(input: IOType): T
+    fun createDelta(input: IOType): DoubleArray
 }
