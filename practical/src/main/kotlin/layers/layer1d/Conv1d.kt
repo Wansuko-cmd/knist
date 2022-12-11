@@ -2,10 +2,13 @@
 
 package layers.layer1d
 
-import common.step
 import jdk.incubator.vector.DoubleVector
+import jdk.incubator.vector.VectorOperators
+import jdk.incubator.vector.VectorSpecies
 import layers.IOType
 import layers.LayerType
+
+val sp: VectorSpecies<Double> = DoubleVector.SPECIES_PREFERRED
 
 object Conv1d : LayerType {
     /**
@@ -34,9 +37,9 @@ object Conv1d : LayerType {
     }
 
     override inline fun calcDelta(
-        beforeDelta: Array<Double>,
+        beforeDelta: DoubleArray,
         beforeOutput: IOType,
-        delta: Array<Double>,
+        delta: DoubleArray,
         weight: Array<IOType>,
     ) {
         // 畳み込みの出力ニューロンを一列にした時のindexを表す
@@ -69,7 +72,7 @@ object Conv1d : LayerType {
      */
     override inline fun backward(
         weight: Array<IOType>,
-        delta: Array<Double>,
+        delta: DoubleArray,
         input: IOType,
         rate: Double,
     ) {
@@ -84,8 +87,16 @@ object Conv1d : LayerType {
             for (outputChannel in weightArray.indices) {
                 for (kernelTime in weightArray[outputChannel].indices) {
                     var sum = 0.0
-                    for (outputTime in 0 until outputSize) {
+                    var outputTime = 0
+                    while (outputTime < sp.loopBound(outputSize)) {
+                        val i = DoubleVector.fromArray(sp, inputArray[inputChannel], kernelTime + outputTime)
+                        val d = DoubleVector.fromArray(sp, delta, outputIndex + outputTime)
+                        sum += i.mul(d).reduceLanes(VectorOperators.ADD)
+                        outputTime += sp.length()
+                    }
+                    while (outputTime < outputSize) {
                         sum += inputArray[inputChannel][kernelTime + outputTime] * delta[outputIndex + outputTime]
+                        outputTime++
                     }
                     weightArray[outputChannel][kernelTime] -= rate * sum
                 }
@@ -95,28 +106,48 @@ object Conv1d : LayerType {
     }
 }
 
-inline fun Array<Double>.conv1d(
-    kernel: Array<Double>,
-    output: Array<Double>,
+inline fun DoubleArray.conv1d(
+    kernel: DoubleArray,
+    output: DoubleArray,
 ) {
     for (outputIndex in output.indices) {
         var sum = 0.0
-        for (kernelIndex in kernel.indices) {
-            sum += this[outputIndex + kernelIndex] * kernel[kernelIndex]
+        var index = 0
+        while (index < sp.loopBound(kernel.size)) {
+            val i = DoubleVector.fromArray(sp, this, outputIndex + index)
+            val k = DoubleVector.fromArray(sp, kernel, index)
+            sum += i.mul(k).reduceLanes(VectorOperators.ADD)
+            index += sp.length()
+        }
+        while (index < kernel.size) {
+            sum += this[outputIndex + index] * kernel[index]
+            index++
         }
         output[outputIndex] += sum
     }
 }
 
-inline fun Array<Double>.deConv1d(
-    kernel: Array<Double>,
-    output: Array<Double>,
+inline fun DoubleArray.deConv1d(
+    kernel: DoubleArray,
+    output: DoubleArray,
 ) {
-    val resizedInput = arrayOf(*Array(kernel.size - 1) { 0.0 }, *this, *Array(kernel.size - 1) { 0.0 },)
+    val resizedInput = doubleArrayOf(
+        *DoubleArray(kernel.size - 1) { 0.0 },
+        *this.toTypedArray().toDoubleArray(),
+        *DoubleArray(kernel.size - 1) { 0.0 },
+    )
     for (outputIndex in output.indices) {
         var sum = 0.0
-        for (kernelIndex in kernel.indices) {
-            sum += step(resizedInput[outputIndex + kernelIndex]) * kernel[kernelIndex]
+        var index = 0
+        while (index < sp.loopBound(kernel.size)) {
+            val i = DoubleVector.fromArray(sp, resizedInput, outputIndex + index)
+            val k = DoubleVector.fromArray(sp, kernel, index)
+            sum += i.mul(k).reduceLanes(VectorOperators.ADD)
+            index += sp.length()
+        }
+        while (index < kernel.size) {
+            sum += resizedInput[outputIndex + index] * kernel[index]
+            index++
         }
         output[outputIndex] += sum
     }

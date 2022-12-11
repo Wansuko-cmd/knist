@@ -6,7 +6,7 @@ sealed interface IOType {
     fun asIOType0d(): IOType0d
     fun asIOType1d(): IOType1d
 
-    data class IOType0d(val value: Array<Double>) : IOType {
+    data class IOType0d(val value: DoubleArray) : IOType {
         override inline fun asIOType0d(): IOType0d = this
         override inline fun asIOType1d(): IOType1d = throw Exception()
         override fun equals(other: Any?): Boolean {
@@ -25,9 +25,9 @@ sealed interface IOType {
         }
     }
 
-    data class IOType1d(val value: Array<Array<Double>>) : IOType {
+    data class IOType1d(val value: Array<DoubleArray>) : IOType {
 
-        override inline fun asIOType0d(): IOType0d = IOType0d(value.flatten().toTypedArray())
+        override inline fun asIOType0d(): IOType0d = IOType0d(value.fold(doubleArrayOf()) { acc, a -> acc + a })
         override inline fun asIOType1d(): IOType1d = this
 
         override fun equals(other: Any?): Boolean {

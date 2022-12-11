@@ -3,8 +3,11 @@
 package layers.layer0d
 
 import common.step
+import jdk.incubator.vector.DoubleVector
+import jdk.incubator.vector.VectorOperators
 import layers.IOType
 import layers.LayerType
+import layers.layer1d.sp
 
 object Affine : LayerType {
     override inline fun forward(
@@ -31,22 +34,33 @@ object Affine : LayerType {
      * afterWeight -> 自分と後ろの層の重み Array[前の層のニューロン][後ろの層のニューロン]
      */
     override inline fun calcDelta(
-        beforeDelta: Array<Double>,
+        beforeDelta: DoubleArray,
         beforeOutput: IOType,
-        delta: Array<Double>,
+        delta: DoubleArray,
         weight: Array<IOType>,
     ) {
         val beforeOutputArray = beforeOutput.asIOType0d().value
-        for (i in beforeDelta.indices) {
-            val weightArray = weight[i].asIOType0d().value
-            beforeDelta[i] = step(beforeOutputArray[i]) *
-                (weightArray.indices).sumOf { delta[it] * weightArray[it] }
+        for (inputIndex in beforeDelta.indices) {
+            val weightArray = weight[inputIndex].asIOType0d().value
+            var sum = 0.0
+            var outputIndex = 0
+            while (outputIndex < sp.loopBound(weightArray.size)) {
+                val d = DoubleVector.fromArray(sp, delta, outputIndex)
+                val we = DoubleVector.fromArray(sp, weightArray, outputIndex)
+                sum += d.mul(we).reduceLanes(VectorOperators.ADD)
+                outputIndex += sp.length()
+            }
+            while (outputIndex < weightArray.size) {
+                sum += delta[outputIndex] * weightArray[outputIndex]
+                outputIndex++
+            }
+            beforeDelta[inputIndex] = step(beforeOutputArray[inputIndex]) * sum
         }
     }
 
     override inline fun backward(
         weight: Array<IOType>,
-        delta: Array<Double>,
+        delta: DoubleArray,
         input: IOType,
         rate: Double,
     ) {

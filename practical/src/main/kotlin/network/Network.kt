@@ -11,7 +11,7 @@ import kotlin.random.Random
 class Network<T>(
     private val weights: Array<Array<IOType>>,
     private val output: Array<IOType>,
-    private val delta: Array<Array<Double>>,
+    private val delta: Array<DoubleArray>,
     private val forward: () -> Unit,
     private val calcDelta: (label: Int) -> Unit,
     private val backward: () -> Unit,
@@ -43,7 +43,7 @@ class Network<T>(
                 layers = layers,
                 random = random,
                 rate = rate,
-                toIOType = { IOType.IOType0d(this.toTypedArray()) },
+                toIOType = { IOType.IOType0d(this.toDoubleArray()) },
             )
         }
 
@@ -59,7 +59,7 @@ class Network<T>(
                 layers = layers,
                 random = random,
                 rate = rate,
-                toIOType = { IOType.IOType1d(this.map { it.toTypedArray() }.toTypedArray()) },
+                toIOType = { IOType.IOType1d(this.map { it.toDoubleArray() }.toTypedArray()) },
             )
         }
 
@@ -70,17 +70,17 @@ class Network<T>(
             toIOType: T.() -> IOType,
         ): Network<T> {
             // 前の層の出力（次の層の入力）の個数を数えるために利用
-            var beforeOutput: IOType = IOType.IOType0d(arrayOf())
+            var beforeOutput: IOType = IOType.IOType0d(doubleArrayOf())
             val output: Array<IOType> = Array(layers.size) { i ->
                 layers[i].createOutput(beforeOutput).also { beforeOutput = it }
             }
             val weights: Array<Array<IOType>> =
                 Array(layers.size - 1) { i -> layers[i + 1].createWeight(output[i], random) }
 
-            val delta: Array<Array<Double>> = Array(layers.size) { i ->
+            val delta: Array<DoubleArray> = Array(layers.size) { i ->
                 // 最終層は delta = 教師信号とする
                 layers.getOrElse(i) { layers.last() }
-                    .createDelta(output.getOrElse(i - 1) { IOType.IOType0d(arrayOf()) })
+                    .createDelta(output.getOrElse(i - 1) { IOType.IOType0d(doubleArrayOf()) })
             }
             val forward = {
                 for (index in 0 until layers.size - 1) {

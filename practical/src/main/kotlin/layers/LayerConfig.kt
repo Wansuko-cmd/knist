@@ -8,5 +8,5 @@ interface LayerConfig<T : IOType> {
     val type: LayerType
     fun createWeight(input: IOType, random: Random): Array<IOType>
     fun createOutput(input: IOType): T
-    fun createDelta(input: IOType): Array<Double>
+    fun createDelta(input: IOType): DoubleArray
 }
