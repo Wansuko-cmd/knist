@@ -80,6 +80,6 @@ class Affine(
             IOType.IOType0d(DoubleArray(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
         }
 
-    override fun createOutput(input: IOType): IOType.IOType0d = IOType.IOType0d(DoubleArray(numOfNeuron) { 0.0 })
-    override fun createDelta(input: IOType): DoubleArray = DoubleArray(numOfNeuron) { 0.0 }
+    override fun createOutput(input: IOType): IOType.IOType0d = IOType.IOType0d(DoubleArray(numOfNeuron))
+    override fun createDelta(input: IOType): DoubleArray = DoubleArray(numOfNeuron)
 }
