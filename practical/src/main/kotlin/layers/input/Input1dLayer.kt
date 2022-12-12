@@ -1,11 +1,12 @@
 package layers.input
 
 import exception.DomainException
-import layers.IOType
+import common.iotype.IOType
+import common.iotype.IOType1d
 import layers.Layer
 import kotlin.random.Random
 
-data class Input1dLayer(val channel: Int, val inputSize: Int) : Layer<IOType.IOType1d> {
+data class Input1dLayer(val channel: Int, val inputSize: Int) : Layer<IOType1d> {
     override val activationFunction: (Double) -> Double = { throw DomainException.UnreachableCodeException() }
     override fun forward(
         input: IOType,
@@ -26,8 +27,8 @@ data class Input1dLayer(val channel: Int, val inputSize: Int) : Layer<IOType.IOT
     ) = throw DomainException.UnreachableCodeException()
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         throw DomainException.UnreachableCodeException()
-    override fun createOutput(input: IOType): IOType.IOType1d =
-        IOType.IOType1d(Array(channel) { DoubleArray(inputSize) { 0.0 } })
+    override fun createOutput(input: IOType): IOType1d =
+        IOType1d(Array(channel) { DoubleArray(inputSize) { 0.0 } })
 
     // 実際にこのdelta配列が使われることはない
     override fun createDelta(input: IOType): DoubleArray =

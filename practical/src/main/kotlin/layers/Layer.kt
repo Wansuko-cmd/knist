@@ -1,5 +1,6 @@
 package layers
 
+import common.iotype.IOType
 import kotlin.random.Random
 
 interface Layer<T : IOType> {

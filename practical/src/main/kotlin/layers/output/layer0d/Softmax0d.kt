@@ -3,19 +3,20 @@
 package layers.output.layer0d
 
 import exception.DomainException
-import layers.IOType
+import common.iotype.IOType
+import common.iotype.IOType0d
 import layers.Layer
 import kotlin.math.exp
 import kotlin.random.Random
 
 data class Softmax0d(
     private val numOfNeuron: Int,
-    private val type: (numOfNeuron: Int, activationFunction: (Double) -> Double) -> Layer<IOType.IOType0d>,
+    private val type: (numOfNeuron: Int, activationFunction: (Double) -> Double) -> Layer<IOType0d>,
 ) : Output0dLayer {
     override fun toLayer() =
         listOf(
             type(numOfNeuron) { it },
-            object : Layer<IOType.IOType0d> {
+            object : Layer<IOType0d> {
                 override val activationFunction: (Double) -> Double = { throw DomainException.UnreachableCodeException() }
 
                 override inline fun forward(
@@ -57,11 +58,11 @@ data class Softmax0d(
 
                 override fun createWeight(input: IOType, random: Random): Array<IOType> =
                     Array(input.asIOType0d().value.size) {
-                        IOType.IOType0d(DoubleArray(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
+                        IOType0d(DoubleArray(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
                     }
 
-                override fun createOutput(input: IOType): IOType.IOType0d =
-                    IOType.IOType0d(DoubleArray(numOfNeuron) { 0.0 })
+                override fun createOutput(input: IOType): IOType0d =
+                    IOType0d(DoubleArray(numOfNeuron) { 0.0 })
 
                 override fun createDelta(input: IOType): DoubleArray = DoubleArray(numOfNeuron) { 0.0 }
             },

@@ -1,7 +1,9 @@
 package network
 
+import common.iotype.IOType
+import common.iotype.IOType0d
+import common.iotype.IOType1d
 import common.maxIndex
-import layers.IOType
 import layers.Layer
 import layers.input.Input0dLayer
 import layers.input.Input1dLayer
@@ -43,7 +45,7 @@ class Network<T>(
                 layers = layers,
                 random = random,
                 rate = rate,
-                toIOType = { IOType.IOType0d(this.toDoubleArray()) },
+                toIOType = { IOType0d(this.toDoubleArray()) },
             )
         }
 
@@ -59,7 +61,7 @@ class Network<T>(
                 layers = layers,
                 random = random,
                 rate = rate,
-                toIOType = { IOType.IOType1d(this.map { it.toDoubleArray() }.toTypedArray()) },
+                toIOType = { IOType1d(this.map { it.toDoubleArray() }.toTypedArray()) },
             )
         }
 
@@ -70,7 +72,7 @@ class Network<T>(
             toIOType: T.() -> IOType,
         ): Network<T> {
             // 前の層の出力（次の層の入力）の個数を数えるために利用
-            var beforeOutput: IOType = IOType.IOType0d(doubleArrayOf())
+            var beforeOutput: IOType = IOType0d(doubleArrayOf())
             val output: Array<IOType> = Array(layers.size) { i ->
                 layers[i].createOutput(beforeOutput).also { beforeOutput = it }
             }
@@ -80,7 +82,7 @@ class Network<T>(
             val delta: Array<DoubleArray> = Array(layers.size) { i ->
                 // 最終層は delta = 教師信号とする
                 layers.getOrElse(i) { layers.last() }
-                    .createDelta(output.getOrElse(i - 1) { IOType.IOType0d(doubleArrayOf()) })
+                    .createDelta(output.getOrElse(i - 1) { IOType0d(doubleArrayOf()) })
             }
             val forward = {
                 for (index in 0 until layers.size - 1) {

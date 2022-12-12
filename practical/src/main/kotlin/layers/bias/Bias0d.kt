@@ -2,13 +2,14 @@
 
 package layers.bias
 
-import layers.IOType
+import common.iotype.IOType
+import common.iotype.IOType0d
 import layers.Layer
 import kotlin.random.Random
 
 class Bias0d(
     override val activationFunction: (Double) -> Double,
-) : Layer<IOType.IOType0d> {
+) : Layer<IOType0d> {
     override inline fun forward(
         input: IOType,
         output: IOType,
@@ -44,11 +45,11 @@ class Bias0d(
 
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         Array(input.asIOType0d().value.size) {
-            IOType.IOType0d(DoubleArray(input.asIOType0d().value.size) { random.nextDouble(-1.0, 1.0) })
+            IOType0d(DoubleArray(input.asIOType0d().value.size) { random.nextDouble(-1.0, 1.0) })
         }
 
-    override fun createOutput(input: IOType): IOType.IOType0d =
-        IOType.IOType0d(DoubleArray(input.asIOType0d().value.size))
+    override fun createOutput(input: IOType): IOType0d =
+        IOType0d(DoubleArray(input.asIOType0d().value.size))
 
     override fun createDelta(input: IOType): DoubleArray = DoubleArray(input.asIOType0d().value.size)
 }

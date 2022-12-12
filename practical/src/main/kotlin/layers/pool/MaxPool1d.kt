@@ -3,7 +3,7 @@
 //package layers.layer1d
 //
 //import common.step
-//import layers.IOType
+//import common.iotype.IOType
 //
 //object MaxPool1d : LayerType {
 //

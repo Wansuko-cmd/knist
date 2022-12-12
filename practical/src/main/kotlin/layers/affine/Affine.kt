@@ -3,15 +3,16 @@
 package layers.affine
 
 import common.innerProduct
+import common.iotype.IOType
+import common.iotype.IOType0d
 import common.step
-import layers.IOType
 import layers.Layer
 import kotlin.random.Random
 
 class Affine(
     private val numOfNeuron: Int,
     override val activationFunction: (Double) -> Double,
-) : Layer<IOType.IOType0d> {
+) : Layer<IOType0d> {
     override fun forward(
         input: IOType,
         output: IOType,
@@ -63,9 +64,9 @@ class Affine(
 
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         Array(input.asIOType0d().value.size) {
-            IOType.IOType0d(DoubleArray(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
+            IOType0d(DoubleArray(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
         }
 
-    override fun createOutput(input: IOType): IOType.IOType0d = IOType.IOType0d(DoubleArray(numOfNeuron))
+    override fun createOutput(input: IOType): IOType0d = IOType0d(DoubleArray(numOfNeuron))
     override fun createDelta(input: IOType): DoubleArray = DoubleArray(numOfNeuron)
 }

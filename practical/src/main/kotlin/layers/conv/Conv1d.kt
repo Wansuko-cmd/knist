@@ -5,7 +5,8 @@ package layers.conv
 import common.conv1d
 import common.deConv1d
 import common.innerProduct
-import layers.IOType
+import common.iotype.IOType
+import common.iotype.IOType1d
 import layers.Layer
 import kotlin.random.Random
 
@@ -13,7 +14,7 @@ class Conv1d(
     private val channel: Int,
     private val kernelSize: Int,
     override val activationFunction: (Double) -> Double,
-) : Layer<IOType.IOType1d> {
+) : Layer<IOType1d> {
 
     override inline fun forward(
         input: IOType,
@@ -94,11 +95,11 @@ class Conv1d(
 
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         Array(input.asIOType1d().value.size) {
-            IOType.IOType1d(Array(channel) { DoubleArray(kernelSize) { random.nextDouble(-1.0, 1.0) } })
+            IOType1d(Array(channel) { DoubleArray(kernelSize) { random.nextDouble(-1.0, 1.0) } })
         }
 
-    override fun createOutput(input: IOType): IOType.IOType1d =
-        IOType.IOType1d(Array(channel) { DoubleArray(input.asIOType1d().value.first().size - kernelSize + 1) })
+    override fun createOutput(input: IOType): IOType1d =
+        IOType1d(Array(channel) { DoubleArray(input.asIOType1d().value.first().size - kernelSize + 1) })
 
     override fun createDelta(input: IOType): DoubleArray =
         DoubleArray(channel * (input.asIOType1d().value.first().size - kernelSize + 1))
