@@ -1,6 +1,6 @@
 @file:Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
 
-package layers.layer0d.output
+package layers.output.layer0d
 
 import common.sigmoid
 import exception.DomainException
@@ -8,7 +8,7 @@ import layers.IOType
 import layers.Layer
 import kotlin.random.Random
 
-class Sigmoid(
+class Sigmoid0d(
     private val numOfNeuron: Int,
     private val type: (numOfNeuron: Int, activationFunction: (Double) -> Double) -> Layer<IOType.IOType0d>,
 ) : Output0dLayer {

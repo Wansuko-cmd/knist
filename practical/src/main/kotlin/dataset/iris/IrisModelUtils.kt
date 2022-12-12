@@ -2,10 +2,10 @@ package dataset.iris
 
 import common.identity
 import common.relu
-import layers.layer0d.Affine
-import layers.layer0d.Bias0d
-import layers.layer0d.Input0dLayer
-import layers.layer0d.output.Softmax
+import layers.affine.Affine
+import layers.bias.Bias0d
+import layers.input.Input0dLayer
+import layers.output.layer0d.Softmax0d
 import network.Network
 import kotlin.random.Random
 
@@ -20,7 +20,7 @@ fun createIrisModel(
             Affine(50, ::identity),
             Bias0d(::relu)
         ),
-        Softmax(3) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
+        Softmax0d(3) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )

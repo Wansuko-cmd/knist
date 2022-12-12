@@ -1,6 +1,6 @@
 @file:Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
 
-package layers.layer0d.output
+package layers.output.layer0d
 
 import exception.DomainException
 import layers.IOType
@@ -8,7 +8,7 @@ import layers.Layer
 import kotlin.math.exp
 import kotlin.random.Random
 
-data class Softmax(
+data class Softmax0d(
     private val numOfNeuron: Int,
     private val type: (numOfNeuron: Int, activationFunction: (Double) -> Double) -> Layer<IOType.IOType0d>,
 ) : Output0dLayer {

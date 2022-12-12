@@ -1,13 +1,13 @@
 @file:Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
 
-package layers.layer0d
+package layers.affine
 
 import common.step
 import jdk.incubator.vector.DoubleVector
 import jdk.incubator.vector.VectorOperators
 import layers.IOType
 import layers.Layer
-import layers.layer1d.sp
+import layers.conv.sp
 import kotlin.random.Random
 
 class Affine(

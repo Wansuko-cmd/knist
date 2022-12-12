@@ -1,9 +1,9 @@
 package dataset.wine
 
 import common.relu
-import layers.layer0d.Affine
-import layers.layer0d.Input0dLayer
-import layers.layer0d.output.Softmax
+import layers.affine.Affine
+import layers.input.Input0dLayer
+import layers.output.layer0d.Softmax0d
 import network.Network
 import kotlin.random.Random
 
@@ -17,7 +17,7 @@ fun createWineModel(
         listOf(
             Affine(50, ::relu),
         ),
-        Softmax(3) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
+        Softmax0d(3) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )

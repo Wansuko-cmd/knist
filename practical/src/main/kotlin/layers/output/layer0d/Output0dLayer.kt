@@ -1,4 +1,4 @@
-package layers.layer0d.output
+package layers.output.layer0d
 
 import layers.IOType
 import layers.Layer

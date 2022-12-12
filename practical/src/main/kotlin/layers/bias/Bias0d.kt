@@ -1,6 +1,6 @@
 @file:Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
 
-package layers.layer0d
+package layers.bias
 
 import layers.IOType
 import layers.Layer

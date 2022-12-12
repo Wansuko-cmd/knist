@@ -1,6 +1,6 @@
 @file:Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
 
-package layers.layer1d
+package layers.conv
 
 import jdk.incubator.vector.DoubleVector
 import jdk.incubator.vector.VectorOperators
@@ -116,10 +116,10 @@ class Conv1d(
         }
 
     override fun createOutput(input: IOType): IOType.IOType1d =
-        IOType.IOType1d(Array(channel) { DoubleArray(input.asIOType1d().value.first().size - kernelSize + 1) { 0.0 } })
+        IOType.IOType1d(Array(channel) { DoubleArray(input.asIOType1d().value.first().size - kernelSize + 1) })
 
     override fun createDelta(input: IOType): DoubleArray =
-        DoubleArray(channel * (input.asIOType1d().value.first().size - kernelSize + 1)) { 0.0 }
+        DoubleArray(channel * (input.asIOType1d().value.first().size - kernelSize + 1))
 }
 
 inline fun DoubleArray.conv1d(

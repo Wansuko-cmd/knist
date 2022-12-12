@@ -1,4 +1,4 @@
-package layers.layer1d
+package layers.input
 
 import exception.DomainException
 import layers.IOType

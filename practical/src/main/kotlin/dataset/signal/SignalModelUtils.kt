@@ -1,11 +1,11 @@
 package dataset.signal
 
 import common.relu
-import layers.layer0d.Affine
-import layers.layer0d.Input0dLayer
-import layers.layer0d.output.Sigmoid
+import layers.affine.Affine
+import layers.input.Input0dLayer
+import layers.output.layer0d.Sigmoid0d
 import layers.layer1d.Conv1d
-import layers.layer1d.Input1dLayer
+import layers.input.Input1dLayer
 import network.Network
 import kotlin.random.Random
 
@@ -36,7 +36,7 @@ fun createSignalModel(
                 activationFunction = ::relu,
             ),
         ),
-        outputConfig = Sigmoid(2) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
+        outputConfig = Sigmoid0d(2) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )
@@ -62,7 +62,7 @@ fun createSignalModel0d(
         centerConfig = listOf(
             Affine(numOfNeuron = 50, activationFunction = ::relu),
         ),
-        outputConfig = Sigmoid(2) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
+        outputConfig = Sigmoid0d(2) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,
         rate = 0.01,
     )
