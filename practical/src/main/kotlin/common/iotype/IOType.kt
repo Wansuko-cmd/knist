@@ -5,4 +5,5 @@ package common.iotype
 interface IOType {
     fun asIOType0d(): IOType0d
     fun asIOType1d(): IOType1d
+    fun asIOType2d(): IOType2d
 }

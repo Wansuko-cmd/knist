@@ -2,9 +2,13 @@
 
 package common.iotype
 
+import exception.DomainException
+
 data class IOType0d(val value: DoubleArray) : IOType {
     override inline fun asIOType0d(): IOType0d = this
-    override inline fun asIOType1d(): IOType1d = throw Exception()
+    override inline fun asIOType1d(): IOType1d = throw DomainException.CannotCastDimensionException()
+    override inline fun asIOType2d(): IOType2d = throw DomainException.CannotCastDimensionException()
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
