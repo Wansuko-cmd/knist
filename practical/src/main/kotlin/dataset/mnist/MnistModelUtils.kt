@@ -7,7 +7,7 @@ import layers.bias.Bias0d
 import layers.input.Input0dLayer
 import layers.output.layer0d.Softmax0d
 import layers.bias.Bias1d
-import layers.layer1d.Conv1d
+import layers.conv.Conv1d
 import layers.input.Input1dLayer
 import network.Network
 import kotlin.random.Random
@@ -23,12 +23,6 @@ fun createMnistModel(
             Conv1d(
                 channel = 4,
                 kernelSize = 2,
-                activationFunction = ::identity,
-            ),
-            Bias1d(::relu),
-            Conv1d(
-                channel = 8,
-                kernelSize = 4,
                 activationFunction = ::identity,
             ),
             Bias1d(::relu),

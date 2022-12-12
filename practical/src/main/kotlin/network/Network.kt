@@ -4,8 +4,8 @@ import common.maxIndex
 import layers.IOType
 import layers.Layer
 import layers.input.Input0dLayer
-import layers.output.layer0d.Output0dLayer
 import layers.input.Input1dLayer
+import layers.output.layer0d.Output0dLayer
 import kotlin.random.Random
 
 class Network<T>(

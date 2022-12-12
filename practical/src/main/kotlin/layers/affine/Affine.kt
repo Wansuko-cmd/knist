@@ -2,12 +2,10 @@
 
 package layers.affine
 
+import common.innerProduct
 import common.step
-import jdk.incubator.vector.DoubleVector
-import jdk.incubator.vector.VectorOperators
 import layers.IOType
 import layers.Layer
-import layers.conv.sp
 import kotlin.random.Random
 
 class Affine(
@@ -44,20 +42,8 @@ class Affine(
     ) {
         val beforeOutputArray = beforeOutput.asIOType0d().value
         for (inputIndex in beforeDelta.indices) {
-            val weightArray = weight[inputIndex].asIOType0d().value
-            var sum = 0.0
-            var outputIndex = 0
-            while (outputIndex < sp.loopBound(weightArray.size)) {
-                val d = DoubleVector.fromArray(sp, delta, outputIndex)
-                val we = DoubleVector.fromArray(sp, weightArray, outputIndex)
-                sum += d.mul(we).reduceLanes(VectorOperators.ADD)
-                outputIndex += sp.length()
-            }
-            while (outputIndex < weightArray.size) {
-                sum += delta[outputIndex] * weightArray[outputIndex]
-                outputIndex++
-            }
-            beforeDelta[inputIndex] = step(beforeOutputArray[inputIndex]) * sum
+            beforeDelta[inputIndex] = step(beforeOutputArray[inputIndex]) *
+                delta.innerProduct(weight[inputIndex].asIOType0d().value)
         }
     }
 

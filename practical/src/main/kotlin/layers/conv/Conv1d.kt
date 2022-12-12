@@ -2,14 +2,12 @@
 
 package layers.conv
 
-import jdk.incubator.vector.DoubleVector
-import jdk.incubator.vector.VectorOperators
-import jdk.incubator.vector.VectorSpecies
+import common.conv1d
+import common.deConv1d
+import common.innerProduct
 import layers.IOType
 import layers.Layer
 import kotlin.random.Random
-
-val sp: VectorSpecies<Double> = DoubleVector.SPECIES_PREFERRED
 
 class Conv1d(
     private val channel: Int,
@@ -17,9 +15,6 @@ class Conv1d(
     override val activationFunction: (Double) -> Double,
 ) : Layer<IOType.IOType1d> {
 
-    /**
-     * weight: Array[入力チャンネル][出力チャンネル][kernelの横要素]
-     */
     override inline fun forward(
         input: IOType,
         output: IOType,
@@ -72,9 +67,6 @@ class Conv1d(
         }
     }
 
-    /**
-     * weight: Array[入力チャンネル][出力チャンネル][kernelの横要素]
-     */
     override fun backward(
         weight: Array<IOType>,
         delta: DoubleArray,
@@ -91,19 +83,9 @@ class Conv1d(
             val weightArray = weight[inputChannel].asIOType1d().value
             for (outputChannel in weightArray.indices) {
                 for (kernelTime in weightArray[outputChannel].indices) {
-                    var sum = 0.0
-                    var outputTime = 0
-                    while (outputTime < sp.loopBound(outputSize)) {
-                        val i = DoubleVector.fromArray(sp, inputArray[inputChannel], kernelTime + outputTime)
-                        val d = DoubleVector.fromArray(sp, delta, outputIndex + outputTime)
-                        sum += i.mul(d).reduceLanes(VectorOperators.ADD)
-                        outputTime += sp.length()
-                    }
-                    while (outputTime < outputSize) {
-                        sum += inputArray[inputChannel][kernelTime + outputTime] * delta[outputIndex + outputTime]
-                        outputTime++
-                    }
-                    weightArray[outputChannel][kernelTime] -= rate * sum
+                    weightArray[outputChannel][kernelTime] -= rate * inputArray[inputChannel]
+                        .sliceArray(kernelTime until kernelTime + outputSize)
+                        .innerProduct(delta.sliceArray(outputIndex until outputIndex + outputSize))
                 }
                 outputIndex += outputSize
             }
@@ -120,51 +102,4 @@ class Conv1d(
 
     override fun createDelta(input: IOType): DoubleArray =
         DoubleArray(channel * (input.asIOType1d().value.first().size - kernelSize + 1))
-}
-
-inline fun DoubleArray.conv1d(
-    kernel: DoubleArray,
-    output: DoubleArray,
-) {
-    for (outputIndex in output.indices) {
-        var sum = 0.0
-        var index = 0
-        while (index < sp.loopBound(kernel.size)) {
-            val i = DoubleVector.fromArray(sp, this, outputIndex + index)
-            val k = DoubleVector.fromArray(sp, kernel, index)
-            sum += i.mul(k).reduceLanes(VectorOperators.ADD)
-            index += sp.length()
-        }
-        while (index < kernel.size) {
-            sum += this[outputIndex + index] * kernel[index]
-            index++
-        }
-        output[outputIndex] += sum
-    }
-}
-
-inline fun DoubleArray.deConv1d(
-    kernel: DoubleArray,
-    output: DoubleArray,
-) {
-    val resizedInput = doubleArrayOf(
-        *DoubleArray(kernel.size - 1) { 0.0 },
-        *this.toTypedArray().toDoubleArray(),
-        *DoubleArray(kernel.size - 1) { 0.0 },
-    )
-    for (outputIndex in output.indices) {
-        var sum = 0.0
-        var index = 0
-        while (index < sp.loopBound(kernel.size)) {
-            val i = DoubleVector.fromArray(sp, resizedInput, outputIndex + index)
-            val k = DoubleVector.fromArray(sp, kernel, index)
-            sum += i.mul(k).reduceLanes(VectorOperators.ADD)
-            index += sp.length()
-        }
-        while (index < kernel.size) {
-            sum += resizedInput[outputIndex + index] * kernel[index]
-            index++
-        }
-        output[outputIndex] += sum
-    }
 }

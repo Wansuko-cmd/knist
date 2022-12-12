@@ -2,9 +2,9 @@ package dataset.signal
 
 import common.relu
 import layers.affine.Affine
+import layers.conv.Conv1d
 import layers.input.Input0dLayer
 import layers.output.layer0d.Sigmoid0d
-import layers.layer1d.Conv1d
 import layers.input.Input1dLayer
 import network.Network
 import kotlin.random.Random
