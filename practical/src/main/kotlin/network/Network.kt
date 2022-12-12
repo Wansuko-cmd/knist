@@ -3,10 +3,12 @@ package network
 import common.iotype.IOType
 import common.iotype.IOType0d
 import common.iotype.IOType1d
+import common.iotype.IOType2d
 import common.maxIndex
 import layers.Layer
 import layers.input.Input0dLayer
 import layers.input.Input1dLayer
+import layers.input.Input2dLayer
 import layers.output.layer0d.Output0dLayer
 import kotlin.random.Random
 
@@ -62,6 +64,30 @@ class Network<T>(
                 random = random,
                 rate = rate,
                 toIOType = { IOType1d(this.map { it.toDoubleArray() }.toTypedArray()) },
+            )
+        }
+
+        fun create2d(
+            inputConfig: Input2dLayer,
+            centerConfig: List<Layer<*>>,
+            outputConfig: Output0dLayer,
+            random: Random,
+            rate: Double,
+        ): Network<List<List<List<Double>>>> {
+            val layers = listOf(inputConfig) + centerConfig + outputConfig.toLayer()
+            return create(
+                layers = layers,
+                random = random,
+                rate = rate,
+                toIOType = {
+                    IOType2d(
+                        this.map { channel ->
+                            channel.map { row ->
+                                row.toDoubleArray()
+                            }.toTypedArray()
+                        }.toTypedArray()
+                    )
+                },
             )
         }
 

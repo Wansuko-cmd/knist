@@ -7,12 +7,45 @@ import layers.bias.Bias0d
 import layers.input.Input0dLayer
 import layers.output.layer0d.Softmax0d
 import layers.bias.Bias1d
+import layers.bias.Bias2d
 import layers.conv.Conv1d
 import layers.input.Input1dLayer
+import layers.input.Input2dLayer
 import network.Network
 import kotlin.random.Random
 
-fun createMnistModel(
+fun createMnistModel2d(
+    epoc: Int,
+    seed: Int? = null,
+) {
+    val (train, test) = MnistDataset.read().shuffled().chunked(40000)
+    val network = Network.create2d(
+        inputConfig = Input2dLayer(channel = 1, row = train.first().imageSize, column = train.first().imageSize),
+        centerConfig = listOf(
+            Bias2d(::relu),
+            Affine(
+                numOfNeuron = 50,
+                activationFunction = ::identity,
+            ),
+            Bias0d(::relu),
+        ),
+        outputConfig = Softmax0d(10) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
+        random = seed?.let { Random(it) } ?: Random,
+        rate = 0.01,
+    )
+    (1..epoc).forEach { epoc ->
+        println("epoc: $epoc")
+        train.forEachIndexed { index, data ->
+            if (index % 1000 == 0) println("i: $index")
+            network.train(input = listOf(data.pixels.chunked(train.first().imageSize)), label = data.label)
+        }
+    }
+    test.count { data ->
+        network.expect(input = listOf(data.pixels.chunked(train.first().imageSize))) == data.label
+    }.also { println(it.toDouble() / test.size.toDouble()) }
+}
+
+fun createMnistModel1d(
     epoc: Int,
     seed: Int? = null,
 ) {
@@ -52,11 +85,12 @@ fun createMnistModel0d(
     epoc: Int,
     seed: Int? = null,
 ) {
-    val (train, test) = MnistDataset.read().shuffled().chunked(20000)
+    val (train, test) = MnistDataset.read().shuffled().chunked(40000)
     val network = Network.create0d(
         inputConfig = Input0dLayer(train.first().imageSize * train.first().imageSize),
         centerConfig = listOf(
-            Affine(numOfNeuron = 50, activationFunction = ::relu),
+            Affine(numOfNeuron = 50, activationFunction = ::identity),
+            Bias0d(::relu),
         ),
         outputConfig = Softmax0d(10) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,

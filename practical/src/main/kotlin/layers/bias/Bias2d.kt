@@ -15,11 +15,11 @@ class Bias2d(
     ) {
         val inputArray = input.asIOType2d().value
         val outputArray = output.asIOType2d().value
-        for (index in inputArray.indices) {
-            for (row in inputArray[index].indices) {
-                for (column in inputArray[index][row].indices) {
-                    outputArray[index][row][column] =
-                        activationFunction(inputArray[index][row][column] + weight[index].asIOType2d().value[index][row][column])
+        for (channel in inputArray.indices) {
+            for (row in inputArray[channel].indices) {
+                for (column in inputArray[channel][row].indices) {
+                    outputArray[channel][row][column] =
+                        activationFunction(inputArray[channel][row][column] + weight[channel].asIOType2d().value[channel][row][column])
                 }
             }
         }
@@ -42,11 +42,11 @@ class Bias2d(
     ) {
         val inputArray = input.asIOType2d().value
         var deltaIndex = 0
-        for (index in weight.indices) {
-            val weightArray = weight[index].asIOType2d().value[index]
+        for (channel in weight.indices) {
+            val weightArray = weight[channel].asIOType2d().value[channel]
             for (row in weightArray.indices) {
                 for (column in weightArray.indices) {
-                    weightArray[row][column] -= rate * delta[deltaIndex++] * inputArray[index][row][column]
+                    weightArray[row][column] -= rate * delta[deltaIndex++] * inputArray[channel][row][column]
                 }
             }
         }

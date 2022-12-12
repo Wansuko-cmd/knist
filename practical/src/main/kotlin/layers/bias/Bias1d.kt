@@ -15,10 +15,10 @@ class Bias1d(
     ) {
         val inputArray = input.asIOType1d().value
         val outputArray = output.asIOType1d().value
-        for (index in inputArray.indices) {
-            for (time in inputArray[index].indices) {
-                outputArray[index][time] =
-                    activationFunction(inputArray[index][time] + weight[index].asIOType1d().value[index][time])
+        for (channel in inputArray.indices) {
+            for (time in inputArray[channel].indices) {
+                outputArray[channel][time] =
+                    activationFunction(inputArray[channel][time] + weight[channel].asIOType1d().value[channel][time])
             }
         }
     }
@@ -40,10 +40,10 @@ class Bias1d(
     ) {
         val inputArray = input.asIOType1d().value
         var deltaIndex = 0
-        for (index in weight.indices) {
-            val weightArray = weight[index].asIOType1d().value[index]
+        for (channel in weight.indices) {
+            val weightArray = weight[channel].asIOType1d().value[channel]
             for (time in weightArray.indices) {
-                weightArray[time] -= rate * delta[deltaIndex++] * inputArray[index][time]
+                weightArray[time] -= rate * delta[deltaIndex++] * inputArray[channel][time]
             }
         }
     }
