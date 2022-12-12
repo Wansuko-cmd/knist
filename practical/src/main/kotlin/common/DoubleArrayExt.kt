@@ -28,20 +28,10 @@ inline fun DoubleArray.conv1d(
     kernel: DoubleArray,
     output: DoubleArray,
 ) {
-    for (outputIndex in output.indices) {
-        var sum = 0.0
-        var index = 0
-        while (index < sp.loopBound(kernel.size)) {
-            val i = DoubleVector.fromArray(sp, this, outputIndex + index)
-            val k = DoubleVector.fromArray(sp, kernel, index)
-            sum += i.mul(k).reduceLanes(VectorOperators.ADD)
-            index += sp.length()
-        }
-        while (index < kernel.size) {
-            sum += this[outputIndex + index] * kernel[index]
-            index++
-        }
-        output[outputIndex] += sum
+    for (outputTime in output.indices) {
+        output[outputTime] += this
+            .sliceArray(outputTime until outputTime + kernel.size)
+            .innerProduct(kernel)
     }
 }
 
@@ -54,19 +44,5 @@ inline fun DoubleArray.deConv1d(
         *this.toTypedArray().toDoubleArray(),
         *DoubleArray(kernel.size - 1) { 0.0 },
     )
-    for (outputIndex in output.indices) {
-        var sum = 0.0
-        var index = 0
-        while (index < sp.loopBound(kernel.size)) {
-            val i = DoubleVector.fromArray(sp, resizedInput, outputIndex + index)
-            val k = DoubleVector.fromArray(sp, kernel, index)
-            sum += i.mul(k).reduceLanes(VectorOperators.ADD)
-            index += sp.length()
-        }
-        while (index < kernel.size) {
-            sum += resizedInput[outputIndex + index] * kernel[index]
-            index++
-        }
-        output[outputIndex] += sum
-    }
+    resizedInput.conv1d(kernel, output)
 }
