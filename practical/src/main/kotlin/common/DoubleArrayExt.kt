@@ -39,18 +39,27 @@ inline fun Array<DoubleArray>.innerProduct(
 inline fun DoubleArray.conv1d(
     kernel: DoubleArray,
     output: DoubleArray,
+    padding: Int = 0,
+    stride: Int = 1,
 ) {
-    for (outputTime in output.indices) {
-        output[outputTime] += kernel.innerProduct(this, outputTime)
+    val resizedInput = doubleArrayOf(
+        *DoubleArray(padding) { 0.0 },
+        *this.toTypedArray().toDoubleArray(),
+        *DoubleArray(padding) { 0.0 },
+    )
+    for (outputTime in output.indices step stride) {
+        output[outputTime] += kernel.innerProduct(resizedInput, outputTime)
     }
 }
 
 inline fun Array<DoubleArray>.conv2d(
     kernel: Array<DoubleArray>,
     output: Array<DoubleArray>,
+    padding: Int = 0,
+    stride: Int = 1,
 ) {
-    for (row in output.indices) {
-        for (column in output[row].indices) {
+    for (row in output.indices step stride) {
+        for (column in output[row].indices step stride) {
             output[row][column] += kernel.innerProduct(this, row, column)
         }
     }
@@ -59,11 +68,17 @@ inline fun Array<DoubleArray>.conv2d(
 inline fun DoubleArray.deConv1d(
     kernel: DoubleArray,
     output: DoubleArray,
+    padding: Int = 0,
+    stride: Int = 0,
 ) {
     val resizedInput = doubleArrayOf(
-        *DoubleArray(kernel.size - 1) { 0.0 },
-        *this.toTypedArray().toDoubleArray(),
-        *DoubleArray(kernel.size - 1) { 0.0 },
+        *DoubleArray(kernel.size - padding - 1) { 0.0 },
+        *this
+            .fold(doubleArrayOf()) { acc, d -> acc + d + DoubleArray(stride - 1) }
+            .drop(stride - 1)
+            .toTypedArray()
+            .toDoubleArray(),
+        *DoubleArray(kernel.size - padding - 1) { 0.0 },
     )
     resizedInput.conv1d(kernel, output)
 }

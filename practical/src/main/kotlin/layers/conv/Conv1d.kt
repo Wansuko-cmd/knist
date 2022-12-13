@@ -13,10 +13,12 @@ import kotlin.random.Random
 class Conv1d(
     private val channel: Int,
     private val kernelSize: Int,
+    private val padding: Int,
+    private val stride: Int,
     override val activationFunction: (Double) -> Double,
 ) : Layer<IOType1d> {
 
-    override inline fun forward(
+    override fun forward(
         input: IOType,
         output: IOType,
         weight: Array<IOType>,
@@ -29,6 +31,8 @@ class Conv1d(
                 inputArray[inputChannel].conv1d(
                     kernel = weight[inputChannel].asIOType1d().value[outputChannel],
                     output = outputArray[outputChannel],
+                    padding = padding,
+                    stride = stride,
                 )
             }
             for (outputTime in outputArray[outputChannel].indices) {
@@ -88,7 +92,7 @@ class Conv1d(
         }
 
     override fun createOutput(input: IOType): IOType1d =
-        IOType1d(Array(channel) { DoubleArray(input.asIOType1d().value.first().size - kernelSize + 1) })
+        IOType1d(Array(channel) { DoubleArray(input.asIOType1d().value.first().size - kernelSize + 1 + padding * 2) })
 
     override fun createDelta(input: IOType): IOType1d =
         IOType1d(Array(channel) { DoubleArray(input.asIOType1d().value.first().size - kernelSize + 1) })
