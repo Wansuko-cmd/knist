@@ -24,11 +24,15 @@ fun createMnistModel2d(
         inputConfig = Input2dLayer(channel = 1, row = train.first().imageSize, column = train.first().imageSize),
         centerConfig = listOf(
             Conv2d(
-                channel = 32,
+                channel = 4,
                 kernelSize = 5,
-                activationFunction = ::identity,
+                activationFunction = ::relu,
             ),
-            Bias2d(::relu),
+            Conv2d(
+                channel = 8,
+                kernelSize = 5,
+                activationFunction = ::relu,
+            ),
             Affine(
                 numOfNeuron = 50,
                 activationFunction = ::identity,
@@ -64,12 +68,12 @@ fun createMnistModel1d(
                 kernelSize = 2,
                 activationFunction = ::identity,
             ),
-            Bias1d(::relu),
+//            Bias1d(::relu),
             Affine(
                 numOfNeuron = 50,
                 activationFunction = ::identity,
             ),
-            Bias0d(::relu)
+//            Bias0d(::relu)
         ),
         outputConfig = Softmax0d(10) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,

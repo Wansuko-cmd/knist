@@ -73,7 +73,7 @@ inline fun Array<DoubleArray>.deConv2d(
     output: Array<DoubleArray>,
 ) {
     val resizedInput = arrayOf(
-        *Array(kernel.size - 1) { DoubleArray(this.size + kernel.size - 1) },
+        *Array(kernel.size - 1) { DoubleArray(this.size + 2 * kernel.size - 2) },
         *this.map {
             doubleArrayOf(
                 *DoubleArray(kernel.size - 1) { 0.0 },
@@ -81,7 +81,7 @@ inline fun Array<DoubleArray>.deConv2d(
                 *DoubleArray(kernel.size - 1) { 0.0 },
             )
         }.toTypedArray(),
-        *Array(kernel.size - 1) { DoubleArray(this.size + kernel.size - 1) },
+        *Array(kernel.size - 1) { DoubleArray(this.size + 2 * kernel.size - 2) },
     )
     resizedInput.conv2d(kernel, output)
 }
