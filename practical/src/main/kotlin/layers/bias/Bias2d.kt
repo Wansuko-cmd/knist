@@ -26,27 +26,28 @@ class Bias2d(
     }
 
     override fun calcDelta(
-        beforeDelta: DoubleArray,
+        beforeDelta: IOType,
         beforeOutput: IOType,
-        delta: DoubleArray,
+        delta: IOType,
         weight: Array<IOType>,
     ) {
-        beforeDelta.copyInto(delta)
+        beforeDelta.asIOType0d().value.copyInto(delta.asIOType0d().value)
     }
 
     override fun backward(
         weight: Array<IOType>,
-        delta: DoubleArray,
+        delta: IOType,
         input: IOType,
         rate: Double,
     ) {
+        val deltaArray = delta.asIOType2d().value
         val inputArray = input.asIOType2d().value
-        var deltaIndex = 0
         for (channel in weight.indices) {
             val weightArray = weight[channel].asIOType2d().value[channel]
             for (row in weightArray.indices) {
                 for (column in weightArray.indices) {
-                    weightArray[row][column] -= rate * delta[deltaIndex++] * inputArray[channel][row][column]
+                    weightArray[row][column] -=
+                        rate * deltaArray[channel][row][column] * inputArray[channel][row][column]
                 }
             }
         }
@@ -59,7 +60,7 @@ class Bias2d(
                     Array(input.asIOType2d().value[index].size) { row ->
                         DoubleArray(input.asIOType2d().value[index][row].size) { random.nextDouble(-1.0, 1.0) }
                     }
-                }
+                },
             )
         }
 
@@ -69,9 +70,15 @@ class Bias2d(
                 Array(input.asIOType2d().value[index].size) { row ->
                     DoubleArray(input.asIOType2d().value[index][row].size)
                 }
-            }
+            },
         )
 
-    override fun createDelta(input: IOType): DoubleArray =
-        DoubleArray(input.asIOType0d().value.size)
+    override fun createDelta(input: IOType): IOType2d =
+        IOType2d(
+            Array(input.asIOType2d().value.size) { index ->
+                Array(input.asIOType2d().value[index].size) { row ->
+                    DoubleArray(input.asIOType2d().value[index][row].size)
+                }
+            },
+        )
 }

@@ -23,23 +23,24 @@ class Bias0d(
     }
 
     override inline fun calcDelta(
-        beforeDelta: DoubleArray,
+        beforeDelta: IOType,
         beforeOutput: IOType,
-        delta: DoubleArray,
+        delta: IOType,
         weight: Array<IOType>,
     ) {
-        beforeDelta.copyInto(delta)
+        beforeDelta.asIOType0d().value.copyInto(delta.asIOType0d().value)
     }
 
     override inline fun backward(
         weight: Array<IOType>,
-        delta: DoubleArray,
+        delta: IOType,
         input: IOType,
         rate: Double,
     ) {
+        val deltaArray = delta.asIOType0d().value
         val inputArray = input.asIOType0d().value
         for (index in weight.indices) {
-            weight[index].asIOType0d().value[index] -= rate * delta[index] * inputArray[index]
+            weight[index].asIOType0d().value[index] -= rate * deltaArray[index] * inputArray[index]
         }
     }
 
@@ -51,5 +52,5 @@ class Bias0d(
     override fun createOutput(input: IOType): IOType0d =
         IOType0d(DoubleArray(input.asIOType0d().value.size))
 
-    override fun createDelta(input: IOType): DoubleArray = DoubleArray(input.asIOType0d().value.size)
+    override fun createDelta(input: IOType): IOType0d = IOType0d(DoubleArray(input.asIOType0d().value.size))
 }

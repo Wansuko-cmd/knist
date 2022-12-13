@@ -36,28 +36,31 @@ class Affine(
      * afterWeight -> 自分と後ろの層の重み Array[前の層のニューロン][後ろの層のニューロン]
      */
     override inline fun calcDelta(
-        beforeDelta: DoubleArray,
+        beforeDelta: IOType,
         beforeOutput: IOType,
-        delta: DoubleArray,
+        delta: IOType,
         weight: Array<IOType>,
     ) {
+        val beforeDeltaArray = beforeDelta.asIOType0d().value
         val beforeOutputArray = beforeOutput.asIOType0d().value
-        for (inputIndex in beforeDelta.indices) {
-            beforeDelta[inputIndex] = step(beforeOutputArray[inputIndex]) *
-                delta.innerProduct(weight[inputIndex].asIOType0d().value)
+        val deltaArray = delta.asIOType0d().value
+        for (inputIndex in beforeDeltaArray.indices) {
+            beforeDeltaArray[inputIndex] = step(beforeOutputArray[inputIndex]) *
+                deltaArray.innerProduct(weight[inputIndex].asIOType0d().value, 0)
         }
     }
 
     override inline fun backward(
         weight: Array<IOType>,
-        delta: DoubleArray,
+        delta: IOType,
         input: IOType,
         rate: Double,
     ) {
         val inputArray = input.asIOType0d().value
+        val deltaArray = delta.asIOType0d().value
         for (before in weight.indices) {
             for (after in weight[before].asIOType0d().value.indices) {
-                weight[before].asIOType0d().value[after] -= rate * delta[after] * inputArray[before]
+                weight[before].asIOType0d().value[after] -= rate * deltaArray[after] * inputArray[before]
             }
         }
     }
@@ -68,5 +71,5 @@ class Affine(
         }
 
     override fun createOutput(input: IOType): IOType0d = IOType0d(DoubleArray(numOfNeuron))
-    override fun createDelta(input: IOType): DoubleArray = DoubleArray(numOfNeuron)
+    override fun createDelta(input: IOType): IOType0d = IOType0d(DoubleArray(numOfNeuron))
 }

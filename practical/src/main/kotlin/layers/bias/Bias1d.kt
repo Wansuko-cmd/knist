@@ -24,26 +24,26 @@ class Bias1d(
     }
 
     override fun calcDelta(
-        beforeDelta: DoubleArray,
+        beforeDelta: IOType,
         beforeOutput: IOType,
-        delta: DoubleArray,
+        delta: IOType,
         weight: Array<IOType>,
     ) {
-        beforeDelta.copyInto(delta)
+        beforeDelta.asIOType0d().value.copyInto(delta.asIOType0d().value)
     }
 
     override fun backward(
         weight: Array<IOType>,
-        delta: DoubleArray,
+        delta: IOType,
         input: IOType,
         rate: Double,
     ) {
         val inputArray = input.asIOType1d().value
-        var deltaIndex = 0
+        val deltaArray = delta.asIOType1d().value
         for (channel in weight.indices) {
             val weightArray = weight[channel].asIOType1d().value[channel]
             for (time in weightArray.indices) {
-                weightArray[time] -= rate * delta[deltaIndex++] * inputArray[channel][time]
+                weightArray[time] -= rate * deltaArray[channel][time] * inputArray[channel][time]
             }
         }
     }
@@ -53,13 +53,13 @@ class Bias1d(
             IOType1d(
                 Array(input.asIOType1d().value.size) {
                     DoubleArray(input.asIOType1d().value[it].size) { random.nextDouble(-1.0, 1.0) }
-                }
+                },
             )
         }
 
     override fun createOutput(input: IOType): IOType1d =
         IOType1d(Array(input.asIOType1d().value.size) { DoubleArray(input.asIOType1d().value[it].size) })
 
-    override fun createDelta(input: IOType): DoubleArray =
-        DoubleArray(input.asIOType0d().value.size)
+    override fun createDelta(input: IOType): IOType1d =
+        IOType1d(Array(input.asIOType1d().value.size) { DoubleArray(input.asIOType1d().value[it].size) })
 }

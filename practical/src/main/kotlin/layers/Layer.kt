@@ -12,18 +12,18 @@ interface Layer<T : IOType> {
         weight: Array<IOType>,
     )
     fun calcDelta(
-        beforeDelta: DoubleArray,
+        beforeDelta: IOType,
         beforeOutput: IOType,
-        delta: DoubleArray,
+        delta: IOType,
         weight: Array<IOType>,
     )
     fun backward(
         weight: Array<IOType>,
-        delta: DoubleArray,
+        delta: IOType,
         input: IOType,
         rate: Double,
     )
     fun createWeight(input: IOType, random: Random): Array<IOType>
     fun createOutput(input: IOType): T
-    fun createDelta(input: IOType): DoubleArray
+    fun createDelta(input: IOType): T
 }

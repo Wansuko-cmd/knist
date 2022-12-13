@@ -14,19 +14,19 @@ data class Input0dLayer(val size: Int) : Layer<IOType0d> {
         weight: Array<IOType>,
     ) = throw DomainException.UnreachableCodeException()
     override fun calcDelta(
-        beforeDelta: DoubleArray,
+        beforeDelta: IOType,
         beforeOutput: IOType,
-        delta: DoubleArray,
+        delta: IOType,
         weight: Array<IOType>,
     ) = throw DomainException.UnreachableCodeException()
     override fun backward(
         weight: Array<IOType>,
-        delta: DoubleArray,
+        delta: IOType,
         input: IOType,
         rate: Double,
     ) = throw DomainException.UnreachableCodeException()
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         throw DomainException.UnreachableCodeException()
     override fun createOutput(input: IOType): IOType0d = IOType0d(DoubleArray(size) { 0.0 })
-    override fun createDelta(input: IOType): DoubleArray = DoubleArray(size) { 0.0 }
+    override fun createDelta(input: IOType): IOType0d = IOType0d(DoubleArray(size) { 0.0 })
 }

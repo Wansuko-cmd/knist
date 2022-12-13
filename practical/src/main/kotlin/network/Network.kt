@@ -15,7 +15,7 @@ import kotlin.random.Random
 class Network<T>(
     private val weights: Array<Array<IOType>>,
     private val output: Array<IOType>,
-    private val delta: Array<DoubleArray>,
+    private val delta: Array<IOType>,
     private val forward: () -> Unit,
     private val calcDelta: (label: Int) -> Unit,
     private val backward: () -> Unit,
@@ -105,7 +105,7 @@ class Network<T>(
             val weights: Array<Array<IOType>> =
                 Array(layers.size - 1) { i -> layers[i + 1].createWeight(output[i], random) }
 
-            val delta: Array<DoubleArray> = Array(layers.size) { i ->
+            val delta: Array<IOType> = Array(layers.size) { i ->
                 // 最終層は delta = 教師信号とする
                 layers.getOrElse(i) { layers.last() }
                     .createDelta(output.getOrElse(i - 1) { IOType0d(doubleArrayOf()) })
@@ -121,8 +121,9 @@ class Network<T>(
             }
 
             val calcDelta = { label: Int ->
-                for (index in delta.last().indices) {
-                    delta.last()[index] = if (index == label) 0.9 else 0.1
+                val deltaArray = delta.last().asIOType0d().value
+                for (index in deltaArray.indices) {
+                    deltaArray[index] = if (index == label) 0.9 else 0.1
                 }
                 for (index in layers.size - 1 downTo 2) {
                     layers[index].calcDelta(

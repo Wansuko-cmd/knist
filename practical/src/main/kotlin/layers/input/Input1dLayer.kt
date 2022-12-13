@@ -14,14 +14,14 @@ data class Input1dLayer(val channel: Int, val inputSize: Int) : Layer<IOType1d> 
         weight: Array<IOType>,
     ) = throw DomainException.UnreachableCodeException()
     override fun calcDelta(
-        beforeDelta: DoubleArray,
+        beforeDelta: IOType,
         beforeOutput: IOType,
-        delta: DoubleArray,
+        delta: IOType,
         weight: Array<IOType>,
     ) = throw DomainException.UnreachableCodeException()
     override fun backward(
         weight: Array<IOType>,
-        delta: DoubleArray,
+        delta: IOType,
         input: IOType,
         rate: Double,
     ) = throw DomainException.UnreachableCodeException()
@@ -31,6 +31,6 @@ data class Input1dLayer(val channel: Int, val inputSize: Int) : Layer<IOType1d> 
         IOType1d(Array(channel) { DoubleArray(inputSize) })
 
     // 実際にこのdelta配列が使われることはない
-    override fun createDelta(input: IOType): DoubleArray =
-        DoubleArray(input.asIOType0d().value.size)
+    override fun createDelta(input: IOType): IOType1d =
+        IOType1d(Array(channel) { DoubleArray(inputSize) })
 }

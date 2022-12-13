@@ -2,9 +2,9 @@
 
 package layers.output.layer0d
 
-import exception.DomainException
 import common.iotype.IOType
 import common.iotype.IOType0d
+import exception.DomainException
 import layers.Layer
 import kotlin.math.exp
 import kotlin.random.Random
@@ -36,22 +36,24 @@ data class Softmax0d(
                 }
 
                 override inline fun calcDelta(
-                    beforeDelta: DoubleArray,
+                    beforeDelta: IOType,
                     beforeOutput: IOType,
-                    delta: DoubleArray,
+                    delta: IOType,
                     weight: Array<IOType>,
                 ) {
+                    val beforeDeltaArray = beforeDelta.asIOType0d().value
                     val outputArray = beforeOutput.asIOType0d().value
-                    for (i in beforeDelta.indices) {
-                        val q = if (delta[i] > 0.5) 1.0 else 0.0
+                    val deltaArray = delta.asIOType0d().value
+                    for (i in beforeDeltaArray.indices) {
+                        val q = if (deltaArray[i] > 0.5) 1.0 else 0.0
                         val y = outputArray[i]
-                        beforeDelta[i] = y - q
+                        beforeDeltaArray[i] = y - q
                     }
                 }
 
                 override inline fun backward(
                     weight: Array<IOType>,
-                    delta: DoubleArray,
+                    delta: IOType,
                     input: IOType,
                     rate: Double,
                 ) = Unit
@@ -64,7 +66,7 @@ data class Softmax0d(
                 override fun createOutput(input: IOType): IOType0d =
                     IOType0d(DoubleArray(numOfNeuron) { 0.0 })
 
-                override fun createDelta(input: IOType): DoubleArray = DoubleArray(numOfNeuron) { 0.0 }
+                override fun createDelta(input: IOType): IOType0d = IOType0d(DoubleArray(numOfNeuron) { 0.0 })
             },
         )
 }
