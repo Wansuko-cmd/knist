@@ -86,7 +86,7 @@ class Conv1d(
                 for (kernelTime in weightArray[outputChannel].indices) {
                     weightArray[outputChannel][kernelTime] -= rate * inputArray[inputChannel]
                         .sliceArray(kernelTime until kernelTime + outputSize)
-                        .innerProduct(delta.sliceArray(outputIndex until outputIndex + outputSize))
+                        .innerProduct(delta, outputIndex)
                 }
                 outputIndex += outputSize
             }
