@@ -69,17 +69,14 @@ class Conv1d(
     ) {
         val deltaArray = delta.asIOType1d().value
         val inputArray = input.asIOType1d().value
-        // 出力信号の大きさ(どの層の組み合わせでも固定になる)
-        val outputSize = inputArray.first().size - kernelSize + 1
 
         for (inputChannel in weight.indices) {
             // 畳み込みの出力ニューロンを一列にした時のindexを表す
             val weightArray = weight[inputChannel].asIOType1d().value
             for (outputChannel in weightArray.indices) {
                 for (kernelTime in weightArray[outputChannel].indices) {
-                    weightArray[outputChannel][kernelTime] -= rate * inputArray[inputChannel]
-                        .sliceArray(kernelTime until kernelTime + outputSize)
-                        .innerProduct(deltaArray[outputChannel], 0)
+                    weightArray[outputChannel][kernelTime] -= rate * deltaArray[outputChannel]
+                        .innerProduct(inputArray[inputChannel], kernelTime)
                 }
             }
         }

@@ -13,6 +13,7 @@ import layers.input.Input1dLayer
 import layers.input.Input2dLayer
 import network.Network
 import kotlin.random.Random
+import layers.conv.Conv2d
 
 fun createMnistModel2d(
     epoc: Int,
@@ -22,6 +23,11 @@ fun createMnistModel2d(
     val network = Network.create2d(
         inputConfig = Input2dLayer(channel = 1, row = train.first().imageSize, column = train.first().imageSize),
         centerConfig = listOf(
+            Conv2d(
+                channel = 32,
+                kernelSize = 5,
+                activationFunction = ::identity,
+            ),
             Bias2d(::relu),
             Affine(
                 numOfNeuron = 50,
