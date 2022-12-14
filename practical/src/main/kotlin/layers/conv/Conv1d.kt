@@ -60,6 +60,8 @@ class Conv1d(
                 weightArray[outputChannel].deConv1d(
                     kernel = deltaArray[outputChannel].reversedArray(),
                     output = beforeDeltaArray[inputChannel],
+                    padding = padding,
+                    stride = stride,
                 )
             }
         }
@@ -77,10 +79,15 @@ class Conv1d(
         for (inputChannel in weight.indices) {
             // 畳み込みの出力ニューロンを一列にした時のindexを表す
             val weightArray = weight[inputChannel].asIOType1d().value
+            val resizedInput = doubleArrayOf(
+                *DoubleArray(padding) { 0.0 },
+                *inputArray[inputChannel],
+                *DoubleArray(padding) { 0.0 },
+            )
             for (outputChannel in weightArray.indices) {
                 for (kernelTime in weightArray[outputChannel].indices) {
                     weightArray[outputChannel][kernelTime] -= rate * deltaArray[outputChannel]
-                        .innerProduct(inputArray[inputChannel], kernelTime)
+                        .innerProduct(resizedInput, kernelTime)
                 }
             }
         }
@@ -95,5 +102,5 @@ class Conv1d(
         IOType1d(Array(channel) { DoubleArray(input.asIOType1d().value.first().size - kernelSize + 1 + padding * 2) })
 
     override fun createDelta(input: IOType): IOType1d =
-        IOType1d(Array(channel) { DoubleArray(input.asIOType1d().value.first().size - kernelSize + 1) })
+        IOType1d(Array(channel) { DoubleArray(input.asIOType1d().value.first().size - kernelSize + 1 + padding * 2) })
 }

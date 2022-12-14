@@ -65,15 +65,14 @@ fun createMnistModel1d(
         centerConfig = listOf(
             Conv1d(
                 channel = 8,
-                kernelSize = 4,
-                activationFunction = ::identity,
-                padding = 3,
+                kernelSize = 5,
+                activationFunction = ::relu,
+                padding = 4,
                 stride = 1,
             ),
-            Bias1d(::relu),
             Affine(
                 numOfNeuron = 50,
-                activationFunction = ::identity,
+                activationFunction = ::relu,
             ),
             Bias0d(::relu)
         ),
@@ -84,8 +83,8 @@ fun createMnistModel1d(
     (1..epoc).forEach { epoc ->
         println("epoc: $epoc")
         train.forEachIndexed { index, data ->
-            if (index % 1000 == 0) println("i: $index")
             network.train(input = listOf(data.pixels), label = data.label)
+            if (index % 1000 == 0) println("i: $index, loss: ${network.loss()}")
         }
     }
     test.count { data ->
@@ -101,8 +100,8 @@ fun createMnistModel0d(
     val network = Network.create0d(
         inputConfig = Input0dLayer(train.first().imageSize * train.first().imageSize),
         centerConfig = listOf(
-            Affine(numOfNeuron = 50, activationFunction = ::identity),
-            Bias0d(::relu),
+            Affine(numOfNeuron = 50, activationFunction = ::relu),
+//            Bias0d(::relu),
         ),
         outputConfig = Softmax0d(10) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,
@@ -111,8 +110,8 @@ fun createMnistModel0d(
     (1..epoc).forEach { epoc ->
         println("epoc: $epoc")
         train.forEachIndexed { index, data ->
-            if (index % 10000 == 0) println("i: $index")
             network.train(input = data.pixels, label = data.label)
+            if (index % 10000 == 0) println("i: $index, loss: ${network.loss()}")
         }
     }
     test.count { data ->

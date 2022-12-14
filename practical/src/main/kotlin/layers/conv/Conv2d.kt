@@ -11,6 +11,8 @@ import kotlin.random.Random
 class Conv2d(
     private val channel: Int,
     private val kernelSize: Int,
+    private val padding: Int = 0,
+    private val stride: Int = 0,
     override val activationFunction: (Double) -> Double,
 ) : Layer<IOType2d> {
     override fun forward(
@@ -113,7 +115,7 @@ class Conv2d(
     override fun createDelta(input: IOType): IOType2d =
         IOType2d(
             Array(channel) {
-                Array(input.asIOType2d().value.first().size - kernelSize + 1) {
+                Array(input.asIOType2d().value.first().size - kernelSize + 1 + padding * 2) {
                     DoubleArray(input.asIOType2d().value.first().first().size - kernelSize + 1)
                 }
             }

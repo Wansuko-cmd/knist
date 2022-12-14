@@ -10,6 +10,7 @@ import layers.input.Input0dLayer
 import layers.input.Input1dLayer
 import layers.input.Input2dLayer
 import layers.output.layer0d.Output0dLayer
+import kotlin.math.absoluteValue
 import kotlin.random.Random
 
 class Network<T>(
@@ -33,6 +34,8 @@ class Network<T>(
         calcDelta(label)
         backward()
     }
+
+    fun loss() = delta[delta.lastIndex - 1].asIOType0d().value.sumOf { it.absoluteValue }
 
     companion object {
         fun create0d(

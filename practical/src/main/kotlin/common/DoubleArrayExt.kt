@@ -58,9 +58,20 @@ inline fun Array<DoubleArray>.conv2d(
     padding: Int = 0,
     stride: Int = 1,
 ) {
+    val resizedInput = arrayOf(
+        *Array(padding) { DoubleArray(this.size + padding * 2) },
+        *this.map {
+            doubleArrayOf(
+                *DoubleArray(padding) { 0.0 },
+                *it.toTypedArray().toDoubleArray(),
+                *DoubleArray(padding) { 0.0 },
+            )
+        }.toTypedArray(),
+        *Array(padding) { DoubleArray(this.size + padding * 2) },
+    )
     for (row in output.indices step stride) {
         for (column in output[row].indices step stride) {
-            output[row][column] += kernel.innerProduct(this, row, column)
+            output[row][column] += kernel.innerProduct(resizedInput, row, column)
         }
     }
 }
@@ -69,7 +80,7 @@ inline fun DoubleArray.deConv1d(
     kernel: DoubleArray,
     output: DoubleArray,
     padding: Int = 0,
-    stride: Int = 0,
+    stride: Int = 1,
 ) {
     val resizedInput = doubleArrayOf(
         *DoubleArray(kernel.size - padding - 1) { 0.0 },
@@ -86,6 +97,8 @@ inline fun DoubleArray.deConv1d(
 inline fun Array<DoubleArray>.deConv2d(
     kernel: Array<DoubleArray>,
     output: Array<DoubleArray>,
+    padding: Int = 0,
+    stride: Int = 1,
 ) {
     val resizedInput = arrayOf(
         *Array(kernel.size - 1) { DoubleArray(this.size + 2 * kernel.size - 2) },
