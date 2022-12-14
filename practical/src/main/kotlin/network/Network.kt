@@ -25,7 +25,7 @@ class Network<T>(
     fun expect(input: T): Int {
         output[0] = input.toIOType()
         forward()
-        return output.last().asIOType0d().value.toList().maxIndex()
+        return output.last().asIOType0d().inner.toList().maxIndex()
     }
 
     fun train(input: T, label: Int) {
@@ -35,7 +35,7 @@ class Network<T>(
         backward()
     }
 
-    fun loss() = delta[delta.lastIndex - 1].asIOType0d().value.sumOf { it.absoluteValue }
+    fun loss() = delta[delta.lastIndex - 1].asIOType0d().inner.sumOf { it.absoluteValue }
 
     companion object {
         fun create0d(
@@ -124,7 +124,7 @@ class Network<T>(
             }
 
             val calcDelta = { label: Int ->
-                val deltaArray = delta.last().asIOType0d().value
+                val deltaArray = delta.last().asIOType0d()
                 for (index in deltaArray.indices) {
                     deltaArray[index] = if (index == label) 0.9 else 0.1
                 }

@@ -23,8 +23,8 @@ class Sigmoid0d(
                 output: IOType,
                 weight: Array<IOType>,
             ) {
-                val inputArray = input.asIOType0d().value
-                val outputArray = output.asIOType0d().value
+                val inputArray = input.asIOType0d()
+                val outputArray = output.asIOType0d()
                 for (i in inputArray.indices) {
                     outputArray[i] = inputArray[i]
                 }
@@ -36,9 +36,9 @@ class Sigmoid0d(
                 delta: IOType,
                 weight: Array<IOType>,
             ) {
-                val beforeDeltaArray = beforeDelta.asIOType0d().value
-                val beforeOutputArray = beforeOutput.asIOType0d().value
-                val deltaArray = delta.asIOType0d().value
+                val beforeDeltaArray = beforeDelta.asIOType0d()
+                val beforeOutputArray = beforeOutput.asIOType0d()
+                val deltaArray = delta.asIOType0d()
                 for (i in beforeDeltaArray.indices) {
                     val y = beforeOutputArray[i]
                     beforeDeltaArray[i] = (y - deltaArray[i]) * (1 - y) * y
@@ -53,7 +53,7 @@ class Sigmoid0d(
             ) = Unit
 
             override fun createWeight(input: IOType, random: Random): Array<IOType> =
-                Array(input.asIOType0d().value.size) {
+                Array(input.asIOType0d().size) {
                     IOType0d(DoubleArray(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
                 }
 

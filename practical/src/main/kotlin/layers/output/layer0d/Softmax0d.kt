@@ -24,10 +24,10 @@ data class Softmax0d(
                     output: IOType,
                     weight: Array<IOType>,
                 ) {
-                    val inputArray = input.asIOType0d().value
-                    val outputArray = output.asIOType0d().value
-                    val max = inputArray.max()
-                    val exp = inputArray.map { exp(it - max) }
+                    val inputArray = input.asIOType0d()
+                    val outputArray = output.asIOType0d()
+                    val max = inputArray.inner.max()
+                    val exp = inputArray.inner.map { exp(it - max) }
                     val sum = exp.sum()
                     for (inputIndex in inputArray.indices) {
                         inputArray[inputIndex] = exp[inputIndex] / sum
@@ -41,9 +41,9 @@ data class Softmax0d(
                     delta: IOType,
                     weight: Array<IOType>,
                 ) {
-                    val beforeDeltaArray = beforeDelta.asIOType0d().value
-                    val outputArray = beforeOutput.asIOType0d().value
-                    val deltaArray = delta.asIOType0d().value
+                    val beforeDeltaArray = beforeDelta.asIOType0d()
+                    val outputArray = beforeOutput.asIOType0d()
+                    val deltaArray = delta.asIOType0d()
                     for (i in beforeDeltaArray.indices) {
                         val q = if (deltaArray[i] > 0.5) 1.0 else 0.0
                         val y = outputArray[i]
@@ -59,7 +59,7 @@ data class Softmax0d(
                 ) = Unit
 
                 override fun createWeight(input: IOType, random: Random): Array<IOType> =
-                    Array(input.asIOType0d().value.size) {
+                    Array(input.asIOType0d().size) {
                         IOType0d(DoubleArray(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
                     }
 
