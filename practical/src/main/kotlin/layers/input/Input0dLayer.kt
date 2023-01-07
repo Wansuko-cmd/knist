@@ -27,6 +27,6 @@ data class Input0dLayer(val size: Int) : Layer<IOType0d> {
     ) = throw DomainException.UnreachableCodeException()
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         throw DomainException.UnreachableCodeException()
-    override fun createOutput(input: IOType): IOType0d = IOType0d(DoubleArray(size) { 0.0 })
-    override fun createDelta(input: IOType): IOType0d = IOType0d(DoubleArray(size) { 0.0 })
+    override fun createOutput(input: IOType): IOType0d = IOType0d(MutableList(size) { 0.0 })
+    override fun createDelta(input: IOType): IOType0d = IOType0d(MutableList(size) { 0.0 })
 }

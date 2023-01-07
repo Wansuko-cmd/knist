@@ -45,7 +45,6 @@ class Affine(
         val beforeOutputArray = beforeOutput.asIOType0d()
         val deltaArray = delta.asIOType0d()
         for (inputIndex in beforeDeltaArray.indices) {
-            println(deltaArray.innerProduct(weight[inputIndex].asIOType0d(), 0))
             beforeDeltaArray[inputIndex] = step(beforeOutputArray[inputIndex]) *
                 deltaArray.innerProduct(weight[inputIndex].asIOType0d(), 0)
         }
@@ -69,9 +68,9 @@ class Affine(
 
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         Array(input.asIOType0d().size) {
-            IOType0d(DoubleArray(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
+            IOType0d(MutableList(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
         }
 
-    override fun createOutput(input: IOType): IOType0d = IOType0d(DoubleArray(numOfNeuron))
-    override fun createDelta(input: IOType): IOType0d = IOType0d(DoubleArray(numOfNeuron))
+    override fun createOutput(input: IOType): IOType0d = IOType0d(MutableList(numOfNeuron) { 0.0 })
+    override fun createDelta(input: IOType): IOType0d = IOType0d(MutableList(numOfNeuron) { 0.0 })
 }

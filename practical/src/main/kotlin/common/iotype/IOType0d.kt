@@ -4,9 +4,9 @@ package common.iotype
 
 import exception.DomainException
 
-class IOType0d(value: DoubleArray) : IOType {
+class IOType0d(value: MutableList<Double>) : IOType {
 
-    val inner: DoubleArray = value
+    var inner: MutableList<Double> = value
     val indices = value.indices
     val size: Int = value.size
 

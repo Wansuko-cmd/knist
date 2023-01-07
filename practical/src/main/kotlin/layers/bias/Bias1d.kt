@@ -1,3 +1,5 @@
+@file:Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
+
 package layers.bias
 
 import common.iotype.IOType
@@ -8,7 +10,7 @@ import kotlin.random.Random
 class Bias1d(
     override val activationFunction: (Double) -> Double,
 ) : Layer<IOType1d> {
-    override fun forward(
+    override inline fun forward(
         input: IOType,
         output: IOType,
         weight: Array<IOType>,
@@ -30,7 +32,7 @@ class Bias1d(
         delta: IOType,
         weight: Array<IOType>,
     ) {
-        beforeDelta.asIOType0d().inner.copyInto(delta.asIOType0d().inner)
+        beforeDelta.asIOType0d().inner = delta.asIOType0d().inner
     }
 
     override fun backward(
@@ -51,16 +53,16 @@ class Bias1d(
 
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         Array(input.asIOType1d().indexSize) {
-            IOType1d(
-                Array(input.asIOType1d().indexSize) {
-                    DoubleArray(input.asIOType1d().timeSize) { random.nextDouble(-1.0, 1.0) }
+            IOType1d.create(
+                MutableList(input.asIOType1d().indexSize) {
+                    MutableList(input.asIOType1d().timeSize) { random.nextDouble(-1.0, 1.0) }
                 },
             )
         }
 
     override fun createOutput(input: IOType): IOType1d =
-        IOType1d(Array(input.asIOType1d().indexSize) { DoubleArray(input.asIOType1d().timeSize) })
+        IOType1d.create(MutableList(input.asIOType1d().indexSize) { MutableList(input.asIOType1d().timeSize) { 0.0 } })
 
     override fun createDelta(input: IOType): IOType1d =
-        IOType1d(Array(input.asIOType1d().indexSize) { DoubleArray(input.asIOType1d().timeSize) })
+        IOType1d.create(MutableList(input.asIOType1d().indexSize) { MutableList(input.asIOType1d().timeSize) { 0.0 } })
 }

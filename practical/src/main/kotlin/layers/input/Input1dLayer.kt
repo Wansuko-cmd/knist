@@ -28,9 +28,9 @@ data class Input1dLayer(val channel: Int, val inputSize: Int) : Layer<IOType1d> 
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         throw DomainException.UnreachableCodeException()
     override fun createOutput(input: IOType): IOType1d =
-        IOType1d(Array(channel) { DoubleArray(inputSize) })
+        IOType1d.create(MutableList(channel) { MutableList(inputSize) { 0.0 } })
 
     // 実際にこのdelta配列が使われることはない
     override fun createDelta(input: IOType): IOType1d =
-        IOType1d(Array(channel) { DoubleArray(inputSize) })
+        IOType1d.create(MutableList(channel) { MutableList(inputSize) { 0.0 } })
 }

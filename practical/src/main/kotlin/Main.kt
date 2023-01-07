@@ -9,5 +9,6 @@ import dataset.mnist.createMnistModel2d
 
 fun main() {
 //    createIrisModel(1000)
-    createMnistModel1d(3, 1)
+    createMnistModel0d(2, 0)
 }
+

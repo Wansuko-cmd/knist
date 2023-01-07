@@ -22,6 +22,8 @@ class Network<T>(
     private val backward: () -> Unit,
     private val toIOType: T.() -> IOType,
 ) {
+    var lossValue = 0.0 to 0
+
     fun expect(input: T): Int {
         output[0] = input.toIOType()
         forward()
@@ -33,9 +35,23 @@ class Network<T>(
         forward()
         calcDelta(label)
         backward()
+        lossValue =
+            lossValue.first + delta[delta.lastIndex - 1].asIOType0d().inner.sumOf { it.absoluteValue } to lossValue.second + 1
     }
 
-    fun loss() = delta[delta.lastIndex - 1].asIOType0d().inner.sumOf { it.absoluteValue }
+    fun loss() = lossValue.also {
+//        println("weight: ${weights.map { it.map { it.asIOType0d().inner.filter { it.absoluteValue > 1.0 } } }}")
+//        println(it)
+//        if (weights
+//            .flatten()
+//            .flatMap { it.asIOType0d().inner }
+//            .any { it.isNaN() }
+//        ) {
+//            throw Exception()
+//        }
+    }
+        .let { it.first / it.second }
+        .also { lossValue = 0.0 to 0 }
 
     companion object {
         fun create0d(
@@ -50,7 +66,7 @@ class Network<T>(
                 layers = layers,
                 random = random,
                 rate = rate,
-                toIOType = { IOType0d(this.toDoubleArray()) },
+                toIOType = { IOType0d(this.toMutableList()) },
             )
         }
 
@@ -66,7 +82,7 @@ class Network<T>(
                 layers = layers,
                 random = random,
                 rate = rate,
-                toIOType = { IOType1d(this.map { it.toDoubleArray() }.toTypedArray()) },
+                toIOType = { IOType1d.create(this.map { it.toMutableList() }.toMutableList()) },
             )
         }
 
@@ -88,7 +104,7 @@ class Network<T>(
                             channel.map { row ->
                                 row.toDoubleArray()
                             }.toTypedArray()
-                        }.toTypedArray()
+                        }.toTypedArray(),
                     )
                 },
             )
@@ -101,7 +117,7 @@ class Network<T>(
             toIOType: T.() -> IOType,
         ): Network<T> {
             // 前の層の出力（次の層の入力）の個数を数えるために利用
-            var beforeOutput: IOType = IOType0d(doubleArrayOf())
+            var beforeOutput: IOType = IOType0d(mutableListOf())
             val output: Array<IOType> = Array(layers.size) { i ->
                 layers[i].createOutput(beforeOutput).also { beforeOutput = it }
             }
@@ -111,7 +127,7 @@ class Network<T>(
             val delta: Array<IOType> = Array(layers.size) { i ->
                 // 最終層は delta = 教師信号とする
                 layers.getOrElse(i) { layers.last() }
-                    .createDelta(output.getOrElse(i - 1) { IOType0d(doubleArrayOf()) })
+                    .createDelta(output.getOrElse(i - 1) { IOType0d(mutableListOf()) })
             }
             val forward = {
                 for (index in 0 until layers.size - 1) {

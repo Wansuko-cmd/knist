@@ -54,13 +54,13 @@ class Sigmoid0d(
 
             override fun createWeight(input: IOType, random: Random): Array<IOType> =
                 Array(input.asIOType0d().size) {
-                    IOType0d(DoubleArray(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
+                    IOType0d(MutableList(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
                 }
 
             override fun createOutput(input: IOType): IOType0d =
-                IOType0d(DoubleArray(numOfNeuron) { 0.0 })
+                IOType0d(MutableList(numOfNeuron) { 0.0 })
 
-            override fun createDelta(input: IOType): IOType0d = IOType0d(DoubleArray(numOfNeuron) { 0.0 })
+            override fun createDelta(input: IOType): IOType0d = IOType0d(MutableList(numOfNeuron) { 0.0 })
         },
     )
 }

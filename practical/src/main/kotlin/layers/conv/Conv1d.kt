@@ -2,17 +2,15 @@
 
 package layers.conv
 
-import common.conv1d
-import common.deConv1d
-import common.innerProduct
 import common.iotype.IOType
 import common.iotype.IOType0d
 import common.iotype.IOType1d
 import common.iotype.conv1d
 import common.iotype.deConv1d
 import common.iotype.innerProduct
-import layers.Layer
+import common.iotype.resize
 import kotlin.random.Random
+import layers.Layer
 
 class Conv1d(
     private val channel: Int,
@@ -62,7 +60,7 @@ class Conv1d(
             val weightArray = weight[inputChannel].asIOType1d()
             for (outputChannel in weightArray.indices) {
                 weightArray[outputChannel].deConv1d(
-                    kernel = IOType0d(deltaArray[outputChannel].inner.reversedArray()),
+                    kernel = IOType0d(deltaArray[outputChannel].inner.reversed().toMutableList()),
                     output = beforeDeltaArray[inputChannel],
                     padding = padding,
                     stride = stride,
@@ -83,15 +81,10 @@ class Conv1d(
         for (inputChannel in weight.indices) {
             // 畳み込みの出力ニューロンを一列にした時のindexを表す
             val weightArray = weight[inputChannel].asIOType1d()
-            val resizedInput = doubleArrayOf(
-                *DoubleArray(padding) { 0.0 },
-                *inputArray[inputChannel].inner,
-                *DoubleArray(padding) { 0.0 },
-            )
             for (outputChannel in weightArray.indices) {
                 for (kernelTime in weightArray[outputChannel].indices) {
                     weightArray[outputChannel][kernelTime] -= rate * deltaArray[outputChannel]
-                        .innerProduct(IOType0d(resizedInput), kernelTime)
+                        .innerProduct(inputArray[inputChannel].resize(padding), kernelTime)
                 }
             }
         }
@@ -99,12 +92,12 @@ class Conv1d(
 
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         Array(input.asIOType1d().indexSize) {
-            IOType1d(Array(channel) { DoubleArray(kernelSize) { random.nextDouble(-1.0, 1.0) } })
+            IOType1d.create(MutableList(channel) { MutableList(kernelSize) { random.nextDouble(-1.0, 1.0) } })
         }
 
     override fun createOutput(input: IOType): IOType1d =
-        IOType1d(Array(channel) { DoubleArray(input.asIOType1d().timeSize - kernelSize + 1 + padding * 2) })
+        IOType1d.create(MutableList(channel) { MutableList(input.asIOType1d().timeSize - kernelSize + 1 + padding * 2) { 0.0 } })
 
     override fun createDelta(input: IOType): IOType1d =
-        IOType1d(Array(channel) { DoubleArray(input.asIOType1d().timeSize - kernelSize + 1 + padding * 2) })
+        IOType1d.create(MutableList(channel) { MutableList(input.asIOType1d().timeSize - kernelSize + 1 + padding * 2) { 0.0 } })
 }

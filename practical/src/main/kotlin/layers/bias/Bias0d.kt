@@ -28,7 +28,7 @@ class Bias0d(
         delta: IOType,
         weight: Array<IOType>,
     ) {
-        beforeDelta.asIOType0d().inner.copyInto(delta.asIOType0d().inner)
+        beforeDelta.asIOType0d().inner = delta.asIOType0d().inner
     }
 
     override inline fun backward(
@@ -46,11 +46,11 @@ class Bias0d(
 
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         Array(input.asIOType0d().size) {
-            IOType0d(DoubleArray(input.asIOType0d().size) { random.nextDouble(-1.0, 1.0) })
+            IOType0d(MutableList(input.asIOType0d().size) { random.nextDouble(-1.0, 1.0) })
         }
 
     override fun createOutput(input: IOType): IOType0d =
-        IOType0d(DoubleArray(input.asIOType0d().size))
+        IOType0d(MutableList(input.asIOType0d().size) { 0.0 })
 
-    override fun createDelta(input: IOType): IOType0d = IOType0d(DoubleArray(input.asIOType0d().size))
+    override fun createDelta(input: IOType): IOType0d = IOType0d(MutableList(input.asIOType0d().size) { 0.0 })
 }
