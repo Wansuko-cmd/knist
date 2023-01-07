@@ -41,7 +41,7 @@ data class MnistDataset(
                     (1..imageHeight * imageWidth)
                         .map { imageStream.readUnsignedByte() }
                         .map { it.toDouble() - (PIXEL_DEPTH / 2.0) }
-                        .map { it / PIXEL_DEPTH + 0.5 }
+                        .map { it / PIXEL_DEPTH }
                 }
             return labels.zip(images) { label, image -> MnistDataset(image, label, imageWidth) }
         }

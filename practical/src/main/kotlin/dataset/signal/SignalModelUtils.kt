@@ -1,7 +1,10 @@
 package dataset.signal
 
+import common.identity
 import common.relu
 import layers.affine.Affine
+import layers.bias.Bias0d
+import layers.bias.Bias1d
 import layers.conv.Conv1d
 import layers.input.Input0dLayer
 import layers.output.layer0d.Sigmoid0d
@@ -20,21 +23,29 @@ fun createSignalModel(
             Conv1d(
                 channel = 32,
                 kernelSize = 5,
-                activationFunction = ::relu,
+                activationFunction = ::identity,
+                padding = 4,
+                stride = 1,
             ),
+            Bias1d(::relu),
             Conv1d(
                 channel = 64,
                 kernelSize = 5,
-                activationFunction = ::relu,
+                activationFunction = ::identity,
+                padding = 4,
+                stride = 1,
             ),
+            Bias1d(::relu),
             Affine(
                 numOfNeuron = 50,
-                activationFunction = ::relu,
+                activationFunction = ::identity,
             ),
+            Bias0d(::relu),
             Affine(
                 numOfNeuron = 32,
-                activationFunction = ::relu,
+                activationFunction = ::identity,
             ),
+            Bias0d(::relu),
         ),
         outputConfig = Sigmoid0d(2) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
         random = seed?.let { Random(it) } ?: Random,

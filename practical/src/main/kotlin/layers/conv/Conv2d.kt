@@ -11,6 +11,8 @@ import kotlin.random.Random
 class Conv2d(
     private val channel: Int,
     private val kernelSize: Int,
+    private val padding: Int = 0,
+    private val stride: Int = 0,
     override val activationFunction: (Double) -> Double,
 ) : Layer<IOType2d> {
     override fun forward(
@@ -20,7 +22,9 @@ class Conv2d(
     ) {
         val inputArray = input.asIOType2d().value
         val outputArray = output.asIOType2d().value
+
         for (outputChannel in outputArray.indices) {
+            // 値の初期化
             for (outputRow in outputArray[outputChannel].indices) {
                 outputArray[outputChannel][outputRow].fill(0.0)
             }
@@ -52,7 +56,7 @@ class Conv2d(
 
         // 入力チャンネル順に計算を行う
         for (inputChannel in beforeOutputArray.indices) {
-            for (inputRow in beforeOutputArray[inputChannel].indices) {
+            for (inputRow in beforeDeltaArray[inputChannel].indices) {
                 beforeDeltaArray[inputChannel][inputRow].fill(0.0)
             }
             val weightArray = weight[inputChannel].asIOType2d().value
@@ -100,8 +104,20 @@ class Conv2d(
         }
 
     override fun createOutput(input: IOType): IOType2d =
-        IOType2d(Array(channel) { Array(kernelSize) { DoubleArray(kernelSize) } })
+        IOType2d(
+            Array(channel) {
+                Array(input.asIOType2d().value.first().size - kernelSize + 1) {
+                    DoubleArray(input.asIOType2d().value.first().first().size - kernelSize + 1)
+                }
+            }
+        )
 
     override fun createDelta(input: IOType): IOType2d =
-        IOType2d(Array(channel) { Array(kernelSize) { DoubleArray(kernelSize) } })
+        IOType2d(
+            Array(channel) {
+                Array(input.asIOType2d().value.first().size - kernelSize + 1 + padding * 2) {
+                    DoubleArray(input.asIOType2d().value.first().first().size - kernelSize + 1)
+                }
+            }
+        )
 }

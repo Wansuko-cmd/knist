@@ -31,7 +31,7 @@ class Bias2d(
         delta: IOType,
         weight: Array<IOType>,
     ) {
-        beforeDelta.asIOType0d().value.copyInto(delta.asIOType0d().value)
+        beforeDelta.asIOType0d().inner = delta.asIOType0d().inner
     }
 
     override fun backward(

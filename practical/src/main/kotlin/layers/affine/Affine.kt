@@ -2,9 +2,9 @@
 
 package layers.affine
 
-import common.innerProduct
 import common.iotype.IOType
 import common.iotype.IOType0d
+import common.iotype.innerProduct
 import common.step
 import layers.Layer
 import kotlin.random.Random
@@ -18,12 +18,12 @@ class Affine(
         output: IOType,
         weight: Array<IOType>,
     ) {
-        val inputArray = input.asIOType0d().value
-        val outputArray = output.asIOType0d().value
+        val inputArray = input.asIOType0d()
+        val outputArray = output.asIOType0d()
         for (outputIndex in outputArray.indices) {
             var sum = 0.0
             for (inputIndex in inputArray.indices) {
-                sum += inputArray[inputIndex] * weight[inputIndex].asIOType0d().value[outputIndex]
+                sum += inputArray[inputIndex] * weight[inputIndex].asIOType0d()[outputIndex]
             }
             outputArray[outputIndex] = activationFunction(sum)
         }
@@ -41,12 +41,12 @@ class Affine(
         delta: IOType,
         weight: Array<IOType>,
     ) {
-        val beforeDeltaArray = beforeDelta.asIOType0d().value
-        val beforeOutputArray = beforeOutput.asIOType0d().value
-        val deltaArray = delta.asIOType0d().value
+        val beforeDeltaArray = beforeDelta.asIOType0d()
+        val beforeOutputArray = beforeOutput.asIOType0d()
+        val deltaArray = delta.asIOType0d()
         for (inputIndex in beforeDeltaArray.indices) {
             beforeDeltaArray[inputIndex] = step(beforeOutputArray[inputIndex]) *
-                deltaArray.innerProduct(weight[inputIndex].asIOType0d().value, 0)
+                deltaArray.innerProduct(weight[inputIndex].asIOType0d(), 0)
         }
     }
 
@@ -56,20 +56,21 @@ class Affine(
         input: IOType,
         rate: Double,
     ) {
-        val inputArray = input.asIOType0d().value
-        val deltaArray = delta.asIOType0d().value
+        val inputArray = input.asIOType0d()
+        val deltaArray = delta.asIOType0d()
         for (before in weight.indices) {
-            for (after in weight[before].asIOType0d().value.indices) {
-                weight[before].asIOType0d().value[after] -= rate * deltaArray[after] * inputArray[before]
+            val weightArray = weight[before].asIOType0d()
+            for (after in weightArray.indices) {
+                weightArray[after] -= rate * deltaArray[after] * inputArray[before]
             }
         }
     }
 
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
-        Array(input.asIOType0d().value.size) {
-            IOType0d(DoubleArray(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
+        Array(input.asIOType0d().size) {
+            IOType0d(MutableList(numOfNeuron) { random.nextDouble(-1.0, 1.0) })
         }
 
-    override fun createOutput(input: IOType): IOType0d = IOType0d(DoubleArray(numOfNeuron))
-    override fun createDelta(input: IOType): IOType0d = IOType0d(DoubleArray(numOfNeuron))
+    override fun createOutput(input: IOType): IOType0d = IOType0d(MutableList(numOfNeuron) { 0.0 })
+    override fun createDelta(input: IOType): IOType0d = IOType0d(MutableList(numOfNeuron) { 0.0 })
 }

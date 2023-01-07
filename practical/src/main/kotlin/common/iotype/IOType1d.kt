@@ -4,24 +4,31 @@ package common.iotype
 
 import exception.DomainException
 
-data class IOType1d(val value: Array<DoubleArray>) : IOType {
+class IOType1d(
+    val inner: MutableList<Double>,
+    val indexSize: Int,
+    val timeSize: Int,
+) : IOType {
 
-    override inline fun asIOType0d(): IOType0d = IOType0d(value.fold(doubleArrayOf()) { acc, a -> acc + a })
+    val indices = 0 until indexSize
+
+    inline operator fun get(index: Int): IOType0d =
+        IOType0d(inner.subList(timeSize * index, timeSize * index + timeSize))
+
+    inline operator fun get(index: Int, time: Int) = inner[timeSize * index + time]
+    inline operator fun set(index: Int, time: Int, value: Double) {
+        inner[timeSize * index + time] = value
+    }
+
+    override inline fun asIOType0d(): IOType0d = IOType0d(inner)
     override inline fun asIOType1d(): IOType1d = this
     override inline fun asIOType2d(): IOType2d = throw DomainException.CannotCastDimensionException()
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as IOType1d
-
-        if (!value.contentDeepEquals(other.value)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return value.contentDeepHashCode()
+    companion object {
+        fun create(value: List<List<Double>>) = IOType1d(
+            inner = value.flatten().toMutableList(),
+            indexSize = value.size,
+            timeSize = value.first().size,
+        )
     }
 }

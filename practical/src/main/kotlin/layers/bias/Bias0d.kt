@@ -15,10 +15,10 @@ class Bias0d(
         output: IOType,
         weight: Array<IOType>,
     ) {
-        val inputArray = input.asIOType0d().value
-        val outputArray = output.asIOType0d().value
+        val inputArray = input.asIOType0d()
+        val outputArray = output.asIOType0d()
         for (index in inputArray.indices) {
-            outputArray[index] = activationFunction(inputArray[index] + weight[index].asIOType0d().value[index])
+            outputArray[index] = activationFunction(inputArray[index] + weight[index].asIOType0d()[index])
         }
     }
 
@@ -28,7 +28,7 @@ class Bias0d(
         delta: IOType,
         weight: Array<IOType>,
     ) {
-        beforeDelta.asIOType0d().value.copyInto(delta.asIOType0d().value)
+        beforeDelta.asIOType0d().inner = delta.asIOType0d().inner
     }
 
     override inline fun backward(
@@ -37,20 +37,20 @@ class Bias0d(
         input: IOType,
         rate: Double,
     ) {
-        val deltaArray = delta.asIOType0d().value
-        val inputArray = input.asIOType0d().value
+        val deltaArray = delta.asIOType0d()
+        val inputArray = input.asIOType0d()
         for (index in weight.indices) {
-            weight[index].asIOType0d().value[index] -= rate * deltaArray[index] * inputArray[index]
+            weight[index].asIOType0d()[index] -= rate * deltaArray[index] * inputArray[index]
         }
     }
 
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
-        Array(input.asIOType0d().value.size) {
-            IOType0d(DoubleArray(input.asIOType0d().value.size) { random.nextDouble(-1.0, 1.0) })
+        Array(input.asIOType0d().size) {
+            IOType0d(MutableList(input.asIOType0d().size) { random.nextDouble(-1.0, 1.0) })
         }
 
     override fun createOutput(input: IOType): IOType0d =
-        IOType0d(DoubleArray(input.asIOType0d().value.size))
+        IOType0d(MutableList(input.asIOType0d().size) { 0.0 })
 
-    override fun createDelta(input: IOType): IOType0d = IOType0d(DoubleArray(input.asIOType0d().value.size))
+    override fun createDelta(input: IOType): IOType0d = IOType0d(MutableList(input.asIOType0d().size) { 0.0 })
 }
