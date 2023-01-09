@@ -19,3 +19,4 @@ rootProject.name = "perceptron"
 include(":functional")
 include(":optimize")
 include(":practical")
+include(":tensor")
