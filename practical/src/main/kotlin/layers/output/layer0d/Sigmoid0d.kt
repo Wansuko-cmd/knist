@@ -40,8 +40,9 @@ class Sigmoid0d(
                 val beforeOutputArray = beforeOutput.asIOType0d()
                 val deltaArray = delta.asIOType0d()
                 for (i in beforeDeltaArray.indices) {
+                    val q = if (deltaArray[i] > 0.5) 0.9 else 0.1
                     val y = beforeOutputArray[i]
-                    beforeDeltaArray[i] = (y - deltaArray[i]) * (1 - y) * y
+                    beforeDeltaArray[i] = (y - q) * (1 - y) * y
                 }
             }
 

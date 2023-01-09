@@ -36,20 +36,10 @@ class Network<T>(
         calcDelta(label)
         backward()
         lossValue =
-            lossValue.first + delta[delta.lastIndex - 1].asIOType0d().inner.sumOf { it.absoluteValue } to lossValue.second + 1
+            lossValue.first + delta[delta.lastIndex - 1].asIOType0d().inner.map { it.absoluteValue }.average() to lossValue.second + 1
     }
 
-    fun loss() = lossValue.also {
-//        println("weight: ${weights.map { it.map { it.asIOType0d().inner.filter { it.absoluteValue > 1.0 } } }}")
-//        println(it)
-//        if (weights
-//            .flatten()
-//            .flatMap { it.asIOType0d().inner }
-//            .any { it.isNaN() }
-//        ) {
-//            throw Exception()
-//        }
-    }
+    fun loss() = lossValue
         .let { it.first / it.second }
         .also { lossValue = 0.0 to 0 }
 
@@ -141,9 +131,8 @@ class Network<T>(
 
             val calcDelta = { label: Int ->
                 val deltaArray = delta.last().asIOType0d()
-                for (index in deltaArray.indices) {
-                    deltaArray[index] = if (index == label) 0.9 else 0.1
-                }
+                deltaArray.inner.fill(0.0)
+                deltaArray[label] = 1.0
                 for (index in layers.size - 1 downTo 2) {
                     layers[index].calcDelta(
                         beforeDelta = delta[index - 1],

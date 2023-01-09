@@ -11,4 +11,3 @@ fun main() {
 //    createIrisModel(1000)
     createMnistModel0d(2, 0)
 }
-

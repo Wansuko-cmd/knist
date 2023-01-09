@@ -44,10 +44,10 @@ data class Softmax0d(
                     val beforeDeltaArray = beforeDelta.asIOType0d()
                     val outputArray = beforeOutput.asIOType0d()
                     val deltaArray = delta.asIOType0d()
+                    beforeDeltaArray.inner.fill(0.0)
                     for (i in beforeDeltaArray.indices) {
-                        val q = if (deltaArray[i] > 0.5) 1.0 else 0.0
                         val y = outputArray[i]
-                        beforeDeltaArray[i] = y - q
+                        beforeDeltaArray[i] = y - deltaArray[i]
                     }
                 }
 
