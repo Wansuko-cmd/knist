@@ -13,7 +13,7 @@ abstract class Tensor(
         backwardBefore()
     }
 
-    private fun backwardBefore() {
+    fun backwardBefore() {
         before.forEach { it.calcGrad() }
         before.forEach { it.backwardBefore() }
     }

@@ -13,11 +13,11 @@ fun createIrisModel(
     epoc: Int,
     seed: Int? = null,
 ) {
-    val (train, test) = irisDatasets.shuffled().chunked(120)
+    val (train, test) = irisDatasets.shuffled() to irisDatasets.shuffled()
     val network = Network.create0d(
         Input0dLayer(4),
         listOf(
-            Affine(50, ::identity),
+            Affine(50, ::relu),
             Bias0d(::relu)
         ),
         Softmax0d(3) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },

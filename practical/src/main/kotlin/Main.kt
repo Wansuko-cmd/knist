@@ -8,6 +8,6 @@ import dataset.mnist.createMnistModel1d
 import dataset.mnist.createMnistModel2d
 
 fun main() {
-//    createIrisModel(1000)
-    createMnistModel0d(2, 0)
+    createIrisModel(1000)
+//    createMnistModel0d(2, 0)
 }

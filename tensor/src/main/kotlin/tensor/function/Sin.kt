@@ -1,5 +1,6 @@
-package tensor
+package tensor.function
 
+import tensor.Tensor
 import kotlin.math.cos
 import kotlin.math.sin
 
