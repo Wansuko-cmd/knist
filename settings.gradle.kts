@@ -15,8 +15,9 @@ dependencyResolutionManagement {
 }
 rootProject.name = "perceptron"
 
-include(":functional")
-include(":optimize")
 include(":practical")
-include(":tensor")
-include(":logical")
+
+include(":deprecated:functional")
+include(":deprecated:optimize")
+include(":deprecated:tensor")
+include(":deprecated:logical")
