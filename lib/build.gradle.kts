@@ -1,7 +1,20 @@
 plugins {
-    kotlin("jvm") version "2.1.20"
+    kotlin("multiplatform") version "2.1.20"
 }
 
-dependencies {
-    implementation(libs.coroutine)
+kotlin {
+    applyDefaultHierarchyTemplate()
+    jvm()
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.coroutine)
+            }
+        }
+
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
+    }
 }
