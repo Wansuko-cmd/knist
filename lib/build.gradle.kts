@@ -4,10 +4,4 @@ plugins {
 
 dependencies {
     implementation(libs.coroutine)
-    testImplementation(libs.bundles.test)
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnit()
 }
