@@ -7,8 +7,8 @@ import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
 import org.jetbrains.kotlinx.multik.ndarray.operations.minus
 import org.jetbrains.kotlinx.multik.ndarray.operations.plus
 
-class Bias1d(num: Int) : Layer<D1> {
-    private var weight: D1Array<Double> = mk.ndarray(List(num) { 0.0 })
+class Bias1d(numOfInput: Int) : Layer<D1> {
+    private var weight: D1Array<Double> = mk.ndarray(List(numOfInput) { 0.0 })
     override fun forward(input: D1Array<Double>): D1Array<Double> {
         return input + weight
     }
