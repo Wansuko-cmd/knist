@@ -2,24 +2,25 @@
 
 package common.iotype
 
-import common.sp
-import jdk.incubator.vector.DoubleVector
-import jdk.incubator.vector.VectorOperators
+//import common.sp
+//import jdk.incubator.vector.DoubleVector
+//import jdk.incubator.vector.VectorOperators
 
 inline fun IOType0d.innerProduct(other: IOType0d, otherFrom: Int): Double {
-    var sum = 0.0
-    var index = 0
-    while (index < sp.loopBound(this.size)) {
-        val left = DoubleVector.fromArray(sp, this.inner.toDoubleArray(), index)
-        val right = DoubleVector.fromArray(sp, other.inner.toDoubleArray(), index + otherFrom)
-        sum += left.mul(right).reduceLanes(VectorOperators.ADD)
-        index += sp.length()
-    }
-    while (index < this.size) {
-        sum += this[index] * other[index + otherFrom]
-        index++
-    }
-    return sum
+    return (this.indices).sumOf { this[it] * other[it] }
+//    var sum = 0.0
+//    var index = 0
+//    while (index < sp.loopBound(this.size)) {
+//        val left = DoubleVector.fromArray(sp, this.inner.toDoubleArray(), index)
+//        val right = DoubleVector.fromArray(sp, other.inner.toDoubleArray(), index + otherFrom)
+//        sum += left.mul(right).reduceLanes(VectorOperators.ADD)
+//        index += sp.length()
+//    }
+//    while (index < this.size) {
+//        sum += this[index] * other[index + otherFrom]
+//        index++
+//    }
+//    return sum
 }
 
 inline fun IOType1d.innerProduct(

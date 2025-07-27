@@ -2,26 +2,28 @@
 
 package common
 
-import jdk.incubator.vector.DoubleVector
-import jdk.incubator.vector.VectorOperators
-import jdk.incubator.vector.VectorSpecies
-
-val sp: VectorSpecies<Double> = DoubleVector.SPECIES_PREFERRED
+//import jdk.incubator.vector.DoubleVector
+//import jdk.incubator.vector.VectorOperators
+//import jdk.incubator.vector.VectorSpecies
+//import jdk.internal.vm.vector.VectorSupport
+//
+//val sp: VectorSupport.VectorSpecies<Double> = DoubleVector.SPECIES_PREFERRED
 
 inline fun DoubleArray.innerProduct(other: DoubleArray, otherFrom: Int): Double {
-    var sum = 0.0
-    var index = 0
-    while (index < sp.loopBound(this.size)) {
-        val left = DoubleVector.fromArray(sp, this, index)
-        val right = DoubleVector.fromArray(sp, other, index + otherFrom)
-        sum += left.mul(right).reduceLanes(VectorOperators.ADD)
-        index += sp.length()
-    }
-    while (index < this.size) {
-        sum += this[index] * other[index + otherFrom]
-        index++
-    }
-    return sum
+    TODO()
+//    var sum = 0.0
+//    var index = 0
+//    while (index < sp.loopBound(this.size)) {
+//        val left = DoubleVector.fromArray(sp, this, index)
+//        val right = DoubleVector.fromArray(sp, other, index + otherFrom)
+//        sum += left.mul(right).reduceLanes(VectorOperators.ADD)
+//        index += sp.length()
+//    }
+//    while (index < this.size) {
+//        sum += this[index] * other[index + otherFrom]
+//        index++
+//    }
+//    return sum
 }
 
 inline fun Array<DoubleArray>.innerProduct(
