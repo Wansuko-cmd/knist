@@ -7,3 +7,8 @@ interface Layer<D : Dimension> {
     fun forward(input: NDArray<Double, D>): NDArray<Double, D>
     fun backward(delta: NDArray<Double, D>): NDArray<Double, D>
 }
+
+interface Layer2<IOType> {
+    fun expect(input: IOType): IOType
+    fun train(input: IOType, delta: (output: IOType) -> IOType): IOType
+}
