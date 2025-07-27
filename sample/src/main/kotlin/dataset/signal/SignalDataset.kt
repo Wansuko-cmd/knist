@@ -1,6 +1,5 @@
 package dataset.signal
 
-import kotlin.math.cos
 import kotlin.math.sign
 import kotlin.math.sin
 import kotlin.random.Random

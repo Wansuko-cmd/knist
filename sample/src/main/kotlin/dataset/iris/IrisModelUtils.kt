@@ -1,6 +1,5 @@
 package dataset.iris
 
-import common.identity
 import common.relu
 import layers.affine.Affine
 import layers.bias.Bias0d
