@@ -6,7 +6,7 @@ import com.wsr.common.IOType2d
 class Affine1d(
     private val numOfInput: Int,
     private val numOfNeuron: Int,
-) : Layer2<IOType1d> {
+) : Layer<IOType1d> {
     private val weight: IOType2d = Array(numOfInput) { Array(numOfNeuron) { 0.0 } }
     override fun expect(input: IOType1d): IOType1d = forward(input)
 
