@@ -1,17 +1,17 @@
 package dataset.mnist
 
-import common.identity
-import common.relu
-import layers.affine.Affine
-import layers.bias.Bias0d
-import layers.input.Input0dLayer
-import layers.output.layer0d.Softmax0d
-import layers.conv.Conv1d
-import layers.input.Input1dLayer
-import layers.input.Input2dLayer
-import network.Network
+import com.wsr.common.identity
+import com.wsr.common.relu
+import com.wsr.layers.affine.Affine
+import com.wsr.layers.bias.Bias0d
+import com.wsr.layers.input.Input0dLayer
+import com.wsr.layers.output.layer0d.Softmax0d
+import com.wsr.layers.conv.Conv1d
+import com.wsr.layers.input.Input1dLayer
+import com.wsr.layers.input.Input2dLayer
+import com.wsr.Network
 import kotlin.random.Random
-import layers.conv.Conv2d
+import com.wsr.layers.conv.Conv2d
 
 fun createMnistModel2d(
     epoc: Int,
