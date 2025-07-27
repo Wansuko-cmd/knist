@@ -1,11 +1,11 @@
 package dataset.iris
 
-import common.relu
-import layers.affine.Affine
-import layers.bias.Bias0d
-import layers.input.Input0dLayer
-import layers.output.layer0d.Softmax0d
-import network.Network
+import com.wsr.common.relu
+import com.wsr.layers.affine.Affine
+import com.wsr.layers.bias.Bias0d
+import com.wsr.layers.input.Input0dLayer
+import com.wsr.layers.output.layer0d.Softmax0d
+import com.wsr.Network
 import kotlin.random.Random
 
 fun createIrisModel(
