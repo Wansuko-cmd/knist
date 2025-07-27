@@ -2,13 +2,10 @@ package dataset.mnist
 
 import common.identity
 import common.relu
-import javax.swing.text.Position.Bias
 import layers.affine.Affine
 import layers.bias.Bias0d
 import layers.input.Input0dLayer
 import layers.output.layer0d.Softmax0d
-import layers.bias.Bias1d
-import layers.bias.Bias2d
 import layers.conv.Conv1d
 import layers.input.Input1dLayer
 import layers.input.Input2dLayer
