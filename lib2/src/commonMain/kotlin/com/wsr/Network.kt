@@ -7,12 +7,10 @@ class Network(private val layers: List<Layer<IOType1d>>) {
         layers.fold(input) { acc, layer -> layer.expect(acc) }
 
     fun train(input: IOType1d, label: IOType1d) {
-        layers[0].train(input) { o0 ->
-            layers[1].train(o0) { o1 ->
-                layers[2].train(o1) { o2 ->
-                    layers[3].train(o2) { label }
-                }
-            }
+        var delta = { input: IOType1d -> label }
+        for (index in layers.lastIndex downTo 0) {
+            delta = { input: IOType1d -> layers[index].train(input, delta) }
         }
+        delta(input)
     }
 }
