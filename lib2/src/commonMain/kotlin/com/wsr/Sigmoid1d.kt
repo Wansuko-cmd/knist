@@ -3,7 +3,7 @@ package com.wsr
 import com.wsr.common.IOType1d
 import kotlin.math.exp
 
-class Sigmoid1d : Layer<IOType1d> {
+class Sigmoid1d() : Layer<IOType1d> {
     override fun expect(input: IOType1d): IOType1d = input
 
     override fun train(
