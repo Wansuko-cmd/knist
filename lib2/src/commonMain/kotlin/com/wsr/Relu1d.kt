@@ -18,10 +18,6 @@ class Relu1d : Layer<IOType1d> {
     }
 
     private fun forward(input: IOType1d): IOType1d {
-        val output = Array(input.size) { 0.0 }
-        for (i in input.indices) {
-            output[i] = input[i].coerceAtLeast(0.0)
-        }
-        return output
+        return Array(input.size) { input[it].coerceAtLeast(0.0) }
     }
 }

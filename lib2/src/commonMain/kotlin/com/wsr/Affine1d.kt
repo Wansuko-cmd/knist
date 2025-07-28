@@ -18,26 +18,22 @@ class Affine1d(
                 weight[inputIndex][outputIndex] = delta[outputIndex] * input[inputIndex]
             }
         }
-        val before = Array(numOfInput) { 0.0 }
-        for (inputIndex in 0..numOfInput) {
+        return Array(numOfInput) { inputIndex ->
             var sum = 0.0
             for (outputIndex in 0..numOfNeuron) {
                 sum += delta[outputIndex] * weight[inputIndex][outputIndex]
             }
-            before[inputIndex] = sum
+            sum
         }
-        return before
     }
 
     private fun forward(input: IOType1d): IOType1d {
-        val output = Array(numOfNeuron) { 0.0 }
-        for (outputIndex in 0..numOfNeuron) {
+        return Array(numOfNeuron) { outputIndex ->
             var sum = 0.0
             for (inputIndex in 0..numOfInput) {
                 sum += input[inputIndex] * weight[inputIndex][outputIndex]
             }
-            output[outputIndex] = sum
+            sum
         }
-        return output
     }
 }
