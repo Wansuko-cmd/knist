@@ -1,6 +1,10 @@
 package com.wsr
 
 import com.wsr.common.IOType1d
+import kotlin.random.Random
+
+const val SEED = 4
+val random = Random(SEED)
 
 class Network2(private val layers: List<Layer<IOType1d>>) {
     private val trainLambda: (IOType1d, IOType1d) -> IOType1d = layers

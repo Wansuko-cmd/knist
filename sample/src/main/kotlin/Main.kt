@@ -18,7 +18,6 @@ private fun createIrisModel2(
     val network2 = Network2(
         listOf(
             Affine1d(4, 50, 0.01),
-            Relu1d(),
             Bias1d(50, 0.01),
             Relu1d(),
             Affine1d(50, 3, 0.01),
