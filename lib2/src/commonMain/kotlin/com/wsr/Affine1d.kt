@@ -23,7 +23,7 @@ class Affine1d(
         return Array(numOfInput) { inputIndex ->
             var sum = 0.0
             for (outputIndex in 0 until numOfNeuron) {
-                sum += delta[outputIndex] * weight[inputIndex][outputIndex]
+                sum += rate * delta[outputIndex] * weight[inputIndex][outputIndex]
             }
             sum
         }

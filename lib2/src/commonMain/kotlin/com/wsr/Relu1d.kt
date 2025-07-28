@@ -11,10 +11,7 @@ class Relu1d : Layer<IOType1d> {
     ): IOType1d {
         val output = forward(input)
         val delta = delta(output)
-        for (i in output.indices) {
-            if (output[i] <= 0) delta[i] = 0.0
-        }
-        return delta
+        return Array(delta.size) { if (output[it] <= 0.0) 0.0 else delta[it] }
     }
 
     private fun forward(input: IOType1d): IOType1d {

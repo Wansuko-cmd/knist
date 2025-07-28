@@ -1,17 +1,10 @@
 import com.wsr.Affine1d
 import com.wsr.Bias1d
-import com.wsr.Network
 import com.wsr.Network2
 import com.wsr.Relu1d
-import com.wsr.Sigmoid1d
+import com.wsr.Softmax1d
 import com.wsr.common.maxIndex
-import com.wsr.common.relu
-import com.wsr.layers.affine.Affine
-import com.wsr.layers.bias.Bias0d
-import com.wsr.layers.input.Input0dLayer
-import com.wsr.layers.output.layer0d.Softmax0d
 import dataset.iris.irisDatasets
-import kotlin.random.Random
 
 fun main() {
     createIrisModel2(1000)
@@ -29,7 +22,7 @@ private fun createIrisModel2(
             Bias1d(50, 0.01),
             Relu1d(),
             Affine1d(50, 3, 0.01),
-            Sigmoid1d(),
+            Softmax1d(),
         ),
     )
     (1..epoc).forEach { epoc ->

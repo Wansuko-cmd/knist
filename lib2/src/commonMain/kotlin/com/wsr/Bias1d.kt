@@ -1,9 +1,10 @@
 package com.wsr
 
 import com.wsr.common.IOType1d
+import kotlin.random.Random
 
 class Bias1d(private val numOfInput: Int, private val rate: Double) : Layer<IOType1d> {
-    private val weight = Array(numOfInput) { 0.0 }
+    private val weight = Array(numOfInput) { Random.nextDouble(-1.0, 1.0) }
     override fun expect(input: IOType1d): IOType1d {
         return Array(numOfInput) { input[it] + weight[it] }
     }
