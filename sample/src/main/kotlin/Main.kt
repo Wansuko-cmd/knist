@@ -10,8 +10,8 @@ private const val EPOC = 1000
 fun main() {
     val (train, test) = irisDatasets.shuffled() to irisDatasets.shuffled()
     val network = Network.Builder(numOfInput = 4, rate = 0.01)
-        .affineD1(50).biasD1().reluD1()
-        .affineD1(3).softmaxD1()
+        .affineD1(neuron = 50).biasD1().reluD1()
+        .affineD1(neuron = 3).softmaxD1()
         .build()
 
     (1..EPOC).forEach { epoc ->

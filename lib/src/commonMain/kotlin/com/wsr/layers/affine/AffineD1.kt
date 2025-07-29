@@ -46,11 +46,11 @@ class AffineD1 internal constructor(
     }
 }
 
-fun Network.Builder.affineD1(numOfOutput: Int) =
+fun Network.Builder.affineD1(neuron: Int) =
     addLayer(
         layer = AffineD1(
             numOfInput = numOfInput,
-            numOfOutput = numOfOutput,
+            numOfOutput = neuron,
             rate = rate,
             random = random,
         ),
