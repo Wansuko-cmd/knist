@@ -1,7 +1,8 @@
 package com.wsr.layer.function
 
-import com.wsr.layer.Layer
+import com.wsr.Network2
 import com.wsr.common.IOType1d
+import com.wsr.layer.Layer
 import kotlin.math.exp
 
 class Softmax1d(
@@ -21,3 +22,5 @@ class Softmax1d(
         return delta(output)
     }
 }
+
+fun Network2.Builder.softmax1d() = addLayer(Softmax1d(numOfInput = numOfInput, numOfOutput = numOfInput))

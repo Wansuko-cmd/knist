@@ -1,5 +1,6 @@
 package com.wsr.layer.function
 
+import com.wsr.Network2
 import com.wsr.layer.Layer
 import com.wsr.common.IOType1d
 import kotlin.math.exp
@@ -19,3 +20,5 @@ class Sigmoid1d(
         return Array(numOfOutput) { delta[it] * (1 - delta[it]) }
     }
 }
+
+fun Network2.Builder.sigmoid1d() = addLayer(Sigmoid1d(numOfInput = numOfInput, numOfOutput = numOfInput))

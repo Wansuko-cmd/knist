@@ -4,9 +4,6 @@ import com.wsr.common.IOType1d
 import com.wsr.layer.Layer
 import kotlin.random.Random
 
-const val SEED = 4
-val random = Random(SEED)
-
 class Network2(private val layers: List<Layer<IOType1d>>) {
     private val trainLambda: (IOType1d, IOType1d) -> IOType1d = layers
         .reversed()
@@ -24,5 +21,29 @@ class Network2(private val layers: List<Layer<IOType1d>>) {
 
     fun train(input: IOType1d, label: IOType1d) {
         trainLambda(input, label)
+    }
+
+    @ConsistentCopyVisibility
+    data class Builder private constructor(
+        val numOfInput: Int,
+        val rate: Double,
+        val random: Random,
+        private val layers: List<Layer<IOType1d>>,
+    ) {
+        constructor(
+            numOfInput: Int,
+            rate: Double,
+            seed: Int? = null,
+        ) : this(
+            numOfInput = numOfInput,
+            rate = rate,
+            random = seed?.let { Random(it) } ?: Random,
+            layers = emptyList(),
+        )
+
+        fun addLayer(layer: Layer<IOType1d>) =
+            copy(numOfInput = layer.numOfOutput, layers = layers + layer)
+
+        fun build() = Network2(layers)
     }
 }

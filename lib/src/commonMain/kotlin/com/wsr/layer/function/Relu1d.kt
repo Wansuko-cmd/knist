@@ -1,5 +1,6 @@
 package com.wsr.layer.function
 
+import com.wsr.Network2
 import com.wsr.common.IOType1d
 import com.wsr.layer.Layer
 
@@ -22,3 +23,5 @@ class Relu1d(
         return Array(numOfOutput) { input[it].coerceAtLeast(0.0) }
     }
 }
+
+fun Network2.Builder.relu1d() = addLayer(Relu1d(numOfInput = numOfInput, numOfOutput = numOfInput))
