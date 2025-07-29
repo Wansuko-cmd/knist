@@ -4,10 +4,8 @@ import com.wsr.Network
 import com.wsr.common.IOTypeD1
 import com.wsr.layers.Layer
 
-class ReluD1 internal constructor(
-    override val numOfInput: Int,
-    override val numOfOutput: Int,
-) : Layer {
+class ReluD1 internal constructor(override val numOfInput: Int) : Layer {
+    override val numOfOutput = numOfInput
     override fun expect(input: IOTypeD1): IOTypeD1 = forward(input)
 
     override fun train(
@@ -24,4 +22,4 @@ class ReluD1 internal constructor(
     }
 }
 
-fun Network.Builder.reluD1() = addLayer(ReluD1(numOfInput = numOfInput, numOfOutput = numOfInput))
+fun Network.Builder.reluD1() = addLayer(ReluD1(numOfInput = numOfInput))

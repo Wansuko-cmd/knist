@@ -7,10 +7,10 @@ import kotlin.random.Random
 
 class BiasD1 internal constructor(
     override val numOfInput: Int,
-    override val numOfOutput: Int,
     private val rate: Double,
     private val random: Random,
 ) : Layer {
+    override val numOfOutput = numOfInput
     private val weight = Array(numOfInput) { random.nextDouble(-1.0, 1.0) }
     override fun expect(input: IOTypeD1): IOTypeD1 {
         return Array(numOfOutput) { input[it] + weight[it] }
@@ -33,7 +33,6 @@ fun Network.Builder.biasD1() =
     addLayer(
         BiasD1(
             numOfInput = numOfInput,
-            numOfOutput = numOfInput,
             rate = rate,
             random = random,
         ),
