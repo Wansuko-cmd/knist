@@ -1,5 +1,6 @@
-package com.wsr
+package com.wsr.layer.function
 
+import com.wsr.layer.Layer
 import com.wsr.common.IOType1d
 import kotlin.math.exp
 

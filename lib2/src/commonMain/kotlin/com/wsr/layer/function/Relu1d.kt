@@ -1,5 +1,6 @@
-package com.wsr
+package com.wsr.layer.function
 
+import com.wsr.layer.Layer
 import com.wsr.common.IOType1d
 
 class Relu1d : Layer<IOType1d> {

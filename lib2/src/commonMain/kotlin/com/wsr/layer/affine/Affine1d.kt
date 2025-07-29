@@ -1,7 +1,9 @@
-package com.wsr
+package com.wsr.layer.affine
 
+import com.wsr.layer.Layer
 import com.wsr.common.IOType1d
 import com.wsr.common.IOType2d
+import com.wsr.random
 
 class Affine1d(
     private val numOfInput: Int,

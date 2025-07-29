@@ -1,6 +1,8 @@
-package com.wsr
+package com.wsr.layer.bias
 
+import com.wsr.layer.Layer
 import com.wsr.common.IOType1d
+import com.wsr.random
 
 class Bias1d(private val numOfInput: Int, private val rate: Double) : Layer<IOType1d> {
     private val weight = Array(numOfInput) { random.nextDouble(-1.0, 1.0) }

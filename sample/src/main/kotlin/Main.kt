@@ -1,8 +1,8 @@
-import com.wsr.Affine1d
-import com.wsr.Bias1d
+import com.wsr.layer.affine.Affine1d
+import com.wsr.layer.bias.Bias1d
 import com.wsr.Network2
-import com.wsr.Relu1d
-import com.wsr.Softmax1d
+import com.wsr.layer.function.Relu1d
+import com.wsr.layer.function.Softmax1d
 import com.wsr.common.maxIndex
 import dataset.iris.irisDatasets
 

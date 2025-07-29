@@ -1,5 +1,4 @@
-package com.wsr
-
+package com.wsr.layer
 
 interface Layer<IOType> {
     fun expect(input: IOType): IOType

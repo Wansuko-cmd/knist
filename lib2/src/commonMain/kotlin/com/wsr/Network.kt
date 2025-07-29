@@ -1,6 +1,7 @@
 package com.wsr
 
 import com.wsr.common.IOType1d
+import com.wsr.layer.Layer
 import kotlin.random.Random
 
 const val SEED = 4
