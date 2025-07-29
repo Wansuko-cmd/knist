@@ -4,7 +4,10 @@ import com.wsr.layer.Layer
 import com.wsr.common.IOType1d
 import kotlin.math.exp
 
-class Softmax1d : Layer<IOType1d> {
+class Softmax1d(
+    override val numOfInput: Int,
+    override val numOfOutput: Int,
+) : Layer<IOType1d> {
     override fun expect(input: IOType1d): IOType1d = input
 
     override fun train(
@@ -14,7 +17,7 @@ class Softmax1d : Layer<IOType1d> {
         val max = input.max()
         val exp = input.map { exp(it - max) }
         val sum = exp.sum()
-        val output = Array(input.size) { exp[it] / sum }
+        val output = Array(numOfOutput) { exp[it] / sum }
         return delta(output)
     }
 }

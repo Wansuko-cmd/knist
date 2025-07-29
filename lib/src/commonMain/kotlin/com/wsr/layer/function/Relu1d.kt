@@ -1,9 +1,12 @@
 package com.wsr.layer.function
 
-import com.wsr.layer.Layer
 import com.wsr.common.IOType1d
+import com.wsr.layer.Layer
 
-class Relu1d : Layer<IOType1d> {
+class Relu1d(
+    override val numOfInput: Int,
+    override val numOfOutput: Int,
+) : Layer<IOType1d> {
     override fun expect(input: IOType1d): IOType1d = forward(input)
 
     override fun train(
@@ -12,10 +15,10 @@ class Relu1d : Layer<IOType1d> {
     ): IOType1d {
         val output = forward(input)
         val delta = delta(output)
-        return Array(delta.size) { if (output[it] <= 0.0) 0.0 else delta[it] }
+        return Array(numOfOutput) { if (output[it] <= 0.0) 0.0 else delta[it] }
     }
 
     private fun forward(input: IOType1d): IOType1d {
-        return Array(input.size) { input[it].coerceAtLeast(0.0) }
+        return Array(numOfOutput) { input[it].coerceAtLeast(0.0) }
     }
 }

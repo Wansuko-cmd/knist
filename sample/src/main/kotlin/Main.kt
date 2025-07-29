@@ -17,10 +17,10 @@ private fun createIrisModel2(
     val network2 = Network2(
         listOf(
             Affine1d(4, 50, 0.01),
-            Bias1d(50, 0.01),
-            Relu1d(),
+            Bias1d(50, 50, 0.01),
+            Relu1d(50, 50),
             Affine1d(50, 3, 0.01),
-            Softmax1d(),
+            Softmax1d(3, 3),
         ),
     )
     (1..epoc).forEach { epoc ->
