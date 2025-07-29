@@ -6,7 +6,7 @@ import com.wsr.common.IOType2d
 import com.wsr.layer.Layer
 import kotlin.random.Random
 
-class Affine1d(
+class Affine1d internal constructor(
     override val numOfInput: Int,
     override val numOfOutput: Int,
     private val rate: Double,

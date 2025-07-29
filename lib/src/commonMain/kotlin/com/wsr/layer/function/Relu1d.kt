@@ -4,7 +4,7 @@ import com.wsr.Network2
 import com.wsr.common.IOType1d
 import com.wsr.layer.Layer
 
-class Relu1d(
+class Relu1d internal constructor(
     override val numOfInput: Int,
     override val numOfOutput: Int,
 ) : Layer<IOType1d> {

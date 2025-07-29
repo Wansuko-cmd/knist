@@ -5,7 +5,7 @@ import com.wsr.common.IOType1d
 import com.wsr.layer.Layer
 import kotlin.math.exp
 
-class Softmax1d(
+class Softmax1d internal constructor(
     override val numOfInput: Int,
     override val numOfOutput: Int,
 ) : Layer<IOType1d> {

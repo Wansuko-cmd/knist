@@ -5,7 +5,7 @@ import com.wsr.common.IOType1d
 import com.wsr.layer.Layer
 import kotlin.random.Random
 
-class Bias1d(
+class Bias1d internal constructor(
     override val numOfInput: Int,
     override val numOfOutput: Int,
     private val rate: Double,

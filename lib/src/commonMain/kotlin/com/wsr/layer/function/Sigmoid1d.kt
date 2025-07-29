@@ -5,7 +5,7 @@ import com.wsr.layer.Layer
 import com.wsr.common.IOType1d
 import kotlin.math.exp
 
-class Sigmoid1d(
+class Sigmoid1d internal constructor(
     override val numOfInput: Int,
     override val numOfOutput: Int,
 ) : Layer<IOType1d> {

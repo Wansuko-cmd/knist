@@ -4,7 +4,7 @@ import com.wsr.common.IOType1d
 import com.wsr.layer.Layer
 import kotlin.random.Random
 
-class Network2(private val layers: List<Layer<IOType1d>>) {
+class Network2 private constructor(private val layers: List<Layer<IOType1d>>) {
     private val trainLambda: (IOType1d, IOType1d) -> IOType1d = layers
         .reversed()
         .fold(::output) { acc: (IOType1d, IOType1d) -> IOType1d, layer: Layer<IOType1d> ->
