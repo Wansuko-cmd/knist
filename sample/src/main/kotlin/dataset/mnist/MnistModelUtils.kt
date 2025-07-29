@@ -1,122 +1,109 @@
 package dataset.mnist
 
-import com.wsr.common.identity
-import com.wsr.common.relu
-import com.wsr.layers.affine.Affine
-import com.wsr.layers.bias.Bias0d
-import com.wsr.layers.input.Input0dLayer
-import com.wsr.layers.output.layer0d.Softmax0d
-import com.wsr.layers.conv.Conv1d
-import com.wsr.layers.input.Input1dLayer
-import com.wsr.layers.input.Input2dLayer
-import com.wsr.Network
-import kotlin.random.Random
-import com.wsr.layers.conv.Conv2d
-
 fun createMnistModel2d(
     epoc: Int,
     seed: Int? = null,
 ) {
-    val (train, test) = MnistDataset.read().shuffled().chunked(40000)
-    val network = Network.create2d(
-        inputConfig = Input2dLayer(channel = 1, row = train.first().imageSize, column = train.first().imageSize),
-        centerConfig = listOf(
-            Conv2d(
-                channel = 4,
-                kernelSize = 5,
-                activationFunction = ::relu,
-            ),
-            Conv2d(
-                channel = 8,
-                kernelSize = 5,
-                activationFunction = ::relu,
-            ),
-            Affine(
-                numOfNeuron = 50,
-                activationFunction = ::identity,
-            ),
-            Bias0d(::relu),
-        ),
-        outputConfig = Softmax0d(10) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
-        random = seed?.let { Random(it) } ?: Random,
-        rate = 0.01,
-    )
-    (1..epoc).forEach { epoc ->
-        println("epoc: $epoc")
-        train.forEachIndexed { index, data ->
-            if (index % 1000 == 0) println("i: $index")
-            network.train(input = listOf(data.pixels.chunked(train.first().imageSize)), label = data.label)
-        }
-    }
-    test.count { data ->
-        network.expect(input = listOf(data.pixels.chunked(train.first().imageSize))) == data.label
-    }.also { println(it.toDouble() / test.size.toDouble()) }
+//    val (train, test) = MnistDataset.read().shuffled().chunked(40000)
+//    val network = Network.create2d(
+//        inputConfig = Input2dLayer(channel = 1, row = train.first().imageSize, column = train.first().imageSize),
+//        centerConfig = listOf(
+//            Conv2d(
+//                channel = 4,
+//                kernelSize = 5,
+//                activationFunction = ::relu,
+//            ),
+//            Conv2d(
+//                channel = 8,
+//                kernelSize = 5,
+//                activationFunction = ::relu,
+//            ),
+//            Affine(
+//                numOfNeuron = 50,
+//                activationFunction = ::identity,
+//            ),
+//            Bias0d(::relu),
+//        ),
+//        outputConfig = Softmax0d(10) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
+//        random = seed?.let { Random(it) } ?: Random,
+//        rate = 0.01,
+//    )
+//    (1..epoc).forEach { epoc ->
+//        println("epoc: $epoc")
+//        train.forEachIndexed { index, data ->
+//            if (index % 1000 == 0) println("i: $index")
+//            network.train(input = listOf(data.pixels.chunked(train.first().imageSize)), label = data.label)
+//        }
+//    }
+//    test.count { data ->
+//        network.expect(input = listOf(data.pixels.chunked(train.first().imageSize))) == data.label
+//    }.also { println(it.toDouble() / test.size.toDouble()) }
 }
 
 fun createMnistModel1d(
     epoc: Int,
     seed: Int? = null,
 ) {
-    val (train, test) = MnistDataset.read().chunked(40000)
-    val network = Network.create1d(
-        inputConfig = Input1dLayer(channel = train.first().imageSize, inputSize = train.first().imageSize),
-        centerConfig = listOf(
-            Conv1d(
-                channel = 16,
-                kernelSize = 5,
-                activationFunction = ::relu,
-                padding = 0,
-                stride = 1,
-            ),
-            Affine(
-                numOfNeuron = 50,
-                activationFunction = ::identity,
-            ),
-            Bias0d(::relu),
-        ),
-        outputConfig = Softmax0d(10) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
-        random = seed?.let { Random(it) } ?: Random,
-        rate = 0.01,
-    )
-    (1..epoc).forEach { epoc ->
-        println("epoc: $epoc")
-        train.forEachIndexed { index, data ->
-            network.train(
-                input = data.pixels.chunked(train.first().imageSize),
-                label = data.label,
-            )
-            if (index % 1000 == 0) println("i: $index, loss: ${network.loss()}")
-        }
-    }
-    test.count { data ->
-        network.expect(input = data.pixels.chunked(train.first().imageSize)) == data.label
-    }.also { println(it.toDouble() / test.size.toDouble()) }
+//    val (train, test) = MnistDataset.read().chunked(40000)
+//    val network = Network.create1d(
+//        inputConfig = Input1dLayer(channel = train.first().imageSize, inputSize = train.first().imageSize),
+//        centerConfig = listOf(
+//            Conv1d(
+//                channel = 16,
+//                kernelSize = 5,
+//                activationFunction = ::relu,
+//                padding = 0,
+//                stride = 1,
+//            ),
+//            Affine(
+//                numOfNeuron = 50,
+//                activationFunction = ::identity,
+//            ),
+//            Bias0d(::relu),
+//        ),
+//        outputConfig = Softmax0d(10) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
+//        random = seed?.let { Random(it) } ?: Random,
+//        rate = 0.01,
+//    )
+//    (1..epoc).forEach { epoc ->
+//        println("epoc: $epoc")
+//        train.forEachIndexed { index, data ->
+//            network.train(
+//                input = data.pixels.chunked(train.first().imageSize),
+//                label = data.label,
+//            )
+//            if (index % 1000 == 0) println("i: $index, loss: ${network.loss()}")
+//        }
+//    }
+//    test.count { data ->
+//        network.expect(input = data.pixels.chunked(train.first().imageSize)) == data.label
+//    }.also { println(it.toDouble() / test.size.toDouble()) }
 }
 
 fun createMnistModel0d(
     epoc: Int,
     seed: Int? = null,
 ) {
-    val (train, test) = MnistDataset.read().chunked(40000)
-    val network = Network.create0d(
-        inputConfig = Input0dLayer(train.first().imageSize * train.first().imageSize),
-        centerConfig = listOf(
-            Affine(numOfNeuron = 100, activationFunction = ::relu),
-            Affine(numOfNeuron = 80, activationFunction = ::relu),
-//            Bias0d(::relu),
-        ),
-        outputConfig = Softmax0d(10) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
-        random = seed?.let { Random(it) } ?: Random,
-        rate = 0.01,
-    )
-    (1..epoc).forEach { epoc ->
-        println("epoc: $epoc")
-        train.forEachIndexed { index, data ->
-            network.train(input = data.pixels, label = data.label)
-            if (index % 1000 == 0) println("i: $index, loss: ${network.loss()}")
-        }
-    }
-    test.count { data ->
-        network.expect(input = data.pixels) == data.label
-    }.also { println(it.toDouble() / test.size.toDouble()) }
+//    val (train, test) = MnistDataset.read().chunked(40000)
+//    val network = Network.create0d(
+//        inputConfig = Input0dLayer(train.first().imageSize * train.first().imageSize),
+//        centerConfig = listOf(
+//            Affine(numOfNeuron = 100, activationFunction = ::relu),
+//            Affine(numOfNeuron = 80, activationFunction = ::relu),
+////            Bias0d(::relu),
+//        ),
+//        outputConfig = Softmax0d(10) { numOfNeuron, activationFunction -> Affine(numOfNeuron, activationFunction) },
+//        random = seed?.let { Random(it) } ?: Random,
+//        rate = 0.01,
+//    )
+//    (1..epoc).forEach { epoc ->
+//        println("epoc: $epoc")
+//        train.forEachIndexed { index, data ->
+//            network.train(input = data.pixels, label = data.label)
+//            if (index % 1000 == 0) println("i: $index, loss: ${network.loss()}")
+//        }
+//    }
+//    test.count { data ->
+//        network.expect(input = data.pixels) == data.label
+//    }.also { println(it.toDouble() / test.size.toDouble()) }
 }

@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
     implementation(project(":lib"))
-    implementation(project(":lib2"))
 
     implementation(libs.coroutine)
     testImplementation(libs.bundles.test)
