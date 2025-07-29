@@ -3,8 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":deprecated:practical"))
-
     implementation(libs.coroutine)
     testImplementation(libs.bundles.test)
     testImplementation(kotlin("test"))
