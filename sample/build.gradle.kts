@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":lib"))
+    implementation(project(":deprecated:practical"))
 
     implementation(libs.coroutine)
     testImplementation(libs.bundles.test)
