@@ -5,10 +5,8 @@ import com.wsr.common.IOTypeD1
 import com.wsr.layers.Layer
 import kotlin.math.exp
 
-class SigmoidD1 internal constructor(
-    override val numOfInput: Int,
-    override val numOfOutput: Int,
-) : Layer {
+class SigmoidD1 internal constructor(override val numOfInput: Int) : Layer {
+    override val numOfOutput = numOfInput
     override fun expect(input: IOTypeD1): IOTypeD1 = input
 
     override fun train(
@@ -22,4 +20,4 @@ class SigmoidD1 internal constructor(
 }
 
 fun Network.Builder.sigmoidD1() =
-    addLayer(SigmoidD1(numOfInput = numOfInput, numOfOutput = numOfInput))
+    addLayer(SigmoidD1(numOfInput = numOfInput))
