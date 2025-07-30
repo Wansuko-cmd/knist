@@ -3,15 +3,15 @@ package com.wsr.layers.bias
 import com.wsr.Network
 import com.wsr.common.IOTypeD1
 import com.wsr.layers.Layer
-import kotlin.random.Random
+import kotlinx.serialization.Serializable
 
+@Serializable
 class BiasD1 internal constructor(
     override val numOfInput: Int,
     private val rate: Double,
-    private val random: Random,
-) : Layer {
+    private val weight: IOTypeD1,
+) : Layer() {
     override val numOfOutput = numOfInput
-    private val weight = Array(numOfInput) { random.nextDouble(-1.0, 1.0) }
     override fun expect(input: IOTypeD1): IOTypeD1 {
         return Array(numOfOutput) { input[it] + weight[it] }
     }
@@ -34,7 +34,7 @@ fun Network.Builder.biasD1() =
         BiasD1(
             numOfInput = numOfInput,
             rate = rate,
-            random = random,
+            weight = Array(numOfInput) { random.nextDouble(-1.0, 1.0) },
         ),
     )
 
