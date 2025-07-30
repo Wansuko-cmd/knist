@@ -16,7 +16,7 @@ import kotlin.random.Random
 
 private val json = Json {
     serializersModule = SerializersModule {
-        polymorphic(Layer::class) {
+        polymorphic(Layer.D1::class) {
             subclass(AffineD1::class)
             subclass(BiasD1::class)
             subclass(ReluD1::class)
@@ -27,11 +27,11 @@ private val json = Json {
 }
 
 @Serializable
-class Network private constructor(private val layers: List<Layer>) {
+class Network private constructor(private val layers: List<Layer.D1>) {
     private val trainLambda: (IOTypeD1, IOTypeD1) -> IOTypeD1 by lazy {
         layers
             .reversed()
-            .fold(::output) { acc: (IOTypeD1, IOTypeD1) -> IOTypeD1, layer: Layer ->
+            .fold(::output) { acc: (IOTypeD1, IOTypeD1) -> IOTypeD1, layer: Layer.D1 ->
                 { input: IOTypeD1, label: IOTypeD1 ->
                     layer.train(input) { acc(it, label) }
                 }
@@ -59,7 +59,7 @@ class Network private constructor(private val layers: List<Layer>) {
         val numOfInput: Int,
         val rate: Double,
         val random: Random,
-        private val layers: List<Layer>,
+        private val layers: List<Layer.D1>,
     ) {
         constructor(
             numOfInput: Int,
@@ -72,7 +72,7 @@ class Network private constructor(private val layers: List<Layer>) {
             layers = emptyList(),
         )
 
-        fun addLayer(layer: Layer) =
+        fun addLayer(layer: Layer.D1) =
             copy(numOfInput = layer.numOfOutput, layers = layers + layer)
 
         fun build() = Network(layers)

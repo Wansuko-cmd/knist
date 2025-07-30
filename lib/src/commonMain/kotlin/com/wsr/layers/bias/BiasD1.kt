@@ -10,7 +10,7 @@ class BiasD1 internal constructor(
     override val numOfInput: Int,
     private val rate: Double,
     private val weight: IOTypeD1,
-) : Layer() {
+) : Layer.D1() {
     override val numOfOutput = numOfInput
     override fun expect(input: IOTypeD1): IOTypeD1 {
         return Array(numOfOutput) { input[it] + weight[it] }
