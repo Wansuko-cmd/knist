@@ -11,6 +11,12 @@ sealed interface IOType {
         constructor(vararg elements: Double): this(value = mutableListOf(*elements.toTypedArray()))
         constructor(size: Int, init: (Int) -> Double): this(MutableList(size, init))
     }
+
+    @Serializable
+    data class D2(val value: MutableList<D1>): IOType, MutableList<D1> by value {
+        constructor(vararg elements: D1): this(value = mutableListOf(*elements))
+        constructor(size: Int, init: (Int) -> D1): this(MutableList(size, init))
+    }
 }
 
 typealias IOTypeD1 = Array<Double>
