@@ -4,17 +4,28 @@ import com.wsr.common.IOType
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface Layer<T> {
+sealed interface Layer {
     val inputShape: List<Int>
     val outputShape: List<Int>
-    fun expect(input: T): T
-    fun train(input: T, delta: (T) -> T) : T
+    fun expect(input: IOType): IOType
+    fun train(input: IOType, delta: (IOType) -> IOType): IOType
 
     @Serializable
-    abstract class D1 : Layer<IOType.D1> {
+    abstract class D1 : Layer {
         abstract val numOfInput: Int
         abstract val numOfOutput: Int
         override val inputShape: List<Int> = listOf(numOfInput)
         override val outputShape: List<Int> = listOf(numOfOutput)
+
+        protected abstract fun expect(input: IOType.D1): IOType.D1
+        protected abstract fun train(input: IOType.D1, delta: (IOType.D1) -> IOType.D1): IOType.D1
+
+        override fun expect(input: IOType): IOType = expect(input = input as IOType.D1)
+        @Suppress("UNCHECKED_CAST")
+        override fun train(input: IOType, delta: (IOType) -> IOType): IOType =
+            train(
+                input = input as IOType.D1,
+                delta = delta as (IOType.D1) -> IOType.D1,
+            )
     }
 }

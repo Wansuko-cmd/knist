@@ -27,22 +27,25 @@ private val json = Json {
 }
 
 @Serializable
-class Network private constructor(private val layers: List<Layer.D1>) {
-    private val trainLambda: (IOType.D1, IOType.D1) -> IOType.D1 by lazy {
+class Network private constructor(private val layers: List<Layer>) {
+    private val trainLambda: (IOType, IOType) -> IOType by lazy {
         layers
             .reversed()
-            .fold(::output) { acc: (IOType.D1, IOType.D1) -> IOType.D1, layer: Layer.D1 ->
-                { input: IOType.D1, label: IOType.D1 ->
+            .fold(::output) { acc: (IOType, IOType) -> IOType, layer: Layer ->
+                { input: IOType, label: IOType ->
                     layer.train(input) { acc(it, label) }
                 }
             }
     }
 
-    private fun output(input: IOType.D1, label: IOType.D1) =
-        IOType.D1(input.size) { input[it] - label[it] }
+    private fun output(input: IOType, label: IOType): IOType {
+        val input = input as IOType.D1
+        val label = label as IOType.D1
+        return IOType.D1(input.size) { input[it] - label[it] }
+    }
 
     fun expect(input: IOType.D1): IOType.D1 =
-        layers.fold(input) { acc, layer -> layer.expect(acc) }
+        layers.fold(input) { acc, layer -> layer.expect(acc) as IOType.D1 }
 
     fun train(input: IOType.D1, label: IOType.D1) {
         trainLambda(input, label)
