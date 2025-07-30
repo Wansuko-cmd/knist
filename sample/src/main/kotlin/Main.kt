@@ -1,4 +1,5 @@
 import com.wsr.Network
+import com.wsr.common.IOType
 import com.wsr.layers.affine.affineD1
 import com.wsr.layers.bias.biasD1
 import com.wsr.layers.function.reluD1
@@ -17,19 +18,19 @@ fun main() {
     (1..EPOC).forEach { epoc ->
         train.forEach { data ->
             network.train(
-                input = arrayOf(
+                input = IOType.D1(
                     data.petalLength,
                     data.petalWidth,
                     data.sepalLength,
                     data.sepalWidth,
                 ),
-                label = Array(3) { if (data.label == it) 1.0 else 0.0 },
+                label = IOType.D1(3) { if (data.label == it) 1.0 else 0.0 },
             )
         }
     }
     test.count { data ->
         network.expect(
-            input = arrayOf(
+            input = IOType.D1(
                 data.petalLength,
                 data.petalWidth,
                 data.sepalLength,

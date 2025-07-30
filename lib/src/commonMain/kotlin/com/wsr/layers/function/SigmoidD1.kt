@@ -1,7 +1,7 @@
 package com.wsr.layers.function
 
 import com.wsr.Network
-import com.wsr.common.IOTypeD1
+import com.wsr.common.IOType
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 import kotlin.math.exp
@@ -9,15 +9,15 @@ import kotlin.math.exp
 @Serializable
 class SigmoidD1 internal constructor(override val numOfInput: Int) : Layer.D1() {
     override val numOfOutput = numOfInput
-    override fun expect(input: IOTypeD1): IOTypeD1 = input
+    override fun expect(input: IOType.D1): IOType.D1 = input
 
     override fun train(
-        input: IOTypeD1,
-        delta: (IOTypeD1) -> IOTypeD1,
-    ): IOTypeD1 {
-        val output = Array(numOfInput) { 1 / (1 + exp(-input[it])) }
+        input: IOType.D1,
+        delta: (IOType.D1) -> IOType.D1,
+    ): IOType.D1 {
+        val output = IOType.D1(numOfInput) { 1 / (1 + exp(-input[it])) }
         val delta = delta(output)
-        return Array(numOfOutput) { delta[it] * (1 - delta[it]) }
+        return IOType.D1(numOfOutput) { delta[it] * (1 - delta[it]) }
     }
 }
 
