@@ -2,7 +2,6 @@ package com.wsr.layers.affine
 
 import com.wsr.Network
 import com.wsr.common.IOType
-import com.wsr.common.IOTypeD2
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -11,7 +10,7 @@ class AffineD1 internal constructor(
     override val numOfInput: Int,
     override val numOfOutput: Int,
     private val rate: Double,
-    private val weight: IOTypeD2,
+    private val weight: IOType.D2,
 ) : Layer.D1() {
     override fun expect(input: IOType.D1): IOType.D1 = forward(input)
 
@@ -50,6 +49,6 @@ fun Network.Builder.affineD1(neuron: Int) =
             numOfInput = numOfInput,
             numOfOutput = neuron,
             rate = rate,
-            weight = Array(numOfInput) { Array(neuron) { random.nextDouble(-1.0, 1.0) } },
+            weight = IOType.D2(numOfInput) { IOType.D1(neuron) { random.nextDouble(-1.0, 1.0) } },
         ),
     )
