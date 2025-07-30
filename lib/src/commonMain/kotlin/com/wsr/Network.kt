@@ -5,13 +5,15 @@ import com.wsr.layers.Layer
 import kotlin.random.Random
 
 class Network private constructor(private val layers: List<Layer>) {
-    private val trainLambda: (IOTypeD1, IOTypeD1) -> IOTypeD1 = layers
-        .reversed()
-        .fold(::output) { acc: (IOTypeD1, IOTypeD1) -> IOTypeD1, layer: Layer ->
-            { input: IOTypeD1, label: IOTypeD1 ->
-                layer.train(input) { acc(it, label) }
+    private val trainLambda: (IOTypeD1, IOTypeD1) -> IOTypeD1 by lazy {
+        layers
+            .reversed()
+            .fold(::output) { acc: (IOTypeD1, IOTypeD1) -> IOTypeD1, layer: Layer ->
+                { input: IOTypeD1, label: IOTypeD1 ->
+                    layer.train(input) { acc(it, label) }
+                }
             }
-        }
+    }
 
     private fun output(input: IOTypeD1, label: IOTypeD1) =
         Array(input.size) { input[it] - label[it] }
