@@ -27,7 +27,7 @@ private val json = Json {
 }
 
 @Serializable
-class Network private constructor(private val layers: List<Layer>) {
+class Network<I: IOType, O: IOType> private constructor(private val layers: List<Layer>) {
     private val trainLambda: (IOType, IOType) -> IOType by lazy {
         layers
             .reversed()
@@ -38,23 +38,26 @@ class Network private constructor(private val layers: List<Layer>) {
             }
     }
 
-    private fun output(input: IOType, label: IOType): IOType {
-        val input = input as IOType.D1
-        val label = label as IOType.D1
-        return IOType.D1(input.size) { input[it] - label[it] }
+    private fun output(input: IOType, label: IOType): IOType = when(input) {
+        is IOType.D1 -> {
+            val label = label as IOType.D1
+            IOType.D1(input.size) { input[it] - label[it] }
+        }
+        is IOType.D2 -> TODO()
     }
 
-    fun expect(input: IOType.D1): IOType.D1 =
-        layers.fold(input) { acc, layer -> layer.expect(acc) as IOType.D1 }
+    @Suppress("UNCHECKED_CAST")
+    fun expect(input: I): O =
+        layers.fold<Layer, IOType>(input) { acc, layer -> layer.expect(acc) } as O
 
-    fun train(input: IOType.D1, label: IOType.D1) {
+    fun train(input: I, label: O) {
         trainLambda(input, label)
     }
 
     fun toJson() = json.encodeToString(this)
 
     companion object {
-        fun fromJson(value: String) = json.decodeFromString<Network>(value)
+        fun <I: IOType, O: IOType> fromJson(value: String) = json.decodeFromString<Network<I, O>>(value)
     }
 
     @ConsistentCopyVisibility
@@ -78,6 +81,6 @@ class Network private constructor(private val layers: List<Layer>) {
         fun addLayer(layer: Layer.D1) =
             copy(numOfInput = layer.numOfOutput, layers = layers + layer)
 
-        fun build() = Network(layers)
+        fun build() = Network<IOType.D1, IOType.D1>(layers)
     }
 }
