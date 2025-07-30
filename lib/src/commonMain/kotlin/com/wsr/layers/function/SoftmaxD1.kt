@@ -5,7 +5,7 @@ import com.wsr.common.IOTypeD1
 import com.wsr.layers.Layer
 import kotlin.math.exp
 
-class SoftmaxD1 internal constructor(override val numOfInput: Int) : Layer {
+class SoftmaxD1 internal constructor(override val numOfInput: Int) : Layer() {
     override val numOfOutput = numOfInput
     override fun expect(input: IOTypeD1): IOTypeD1 = input
 
