@@ -12,7 +12,7 @@ class AffineD1 internal constructor(
     override val numOfOutput: Int,
     private val rate: Double,
     private val weight: IOTypeD2,
-) : Layer() {
+) : Layer.D1() {
     override fun expect(input: IOTypeD1): IOTypeD1 = forward(input)
 
     override fun train(input: IOTypeD1, delta: (IOTypeD1) -> IOTypeD1): IOTypeD1 {

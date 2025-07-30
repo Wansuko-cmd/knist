@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 import kotlin.math.exp
 
 @Serializable
-class SigmoidD1 internal constructor(override val numOfInput: Int) : Layer() {
+class SigmoidD1 internal constructor(override val numOfInput: Int) : Layer.D1() {
     override val numOfOutput = numOfInput
     override fun expect(input: IOTypeD1): IOTypeD1 = input
 
