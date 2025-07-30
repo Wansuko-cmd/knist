@@ -3,7 +3,9 @@ package com.wsr.layers.function
 import com.wsr.Network
 import com.wsr.common.IOTypeD1
 import com.wsr.layers.Layer
+import kotlinx.serialization.Serializable
 
+@Serializable
 class ReluD1 internal constructor(override val numOfInput: Int) : Layer() {
     override val numOfOutput = numOfInput
     override fun expect(input: IOTypeD1): IOTypeD1 = forward(input)

@@ -3,8 +3,10 @@ package com.wsr.layers.function
 import com.wsr.Network
 import com.wsr.common.IOTypeD1
 import com.wsr.layers.Layer
+import kotlinx.serialization.Serializable
 import kotlin.math.exp
 
+@Serializable
 class SoftmaxD1 internal constructor(override val numOfInput: Int) : Layer() {
     override val numOfOutput = numOfInput
     override fun expect(input: IOTypeD1): IOTypeD1 = input
