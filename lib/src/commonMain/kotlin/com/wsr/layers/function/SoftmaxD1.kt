@@ -1,7 +1,7 @@
 package com.wsr.layers.function
 
 import com.wsr.Network
-import com.wsr.common.IOTypeD1
+import com.wsr.common.IOType
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 import kotlin.math.exp
@@ -9,16 +9,16 @@ import kotlin.math.exp
 @Serializable
 class SoftmaxD1 internal constructor(override val numOfInput: Int) : Layer.D1() {
     override val numOfOutput = numOfInput
-    override fun expect(input: IOTypeD1): IOTypeD1 = input
+    override fun expect(input: IOType.D1): IOType.D1 = input
 
     override fun train(
-        input: IOTypeD1,
-        delta: (IOTypeD1) -> IOTypeD1,
-    ): IOTypeD1 {
+        input: IOType.D1,
+        delta: (IOType.D1) -> IOType.D1,
+    ): IOType.D1 {
         val max = input.max()
         val exp = input.map { exp(it - max) }
         val sum = exp.sum()
-        val output = Array(numOfOutput) { exp[it] / sum }
+        val output = IOType.D1(numOfOutput) { exp[it] / sum }
         return delta(output)
     }
 }

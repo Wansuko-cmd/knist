@@ -1,6 +1,6 @@
 package com.wsr
 
-import com.wsr.common.IOTypeD1
+import com.wsr.common.IOType
 import com.wsr.layers.Layer
 import com.wsr.layers.affine.AffineD1
 import com.wsr.layers.bias.BiasD1
@@ -28,23 +28,23 @@ private val json = Json {
 
 @Serializable
 class Network private constructor(private val layers: List<Layer.D1>) {
-    private val trainLambda: (IOTypeD1, IOTypeD1) -> IOTypeD1 by lazy {
+    private val trainLambda: (IOType.D1, IOType.D1) -> IOType.D1 by lazy {
         layers
             .reversed()
-            .fold(::output) { acc: (IOTypeD1, IOTypeD1) -> IOTypeD1, layer: Layer.D1 ->
-                { input: IOTypeD1, label: IOTypeD1 ->
+            .fold(::output) { acc: (IOType.D1, IOType.D1) -> IOType.D1, layer: Layer.D1 ->
+                { input: IOType.D1, label: IOType.D1 ->
                     layer.train(input) { acc(it, label) }
                 }
             }
     }
 
-    private fun output(input: IOTypeD1, label: IOTypeD1) =
-        Array(input.size) { input[it] - label[it] }
+    private fun output(input: IOType.D1, label: IOType.D1) =
+        IOType.D1(input.size) { input[it] - label[it] }
 
-    fun expect(input: IOTypeD1): IOTypeD1 =
+    fun expect(input: IOType.D1): IOType.D1 =
         layers.fold(input) { acc, layer -> layer.expect(acc) }
 
-    fun train(input: IOTypeD1, label: IOTypeD1) {
+    fun train(input: IOType.D1, label: IOType.D1) {
         trainLambda(input, label)
     }
 

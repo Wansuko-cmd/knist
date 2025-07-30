@@ -1,7 +1,7 @@
 package com.wsr.layers.bias
 
 import com.wsr.Network
-import com.wsr.common.IOTypeD1
+import com.wsr.common.IOType
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -9,18 +9,18 @@ import kotlinx.serialization.Serializable
 class BiasD1 internal constructor(
     override val numOfInput: Int,
     private val rate: Double,
-    private val weight: IOTypeD1,
+    private val weight: IOType.D1,
 ) : Layer.D1() {
     override val numOfOutput = numOfInput
-    override fun expect(input: IOTypeD1): IOTypeD1 {
-        return Array(numOfOutput) { input[it] + weight[it] }
+    override fun expect(input: IOType.D1): IOType.D1 {
+        return IOType.D1(numOfOutput) { input[it] + weight[it] }
     }
 
     override fun train(
-        input: IOTypeD1,
-        delta: (IOTypeD1) -> IOTypeD1,
-    ): IOTypeD1 {
-        val output = Array(numOfOutput) { input[it] + weight[it] }
+        input: IOType.D1,
+        delta: (IOType.D1) -> IOType.D1,
+    ): IOType.D1 {
+        val output = IOType.D1(numOfOutput) { input[it] + weight[it] }
         val delta = delta(output)
         for (i in 0 until numOfOutput) {
             weight[i] -= rate * delta[i]
@@ -34,7 +34,7 @@ fun Network.Builder.biasD1() =
         BiasD1(
             numOfInput = numOfInput,
             rate = rate,
-            weight = Array(numOfInput) { random.nextDouble(-1.0, 1.0) },
+            weight = IOType.D1(numOfInput) { random.nextDouble(-1.0, 1.0) },
         ),
     )
 

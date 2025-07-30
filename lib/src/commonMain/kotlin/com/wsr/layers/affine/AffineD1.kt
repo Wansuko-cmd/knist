@@ -1,7 +1,7 @@
 package com.wsr.layers.affine
 
 import com.wsr.Network
-import com.wsr.common.IOTypeD1
+import com.wsr.common.IOType
 import com.wsr.common.IOTypeD2
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
@@ -13,12 +13,12 @@ class AffineD1 internal constructor(
     private val rate: Double,
     private val weight: IOTypeD2,
 ) : Layer.D1() {
-    override fun expect(input: IOTypeD1): IOTypeD1 = forward(input)
+    override fun expect(input: IOType.D1): IOType.D1 = forward(input)
 
-    override fun train(input: IOTypeD1, delta: (IOTypeD1) -> IOTypeD1): IOTypeD1 {
+    override fun train(input: IOType.D1, delta: (IOType.D1) -> IOType.D1): IOType.D1 {
         val output = forward(input)
         val delta = delta(output)
-        val dx = Array(numOfInput) { inputIndex ->
+        val dx = IOType.D1(numOfInput) { inputIndex ->
             var sum = 0.0
             for (outputIndex in 0 until numOfOutput) {
                 sum += delta[outputIndex] * weight[inputIndex][outputIndex]
@@ -33,8 +33,8 @@ class AffineD1 internal constructor(
         return dx
     }
 
-    private fun forward(input: IOTypeD1): IOTypeD1 {
-        return Array(numOfOutput) { outputIndex ->
+    private fun forward(input: IOType.D1): IOType.D1 {
+        return IOType.D1(numOfOutput) { outputIndex ->
             var sum = 0.0
             for (inputIndex in 0 until numOfInput) {
                 sum += input[inputIndex] * weight[inputIndex][outputIndex]
