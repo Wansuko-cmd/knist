@@ -9,7 +9,7 @@ class BiasD1 internal constructor(
     override val numOfInput: Int,
     private val rate: Double,
     private val random: Random,
-) : Layer {
+) : Layer() {
     override val numOfOutput = numOfInput
     private val weight = Array(numOfInput) { random.nextDouble(-1.0, 1.0) }
     override fun expect(input: IOTypeD1): IOTypeD1 {

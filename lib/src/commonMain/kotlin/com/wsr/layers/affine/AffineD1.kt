@@ -11,7 +11,7 @@ class AffineD1 internal constructor(
     override val numOfOutput: Int,
     private val rate: Double,
     private val random: Random,
-) : Layer {
+) : Layer() {
     private val weight: IOTypeD2 =
         Array(numOfInput) { Array(numOfOutput) { random.nextDouble(-1.0, 1.0) } }
 
