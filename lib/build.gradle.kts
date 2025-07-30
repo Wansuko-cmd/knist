@@ -14,3 +14,14 @@ kotlin {
         }
     }
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("perceptron") {
+            groupId = libs.versions.lib.group.id.get()
+            artifactId = "perceptron"
+            version = libs.versions.lib.version.get()
+            from(components["kotlin"])
+        }
+    }
+}
