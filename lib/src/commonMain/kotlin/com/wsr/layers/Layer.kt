@@ -41,4 +41,7 @@ sealed interface Layer {
                 delta = { input: IOType.D2 -> delta(input) as IOType.D2 },
             )
     }
+
+    @Serializable
+    abstract class Reshape : Layer
 }
