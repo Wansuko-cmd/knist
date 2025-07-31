@@ -36,6 +36,6 @@ fun main() {
                 data.sepalLength,
                 data.sepalWidth,
             ),
-        ).toList().maxIndex() == data.label
+        ).value.maxIndex() == data.label
     }.let { println(it.toDouble() / test.size.toDouble()) }
 }

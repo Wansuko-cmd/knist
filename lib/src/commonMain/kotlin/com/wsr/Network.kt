@@ -38,12 +38,10 @@ class Network<I: IOType, O: IOType> private constructor(private val layers: List
             }
     }
 
-    private fun output(input: IOType, label: IOType): IOType = when(input) {
-        is IOType.D1 -> {
-            val label = label as IOType.D1
-            IOType.D1(input.size) { input[it] - label[it] }
-        }
-        is IOType.D2 -> TODO()
+    private fun output(input: IOType, label: IOType): IOType {
+        val input = input.toD1()
+        val label = label.toD1()
+        return IOType.D1(input.shape[0]) { input[it] - label[it] }
     }
 
     @Suppress("UNCHECKED_CAST")
