@@ -20,13 +20,13 @@ class AffineD1 internal constructor(
         val dx = IOType.D1(numOfInput) { inputIndex ->
             var sum = 0.0
             for (outputIndex in 0 until numOfOutput) {
-                sum += delta[outputIndex] * weight[inputIndex][outputIndex]
+                sum += delta[outputIndex] * weight[inputIndex, outputIndex]
             }
             sum
         }
         for (inputIndex in 0 until numOfInput) {
             for (outputIndex in 0 until numOfOutput) {
-                weight[inputIndex][outputIndex] -= rate * delta[outputIndex] * input[inputIndex]
+                weight[inputIndex, outputIndex] -= rate * delta[outputIndex] * input[inputIndex]
             }
         }
         return dx
@@ -36,7 +36,7 @@ class AffineD1 internal constructor(
         return IOType.D1(numOfOutput) { outputIndex ->
             var sum = 0.0
             for (inputIndex in 0 until numOfInput) {
-                sum += input[inputIndex] * weight[inputIndex][outputIndex]
+                sum += input[inputIndex] * weight[inputIndex, outputIndex]
             }
             sum
         }
@@ -49,6 +49,6 @@ fun Network.Builder.affineD1(neuron: Int) =
             numOfInput = numOfInput,
             numOfOutput = neuron,
             rate = rate,
-            weight = IOType.D2(numOfInput) { IOType.D1(neuron) { random.nextDouble(-1.0, 1.0) } },
+            weight = IOType.D2(numOfInput, neuron) { _, _ -> random.nextDouble(-1.0, 1.0)},
         ),
     )

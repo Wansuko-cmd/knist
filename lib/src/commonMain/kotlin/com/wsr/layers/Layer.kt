@@ -24,11 +24,8 @@ sealed interface Layer {
         @Suppress("UNCHECKED_CAST")
         override fun train(input: IOType, delta: (IOType) -> IOType): IOType =
             train(
-                input = input as IOType.D1,
-                delta = delta as (IOType.D1) -> IOType.D1,
+                input = input.toD1(),
+                delta = { input: IOType.D1 -> delta(input).toD1() } ,
             )
     }
-
-    @Serializable
-    abstract class Reshape : Layer
 }
