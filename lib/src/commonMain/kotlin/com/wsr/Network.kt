@@ -2,32 +2,12 @@ package com.wsr
 
 import com.wsr.common.IOType
 import com.wsr.layers.Layer
-import com.wsr.layers.affine.AffineD1
-import com.wsr.layers.bias.BiasD1
-import com.wsr.layers.function.ReluD1
-import com.wsr.layers.function.SigmoidD1
-import com.wsr.layers.function.SoftmaxD1
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
 import kotlin.random.Random
 
-private val json = Json {
-    serializersModule = SerializersModule {
-        polymorphic(Layer.D1::class) {
-            subclass(AffineD1::class)
-            subclass(BiasD1::class)
-            subclass(ReluD1::class)
-            subclass(SigmoidD1::class)
-            subclass(SoftmaxD1::class)
-        }
-    }
-}
 
-@Serializable
-class Network<I: IOType, O: IOType> private constructor(private val layers: List<Layer>) {
+@Serializable(with = NetworkSerializer::class)
+class Network<I : IOType, O : IOType> internal constructor(internal val layers: List<Layer>) {
     private val trainLambda: (IOType, IOType) -> IOType by lazy {
         layers
             .reversed()
@@ -52,10 +32,12 @@ class Network<I: IOType, O: IOType> private constructor(private val layers: List
         trainLambda(input, label)
     }
 
-    fun toJson() = json.encodeToString(this)
+    fun toJson() = json.encodeToString(NetworkSerializer(), this)
 
     companion object {
-        fun <I: IOType, O: IOType> fromJson(value: String) = json.decodeFromString<Network<I, O>>(value)
+        fun <I : IOType, O : IOType> fromJson(value: String) =
+            json.decodeFromString<Network<I, O>>(NetworkSerializer(), value,
+        )
     }
 
     @ConsistentCopyVisibility
