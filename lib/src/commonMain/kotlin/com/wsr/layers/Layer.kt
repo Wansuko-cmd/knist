@@ -24,7 +24,7 @@ sealed interface Layer {
         @Suppress("UNCHECKED_CAST")
         override fun train(input: IOType, delta: (IOType) -> IOType): IOType =
             train(
-                input = input.toD1(),
+                input = input as IOType.D1,
                 delta = { input: IOType.D1 -> delta(input) as IOType.D1 },
             )
     }

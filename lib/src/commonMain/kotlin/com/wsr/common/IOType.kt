@@ -9,8 +9,6 @@ sealed interface IOType {
     val value: MutableList<Double>
     val shape: List<Int>
 
-    fun toD1(): D1
-
     @Serializable
     data class D1(override val value: MutableList<Double>) : IOType {
         override val shape = listOf(value.size)
@@ -18,8 +16,6 @@ sealed interface IOType {
         operator fun set(index: Int, element: Double) {
             value[index] = element
         }
-
-        override fun toD1(): D1 = this
 
         constructor(vararg elements: Double) : this(value = mutableListOf(*elements.toTypedArray()))
 
@@ -35,8 +31,6 @@ sealed interface IOType {
         operator fun set(x: Int, y: Int, element: Double) {
             value[x * y + y] = element
         }
-
-        override fun toD1(): D1 = D1(value)
 
         constructor(x: Int, y: Int, init: (Int, Int) -> Double) : this(
             value = (0 until x).flatMap { x1 ->

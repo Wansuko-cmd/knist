@@ -20,8 +20,8 @@ class Network<I : IOType, O : IOType> internal constructor(internal val layers: 
     }
 
     private fun output(input: IOType, label: IOType): IOType {
-        val input = input.toD1()
-        val label = label.toD1()
+        val input = IOType.D1(input.value)
+        val label = IOType.D1(label.value)
         return IOType.D1(input.shape[0]) { input[it] - label[it] }
     }
 

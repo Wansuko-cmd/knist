@@ -19,8 +19,6 @@ class ReshapeD2ToD1(
         val input = input as IOType.D2
         val output = IOType.D1(input.value)
         val delta = delta(output) as IOType.D1
-        return IOType.D2(inputShape[0], inputShape[1]) { x, y ->
-            delta[x * inputShape[1] + y]
-        }
+        return IOType.D2(delta.value, inputShape)
     }
 }
