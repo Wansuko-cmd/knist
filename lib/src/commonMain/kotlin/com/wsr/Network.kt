@@ -73,7 +73,8 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
 
     fun build() = Network<I, O>(layers)
 
-    data class D1<I : IOType>(
+    @ConsistentCopyVisibility
+    data class D1<I : IOType> internal constructor(
         val numOfInput: Int,
         override val layers: List<Layer>,
         override val rate: Double,
@@ -85,7 +86,8 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
         )
     }
 
-    data class D2<I : IOType>(
+    @ConsistentCopyVisibility
+    data class D2<I : IOType> internal constructor(
         val x: Int,
         val y: Int,
         override val layers: List<Layer>,

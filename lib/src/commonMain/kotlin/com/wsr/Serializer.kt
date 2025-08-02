@@ -7,6 +7,7 @@ import com.wsr.layers.bias.BiasD1
 import com.wsr.layers.function.ReluD1
 import com.wsr.layers.function.SigmoidD1
 import com.wsr.layers.function.SoftmaxD1
+import com.wsr.layers.reshape.ReshapeD2ToD1
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -20,11 +21,15 @@ import kotlinx.serialization.serializer
 internal val json = Json {
     serializersModule = SerializersModule {
         polymorphic(Layer::class) {
+            // D1
             subclass(AffineD1::class)
             subclass(BiasD1::class)
             subclass(ReluD1::class)
             subclass(SigmoidD1::class)
             subclass(SoftmaxD1::class)
+
+            // Reshape
+            subclass(ReshapeD2ToD1::class)
         }
     }
 }
