@@ -4,6 +4,7 @@ import com.wsr.common.IOType
 import com.wsr.layers.Layer
 import com.wsr.layers.affine.AffineD1
 import com.wsr.layers.bias.BiasD1
+import com.wsr.layers.bias.BiasD2
 import com.wsr.layers.conv.ConvD1
 import com.wsr.layers.function.relu.ReluD1
 import com.wsr.layers.function.relu.ReluD2
@@ -33,6 +34,7 @@ internal val json = Json {
 
             // D2
             subclass(ConvD1::class)
+            subclass(BiasD2::class)
             subclass(MaxPoolD1::class)
             subclass(ReluD2::class)
 
