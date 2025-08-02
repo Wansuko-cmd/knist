@@ -7,8 +7,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class AffineD1 internal constructor(
-    override val numOfInput: Int,
-    override val numOfOutput: Int,
+    val inputSize: Int,
+    override val outputSize: Int,
     private val rate: Double,
     private val weight: IOType.D2,
 ) : Layer.D1() {
@@ -17,15 +17,15 @@ class AffineD1 internal constructor(
     override fun train(input: IOType.D1, delta: (IOType.D1) -> IOType.D1): IOType.D1 {
         val output = forward(input)
         val delta = delta(output)
-        val dx = IOType.D1(numOfInput) { inputIndex ->
+        val dx = IOType.D1(inputSize) { inputIndex ->
             var sum = 0.0
-            for (outputIndex in 0 until numOfOutput) {
+            for (outputIndex in 0 until outputSize) {
                 sum += delta[outputIndex] * weight[inputIndex, outputIndex]
             }
             sum
         }
-        for (inputIndex in 0 until numOfInput) {
-            for (outputIndex in 0 until numOfOutput) {
+        for (inputIndex in 0 until inputSize) {
+            for (outputIndex in 0 until outputSize) {
                 weight[inputIndex, outputIndex] -= rate * delta[outputIndex] * input[inputIndex]
             }
         }
@@ -33,9 +33,9 @@ class AffineD1 internal constructor(
     }
 
     private fun forward(input: IOType.D1): IOType.D1 {
-        return IOType.D1(numOfOutput) { outputIndex ->
+        return IOType.D1(outputSize) { outputIndex ->
             var sum = 0.0
-            for (inputIndex in 0 until numOfInput) {
+            for (inputIndex in 0 until inputSize) {
                 sum += input[inputIndex] * weight[inputIndex, outputIndex]
             }
             sum
@@ -46,9 +46,9 @@ class AffineD1 internal constructor(
 fun <T : IOType> NetworkBuilder.D1<T>.affine(neuron: Int) =
     addLayer(
         layer = AffineD1(
-            numOfInput = numOfInput,
-            numOfOutput = neuron,
+            inputSize = inputSize,
+            outputSize = neuron,
             rate = rate,
-            weight = IOType.D2(numOfInput, neuron) { _, _ -> random.nextDouble(-1.0, 1.0) },
+            weight = IOType.D2(inputSize, neuron) { _, _ -> random.nextDouble(-1.0, 1.0) },
         ),
     )

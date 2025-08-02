@@ -3,25 +3,23 @@ package com.wsr.layers
 import com.wsr.common.IOType
 import kotlinx.serialization.Serializable
 
+@Suppress("UNCHECKED_CAST")
 @Serializable
 sealed interface Layer {
-    val inputShape: List<Int>
     val outputShape: List<Int>
     fun expect(input: IOType): IOType
     fun train(input: IOType, delta: (IOType) -> IOType): IOType
 
     @Serializable
     abstract class D1 : Layer {
-        abstract val numOfInput: Int
-        abstract val numOfOutput: Int
-        override val inputShape: List<Int> = listOf(numOfInput)
-        override val outputShape: List<Int> = listOf(numOfOutput)
+        abstract val outputSize: Int
+        override val outputShape: List<Int> = listOf(outputSize)
 
         protected abstract fun expect(input: IOType.D1): IOType.D1
         protected abstract fun train(input: IOType.D1, delta: (IOType.D1) -> IOType.D1): IOType.D1
 
         override fun expect(input: IOType): IOType = expect(input = input as IOType.D1)
-        @Suppress("UNCHECKED_CAST")
+
         override fun train(input: IOType, delta: (IOType) -> IOType): IOType =
             train(
                 input = input as IOType.D1,
