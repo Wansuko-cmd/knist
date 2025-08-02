@@ -1,6 +1,5 @@
 package com.wsr.layers.affine
 
-import com.wsr.Network
 import com.wsr.NetworkBuilder
 import com.wsr.common.IOType
 import com.wsr.layers.Layer
@@ -43,16 +42,6 @@ class AffineD1 internal constructor(
         }
     }
 }
-
-fun Network.Builder.affineD1(neuron: Int) =
-    addLayer(
-        layer = AffineD1(
-            numOfInput = numOfInput,
-            numOfOutput = neuron,
-            rate = rate,
-            weight = IOType.D2(numOfInput, neuron) { _, _ -> random.nextDouble(-1.0, 1.0)},
-        ),
-    )
 
 fun <T : IOType> NetworkBuilder.D1<T>.affine(neuron: Int) =
     addLayer(

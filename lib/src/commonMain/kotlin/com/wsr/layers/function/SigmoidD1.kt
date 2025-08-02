@@ -22,7 +22,4 @@ class SigmoidD1 internal constructor(override val numOfInput: Int) : Layer.D1() 
     }
 }
 
-fun Network.Builder.sigmoidD1() =
-    addLayer(SigmoidD1(numOfInput = numOfInput))
-
 fun <T : IOType> NetworkBuilder.D1<T>.sigmoid() = addLayer(SigmoidD1(numOfInput = numOfInput))

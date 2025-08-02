@@ -30,15 +30,6 @@ class BiasD1 internal constructor(
     }
 }
 
-fun Network.Builder.biasD1() =
-    addLayer(
-        BiasD1(
-            numOfInput = numOfInput,
-            rate = rate,
-            weight = IOType.D1(numOfInput) { random.nextDouble(-1.0, 1.0) },
-        ),
-    )
-
 fun <T : IOType> NetworkBuilder.D1<T>.bias() = addLayer(
     BiasD1(
         numOfInput = numOfInput,
