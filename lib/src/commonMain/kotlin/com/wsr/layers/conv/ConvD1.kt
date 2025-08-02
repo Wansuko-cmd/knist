@@ -3,7 +3,9 @@ package com.wsr.layers.conv
 import com.wsr.NetworkBuilder
 import com.wsr.common.IOType
 import com.wsr.layers.Layer
+import kotlinx.serialization.Serializable
 
+@Serializable
 class ConvD1 internal constructor(
     private val filter: Int,
     private val channel: Int,
