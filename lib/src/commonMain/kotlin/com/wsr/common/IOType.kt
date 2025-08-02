@@ -27,9 +27,9 @@ sealed interface IOType {
         override val value: MutableList<Double>,
         override val shape: List<Int>,
     ) : IOType {
-        operator fun get(x: Int, y: Int) = value[x * y + y]
+        operator fun get(x: Int, y: Int) = value[x * shape[1] + y]
         operator fun set(x: Int, y: Int, element: Double) {
-            value[x * y + y] = element
+            value[x * shape[1] + y] = element
         }
 
         constructor(x: Int, y: Int, init: (Int, Int) -> Double) : this(
@@ -37,6 +37,26 @@ sealed interface IOType {
                 (0 until y).map { y1 -> init(x1, y1) }
             }.toMutableList(),
             shape = listOf(x, y),
+        )
+    }
+
+    @Serializable
+    data class D3(
+        override val value: MutableList<Double>,
+        override val shape: List<Int>,
+    ) : IOType {
+        operator fun get(x: Int, y: Int, z: Int) = value[(x * shape[1] + y) * shape[2] + z]
+        operator fun set(x: Int, y: Int, z: Int, element: Double) {
+            value[(x * shape[1] + y) * shape[2] + z]
+        }
+
+        constructor(x: Int, y: Int, z: Int, init: (Int, Int, Int) -> Double) : this(
+            value = (0 until x).flatMap { x1 ->
+                (0 until y).flatMap { y1 ->
+                    (0 until z).map { z1 -> init(x1, y1, z1) }
+                }
+            }.toMutableList(),
+            shape = listOf(x, y, z),
         )
     }
 }
