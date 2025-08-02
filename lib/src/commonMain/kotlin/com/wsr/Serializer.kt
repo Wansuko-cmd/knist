@@ -4,9 +4,12 @@ import com.wsr.common.IOType
 import com.wsr.layers.Layer
 import com.wsr.layers.affine.AffineD1
 import com.wsr.layers.bias.BiasD1
+import com.wsr.layers.conv.ConvD1
 import com.wsr.layers.function.relu.ReluD1
+import com.wsr.layers.function.relu.ReluD2
 import com.wsr.layers.function.sigmoid.SigmoidD1
 import com.wsr.layers.function.softmax.SoftmaxD1
+import com.wsr.layers.pool.MaxPoolD1
 import com.wsr.layers.reshape.ReshapeD2ToD1
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -27,6 +30,11 @@ internal val json = Json {
             subclass(ReluD1::class)
             subclass(SigmoidD1::class)
             subclass(SoftmaxD1::class)
+
+            // D2
+            subclass(ConvD1::class)
+            subclass(MaxPoolD1::class)
+            subclass(ReluD2::class)
 
             // Reshape
             subclass(ReshapeD2ToD1::class)

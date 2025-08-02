@@ -5,6 +5,7 @@ import com.wsr.layers.bias.bias
 import com.wsr.layers.conv.convD1
 import com.wsr.layers.function.relu.relu
 import com.wsr.layers.function.softmax.softmax
+import com.wsr.layers.pool.maxPool
 import dataset.iris.irisDatasets
 import dataset.mnist.MnistDataset
 
@@ -12,9 +13,9 @@ private const val EPOC = 3
 
 fun main() {
     val dataset = MnistDataset.read()
-    val (train, test) = dataset.shuffled() to dataset.shuffled()
+    val (train, test) = dataset.shuffled() to dataset.shuffled().take(100)
     val network = NetworkBuilder.inputD2(x = 1, y = 784, rate = 0.01)
-        .convD1(filter = 3, kernel = 6).relu()
+        .convD1(filter = 3, kernel = 5).relu().maxPool(2)
         .reshapeD1()
         .affine(neuron = 512).bias().relu()
         .affine(neuron = 10).softmax()
@@ -40,7 +41,7 @@ fun main() {
                 data.pixels.toMutableList(),
                 listOf(1, 784),
             ),
-        ).value.maxIndex() == data.label
+        ).value.also { println("expect: $it, actual: ${data.label}") }.maxIndex() == data.label
     }.let { println(it.toDouble() / test.size.toDouble()) }
 }
 
