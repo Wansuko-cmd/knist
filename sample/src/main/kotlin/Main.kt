@@ -15,7 +15,7 @@ fun main() {
     val dataset = MnistDataset.read()
     val (train, test) = dataset.shuffled() to dataset.shuffled().take(100)
     val network = NetworkBuilder.inputD2(x = 1, y = 784, rate = 0.01)
-        .convD1(filter = 3, kernel = 5).bias().relu().maxPool(2)
+        .convD1(filter = 3, kernel = 6, stride = 2).bias().relu().maxPool(2)
         .reshapeD1()
         .affine(neuron = 512).bias().relu()
         .affine(neuron = 10).softmax()
@@ -48,7 +48,7 @@ fun main() {
 private fun iris() {
     val (train, test) = irisDatasets.shuffled() to irisDatasets.shuffled()
     val network = NetworkBuilder.inputD2(x = 1, y = 4, rate = 0.01)
-        .convD1(filter = 1, kernel = 1).relu()
+        .convD1(filter = 1, kernel = 1, stride = 2).relu()
         .reshapeD1()
         .affine(neuron = 50).bias().relu()
         .affine(neuron = 3).softmax()
