@@ -11,16 +11,17 @@ class ConvD1 internal constructor(
     private val channel: Int,
     private val kernel: Int,
     private val stride: Int,
+    private val padding: Int,
     private val inputSize: Int,
     private val rate: Double,
     private val weight: IOType.D3,
 ) : Layer.D2() {
     override val outputX: Int = filter
-    override val outputY: Int = (inputSize - kernel) / stride + 1
+    override val outputY: Int = (inputSize - kernel + 2 * padding) / stride + 1
     override fun expect(input: IOType.D2): IOType.D2 = forward(input)
 
     init {
-        check((inputSize - kernel) % stride == 0)
+        check((inputSize - kernel + 2 * padding) % stride == 0)
     }
 
     override fun train(
@@ -29,6 +30,7 @@ class ConvD1 internal constructor(
     ): IOType.D2 {
         val output = forward(input)
         val delta = delta(output)
+        val input = input.withPadding(padding)
         for (f in 0 until filter) {
             for (c in 0 until channel) {
                 for (k in 0 until kernel) {
@@ -44,8 +46,9 @@ class ConvD1 internal constructor(
         return input
     }
 
-    private fun forward(input: IOType.D2): IOType.D2 =
-        IOType.D2(outputX, outputY) { filter, size ->
+    private fun forward(input: IOType.D2): IOType.D2 {
+        val input = input.withPadding(padding)
+        return IOType.D2(outputX, outputY) { filter, size ->
             var sum = 0.0
             for (c in 0 until channel) {
                 for (k in 0 until kernel) {
@@ -54,20 +57,34 @@ class ConvD1 internal constructor(
             }
             sum
         }
+    }
+
+    private fun IOType.D2.withPadding(padding: Int) = IOType.D2(
+        x = shape[0],
+        y = shape[1] + 2 * padding,
+    ) { x, y ->
+        if (y < padding || padding + shape[1] <= y) {
+            0.0
+        } else {
+            this[x, y - padding]
+        }
+    }
 }
 
 fun <T : IOType> NetworkBuilder.D2<T>.convD1(
     filter: Int,
     kernel: Int,
     stride: Int,
+    padding: Int,
 ) = addLayer(
     layer = ConvD1(
         filter = filter,
         channel = inputX,
         kernel = kernel,
         stride = stride,
+        padding = padding,
         inputSize = inputY,
         rate = rate,
-        weight = IOType.D3(filter, inputX, kernel) { _, _, _ -> random.nextDouble() },
+        weight = IOType.D3(filter, inputX, kernel) { _, _, _ -> random.nextDouble(-1.0, 1.0) },
     ),
 )

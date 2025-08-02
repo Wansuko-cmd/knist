@@ -36,6 +36,6 @@ fun <T: IOType> NetworkBuilder.D2<T>.bias() = addLayer(
         outputX = inputX,
         outputY = inputY,
         rate = rate,
-        weight = IOType.D2(inputX, inputY) { _, _ -> random.nextDouble() }
+        weight = IOType.D2(inputX, inputY) { _, _ -> random.nextDouble(-1.0, 1.0) }
     )
 )

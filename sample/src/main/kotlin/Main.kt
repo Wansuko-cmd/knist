@@ -12,23 +12,24 @@ import dataset.mnist.MnistDataset
 private const val EPOC = 3
 
 fun main() {
-    val dataset = MnistDataset.read()
-    val (train, test) = dataset.shuffled() to dataset.shuffled().take(100)
-    val network = NetworkBuilder.inputD2(x = 1, y = 784, rate = 0.01)
-        .convD1(filter = 3, kernel = 6, stride = 2).bias().relu().maxPool(2)
+    val network = NetworkBuilder.inputD2(x = 28, y = 28, rate = 0.01)
+        .convD1(filter = 30, kernel = 5, stride = 1, padding = 4).bias().relu().maxPool(2)
         .reshapeD1()
         .affine(neuron = 512).bias().relu()
         .affine(neuron = 10).softmax()
         .build()
 
+    val dataset = MnistDataset.read()
+    val (train, test) = dataset.shuffled() to dataset.shuffled().take(100)
     println("${dataset.size}")
+
     (1..EPOC).forEach { epoc ->
         println("epoc: $epoc")
-        train.shuffled().take(1000).forEachIndexed { i, data ->
+        train.shuffled().take(10000).forEachIndexed { i, data ->
             network.train(
                 input = IOType.D2(
                     data.pixels.toMutableList(),
-                    listOf(1, 784),
+                    listOf(28, 28),
                 ),
                 label = IOType.D1(10) { if (data.label == it) 1.0 else 0.0 },
             )
@@ -39,7 +40,7 @@ fun main() {
         network.expect(
             input = IOType.D2(
                 data.pixels.toMutableList(),
-                listOf(1, 784),
+                listOf(28, 28),
             ),
         ).value.maxIndex() == data.label
     }.let { println(it.toDouble() / test.size.toDouble()) }
@@ -48,7 +49,7 @@ fun main() {
 private fun iris() {
     val (train, test) = irisDatasets.shuffled() to irisDatasets.shuffled()
     val network = NetworkBuilder.inputD2(x = 1, y = 4, rate = 0.01)
-        .convD1(filter = 1, kernel = 1, stride = 2).relu()
+        .convD1(filter = 1, kernel = 1, stride = 2, padding = 2).relu()
         .reshapeD1()
         .affine(neuron = 50).bias().relu()
         .affine(neuron = 3).softmax()
