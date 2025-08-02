@@ -27,23 +27,23 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
 
     @ConsistentCopyVisibility
     data class D2<I : IOType> internal constructor(
-        val x: Int,
-        val y: Int,
+        val inputX: Int,
+        val inputY: Int,
         override val layers: List<Layer>,
         override val rate: Double,
         override val random: Random,
     ) : NetworkBuilder<I, IOType.D2> {
         fun addLayer(layer: Layer.D2): D2<I> = copy(
             layers = layers + layer,
-            x = layer.outputShape[0],
-            y = layer.outputShape[1],
+            inputX = layer.outputX,
+            inputY = layer.outputY,
         )
 
         fun reshapeD1(): D1<I> {
-            val numOfInput = x * y
+            val reshape = ReshapeD2ToD1(inputX, inputY)
             return D1(
-                inputSize = numOfInput,
-                layers = layers + ReshapeD2ToD1(listOf(x, y)),
+                layers = layers + reshape,
+                inputSize = reshape.outputSize,
                 rate = rate,
                 random = random,
             )
@@ -52,11 +52,11 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
 
     companion object {
         fun inputD1(
-            numOfInput: Int,
+            inputSize: Int,
             rate: Double,
             seed: Int? = null,
         ) = D1<IOType.D1>(
-            inputSize = numOfInput,
+            inputSize = inputSize,
             rate = rate,
             random = seed?.let { Random(it) } ?: Random,
             layers = emptyList(),
@@ -68,8 +68,8 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
             rate: Double,
             seed: Int? = null,
         ) = D2<IOType.D2>(
-            x = x,
-            y = y,
+            inputX = x,
+            inputY = y,
             rate = rate,
             random = seed?.let { Random(it) } ?: Random,
             layers = emptyList(),

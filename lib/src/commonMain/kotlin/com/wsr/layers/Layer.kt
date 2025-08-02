@@ -6,14 +6,12 @@ import kotlinx.serialization.Serializable
 @Suppress("UNCHECKED_CAST")
 @Serializable
 sealed interface Layer {
-    val outputShape: List<Int>
     fun expect(input: IOType): IOType
     fun train(input: IOType, delta: (IOType) -> IOType): IOType
 
     @Serializable
     abstract class D1 : Layer {
         abstract val outputSize: Int
-        override val outputShape: List<Int> = listOf(outputSize)
 
         protected abstract fun expect(input: IOType.D1): IOType.D1
         protected abstract fun train(input: IOType.D1, delta: (IOType.D1) -> IOType.D1): IOType.D1
@@ -29,6 +27,9 @@ sealed interface Layer {
 
     @Serializable
     abstract class D2 : Layer {
+        abstract val outputX: Int
+        abstract val outputY: Int
+
         protected abstract fun expect(input: IOType.D2): IOType.D2
         protected abstract fun train(input: IOType.D2, delta: (IOType.D2) -> IOType.D2): IOType.D2
 

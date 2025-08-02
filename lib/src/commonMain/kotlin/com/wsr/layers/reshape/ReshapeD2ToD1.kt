@@ -5,7 +5,9 @@ import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class ReshapeD2ToD1(override val outputShape: List<Int>) : Layer.Reshape() {
+internal class ReshapeD2ToD1(val outputSize: Int) : Layer.Reshape() {
+    constructor(x: Int, y: Int): this(outputSize = x * y)
+
     override fun expect(input: IOType): IOType {
         val input = input as IOType.D2
         return IOType.D1(input.value)
