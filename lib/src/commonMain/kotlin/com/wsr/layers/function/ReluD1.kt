@@ -1,27 +1,26 @@
 package com.wsr.layers.function
 
-import com.wsr.Network
-import com.wsr.common.IOTypeD1
+import com.wsr.NetworkBuilder
+import com.wsr.common.IOType
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
 @Serializable
-class ReluD1 internal constructor(override val numOfInput: Int) : Layer() {
-    override val numOfOutput = numOfInput
-    override fun expect(input: IOTypeD1): IOTypeD1 = forward(input)
+class ReluD1 internal constructor(override val outputSize: Int) : Layer.D1() {
+    override fun expect(input: IOType.D1): IOType.D1 = forward(input)
 
     override fun train(
-        input: IOTypeD1,
-        delta: (IOTypeD1) -> IOTypeD1,
-    ): IOTypeD1 {
+        input: IOType.D1,
+        delta: (IOType.D1) -> IOType.D1,
+    ): IOType.D1 {
         val output = forward(input)
         val delta = delta(output)
-        return Array(numOfOutput) { if (output[it] <= 0.0) 0.0 else delta[it] }
+        return IOType.D1(outputSize) { if (output[it] <= 0.0) 0.0 else delta[it] }
     }
 
-    private fun forward(input: IOTypeD1): IOTypeD1 {
-        return Array(numOfOutput) { input[it].coerceAtLeast(0.0) }
+    private fun forward(input: IOType.D1): IOType.D1 {
+        return IOType.D1(outputSize) { input[it].coerceAtLeast(0.0) }
     }
 }
 
-fun Network.Builder.reluD1() = addLayer(ReluD1(numOfInput = numOfInput))
+fun <T : IOType> NetworkBuilder.D1<T>.relu() = addLayer(ReluD1(outputSize = inputSize))

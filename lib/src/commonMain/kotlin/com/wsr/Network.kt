@@ -1,80 +1,46 @@
 package com.wsr
 
-import com.wsr.common.IOTypeD1
+import com.wsr.common.IOType
 import com.wsr.layers.Layer
-import com.wsr.layers.affine.AffineD1
-import com.wsr.layers.bias.BiasD1
-import com.wsr.layers.function.ReluD1
-import com.wsr.layers.function.SigmoidD1
-import com.wsr.layers.function.SoftmaxD1
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
-import kotlin.random.Random
 
-private val json = Json {
-    serializersModule = SerializersModule {
-        polymorphic(Layer::class) {
-            subclass(AffineD1::class)
-            subclass(BiasD1::class)
-            subclass(ReluD1::class)
-            subclass(SigmoidD1::class)
-            subclass(SoftmaxD1::class)
-        }
-    }
-}
 
-@Serializable
-class Network private constructor(private val layers: List<Layer>) {
-    private val trainLambda: (IOTypeD1, IOTypeD1) -> IOTypeD1 by lazy {
+@Serializable(with = NetworkSerializer::class)
+class Network<I : IOType, O : IOType> internal constructor(internal val layers: List<Layer>) {
+    private val trainLambda: (IOType, IOType) -> IOType by lazy {
         layers
             .reversed()
-            .fold(::output) { acc: (IOTypeD1, IOTypeD1) -> IOTypeD1, layer: Layer ->
-                { input: IOTypeD1, label: IOTypeD1 ->
+            .fold(::output) { acc: (IOType, IOType) -> IOType, layer: Layer ->
+                { input: IOType, label: IOType ->
                     layer.train(input) { acc(it, label) }
                 }
             }
     }
 
-    private fun output(input: IOTypeD1, label: IOTypeD1) =
-        Array(input.size) { input[it] - label[it] }
+    private fun output(input: IOType, label: IOType): IOType {
+        val delta = input.value.zip(label.value)
+            .map { (y, t) -> y - t }
+            .toMutableList()
+        // TODO if文を削除
+        return when (input) {
+            is IOType.D1 -> IOType.D1(delta)
+            is IOType.D2 -> IOType.D2(delta, input.shape)
+        }
+    }
 
-    fun expect(input: IOTypeD1): IOTypeD1 =
-        layers.fold(input) { acc, layer -> layer.expect(acc) }
+    @Suppress("UNCHECKED_CAST")
+    fun expect(input: I): O =
+        layers.fold<Layer, IOType>(input) { acc, layer -> layer.expect(acc) } as O
 
-    fun train(input: IOTypeD1, label: IOTypeD1) {
+    fun train(input: I, label: O) {
         trainLambda(input, label)
     }
 
-    fun toJson() = json.encodeToString(this)
+    fun toJson() = json.encodeToString(NetworkSerializer(), this)
 
     companion object {
-        fun fromJson(value: String) = json.decodeFromString<Network>(value)
-    }
-
-    @ConsistentCopyVisibility
-    data class Builder private constructor(
-        val numOfInput: Int,
-        val rate: Double,
-        val random: Random,
-        private val layers: List<Layer>,
-    ) {
-        constructor(
-            numOfInput: Int,
-            rate: Double,
-            seed: Int? = null,
-        ) : this(
-            numOfInput = numOfInput,
-            rate = rate,
-            random = seed?.let { Random(it) } ?: Random,
-            layers = emptyList(),
+        fun <I : IOType, O : IOType> fromJson(value: String) =
+            json.decodeFromString<Network<I, O>>(NetworkSerializer(), value,
         )
-
-        fun addLayer(layer: Layer) =
-            copy(numOfInput = layer.numOfOutput, layers = layers + layer)
-
-        fun build() = Network(layers)
     }
 }
