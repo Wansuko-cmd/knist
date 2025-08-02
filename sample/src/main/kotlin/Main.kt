@@ -2,8 +2,8 @@ import com.wsr.NetworkBuilder
 import com.wsr.common.IOType
 import com.wsr.layers.affine.affine
 import com.wsr.layers.bias.bias
-import com.wsr.layers.function.relu
-import com.wsr.layers.function.softmax
+import com.wsr.layers.function.relu.relu
+import com.wsr.layers.function.softmax.softmax
 import dataset.iris.irisDatasets
 
 private const val EPOC = 1000
