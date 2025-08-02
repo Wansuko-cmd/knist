@@ -2,6 +2,7 @@ package com.wsr
 
 import com.wsr.common.IOType
 import com.wsr.layers.Layer
+import com.wsr.layers.reshape.ReshapeD2ToD1
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
@@ -96,6 +97,16 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
             x = layer.outputShape[0],
             y = layer.outputShape[1],
         )
+
+        fun reshapeD1(): D1<I> {
+            val numOfInput = x * y
+            return D1(
+                numOfInput = numOfInput,
+                layers = layers + ReshapeD2ToD1(listOf(x, y), listOf(numOfInput)),
+                rate = rate,
+                random = random,
+            )
+        }
     }
 
     companion object {
@@ -105,6 +116,19 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
             seed: Int? = null,
         ) = D1<IOType.D1>(
             numOfInput = numOfInput,
+            rate = rate,
+            random = seed?.let { Random(it) } ?: Random,
+            layers = emptyList(),
+        )
+
+        fun inputD2(
+            x: Int,
+            y: Int,
+            rate: Double,
+            seed: Int? = null,
+        ) = D2<IOType.D2>(
+            x = x,
+            y = y,
             rate = rate,
             random = seed?.let { Random(it) } ?: Random,
             layers = emptyList(),

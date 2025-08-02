@@ -9,7 +9,7 @@ class ReshapeD2ToD1(
 ) : Layer.Reshape() {
     override fun expect(input: IOType): IOType {
         val input = input as IOType.D2
-        return IOType.D1(input.value.flatten().toMutableList())
+        return IOType.D1(input.value)
     }
 
     override fun train(
@@ -17,12 +17,10 @@ class ReshapeD2ToD1(
         delta: (IOType) -> IOType,
     ): IOType {
         val input = input as IOType.D2
-        val output = IOType.D1(input.value.flatten().toMutableList())
+        val output = IOType.D1(input.value)
         val delta = delta(output) as IOType.D1
-        return IOType.D2(inputShape[0]) { axis0 ->
-            IOType.D1(inputShape[1]) { axis1 ->
-                delta[axis0 * axis1 + axis1]
-            }
+        return IOType.D2(inputShape[0], inputShape[1]) { x, y ->
+            delta[x * inputShape[1] + y]
         }
     }
 }
