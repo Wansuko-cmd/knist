@@ -2,8 +2,10 @@ package com.wsr.layers.reshape
 
 import com.wsr.common.IOType
 import com.wsr.layers.Layer
+import kotlinx.serialization.Serializable
 
-class ReshapeD2ToD1(
+@Serializable
+internal class ReshapeD2ToD1(
     override val inputShape: List<Int>,
     override val outputShape: List<Int>
 ) : Layer.Reshape() {
