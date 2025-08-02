@@ -18,9 +18,14 @@ class Network<I : IOType, O : IOType> internal constructor(internal val layers: 
     }
 
     private fun output(input: IOType, label: IOType): IOType {
-        val input = IOType.D1(input.value)
-        val label = IOType.D1(label.value)
-        return IOType.D1(input.shape[0]) { input[it] - label[it] }
+        val delta = input.value.zip(label.value)
+            .map { (y, t) -> y - t }
+            .toMutableList()
+        // TODO if文を削除
+        return when (input) {
+            is IOType.D1 -> IOType.D1(delta)
+            is IOType.D2 -> IOType.D2(delta, input.shape)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
