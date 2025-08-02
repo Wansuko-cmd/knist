@@ -1,18 +1,18 @@
-import com.wsr.Network
+import com.wsr.NetworkBuilder
 import com.wsr.common.IOType
-import com.wsr.layers.affine.affineD1
-import com.wsr.layers.bias.biasD1
-import com.wsr.layers.function.reluD1
-import com.wsr.layers.function.softmaxD1
+import com.wsr.layers.affine.affine
+import com.wsr.layers.bias.bias
+import com.wsr.layers.function.relu
+import com.wsr.layers.function.softmax
 import dataset.iris.irisDatasets
 
 private const val EPOC = 1000
 
 fun main() {
     val (train, test) = irisDatasets.shuffled() to irisDatasets.shuffled()
-    val network = Network.Builder(numOfInput = 4, rate = 0.01)
-        .affineD1(neuron = 50).biasD1().reluD1()
-        .affineD1(neuron = 3).softmaxD1()
+    val network = NetworkBuilder.inputD1(numOfInput = 4, rate = 0.01)
+        .affine(neuron = 50).bias().relu()
+        .affine(neuron = 3).softmax()
         .build()
 
     (1..EPOC).forEach { epoc ->

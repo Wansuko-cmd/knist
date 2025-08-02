@@ -1,6 +1,7 @@
 package com.wsr.layers.bias
 
 import com.wsr.Network
+import com.wsr.NetworkBuilder
 import com.wsr.common.IOType
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
@@ -38,3 +39,10 @@ fun Network.Builder.biasD1() =
         ),
     )
 
+fun <T : IOType> NetworkBuilder.D1<T>.bias() = addLayer(
+    BiasD1(
+        numOfInput = numOfInput,
+        rate = rate,
+        weight = IOType.D1(numOfInput) { random.nextDouble(-1.0, 1.0) },
+    ),
+)
