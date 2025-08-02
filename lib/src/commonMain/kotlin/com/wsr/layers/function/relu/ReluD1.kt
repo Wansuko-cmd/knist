@@ -1,4 +1,4 @@
-package com.wsr.layers.function
+package com.wsr.layers.function.relu
 
 import com.wsr.NetworkBuilder
 import com.wsr.common.IOType
