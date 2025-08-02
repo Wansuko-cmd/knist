@@ -47,7 +47,7 @@ sealed interface IOType {
     ) : IOType {
         operator fun get(x: Int, y: Int, z: Int) = value[(x * shape[1] + y) * shape[2] + z]
         operator fun set(x: Int, y: Int, z: Int, element: Double) {
-            value[(x * shape[1] + y) * shape[2] + z]
+            value[(x * shape[1] + y) * shape[2] + z] = element
         }
 
         constructor(x: Int, y: Int, z: Int, init: (Int, Int, Int) -> Double) : this(
