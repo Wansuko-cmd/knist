@@ -64,3 +64,50 @@ class Network<I : IOType, O : IOType> internal constructor(internal val layers: 
         fun build() = Network<IOType.D1, IOType.D1>(layers)
     }
 }
+
+sealed interface NetworkBuilder<I : IOType, O : IOType> {
+    val layers: List<Layer>
+    val rate: Double
+    val random: Random
+
+    fun build() = Network<I, O>(layers)
+
+    data class D1<I : IOType>(
+        val numOfInput: Int,
+        override val layers: List<Layer>,
+        override val rate: Double,
+        override val random: Random,
+    ) : NetworkBuilder<I, IOType.D1> {
+        fun addLayer(layer: Layer.D1): D1<I> = copy(
+            layers = layers + layer,
+            numOfInput = layer.numOfOutput,
+        )
+    }
+
+    data class D2<I : IOType>(
+        val x: Int,
+        val y: Int,
+        override val layers: List<Layer>,
+        override val rate: Double,
+        override val random: Random,
+    ) : NetworkBuilder<I, IOType.D2> {
+        fun addLayer(layer: Layer.D2): D2<I> = copy(
+            layers = layers + layer,
+            x = layer.outputShape[0],
+            y = layer.outputShape[1],
+        )
+    }
+
+    companion object {
+        fun inputD1(
+            numOfInput: Int,
+            rate: Double,
+            seed: Int? = null,
+        ) = D1<IOType.D1>(
+            numOfInput = numOfInput,
+            rate = rate,
+            random = seed?.let { Random(it) } ?: Random,
+            layers = emptyList(),
+        )
+    }
+}
