@@ -25,7 +25,20 @@ sealed interface Layer {
         override fun train(input: IOType, delta: (IOType) -> IOType): IOType =
             train(
                 input = input.toD1(),
-                delta = { input: IOType.D1 -> delta(input).toD1() } ,
+                delta = { input: IOType.D1 -> delta(input) as IOType.D1 },
+            )
+    }
+
+    @Serializable
+    abstract class D2 : Layer {
+        protected abstract fun expect(input: IOType.D2): IOType.D2
+        protected abstract fun train(input: IOType.D2, delta: (IOType.D2) -> IOType.D2): IOType.D2
+
+        override fun expect(input: IOType): IOType = expect(input = input as IOType.D2)
+        override fun train(input: IOType, delta: (IOType) -> IOType): IOType =
+            train(
+                input = input as IOType.D2,
+                delta = { input: IOType.D2 -> delta(input) as IOType.D2 },
             )
     }
 }
