@@ -25,6 +25,7 @@ class Network<I : IOType, O : IOType> internal constructor(internal val layers: 
         return when (input) {
             is IOType.D1 -> IOType.D1(delta)
             is IOType.D2 -> IOType.D2(delta, input.shape)
+            is IOType.D3 -> IOType.D3(delta, input.shape)
         }
     }
 
