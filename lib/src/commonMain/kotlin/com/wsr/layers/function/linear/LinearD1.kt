@@ -1,0 +1,18 @@
+package com.wsr.layers.function.linear
+
+import com.wsr.NetworkBuilder
+import com.wsr.common.IOType
+import com.wsr.layers.Layer
+import kotlinx.serialization.Serializable
+
+@Serializable
+class LinearD1 internal constructor(override val outputSize: Int) : Layer.D1() {
+    override fun expect(input: IOType.D1): IOType.D1 = input
+
+    override fun train(
+        input: IOType.D1,
+        delta: (IOType.D1) -> IOType.D1,
+    ): IOType.D1 = delta(input)
+}
+
+fun <T : IOType> NetworkBuilder.D1<T>.linear() = addLayer(LinearD1(outputSize = inputSize))
