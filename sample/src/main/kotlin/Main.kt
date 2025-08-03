@@ -8,24 +8,27 @@ import com.wsr.layers.function.softmax.softmax
 import com.wsr.layers.pool.maxPool
 import dataset.iris.irisDatasets
 import dataset.mnist.MnistDataset
+import java.util.Random
 
-private const val EPOC = 3
+private const val EPOC = 1
+val random = Random(2)
 
 fun main() {
-    val network = NetworkBuilder.inputD2(x = 28, y = 28, rate = 0.01)
-        .convD1(filter = 30, kernel = 5, stride = 1, padding = 4).bias().relu().maxPool(2)
+    val network = NetworkBuilder.inputD2(x = 28, y = 28, rate = 0.01, seed = 3)
+        .convD1(filter = 30, kernel = 5, stride = 1, padding = 0).bias().relu().maxPool(2)
+        .convD1(filter = 30, kernel = 5, stride = 1, padding = 0).bias().relu().maxPool(2)
         .reshapeD1()
         .affine(neuron = 512).bias().relu()
         .affine(neuron = 10).softmax()
         .build()
 
-    val dataset = MnistDataset.read()
-    val (train, test) = dataset.shuffled() to dataset.shuffled().take(100)
+    val dataset = MnistDataset.read().shuffled(random)
+    val (train, test) = dataset.take(50000) to dataset.takeLast(10000).take(100)
     println("${dataset.size}")
 
     (1..EPOC).forEach { epoc ->
         println("epoc: $epoc")
-        train.shuffled().take(10000).forEachIndexed { i, data ->
+        train.shuffled(random).take(230).forEachIndexed { i, data ->
             network.train(
                 input = IOType.D2(
                     data.pixels.toMutableList(),
