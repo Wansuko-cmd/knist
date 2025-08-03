@@ -6,7 +6,7 @@ import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MaxPoolD1(
+class MaxPoolD1 internal constructor(
     val poolSize: Int,
     val channel: Int,
     val inputSize: Int,

@@ -71,8 +71,8 @@ class ConvD1 internal constructor(
 fun <T : IOType> NetworkBuilder.D2<T>.convD1(
     filter: Int,
     kernel: Int,
-    stride: Int,
-    padding: Int,
+    stride: Int = 1,
+    padding: Int = 0,
 ) = addLayer(
     layer = ConvD1(
         filter = filter,
