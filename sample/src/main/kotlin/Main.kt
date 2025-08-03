@@ -16,7 +16,6 @@ val random = Random(2)
 fun main() {
     val network = NetworkBuilder.inputD2(x = 28, y = 28, rate = 0.01, seed = 3)
         .convD1(filter = 30, kernel = 5, stride = 1, padding = 0).bias().relu().maxPool(2)
-        .convD1(filter = 30, kernel = 5, stride = 1, padding = 0).bias().relu().maxPool(2)
         .reshapeD1()
         .affine(neuron = 512).bias().relu()
         .affine(neuron = 10).softmax()
