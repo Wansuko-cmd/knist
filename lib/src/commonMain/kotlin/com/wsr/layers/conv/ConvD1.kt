@@ -18,7 +18,7 @@ class ConvD1 internal constructor(
 ) : Layer.D2() {
     override val outputX: Int = filter
     override val outputY: Int = (inputSize - kernel + 2 * padding) / stride + 1
-    override fun expect(input: IOType.D2): IOType.D2 = forward(input)
+    override fun expect(input: IOType.D2): IOType.D2 = forward(input.addPadding(padding))
 
     init {
         check((inputSize - kernel + 2 * padding) % stride == 0)
@@ -28,9 +28,22 @@ class ConvD1 internal constructor(
         input: IOType.D2,
         delta: (IOType.D2) -> IOType.D2,
     ): IOType.D2 {
+        val input = input.addPadding(padding)
         val output = forward(input)
         val delta = delta(output)
-        val input = input.withPadding(padding)
+        val deltaWith = delta.addPadding(kernel - 1)
+//        println("deleta: ${delta.value.map { it.toInt() }.filter { it > 10 }}")
+//        val dx = IOType.D2(channel, inputSize) { c, i ->
+//            var sum = 0.0
+//            for (f in 0 until filter) {
+//                for (k in 0 until kernel) {
+//                    val kr = kernel - (k + 1)
+//                    sum += deltaWith[f, i * stride + k] * weight[f, c, kr]
+//                }
+//            }
+//            sum
+//        }
+
         for (f in 0 until filter) {
             for (c in 0 until channel) {
                 for (k in 0 until kernel) {
@@ -43,11 +56,13 @@ class ConvD1 internal constructor(
             }
         }
         // TODO dxを計算する
+//        println("weight: ${weight.value.map { it.toInt() }.filter { it > 10 }}")
+//        println("output: $output")
+//        println("delta: $delta")
         return input
     }
 
     private fun forward(input: IOType.D2): IOType.D2 {
-        val input = input.withPadding(padding)
         return IOType.D2(outputX, outputY) { filter, size ->
             var sum = 0.0
             for (c in 0 until channel) {
@@ -59,7 +74,7 @@ class ConvD1 internal constructor(
         }
     }
 
-    private fun IOType.D2.withPadding(padding: Int) = IOType.D2(
+    private fun IOType.D2.addPadding(padding: Int) = IOType.D2(
         x = shape[0],
         y = shape[1] + 2 * padding,
     ) { x, y ->
