@@ -31,19 +31,6 @@ class ConvD1 internal constructor(
         val input = input.addPadding(padding)
         val output = forward(input)
         val delta = delta(output)
-        val deltaWith = delta.addPadding(kernel - 1)
-//        println("deleta: ${delta.value.map { it.toInt() }.filter { it > 10 }}")
-//        val dx = IOType.D2(channel, inputSize) { c, i ->
-//            var sum = 0.0
-//            for (f in 0 until filter) {
-//                for (k in 0 until kernel) {
-//                    val kr = kernel - (k + 1)
-//                    sum += deltaWith[f, i * stride + k] * weight[f, c, kr]
-//                }
-//            }
-//            sum
-//        }
-
         for (f in 0 until filter) {
             for (c in 0 until channel) {
                 for (k in 0 until kernel) {
@@ -56,22 +43,17 @@ class ConvD1 internal constructor(
             }
         }
         // TODO dxを計算する
-//        println("weight: ${weight.value.map { it.toInt() }.filter { it > 10 }}")
-//        println("output: $output")
-//        println("delta: $delta")
         return input
     }
 
-    private fun forward(input: IOType.D2): IOType.D2 {
-        return IOType.D2(outputX, outputY) { filter, size ->
-            var sum = 0.0
-            for (c in 0 until channel) {
-                for (k in 0 until kernel) {
-                    sum += input[c, size * stride + k] * weight[filter, c, k]
-                }
+    private fun forward(input: IOType.D2): IOType.D2 = IOType.D2(outputX, outputY) { filter, size ->
+        var sum = 0.0
+        for (c in 0 until channel) {
+            for (k in 0 until kernel) {
+                sum += input[c, size * stride + k] * weight[filter, c, k]
             }
-            sum
         }
+        sum
     }
 
     private fun IOType.D2.addPadding(padding: Int) = IOType.D2(
