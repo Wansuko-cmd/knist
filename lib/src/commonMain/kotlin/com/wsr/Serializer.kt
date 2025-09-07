@@ -3,6 +3,7 @@ package com.wsr
 import com.wsr.common.IOType
 import com.wsr.layers.Layer
 import com.wsr.layers.affine.AffineD1
+import com.wsr.layers.affine.AffineD2
 import com.wsr.layers.bias.BiasD1
 import com.wsr.layers.bias.BiasD2
 import com.wsr.layers.conv.ConvD1
@@ -29,6 +30,7 @@ internal val json = Json {
         polymorphic(Layer::class) {
             // Affine
             subclass(AffineD1::class)
+            subclass(AffineD2::class)
 
             // Bias
             subclass(BiasD1::class)
