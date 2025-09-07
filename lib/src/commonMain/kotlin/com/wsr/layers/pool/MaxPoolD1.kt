@@ -26,13 +26,13 @@ class MaxPoolD1 internal constructor(
     ): IOType.D2 {
         val output = forward(input)
         val delta = calcDelta(output)
-        return IOType.D2(channel, inputSize) { c, i ->
+        return IOType.d2(channel, inputSize) { c, i ->
             val o = i / poolSize
             if (input[c, i] == output[c, o]) delta[c, o] else 0.0
         }
     }
 
-    private fun forward(input: IOType.D2): IOType.D2 = IOType.D2(outputX, outputY) { x, y ->
+    private fun forward(input: IOType.D2): IOType.D2 = IOType.d2(outputX, outputY) { x, y ->
         var max = input[x, y]
         for (i in 1 until poolSize) {
             max = maxOf(max, input[x, y + i])

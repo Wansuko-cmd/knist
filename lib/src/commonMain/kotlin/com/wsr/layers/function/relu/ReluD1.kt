@@ -15,11 +15,11 @@ class ReluD1 internal constructor(override val outputSize: Int) : Layer.D1() {
     ): IOType.D1 {
         val output = forward(input)
         val delta = calcDelta(output)
-        return IOType.D1(outputSize) { if (output[it] <= 0.0) 0.0 else delta[it] }
+        return IOType.d1(outputSize) { if (output[it] <= 0.0) 0.0 else delta[it] }
     }
 
     private fun forward(input: IOType.D1): IOType.D1 {
-        return IOType.D1(outputSize) { input[it].coerceAtLeast(0.0) }
+        return IOType.d1(outputSize) { input[it].coerceAtLeast(0.0) }
     }
 }
 

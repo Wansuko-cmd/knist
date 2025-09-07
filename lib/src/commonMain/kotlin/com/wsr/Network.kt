@@ -23,9 +23,9 @@ class Network<I : IOType, O : IOType> internal constructor(internal val layers: 
             .toMutableList()
         // TODO if文を削除
         return when (input) {
-            is IOType.D1 -> IOType.D1(delta)
-            is IOType.D2 -> IOType.D2(delta, input.shape)
-            is IOType.D3 -> IOType.D3(delta, input.shape)
+            is IOType.D1 -> IOType.d1(value = delta)
+            is IOType.D2 -> IOType.d2(shape = input.shape, value = delta)
+            is IOType.D3 -> IOType.d3(shape = input.shape, value = delta)
         }
     }
 

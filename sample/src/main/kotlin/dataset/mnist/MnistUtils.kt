@@ -29,20 +29,20 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
         println("epoc: $epoc")
         train.shuffled(random).take(230).forEachIndexed { i, data ->
             network.train(
-                input = IOType.D2(
-                    data.pixels.toMutableList(),
+                input = IOType.d2(
                     listOf(28, 28),
+                    data.pixels.toMutableList(),
                 ),
-                label = IOType.D1(10) { if (data.label == it) 1.0 else 0.0 },
+                label = IOType.d1(10) { if (data.label == it) 1.0 else 0.0 },
             )
             if (i % 100 == 0) println("trained: $i")
         }
     }
     test.count { data ->
         network.expect(
-            input = IOType.D2(
-                data.pixels.toMutableList(),
+            input = IOType.d2(
                 listOf(28, 28),
+                data.pixels.toMutableList(),
             ),
         ).value.maxIndex() == data.label
     }.let { println(it.toDouble() / test.size.toDouble()) }

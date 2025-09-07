@@ -14,9 +14,9 @@ class SigmoidD1 internal constructor(override val outputSize: Int) : Layer.D1() 
         input: IOType.D1,
         calcDelta: (IOType.D1) -> IOType.D1,
     ): IOType.D1 {
-        val output = IOType.D1(outputSize) { 1 / (1 + exp(-input[it])) }
+        val output = IOType.d1(outputSize) { 1 / (1 + exp(-input[it])) }
         val delta = calcDelta(output)
-        return IOType.D1(outputSize) { delta[it] * output[it] * (1 - output[it]) }
+        return IOType.d1(outputSize) { delta[it] * output[it] * (1 - output[it]) }
     }
 }
 

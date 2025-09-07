@@ -17,7 +17,7 @@ class SoftmaxD1 internal constructor(override val outputSize: Int) : Layer.D1() 
         val max = input.value.max()
         val exp = input.value.map { exp(it - max) }
         val sum = exp.sum()
-        val output = IOType.D1(outputSize) { exp[it] / sum }
+        val output = IOType.d1(outputSize) { exp[it] / sum }
         return calcDelta(output)
     }
 }

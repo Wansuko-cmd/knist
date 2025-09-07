@@ -46,7 +46,7 @@ class ConvD1 internal constructor(
         return input
     }
 
-    private fun forward(input: IOType.D2): IOType.D2 = IOType.D2(outputX, outputY) { filter, size ->
+    private fun forward(input: IOType.D2): IOType.D2 = IOType.d2(outputX, outputY) { filter, size ->
         var sum = 0.0
         for (c in 0 until channel) {
             for (k in 0 until kernel) {
@@ -56,7 +56,7 @@ class ConvD1 internal constructor(
         sum
     }
 
-    private fun IOType.D2.addPadding(padding: Int) = IOType.D2(
+    private fun IOType.D2.addPadding(padding: Int) = IOType.d2(
         x = shape[0],
         y = shape[1] + 2 * padding,
     ) { x, y ->
@@ -82,6 +82,6 @@ fun <T : IOType> NetworkBuilder.D2<T>.convD1(
         padding = padding,
         inputSize = inputY,
         rate = rate,
-        weight = IOType.D3(filter, inputX, kernel) { _, _, _ -> random.nextDouble(-1.0, 1.0) },
+        weight = IOType.d3(filter, inputX, kernel) { _, _, _ -> random.nextDouble(-1.0, 1.0) },
     ),
 )
