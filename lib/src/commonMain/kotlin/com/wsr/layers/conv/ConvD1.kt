@@ -26,11 +26,11 @@ class ConvD1 internal constructor(
 
     override fun train(
         input: IOType.D2,
-        delta: (IOType.D2) -> IOType.D2,
+        calcDelta: (IOType.D2) -> IOType.D2,
     ): IOType.D2 {
         val input = input.addPadding(padding)
         val output = forward(input)
-        val delta = delta(output)
+        val delta = calcDelta(output)
         for (f in 0 until filter) {
             for (c in 0 until channel) {
                 for (k in 0 until kernel) {

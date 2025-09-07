@@ -14,8 +14,8 @@ class LinearD2 internal constructor(
 
     override fun train(
         input: IOType.D2,
-        delta: (IOType.D2) -> IOType.D2,
-    ): IOType.D2 = delta(input)
+        calcDelta: (IOType.D2) -> IOType.D2,
+    ): IOType.D2 = calcDelta(input)
 }
 
 fun <T : IOType> NetworkBuilder.D2<T>.linear() = addLayer(

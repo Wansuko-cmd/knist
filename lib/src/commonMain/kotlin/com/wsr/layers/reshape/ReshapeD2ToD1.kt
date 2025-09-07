@@ -15,11 +15,11 @@ internal class ReshapeD2ToD1(val outputSize: Int) : Layer.Reshape() {
 
     override fun train(
         input: IOType,
-        delta: (IOType) -> IOType,
+        calcDelta: (IOType) -> IOType,
     ): IOType {
         val input = input as IOType.D2
         val output = IOType.D1(input.value)
-        val delta = delta(output) as IOType.D1
+        val delta = calcDelta(output) as IOType.D1
         return IOType.D2(delta.value, input.shape)
     }
 }

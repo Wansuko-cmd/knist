@@ -11,8 +11,8 @@ class LinearD1 internal constructor(override val outputSize: Int) : Layer.D1() {
 
     override fun train(
         input: IOType.D1,
-        delta: (IOType.D1) -> IOType.D1,
-    ): IOType.D1 = delta(input)
+        calcDelta: (IOType.D1) -> IOType.D1,
+    ): IOType.D1 = calcDelta(input)
 }
 
 fun <T : IOType> NetworkBuilder.D1<T>.linear() = addLayer(LinearD1(outputSize = inputSize))

@@ -17,10 +17,10 @@ class BiasD1 internal constructor(
 
     override fun train(
         input: IOType.D1,
-        delta: (IOType.D1) -> IOType.D1,
+        calcDelta: (IOType.D1) -> IOType.D1,
     ): IOType.D1 {
         val output = IOType.D1(outputSize) { input[it] + weight[it] }
-        val delta = delta(output)
+        val delta = calcDelta(output)
         for (i in 0 until outputSize) {
             weight[i] -= rate * delta[i]
         }
