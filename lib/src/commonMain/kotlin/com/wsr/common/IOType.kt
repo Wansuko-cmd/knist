@@ -20,6 +20,8 @@ sealed interface IOType {
         constructor(vararg elements: Double) : this(value = mutableListOf(*elements.toTypedArray()))
 
         constructor(size: Int, init: (Int) -> Double) : this(value = MutableList(size, init))
+
+        constructor(value: List<Double>) : this(value = value.toMutableList())
     }
 
     @Serializable
@@ -37,6 +39,11 @@ sealed interface IOType {
                 (0 until y).map { y1 -> init(x1, y1) }
             }.toMutableList(),
             shape = listOf(x, y),
+        )
+
+        constructor(value: List<Double>, shape: List<Int>) : this(
+            value = value.toMutableList(),
+            shape = shape,
         )
     }
 
@@ -57,6 +64,11 @@ sealed interface IOType {
                 }
             }.toMutableList(),
             shape = listOf(x, y, z),
+        )
+
+        constructor(value: List<Double>, shape: List<Int>) : this(
+            value = value.toMutableList(),
+            shape = shape,
         )
     }
 }
