@@ -2,6 +2,8 @@ package com.wsr
 
 import com.wsr.common.IOType
 import com.wsr.layers.Layer
+import com.wsr.layers.debug.DebugD1
+import com.wsr.layers.debug.DebugD2
 import kotlinx.serialization.Serializable
 
 
@@ -37,11 +39,16 @@ class Network<I : IOType, O : IOType> internal constructor(internal val layers: 
         trainLambda(input, label)
     }
 
-    fun toJson() = json.encodeToString(NetworkSerializer(), this)
+    fun toJson() = json.encodeToString(
+        serializer = NetworkSerializer(),
+        value = Network(layers = layers.filter { it !is DebugD1 && it !is DebugD2 }),
+    )
 
     companion object {
         fun <I : IOType, O : IOType> fromJson(value: String) =
-            json.decodeFromString<Network<I, O>>(NetworkSerializer(), value,
+            json.decodeFromString<Network<I, O>>(
+                deserializer = NetworkSerializer(),
+                string = value,
         )
     }
 }
