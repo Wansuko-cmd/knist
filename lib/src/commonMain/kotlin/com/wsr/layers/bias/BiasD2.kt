@@ -18,10 +18,10 @@ class BiasD2(
 
     override fun train(
         input: IOType.D2,
-        delta: (IOType.D2) -> IOType.D2,
+        calcDelta: (IOType.D2) -> IOType.D2,
     ): IOType.D2 {
         val output = IOType.D2(outputX, outputY) { x, y -> input[x, y] + weight[x, y] }
-        val delta = delta(output)
+        val delta = calcDelta(output)
         for (x in 0 until outputX) {
             for (y in 0 until outputY) {
                 weight[x, y] -= rate * delta[x, y]

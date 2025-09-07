@@ -11,10 +11,10 @@ class ReluD1 internal constructor(override val outputSize: Int) : Layer.D1() {
 
     override fun train(
         input: IOType.D1,
-        delta: (IOType.D1) -> IOType.D1,
+        calcDelta: (IOType.D1) -> IOType.D1,
     ): IOType.D1 {
         val output = forward(input)
-        val delta = delta(output)
+        val delta = calcDelta(output)
         return IOType.D1(outputSize) { if (output[it] <= 0.0) 0.0 else delta[it] }
     }
 

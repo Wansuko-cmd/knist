@@ -14,9 +14,9 @@ class AffineD1 internal constructor(
 ) : Layer.D1() {
     override fun expect(input: IOType.D1): IOType.D1 = forward(input)
 
-    override fun train(input: IOType.D1, delta: (IOType.D1) -> IOType.D1): IOType.D1 {
+    override fun train(input: IOType.D1, calcDelta: (IOType.D1) -> IOType.D1): IOType.D1 {
         val output = forward(input)
-        val delta = delta(output)
+        val delta = calcDelta(output)
         val dx = IOType.D1(inputSize) { inputIndex ->
             var sum = 0.0
             for (outputIndex in 0 until outputSize) {

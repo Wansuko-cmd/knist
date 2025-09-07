@@ -22,10 +22,10 @@ class MaxPoolD1 internal constructor(
 
     override fun train(
         input: IOType.D2,
-        delta: (IOType.D2) -> IOType.D2,
+        calcDelta: (IOType.D2) -> IOType.D2,
     ): IOType.D2 {
         val output = forward(input)
-        val delta = delta(output)
+        val delta = calcDelta(output)
         return IOType.D2(channel, inputSize) { c, i ->
             val o = i / poolSize
             if (input[c, i] == output[c, o]) delta[c, o] else 0.0
