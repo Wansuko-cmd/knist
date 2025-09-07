@@ -17,7 +17,7 @@ class AffineD1 internal constructor(
     override fun train(input: IOType.D1, calcDelta: (IOType.D1) -> IOType.D1): IOType.D1 {
         val output = forward(input)
         val delta = calcDelta(output)
-        val dx = IOType.D1(inputSize) { inputIndex ->
+        val dx = IOType.d1(inputSize) { inputIndex ->
             var sum = 0.0
             for (outputIndex in 0 until outputSize) {
                 sum += delta[outputIndex] * weight[inputIndex, outputIndex]
@@ -33,7 +33,7 @@ class AffineD1 internal constructor(
     }
 
     private fun forward(input: IOType.D1): IOType.D1 {
-        return IOType.D1(outputSize) { outputIndex ->
+        return IOType.d1(outputSize) { outputIndex ->
             var sum = 0.0
             for (inputIndex in 0 until inputSize) {
                 sum += input[inputIndex] * weight[inputIndex, outputIndex]
@@ -49,6 +49,6 @@ fun <T : IOType> NetworkBuilder.D1<T>.affine(neuron: Int) =
             inputSize = inputSize,
             outputSize = neuron,
             rate = rate,
-            weight = IOType.D2(inputSize, neuron) { _, _ -> random.nextDouble(-1.0, 1.0) },
+            weight = IOType.d2(inputSize, neuron) { _, _ -> random.nextDouble(-1.0, 1.0) },
         ),
     )

@@ -18,22 +18,22 @@ fun createIrisModel(epoc: Int) {
     (1..epoc).forEach { epoc ->
         train.forEach { data ->
             network.train(
-                input = IOType.D1(
-                    mutableListOf(
+                input = IOType.d1(
+                    listOf(
                         data.petalLength,
                         data.petalWidth,
                         data.sepalLength,
                         data.sepalWidth,
                     ),
                 ),
-                label = IOType.D1(3) { if (data.label == it) 1.0 else 0.0 },
+                label = IOType.d1(3) { if (data.label == it) 1.0 else 0.0 },
             )
         }
     }
     test.count { data ->
         network.expect(
-            input = IOType.D1(
-                mutableListOf(
+            input = IOType.d1(
+                listOf(
                     data.petalLength,
                     data.petalWidth,
                     data.sepalLength,

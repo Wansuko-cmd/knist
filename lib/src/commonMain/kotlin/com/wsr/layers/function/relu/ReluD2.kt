@@ -18,11 +18,11 @@ class ReluD2 internal constructor(
     ): IOType.D2 {
         val output = forward(input)
         val delta = calcDelta(output)
-        return IOType.D2(outputX, outputY) { x, y -> if (output[x, y] <= 0.0) 0.0 else delta[x, y] }
+        return IOType.d2(outputX, outputY) { x, y -> if (output[x, y] <= 0.0) 0.0 else delta[x, y] }
     }
 
     private fun forward(input: IOType.D2): IOType.D2 {
-        return IOType.D2(outputX, outputY) { x, y -> input[x, y].coerceAtLeast(0.0) }
+        return IOType.d2(outputX, outputY) { x, y -> input[x, y].coerceAtLeast(0.0) }
     }
 }
 

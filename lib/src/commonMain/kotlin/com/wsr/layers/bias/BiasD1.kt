@@ -12,14 +12,14 @@ class BiasD1 internal constructor(
     private val weight: IOType.D1,
 ) : Layer.D1() {
     override fun expect(input: IOType.D1): IOType.D1 {
-        return IOType.D1(outputSize) { input[it] + weight[it] }
+        return IOType.d1(outputSize) { input[it] + weight[it] }
     }
 
     override fun train(
         input: IOType.D1,
         calcDelta: (IOType.D1) -> IOType.D1,
     ): IOType.D1 {
-        val output = IOType.D1(outputSize) { input[it] + weight[it] }
+        val output = IOType.d1(outputSize) { input[it] + weight[it] }
         val delta = calcDelta(output)
         for (i in 0 until outputSize) {
             weight[i] -= rate * delta[i]
@@ -32,6 +32,6 @@ fun <T : IOType> NetworkBuilder.D1<T>.bias() = addLayer(
     BiasD1(
         outputSize = inputSize,
         rate = rate,
-        weight = IOType.D1(inputSize) { random.nextDouble(-1.0, 1.0) },
+        weight = IOType.d1(inputSize) { random.nextDouble(-1.0, 1.0) },
     ),
 )
