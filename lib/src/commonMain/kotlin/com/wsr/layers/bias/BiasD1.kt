@@ -11,10 +11,10 @@ class BiasD1 internal constructor(
     private val rate: Double,
     private val weight: IOType.D1,
 ) : Layer.D1() {
-    override fun expectD1(input: List<IOType.D1>): List<IOType.D1> =
+    override fun expect(input: List<IOType.D1>): List<IOType.D1> =
         List(input.size) { index -> IOType.d1(outputSize) { input[index][it] + weight[it] } }
 
-    override fun trainD1(
+    override fun train(
         input: List<IOType.D1>,
         calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
     ): List<IOType.D1> {

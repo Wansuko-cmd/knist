@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class ReluD1 internal constructor(override val outputSize: Int) : Layer.D1() {
-    override fun expectD1(input: List<IOType.D1>): List<IOType.D1> = input.map(::forward)
+    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input.map(::forward)
 
-    override fun trainD1(
+    override fun train(
         input: List<IOType.D1>,
         calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
     ): List<IOType.D1> {

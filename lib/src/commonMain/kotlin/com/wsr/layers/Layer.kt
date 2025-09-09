@@ -6,22 +6,24 @@ import kotlinx.serialization.Serializable
 @Suppress("UNCHECKED_CAST")
 @Serializable
 sealed interface Layer {
-    fun expect(input: List<IOType>): List<IOType>
-    fun train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType>
+    @Suppress("FunctionName")
+    fun _expect(input: List<IOType>): List<IOType>
+    @Suppress("FunctionName")
+    fun _train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType>
 
     @Serializable
     abstract class D1 : Layer {
         abstract val outputSize: Int
 
-        protected abstract fun expectD1(input: List<IOType.D1>): List<IOType.D1>
-        protected abstract fun trainD1(
+        protected abstract fun expect(input: List<IOType.D1>): List<IOType.D1>
+        protected abstract fun train(
             input: List<IOType.D1>,
             calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
         ): List<IOType.D1>
 
-        override fun expect(input: List<IOType>): List<IOType> = expectD1(input = input as List<IOType.D1>)
-        override fun train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType> =
-            trainD1(
+        override fun _expect(input: List<IOType>): List<IOType> = expect(input = input as List<IOType.D1>)
+        override fun _train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType> =
+            train(
                 input = input as List<IOType.D1>,
                 calcDelta = { input: List<IOType.D1> -> calcDelta(input) as List<IOType.D1> }
             )
@@ -32,12 +34,12 @@ sealed interface Layer {
         abstract val outputX: Int
         abstract val outputY: Int
 
-        protected abstract fun expectD2(input: List<IOType.D2>): List<IOType.D2>
-        protected abstract fun trainD2(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2>
+        protected abstract fun expect(input: List<IOType.D2>): List<IOType.D2>
+        protected abstract fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2>
 
-        override fun expect(input: List<IOType>): List<IOType> = expectD2(input = input as List<IOType.D2>)
-        override fun train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType> =
-            trainD2(
+        override fun _expect(input: List<IOType>): List<IOType> = expect(input = input as List<IOType.D2>)
+        override fun _train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType> =
+            train(
                 input = input as List<IOType.D2>,
                 calcDelta = { input: List<IOType.D2> -> calcDelta(input) as List<IOType.D2> },
             )
