@@ -22,4 +22,15 @@ internal class ReshapeD2ToD1(val outputSize: Int) : Layer.Reshape() {
         val delta = calcDelta(output) as IOType.D1
         return IOType.d2(shape = input.shape, value = delta.value)
     }
+
+    override fun expect(input: List<IOType>): List<IOType> = input.map { IOType.d1(it.value) }
+
+    override fun train(
+        input: List<IOType>,
+        calcDelta: (List<IOType>) -> List<IOType>,
+    ): List<IOType> {
+        val output = input.map { IOType.d1(it.value) }
+        val delta = calcDelta(output)
+        return delta.mapIndexed { i, d -> IOType.d2(shape = input[i].shape, value = d.value) }
+    }
 }
