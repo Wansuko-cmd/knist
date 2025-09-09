@@ -7,15 +7,15 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class ReluD1 internal constructor(override val outputSize: Int) : Layer.D1() {
-    override fun expect(input: IOType.D1): IOType.D1 = forward(input)
+    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input.map(::forward)
 
     override fun train(
-        input: IOType.D1,
-        calcDelta: (IOType.D1) -> IOType.D1,
-    ): IOType.D1 {
-        val output = forward(input)
+        input: List<IOType.D1>,
+        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
+    ): List<IOType.D1> {
+        val output = input.map(::forward)
         val delta = calcDelta(output)
-        return IOType.d1(outputSize) { if (output[it] <= 0.0) 0.0 else delta[it] }
+        return List(input.size) { i -> IOType.d1(outputSize) { if (output[i][it] <= 0.0) 0.0 else delta[i][it] } }
     }
 
     private fun forward(input: IOType.D1): IOType.D1 {
