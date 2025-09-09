@@ -21,6 +21,19 @@ class ReluD2 internal constructor(
         return IOType.d2(outputX, outputY) { x, y -> if (output[x, y] <= 0.0) 0.0 else delta[x, y] }
     }
 
+    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.map(::forward)
+
+    override fun train(
+        input: List<IOType.D2>,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
+        val output = input.map(::forward)
+        val delta = calcDelta(output)
+        return delta.mapIndexed { i, d ->
+            IOType.d2(outputX, outputY) { x, y -> if (output[i][x, y] <= 0.0) 0.0 else d[x, y] }
+        }
+    }
+
     private fun forward(input: IOType.D2): IOType.D2 {
         return IOType.d2(outputX, outputY) { x, y -> input[x, y].coerceAtLeast(0.0) }
     }

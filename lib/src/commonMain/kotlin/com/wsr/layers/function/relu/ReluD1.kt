@@ -18,6 +18,17 @@ class ReluD1 internal constructor(override val outputSize: Int) : Layer.D1() {
         return IOType.d1(outputSize) { if (output[it] <= 0.0) 0.0 else delta[it] }
     }
 
+    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input.map(::forward)
+
+    override fun train(
+        input: List<IOType.D1>,
+        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
+    ): List<IOType.D1> {
+        val output = input.map(::forward)
+        val delta = calcDelta(output)
+        return delta.mapIndexed { i, d -> IOType.d1(outputSize) { if (output[i][it] <= 0.0) 0.0 else d[it] } }
+    }
+
     private fun forward(input: IOType.D1): IOType.D1 {
         return IOType.d1(outputSize) { input[it].coerceAtLeast(0.0) }
     }
