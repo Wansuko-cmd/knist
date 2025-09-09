@@ -8,9 +8,9 @@ import kotlinx.serialization.Serializable
 internal class ReshapeD2ToD1(val outputSize: Int) : Layer.Reshape() {
     constructor(x: Int, y: Int): this(outputSize = x * y)
 
-    override fun _expect(input: List<IOType>): List<IOType> = input.map { IOType.d1(it.value) }
+    override fun expect(input: List<IOType>): List<IOType> = input.map { IOType.d1(it.value) }
 
-    override fun _train(
+    override fun train(
         input: List<IOType>,
         calcDelta: (List<IOType>) -> List<IOType>,
     ): List<IOType> {

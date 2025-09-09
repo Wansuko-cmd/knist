@@ -21,8 +21,11 @@ sealed interface Layer {
             calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
         ): List<IOType.D1>
 
-        override fun _expect(input: List<IOType>): List<IOType> = expect(input = input as List<IOType.D1>)
-        override fun _train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType> =
+        final override fun _expect(input: List<IOType>): List<IOType> = expect(input = input as List<IOType.D1>)
+        final override fun _train(
+            input: List<IOType>,
+            calcDelta: (List<IOType>) -> List<IOType>,
+        ): List<IOType> =
             train(
                 input = input as List<IOType.D1>,
                 calcDelta = { input: List<IOType.D1> -> calcDelta(input) as List<IOType.D1> }
@@ -37,8 +40,11 @@ sealed interface Layer {
         protected abstract fun expect(input: List<IOType.D2>): List<IOType.D2>
         protected abstract fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2>
 
-        override fun _expect(input: List<IOType>): List<IOType> = expect(input = input as List<IOType.D2>)
-        override fun _train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType> =
+        final override fun _expect(input: List<IOType>): List<IOType> = expect(input = input as List<IOType.D2>)
+        final override fun _train(
+            input: List<IOType>,
+            calcDelta: (List<IOType>) -> List<IOType>,
+        ): List<IOType> =
             train(
                 input = input as List<IOType.D2>,
                 calcDelta = { input: List<IOType.D2> -> calcDelta(input) as List<IOType.D2> },
@@ -46,5 +52,14 @@ sealed interface Layer {
     }
 
     @Serializable
-    abstract class Reshape : Layer
+    abstract class Reshape : Layer {
+        protected abstract fun expect(input: List<IOType>): List<IOType>
+        protected abstract fun train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType>
+
+        final override fun _expect(input: List<IOType>): List<IOType> = expect(input)
+        final override fun _train(
+            input: List<IOType>,
+            calcDelta: (List<IOType>) -> List<IOType>,
+        ): List<IOType> = train(input, calcDelta)
+    }
 }
