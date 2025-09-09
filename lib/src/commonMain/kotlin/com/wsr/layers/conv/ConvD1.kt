@@ -46,6 +46,30 @@ class ConvD1 internal constructor(
         return input
     }
 
+    override fun expectD2(input: List<IOType.D2>): List<IOType.D2> =
+        input.map { it.addPadding(padding) }.map(::forward)
+
+    override fun trainD2(
+        input: List<IOType.D2>,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
+        val output = input.map { it.addPadding(padding) }.map(::forward)
+        val delta = calcDelta(output)
+        for (f in 0 until filter) {
+            for (c in 0 until channel) {
+                for (k in 0 until kernel) {
+                    var sum = 0.0
+                    for (d in 0 until outputY) {
+                        sum += input.sumOf { it[c, k + d * stride] } * delta.sumOf { it[f, d] }
+                    }
+                    weight[f, c, k] -= (rate * sum)
+                }
+            }
+        }
+        // TODO dxを計算する
+        return input
+    }
+
     private fun forward(input: IOType.D2): IOType.D2 = IOType.d2(outputX, outputY) { filter, size ->
         var sum = 0.0
         for (c in 0 until channel) {

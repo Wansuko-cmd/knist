@@ -29,6 +29,24 @@ class BiasD2(
         }
         return delta
     }
+
+    override fun expectD2(input: List<IOType.D2>): List<IOType.D2> = List(input.size) {
+        IOType.d2(outputX, outputY) { x, y -> input[it][x, y] + weight[x, y] }
+    }
+
+    override fun trainD2(
+        input: List<IOType.D2>,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
+        val output = List(input.size) { IOType.d2(outputX, outputY) { x, y -> input[it][x, y] + weight[x, y] } }
+        val delta = calcDelta(output)
+        for (x in 0 until outputX) {
+            for (y in 0 until outputY) {
+                weight[x, y] -= rate * delta.sumOf { it[x, y] }
+            }
+        }
+        return delta
+    }
 }
 
 fun <T: IOType> NetworkBuilder.D2<T>.bias() = addLayer(

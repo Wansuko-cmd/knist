@@ -21,9 +21,9 @@ class SoftmaxD1 internal constructor(override val outputSize: Int) : Layer.D1() 
         return calcDelta(output)
     }
 
-    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input
+    override fun expectD1(input: List<IOType.D1>): List<IOType.D1> = input
 
-    override fun train(
+    override fun trainD1(
         input: List<IOType.D1>,
         calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
     ): List<IOType.D1> {

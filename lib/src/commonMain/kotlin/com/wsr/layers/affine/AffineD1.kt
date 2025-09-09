@@ -32,6 +32,31 @@ class AffineD1 internal constructor(
         return dx
     }
 
+    override fun expectD1(input: List<IOType.D1>): List<IOType.D1> = input.map(::forward)
+
+    override fun trainD1(
+        input: List<IOType.D1>,
+        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
+    ): List<IOType.D1> {
+        val output = input.map(::forward)
+        val delta = calcDelta(output)
+        val dx = List(input.size) { i ->
+            IOType.d1(inputSize) { inputIndex ->
+                var sum = 0.0
+                for (outputIndex in 0 until outputSize) {
+                    sum += delta[i][outputIndex] * weight[inputIndex, outputIndex]
+                }
+                sum
+            }
+        }
+        for (inputIndex in 0 until inputSize) {
+            for (outputIndex in 0 until outputSize) {
+                weight[inputIndex, outputIndex] -= rate * delta.sumOf { it[outputIndex] } * input.sumOf { it[inputIndex] }
+            }
+        }
+        return dx
+    }
+
     private fun forward(input: IOType.D1): IOType.D1 {
         return IOType.d1(outputSize) { outputIndex ->
             var sum = 0.0
