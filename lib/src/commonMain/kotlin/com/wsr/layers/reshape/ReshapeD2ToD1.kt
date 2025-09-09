@@ -31,6 +31,8 @@ internal class ReshapeD2ToD1(val outputSize: Int) : Layer.Reshape() {
     ): List<IOType> {
         val output = input.map { IOType.d1(it.value) }
         val delta = calcDelta(output)
-        return delta.mapIndexed { i, d -> IOType.d2(shape = input[i].shape, value = d.value) }
+        return List(input.size) { i ->
+            IOType.d2(shape = input[i].shape, value = delta[i].value)
+        }
     }
 }

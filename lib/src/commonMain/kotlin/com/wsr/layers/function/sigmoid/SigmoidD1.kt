@@ -19,16 +19,16 @@ class SigmoidD1 internal constructor(override val outputSize: Int) : Layer.D1() 
         return IOType.d1(outputSize) { delta[it] * output[it] * (1 - output[it]) }
     }
 
-    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input.map(::forward)
+    override fun expectD1(input: List<IOType.D1>): List<IOType.D1> = input.map(::forward)
 
-    override fun train(
+    override fun trainD1(
         input: List<IOType.D1>,
         calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
     ): List<IOType.D1> {
         val output = input.map(::forward)
         val delta = calcDelta(output)
-        return delta.mapIndexed { i, d ->
-            IOType.d1(outputSize) { d[it] * output[i][it] * (1 - output[i][it]) }
+        return List(input.size) { i ->
+            IOType.d1(outputSize) { delta[i][it] * output[i][it] * (1 - output[i][it]) }
         }
     }
 

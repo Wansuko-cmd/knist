@@ -17,9 +17,9 @@ class LinearD2 internal constructor(
         calcDelta: (IOType.D2) -> IOType.D2,
     ): IOType.D2 = calcDelta(input)
 
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input
+    override fun expectD2(input: List<IOType.D2>): List<IOType.D2> = input
 
-    override fun train(
+    override fun trainD2(
         input: List<IOType.D2>,
         calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
     ): List<IOType.D2> = calcDelta(input)

@@ -18,6 +18,17 @@ class DebugD1 internal constructor(
         val input = input.also(onInput)
         return calcDelta(input).also(onDelta)
     }
+
+    override fun expectD1(input: List<IOType.D1>): List<IOType.D1> {
+        TODO("Not yet implemented")
+    }
+
+    override fun trainD1(
+        input: List<IOType.D1>,
+        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
+    ): List<IOType.D1> {
+        TODO("Not yet implemented")
+    }
 }
 
 /**

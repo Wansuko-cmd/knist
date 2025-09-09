@@ -14,9 +14,9 @@ class LinearD1 internal constructor(override val outputSize: Int) : Layer.D1() {
         calcDelta: (IOType.D1) -> IOType.D1,
     ): IOType.D1 = calcDelta(input)
 
-    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input
+    override fun expectD1(input: List<IOType.D1>): List<IOType.D1> = input
 
-    override fun train(
+    override fun trainD1(
         input: List<IOType.D1>,
         calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
     ): List<IOType.D1> = calcDelta(input)

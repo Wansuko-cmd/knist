@@ -32,6 +32,22 @@ class MaxPoolD1 internal constructor(
         }
     }
 
+    override fun expectD2(input: List<IOType.D2>): List<IOType.D2> = input.map(::forward)
+
+    override fun trainD2(
+        input: List<IOType.D2>,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
+        val output = input.map(::forward)
+        val delta = calcDelta(output)
+        return List(input.size) { index ->
+            IOType.d2(channel, inputSize) { c, i ->
+                val o = i / poolSize
+                if (input[index][c, i] == output[index][c, o]) delta[index][c, o] else 0.0
+            }
+        }
+    }
+
     private fun forward(input: IOType.D2): IOType.D2 = IOType.d2(outputX, outputY) { x, y ->
         var max = input[x, y]
         for (i in 1 until poolSize) {
