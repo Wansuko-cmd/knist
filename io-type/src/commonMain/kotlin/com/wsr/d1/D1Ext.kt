@@ -1,6 +1,6 @@
-package com.wsr.common.d1
+package com.wsr.d1
 
-import com.wsr.common.IOType
+import com.wsr.IOType
 
 fun List<IOType.D1>.average() = IOType.d1(first().shape) { x -> average(x) }
 

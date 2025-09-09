@@ -1,7 +1,7 @@
 package com.wsr.layers.function.softmax
 
 import com.wsr.NetworkBuilder
-import com.wsr.common.IOType
+import com.wsr.IOType
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 import kotlin.math.exp

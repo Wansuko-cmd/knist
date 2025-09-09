@@ -1,12 +1,11 @@
 package com.wsr.layers.affine
 
 import com.wsr.NetworkBuilder
-import com.wsr.common.IOType
-import com.wsr.common.averageOf
-import com.wsr.common.d1.average
-import com.wsr.common.d2.dot
-import com.wsr.common.d2.minus
-import com.wsr.common.d2.transpose
+import com.wsr.IOType
+import com.wsr.d1.average
+import com.wsr.d2.dot
+import com.wsr.d2.minus
+import com.wsr.d2.transpose
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 

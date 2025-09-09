@@ -1,7 +1,7 @@
 package com.wsr.layers.debug
 
 import com.wsr.NetworkBuilder
-import com.wsr.common.IOType
+import com.wsr.IOType
 import com.wsr.layers.Layer
 
 class DebugD2 internal constructor(

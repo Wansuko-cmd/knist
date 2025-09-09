@@ -1,11 +1,13 @@
 package com.wsr.layers.bias
 
 import com.wsr.NetworkBuilder
-import com.wsr.common.IOType
-import com.wsr.common.averageOf
+import com.wsr.IOType
+import com.wsr.d1.average
+import com.wsr.d1.minus
+import com.wsr.d1.plus
+import com.wsr.d1.times
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
-import com.wsr.common.d1.*
 
 @Serializable
 class BiasD1 internal constructor(

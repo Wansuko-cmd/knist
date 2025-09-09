@@ -1,6 +1,6 @@
-package com.wsr.common.d1
+package com.wsr.d1
 
-import com.wsr.common.IOType
+import com.wsr.IOType
 
 infix fun IOType.D1.dot(other: IOType.D1) = IOType.d1(size = shape[0]) { i -> this[i] * other[i] }
 

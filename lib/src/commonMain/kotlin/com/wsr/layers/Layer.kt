@@ -1,6 +1,6 @@
 package com.wsr.layers
 
-import com.wsr.common.IOType
+import com.wsr.IOType
 import kotlinx.serialization.Serializable
 
 @Suppress("UNCHECKED_CAST")
