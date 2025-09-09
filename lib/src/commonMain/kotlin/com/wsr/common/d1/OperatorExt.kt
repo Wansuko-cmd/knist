@@ -6,6 +6,10 @@ operator fun IOType.D1.plus(other: IOType.D1) = IOType.d1(shape[0]) { this[it] +
 
 operator fun IOType.D1.minus(other: IOType.D1) = IOType.d1(shape[0]) { this[it] - other[it] }
 
+operator fun List<IOType.D1>.plus(other: IOType.D1) = List(size) { this[it] + other }
+
+operator fun List<IOType.D1>.minus(other: IOType.D1) = List(size) { this[it] - other }
+
 operator fun List<IOType.D1>.plus(other: List<IOType.D1>) = List(size) { this[it] + other[it] }
 
 operator fun List<IOType.D1>.minus(other: List<IOType.D1>) = List(size) { this[it] - other[it] }
