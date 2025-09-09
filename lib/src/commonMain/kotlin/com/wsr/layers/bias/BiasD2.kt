@@ -12,24 +12,6 @@ class BiasD2(
     private val rate: Double,
     private val weight: IOType.D2,
 ) : Layer.D2() {
-    override fun expect(input: IOType.D2): IOType.D2 {
-        return IOType.d2(outputX, outputY) { x, y -> input[x, y] + weight[x, y] }
-    }
-
-    override fun train(
-        input: IOType.D2,
-        calcDelta: (IOType.D2) -> IOType.D2,
-    ): IOType.D2 {
-        val output = IOType.d2(outputX, outputY) { x, y -> input[x, y] + weight[x, y] }
-        val delta = calcDelta(output)
-        for (x in 0 until outputX) {
-            for (y in 0 until outputY) {
-                weight[x, y] -= rate * delta[x, y]
-            }
-        }
-        return delta
-    }
-
     override fun expectD2(input: List<IOType.D2>): List<IOType.D2> = List(input.size) {
         IOType.d2(outputX, outputY) { x, y -> input[it][x, y] + weight[x, y] }
     }

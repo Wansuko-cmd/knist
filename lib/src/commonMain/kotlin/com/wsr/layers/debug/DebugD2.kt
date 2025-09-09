@@ -10,16 +10,6 @@ class DebugD2 internal constructor(
     private val onInput: (IOType.D2) -> Unit,
     private val onDelta: (IOType.D2) -> Unit,
 ) : Layer.D2() {
-    override fun expect(input: IOType.D2): IOType.D2 = input.also(onInput)
-
-    override fun train(
-        input: IOType.D2,
-        calcDelta: (IOType.D2) -> IOType.D2,
-    ): IOType.D2 {
-        val input = input.also(onInput)
-        return calcDelta(input).also(onDelta)
-    }
-
     override fun expectD2(input: List<IOType.D2>): List<IOType.D2> {
         TODO("Not yet implemented")
     }

@@ -10,13 +10,6 @@ class LinearD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
 ) : Layer.D2() {
-    override fun expect(input: IOType.D2): IOType.D2 = input
-
-    override fun train(
-        input: IOType.D2,
-        calcDelta: (IOType.D2) -> IOType.D2,
-    ): IOType.D2 = calcDelta(input)
-
     override fun expectD2(input: List<IOType.D2>): List<IOType.D2> = input
 
     override fun trainD2(

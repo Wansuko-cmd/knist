@@ -11,22 +11,6 @@ class BiasD1 internal constructor(
     private val rate: Double,
     private val weight: IOType.D1,
 ) : Layer.D1() {
-    override fun expect(input: IOType.D1): IOType.D1 {
-        return IOType.d1(outputSize) { input[it] + weight[it] }
-    }
-
-    override fun train(
-        input: IOType.D1,
-        calcDelta: (IOType.D1) -> IOType.D1,
-    ): IOType.D1 {
-        val output = IOType.d1(outputSize) { input[it] + weight[it] }
-        val delta = calcDelta(output)
-        for (i in 0 until outputSize) {
-            weight[i] -= rate * delta[i]
-        }
-        return delta
-    }
-
     override fun expectD1(input: List<IOType.D1>): List<IOType.D1> =
         List(input.size) { index -> IOType.d1(outputSize) { input[index][it] + weight[it] } }
 
