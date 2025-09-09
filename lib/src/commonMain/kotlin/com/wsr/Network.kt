@@ -32,11 +32,18 @@ class Network<I : IOType, O : IOType> internal constructor(internal val layers: 
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun expect(input: I): O =
-        layers.fold<Layer, List<IOType>>(listOf(input)) { acc, layer -> layer._expect(acc) }[0] as O
+    fun expect(input: I): O = expect(input = listOf(input))[0]
+
+    @Suppress("UNCHECKED_CAST")
+    fun expect(input: List<I>): List<O> =
+        layers.fold<Layer, List<IOType>>(input) { acc, layer -> layer._expect(acc) } as List<O>
 
     fun train(input: I, label: O) {
-        trainLambda(listOf(input), listOf(label))
+        train(input = listOf(input), label = listOf(label))
+    }
+
+    fun train(input: List<I>, label: List<O>) {
+        trainLambda(input, label)
     }
 
     fun toJson() = json.encodeToString(
