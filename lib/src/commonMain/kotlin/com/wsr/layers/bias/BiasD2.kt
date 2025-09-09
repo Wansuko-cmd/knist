@@ -2,7 +2,10 @@ package com.wsr.layers.bias
 
 import com.wsr.NetworkBuilder
 import com.wsr.common.IOType
-import com.wsr.common.averageOf
+import com.wsr.common.d2.average
+import com.wsr.common.d2.minus
+import com.wsr.common.d2.plus
+import com.wsr.common.d2.times
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -11,23 +14,17 @@ class BiasD2(
     override val outputX: Int,
     override val outputY: Int,
     private val rate: Double,
-    private val weight: IOType.D2,
+    private var weight: IOType.D2,
 ) : Layer.D2() {
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> = List(input.size) {
-        IOType.d2(outputX, outputY) { x, y -> input[it][x, y] + weight[x, y] }
-    }
+    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input + weight
 
     override fun train(
         input: List<IOType.D2>,
         calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
     ): List<IOType.D2> {
-        val output = List(input.size) { IOType.d2(outputX, outputY) { x, y -> input[it][x, y] + weight[x, y] } }
+        val output = input + weight
         val delta = calcDelta(output)
-        for (x in 0 until outputX) {
-            for (y in 0 until outputY) {
-                weight[x, y] -= rate * delta.averageOf { it[x, y] }
-            }
-        }
+        weight -= rate * delta.average()
         return delta
     }
 }
