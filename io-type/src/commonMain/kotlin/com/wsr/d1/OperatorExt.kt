@@ -1,6 +1,6 @@
-package com.wsr.common.d1
+package com.wsr.d1
 
-import com.wsr.common.IOType
+import com.wsr.IOType
 
 operator fun IOType.D1.plus(other: IOType.D1) = IOType.d1(shape[0]) { this[it] + other[it] }
 

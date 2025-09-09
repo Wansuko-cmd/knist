@@ -1,11 +1,11 @@
 package com.wsr.layers.bias
 
 import com.wsr.NetworkBuilder
-import com.wsr.common.IOType
-import com.wsr.common.d2.average
-import com.wsr.common.d2.minus
-import com.wsr.common.d2.plus
-import com.wsr.common.d2.times
+import com.wsr.IOType
+import com.wsr.d2.average
+import com.wsr.d2.minus
+import com.wsr.d2.plus
+import com.wsr.d2.times
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 

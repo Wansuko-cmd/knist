@@ -1,6 +1,6 @@
-package com.wsr.common.d2
+package com.wsr.d2
 
-import com.wsr.common.IOType
+import com.wsr.IOType
 
 infix fun IOType.D2.dot(other: IOType.D1) = IOType.d1(shape[0]) { i ->
     var sum = 0.0

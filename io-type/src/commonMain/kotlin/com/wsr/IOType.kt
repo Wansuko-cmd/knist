@@ -1,6 +1,6 @@
 @file:Suppress("JavaDefaultMethodsNotOverriddenByDelegation")
 
-package com.wsr.common
+package com.wsr
 
 import kotlinx.serialization.Serializable
 

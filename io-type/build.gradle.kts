@@ -10,22 +10,9 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":io-type"))
-
                 implementation(libs.coroutine)
                 implementation(libs.serialization)
             }
-        }
-    }
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("perceptron") {
-            groupId = libs.versions.lib.group.id.get()
-            artifactId = "perceptron"
-            version = libs.versions.lib.version.get()
-            from(components["kotlin"])
         }
     }
 }
