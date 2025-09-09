@@ -2,6 +2,7 @@ package com.wsr.layers.conv
 
 import com.wsr.NetworkBuilder
 import com.wsr.common.IOType
+import com.wsr.common.averageOf
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -18,25 +19,26 @@ class ConvD1 internal constructor(
 ) : Layer.D2() {
     override val outputX: Int = filter
     override val outputY: Int = (inputSize - kernel + 2 * padding) / stride + 1
-    override fun expect(input: IOType.D2): IOType.D2 = forward(input.addPadding(padding))
 
     init {
         check((inputSize - kernel + 2 * padding) % stride == 0)
     }
 
+    override fun expect(input: List<IOType.D2>): List<IOType.D2> =
+        input.map { it.addPadding(padding) }.map(::forward)
+
     override fun train(
-        input: IOType.D2,
-        calcDelta: (IOType.D2) -> IOType.D2,
-    ): IOType.D2 {
-        val input = input.addPadding(padding)
-        val output = forward(input)
+        input: List<IOType.D2>,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
+        val output = input.map { it.addPadding(padding) }.map(::forward)
         val delta = calcDelta(output)
         for (f in 0 until filter) {
             for (c in 0 until channel) {
                 for (k in 0 until kernel) {
                     var sum = 0.0
                     for (d in 0 until outputY) {
-                        sum += input[c, k + d * stride] * delta[f, d]
+                        sum += input.averageOf { it[c, k + d * stride] } * delta.averageOf { it[f, d] }
                     }
                     weight[f, c, k] -= (rate * sum)
                 }

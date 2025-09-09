@@ -14,21 +14,23 @@ class MaxPoolD1 internal constructor(
     override val outputX: Int = channel
     override val outputY: Int = inputSize / poolSize
 
-    override fun expect(input: IOType.D2): IOType.D2 = forward(input)
-
     init {
         check(inputSize % poolSize == 0)
     }
 
+    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.map(::forward)
+
     override fun train(
-        input: IOType.D2,
-        calcDelta: (IOType.D2) -> IOType.D2,
-    ): IOType.D2 {
-        val output = forward(input)
+        input: List<IOType.D2>,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
+        val output = input.map(::forward)
         val delta = calcDelta(output)
-        return IOType.d2(channel, inputSize) { c, i ->
-            val o = i / poolSize
-            if (input[c, i] == output[c, o]) delta[c, o] else 0.0
+        return List(input.size) { index ->
+            IOType.d2(channel, inputSize) { c, i ->
+                val o = i / poolSize
+                if (input[index][c, i] == output[index][c, o]) delta[index][c, o] else 0.0
+            }
         }
     }
 

@@ -9,33 +9,40 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = NetworkSerializer::class)
 class Network<I : IOType, O : IOType> internal constructor(internal val layers: List<Layer>) {
-    private val trainLambda: (IOType, IOType) -> IOType by lazy {
+    private val trainLambda: (List<IOType>, List<IOType>) -> List<IOType> by lazy {
         layers
             .reversed()
-            .fold(::output) { acc: (IOType, IOType) -> IOType, layer: Layer ->
-                { input: IOType, label: IOType ->
-                    layer.train(input) { acc(it, label) }
+            .fold(::output) { acc: (List<IOType>, List<IOType>) -> List<IOType>, layer: Layer ->
+                { input: List<IOType>, label: List<IOType> ->
+                    layer._train(input) { acc(it, label) }
                 }
             }
     }
 
-    private fun output(input: IOType, label: IOType): IOType {
-        val delta = input.value.zip(label.value)
+    private fun output(input: List<IOType>, label: List<IOType>): List<IOType> = List(input.size) { index ->
+        val delta = input[index].value.zip(label[index].value)
             .map { (y, t) -> y - t }
             .toMutableList()
         // TODO if文を削除
-        return when (input) {
+        when (input[index]) {
             is IOType.D1 -> IOType.d1(value = delta)
-            is IOType.D2 -> IOType.d2(shape = input.shape, value = delta)
-            is IOType.D3 -> IOType.d3(shape = input.shape, value = delta)
+            is IOType.D2 -> IOType.d2(shape = input[index].shape, value = delta)
+            is IOType.D3 -> IOType.d3(shape = input[index].shape, value = delta)
         }
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun expect(input: I): O =
-        layers.fold<Layer, IOType>(input) { acc, layer -> layer.expect(acc) } as O
+    fun expect(input: I): O = expect(input = listOf(input))[0]
+
+    @Suppress("UNCHECKED_CAST")
+    fun expect(input: List<I>): List<O> =
+        layers.fold<Layer, List<IOType>>(input) { acc, layer -> layer._expect(acc) } as List<O>
 
     fun train(input: I, label: O) {
+        train(input = listOf(input), label = listOf(label))
+    }
+
+    fun train(input: List<I>, label: List<O>) {
         trainLambda(input, label)
     }
 

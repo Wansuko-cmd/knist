@@ -2,6 +2,7 @@ package com.wsr.layers.affine
 
 import com.wsr.NetworkBuilder
 import com.wsr.common.IOType
+import com.wsr.common.averageOf
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -12,21 +13,26 @@ class AffineD1 internal constructor(
     private val rate: Double,
     private val weight: IOType.D2,
 ) : Layer.D1() {
-    override fun expect(input: IOType.D1): IOType.D1 = forward(input)
+    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input.map(::forward)
 
-    override fun train(input: IOType.D1, calcDelta: (IOType.D1) -> IOType.D1): IOType.D1 {
-        val output = forward(input)
+    override fun train(
+        input: List<IOType.D1>,
+        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
+    ): List<IOType.D1> {
+        val output = input.map(::forward)
         val delta = calcDelta(output)
-        val dx = IOType.d1(inputSize) { inputIndex ->
-            var sum = 0.0
-            for (outputIndex in 0 until outputSize) {
-                sum += delta[outputIndex] * weight[inputIndex, outputIndex]
+        val dx = List(input.size) { i ->
+            IOType.d1(inputSize) { inputIndex ->
+                var sum = 0.0
+                for (outputIndex in 0 until outputSize) {
+                    sum += delta[i][outputIndex] * weight[inputIndex, outputIndex]
+                }
+                sum
             }
-            sum
         }
         for (inputIndex in 0 until inputSize) {
             for (outputIndex in 0 until outputSize) {
-                weight[inputIndex, outputIndex] -= rate * delta[outputIndex] * input[inputIndex]
+                weight[inputIndex, outputIndex] -= rate * delta.averageOf { it[outputIndex] } * input.averageOf { it[inputIndex] }
             }
         }
         return dx
