@@ -7,18 +7,18 @@ import com.wsr.layers.Layer
 class DebugD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
-    private val onInput: (IOType.D2) -> Unit,
-    private val onDelta: (IOType.D2) -> Unit,
+    private val onInput: (List<IOType.D2>) -> Unit,
+    private val onDelta: (List<IOType.D2>) -> Unit,
 ) : Layer.D2() {
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> {
-        TODO("Not yet implemented")
-    }
+    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.also { onInput(it) }
 
     override fun train(
         input: List<IOType.D2>,
         calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
     ): List<IOType.D2> {
-        TODO("Not yet implemented")
+        val input = input.also { onInput(it) }
+        val delta = calcDelta(input).also { onDelta(it) }
+        return delta
     }
 }
 
@@ -26,8 +26,8 @@ class DebugD2 internal constructor(
  * Json時には除かれる(lambdaは変換できないため)
  */
 fun <T : IOType> NetworkBuilder.D2<T>.debug(
-    onInput: (IOType.D2) -> Unit = {},
-    onDelta: (IOType.D2) -> Unit = {},
+    onInput: (List<IOType.D2>) -> Unit = {},
+    onDelta: (List<IOType.D2>) -> Unit = {},
 ) = addLayer(
     DebugD2(
         outputX = inputX,
