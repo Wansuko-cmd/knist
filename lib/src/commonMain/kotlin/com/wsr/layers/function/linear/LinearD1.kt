@@ -7,13 +7,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class LinearD1 internal constructor(override val outputSize: Int) : Layer.D1() {
-    override fun expect(input: IOType.D1): IOType.D1 = input
-
-    override fun train(
-        input: IOType.D1,
-        calcDelta: (IOType.D1) -> IOType.D1,
-    ): IOType.D1 = calcDelta(input)
-
     override fun expectD1(input: List<IOType.D1>): List<IOType.D1> = input
 
     override fun trainD1(
