@@ -18,9 +18,9 @@ class MaxPoolD1 internal constructor(
         check(inputSize % poolSize == 0)
     }
 
-    override fun expectD2(input: List<IOType.D2>): List<IOType.D2> = input.map(::forward)
+    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.map(::forward)
 
-    override fun trainD2(
+    override fun train(
         input: List<IOType.D2>,
         calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
     ): List<IOType.D2> {

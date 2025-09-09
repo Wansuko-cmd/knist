@@ -14,7 +14,7 @@ class Network<I : IOType, O : IOType> internal constructor(internal val layers: 
             .reversed()
             .fold(::output) { acc: (List<IOType>, List<IOType>) -> List<IOType>, layer: Layer ->
                 { input: List<IOType>, label: List<IOType> ->
-                    layer.train(input) { acc(it, label) }
+                    layer._train(input) { acc(it, label) }
                 }
             }
     }
@@ -33,7 +33,7 @@ class Network<I : IOType, O : IOType> internal constructor(internal val layers: 
 
     @Suppress("UNCHECKED_CAST")
     fun expect(input: I): O =
-        layers.fold<Layer, List<IOType>>(listOf(input)) { acc, layer -> layer.expect(acc) }[0] as O
+        layers.fold<Layer, List<IOType>>(listOf(input)) { acc, layer -> layer._expect(acc) }[0] as O
 
     fun train(input: I, label: O) {
         trainLambda(listOf(input), listOf(label))

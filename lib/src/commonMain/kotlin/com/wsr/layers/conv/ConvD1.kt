@@ -23,10 +23,10 @@ class ConvD1 internal constructor(
         check((inputSize - kernel + 2 * padding) % stride == 0)
     }
 
-    override fun expectD2(input: List<IOType.D2>): List<IOType.D2> =
+    override fun expect(input: List<IOType.D2>): List<IOType.D2> =
         input.map { it.addPadding(padding) }.map(::forward)
 
-    override fun trainD2(
+    override fun train(
         input: List<IOType.D2>,
         calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
     ): List<IOType.D2> {
