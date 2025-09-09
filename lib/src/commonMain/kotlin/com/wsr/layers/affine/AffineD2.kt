@@ -2,6 +2,7 @@ package com.wsr.layers.affine
 
 import com.wsr.NetworkBuilder
 import com.wsr.common.IOType
+import com.wsr.common.averageOf
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -36,7 +37,7 @@ class AffineD2 internal constructor(
         for (c in 0 until channel) {
             for (inputIndex in 0 until inputSize) {
                 for (outputIndex in 0 until outputSize) {
-                    weight[c, inputIndex, outputIndex] -= rate * delta.sumOf { it[c, outputIndex] } * input.sumOf { it[c, inputIndex]}
+                    weight[c, inputIndex, outputIndex] -= rate * delta.averageOf { it[c, outputIndex] } * input.averageOf { it[c, inputIndex]}
                 }
             }
         }
