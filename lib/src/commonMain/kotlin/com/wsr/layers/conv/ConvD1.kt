@@ -2,6 +2,7 @@ package com.wsr.layers.conv
 
 import com.wsr.NetworkBuilder
 import com.wsr.common.IOType
+import com.wsr.common.averageOf
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -37,7 +38,7 @@ class ConvD1 internal constructor(
                 for (k in 0 until kernel) {
                     var sum = 0.0
                     for (d in 0 until outputY) {
-                        sum += input.sumOf { it[c, k + d * stride] } * delta.sumOf { it[f, d] }
+                        sum += input.averageOf { it[c, k + d * stride] } * delta.averageOf { it[f, d] }
                     }
                     weight[f, c, k] -= (rate * sum)
                 }

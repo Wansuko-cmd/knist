@@ -2,6 +2,7 @@ package com.wsr.layers.bias
 
 import com.wsr.NetworkBuilder
 import com.wsr.common.IOType
+import com.wsr.common.averageOf
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -21,7 +22,7 @@ class BiasD1 internal constructor(
         val output = List(input.size) { index -> IOType.d1(outputSize) { input[index][it] + weight[it] } }
         val delta = calcDelta(output)
         for (i in 0 until outputSize) {
-            weight[i] -= rate * delta.sumOf { it[i] }
+            weight[i] -= rate * delta.averageOf { it[i] }
         }
         return delta
     }
