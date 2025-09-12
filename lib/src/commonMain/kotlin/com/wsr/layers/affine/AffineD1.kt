@@ -1,8 +1,11 @@
 package com.wsr.layers.affine
 
 import com.wsr.NetworkBuilder
-import com.wsr.common.IOType
-import com.wsr.common.averageOf
+import com.wsr.IOType
+import com.wsr.d1.average
+import com.wsr.d2.dot
+import com.wsr.d2.minus
+import com.wsr.d2.transpose
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -11,42 +14,22 @@ class AffineD1 internal constructor(
     val inputSize: Int,
     override val outputSize: Int,
     private val rate: Double,
-    private val weight: IOType.D2,
+    private var weight: IOType.D2,
 ) : Layer.D1() {
-    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input.map(::forward)
+    override fun expect(input: List<IOType.D1>): List<IOType.D1> = forward(input)
 
     override fun train(
         input: List<IOType.D1>,
         calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
     ): List<IOType.D1> {
-        val output = input.map(::forward)
+        val output = forward(input)
         val delta = calcDelta(output)
-        val dx = List(input.size) { i ->
-            IOType.d1(inputSize) { inputIndex ->
-                var sum = 0.0
-                for (outputIndex in 0 until outputSize) {
-                    sum += delta[i][outputIndex] * weight[inputIndex, outputIndex]
-                }
-                sum
-            }
-        }
-        for (inputIndex in 0 until inputSize) {
-            for (outputIndex in 0 until outputSize) {
-                weight[inputIndex, outputIndex] -= rate * delta.averageOf { it[outputIndex] } * input.averageOf { it[inputIndex] }
-            }
-        }
+        val dx = weight.dot(delta)
+        weight -= IOType.d2(inputSize, outputSize) { x, y -> rate * input.average(x) * delta.average(y) }
         return dx
     }
 
-    private fun forward(input: IOType.D1): IOType.D1 {
-        return IOType.d1(outputSize) { outputIndex ->
-            var sum = 0.0
-            for (inputIndex in 0 until inputSize) {
-                sum += input[inputIndex] * weight[inputIndex, outputIndex]
-            }
-            sum
-        }
-    }
+    private fun forward(input: List<IOType.D1>): List<IOType.D1> = weight.transpose().dot(input)
 }
 
 fun <T : IOType> NetworkBuilder.D1<T>.affine(neuron: Int) =

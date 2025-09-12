@@ -1,8 +1,11 @@
 package com.wsr.layers.bias
 
 import com.wsr.NetworkBuilder
-import com.wsr.common.IOType
-import com.wsr.common.averageOf
+import com.wsr.IOType
+import com.wsr.d1.average
+import com.wsr.d1.minus
+import com.wsr.d1.plus
+import com.wsr.d1.times
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -10,20 +13,17 @@ import kotlinx.serialization.Serializable
 class BiasD1 internal constructor(
     override val outputSize: Int,
     private val rate: Double,
-    private val weight: IOType.D1,
+    private var weight: IOType.D1,
 ) : Layer.D1() {
-    override fun expect(input: List<IOType.D1>): List<IOType.D1> =
-        List(input.size) { index -> IOType.d1(outputSize) { input[index][it] + weight[it] } }
+    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input + weight
 
     override fun train(
         input: List<IOType.D1>,
         calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
     ): List<IOType.D1> {
-        val output = List(input.size) { index -> IOType.d1(outputSize) { input[index][it] + weight[it] } }
+        val output = input + weight
         val delta = calcDelta(output)
-        for (i in 0 until outputSize) {
-            weight[i] -= rate * delta.averageOf { it[i] }
-        }
+        weight -= rate * delta.average()
         return delta
     }
 }

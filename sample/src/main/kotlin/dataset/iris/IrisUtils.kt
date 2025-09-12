@@ -1,7 +1,7 @@
 package dataset.iris
 
+import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.common.IOType
 import com.wsr.layers.affine.affine
 import com.wsr.layers.bias.bias
 import com.wsr.layers.function.relu.relu

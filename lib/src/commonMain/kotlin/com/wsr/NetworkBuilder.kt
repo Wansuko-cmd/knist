@@ -1,6 +1,5 @@
 package com.wsr
 
-import com.wsr.common.IOType
 import com.wsr.layers.Layer
 import com.wsr.layers.reshape.ReshapeD2ToD1
 import kotlin.random.Random
