@@ -3,3 +3,4 @@ jdk:
 install:
   - chmod 777 ./gradlew
   - ./gradlew lib:publishToMavenLocal
+  - ./gradlew io-type:core:publishToMavenLocal

@@ -20,3 +20,13 @@ kotlin {
         freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 }
+
+publishing {
+    publications {
+        create<MavenPublication>(project.name) {
+            groupId = libs.versions.lib.group.id.get()
+            artifactId = "perceptron"
+            version = libs.versions.lib.version.get()
+        }
+    }
+}
