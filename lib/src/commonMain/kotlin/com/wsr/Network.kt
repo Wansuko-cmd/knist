@@ -19,9 +19,9 @@ class Network<I : IOType, O : IOType> internal constructor(internal val layers: 
     }
 
     private fun output(input: List<IOType>, label: List<IOType>): List<IOType> = List(input.size) { index ->
-        val delta = input[index].value.zip(label[index].value)
-            .map { (y, t) -> y - t }
-            .toMutableList()
+        val y = input[index].value
+        val t = label[index].value
+        val delta = Array(y.size) { y[it] - t[it] }
         // TODO if文を削除
         when (input[index]) {
             is IOType.D1 -> IOType.d1(value = delta)
