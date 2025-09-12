@@ -1,6 +1,6 @@
 package com.wsr.layers.reshape
 
-import com.wsr.common.IOType
+import com.wsr.IOType
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
