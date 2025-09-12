@@ -21,7 +21,7 @@ kotlin {
 
 publishing {
     publications {
-        create<MavenPublication>("perceptron") {
+        create<MavenPublication>(project.name) {
             groupId = libs.versions.lib.group.id.get()
             artifactId = "perceptron"
             version = libs.versions.lib.version.get()
