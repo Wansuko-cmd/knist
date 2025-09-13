@@ -1,5 +1,9 @@
 import dataset.mnist.createMnistModel
+import kotlin.time.measureTime
 
 fun main() {
-    createMnistModel(1, 3)
+    measureTime {
+        createMnistModel(1, 3)
+    }.also(::println)
+
 }
