@@ -44,6 +44,7 @@ sealed interface IOType {
         override val shape: List<Int>,
     ) : IOType {
         operator fun get(x: Int, y: Int) = value[x * shape[1] + y]
+        operator fun get(x: Int) = d1(shape[1]) { y -> value[x * shape[1] + y] }
         operator fun set(x: Int, y: Int, element: Double) {
             value[x * shape[1] + y] = element
         }
@@ -74,6 +75,8 @@ sealed interface IOType {
         override val shape: List<Int>,
     ) : IOType {
         operator fun get(x: Int, y: Int, z: Int) = value[(x * shape[1] + y) * shape[2] + z]
+        operator fun get(x: Int, y: Int) = d1(shape[2]) { z -> value[(x * shape[1] + y) * shape[2] + z] }
+        operator fun get(x: Int) = d2(shape[1], shape[2]) { y, z -> value[(x * shape[1] + y) * shape[2] + z] }
         operator fun set(x: Int, y: Int, z: Int, element: Double) {
             value[(x * shape[1] + y) * shape[2] + z] = element
         }
