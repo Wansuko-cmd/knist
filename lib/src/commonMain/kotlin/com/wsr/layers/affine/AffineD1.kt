@@ -3,8 +3,12 @@ package com.wsr.layers.affine
 import com.wsr.NetworkBuilder
 import com.wsr.IOType
 import com.wsr.d1.average
+import com.wsr.d1.times
+import com.wsr.d1.toD2
 import com.wsr.d2.dot
 import com.wsr.d2.minus
+import com.wsr.d2.plus
+import com.wsr.d2.times
 import com.wsr.d2.transpose
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
@@ -25,7 +29,8 @@ class AffineD1 internal constructor(
         val output = forward(input)
         val delta = calcDelta(output)
         val dx = weight.dot(delta)
-        weight -= IOType.d2(inputSize, outputSize) { x, y -> rate * input.average(x) * delta.average(y) }
+        val dw = input.toD2().transpose().dot(delta.toD2())
+        weight -= rate / input.size * dw
         return dx
     }
 
