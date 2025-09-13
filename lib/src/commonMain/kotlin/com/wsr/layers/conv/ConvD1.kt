@@ -38,9 +38,11 @@ class ConvD1 internal constructor(
                 for (k in 0 until kernel) {
                     var sum = 0.0
                     for (d in 0 until outputY) {
-                        sum += input.averageOf { it[c, k + d * stride] } * delta.averageOf { it[f, d] }
+                        for (l in input.indices) {
+                            sum += input[l][c, k + d * stride] * delta[l][f, d]
+                        }
                     }
-                    weight[f, c, k] -= (rate * sum)
+                    weight[f, c, k] -= rate / input.size * sum
                 }
             }
         }

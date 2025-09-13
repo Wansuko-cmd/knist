@@ -3,6 +3,7 @@ package com.wsr.layers.affine
 import com.wsr.NetworkBuilder
 import com.wsr.IOType
 import com.wsr.averageOf
+import com.wsr.d3.minus
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -12,7 +13,7 @@ class AffineD2 internal constructor(
     private val inputSize: Int,
     private val outputSize: Int,
     private val rate: Double,
-    private val weight: IOType.D3,
+    private var weight: IOType.D3,
 ) : Layer.D2() {
     override val outputX = channel
     override val outputY = outputSize
@@ -34,13 +35,20 @@ class AffineD2 internal constructor(
                 sum
             }
         }
-        for (c in 0 until channel) {
-            for (inputIndex in 0 until inputSize) {
-                for (outputIndex in 0 until outputSize) {
-                    weight[c, inputIndex, outputIndex] -= rate * delta.averageOf { it[c, outputIndex] } * input.averageOf { it[c, inputIndex]}
+        val dw = IOType.d3(channel, inputSize, outputSize)
+        for (i in input.indices) {
+            for (c in 0 until channel) {
+                for (inputIndex in 0 until inputSize) {
+                    for (outputIndex in 0 until outputSize) {
+                        dw[c, inputIndex, outputIndex] += delta[i][c, outputIndex] * input[i][c, inputIndex]
+                    }
                 }
             }
         }
+        for (i in dw.value.indices) {
+            dw.value[i] *= rate / input.size
+        }
+        weight -= dw
         return dx
     }
 
