@@ -2,14 +2,13 @@ package com.wsr
 
 import com.wsr.layers.Layer
 import com.wsr.layers.reshape.ReshapeD2ToD1
+import com.wsr.output.Output
 import kotlin.random.Random
 
 sealed interface NetworkBuilder<I : IOType, O : IOType> {
     val layers: List<Layer>
     val rate: Double
     val random: Random
-
-    fun build() = Network<I, O>(layers = layers)
 
     @ConsistentCopyVisibility
     data class D1<I : IOType> internal constructor(
@@ -22,6 +21,7 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
             layers = layers + layer,
             inputSize = layer.outputSize,
         )
+        fun addOutput(output: Output.D1) = Network<I, IOType.D1>(layers, output)
     }
 
     @ConsistentCopyVisibility

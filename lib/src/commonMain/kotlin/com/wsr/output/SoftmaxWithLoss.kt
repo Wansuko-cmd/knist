@@ -1,6 +1,8 @@
 package com.wsr.output
 
 import com.wsr.IOType
+import com.wsr.Network
+import com.wsr.NetworkBuilder
 import com.wsr.d1.minus
 import kotlin.math.exp
 import kotlinx.serialization.Serializable
@@ -19,3 +21,5 @@ internal class SoftmaxWithLoss internal constructor(val outputSize: Int) : Outpu
         return List(input.size) { i -> output[i] - label[i] }
     }
 }
+
+fun <T: IOType> NetworkBuilder.D1<T>.softmaxWithLoss() = addOutput(SoftmaxWithLoss(inputSize))
