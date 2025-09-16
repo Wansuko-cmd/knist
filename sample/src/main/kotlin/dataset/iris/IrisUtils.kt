@@ -5,8 +5,7 @@ import com.wsr.NetworkBuilder
 import com.wsr.layers.affine.affine
 import com.wsr.layers.bias.bias
 import com.wsr.layers.function.relu.relu
-import com.wsr.layers.function.softmax.softmax
-import com.wsr.output.softmaxWithLoss
+import com.wsr.output.softmax.softmaxWithLoss
 import maxIndex
 
 fun createIrisModel(epoc: Int) {

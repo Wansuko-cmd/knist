@@ -14,9 +14,10 @@ import com.wsr.layers.function.sigmoid.SigmoidD1
 import com.wsr.layers.function.softmax.SoftmaxD1
 import com.wsr.layers.pool.MaxPoolD1
 import com.wsr.layers.reshape.ReshapeD2ToD1
+import com.wsr.output.mean.MeanSquareD1
 import com.wsr.output.Output
-import com.wsr.output.SigmoidWithLoss
-import com.wsr.output.SoftmaxWithLoss
+import com.wsr.output.sigmoid.SigmoidWithLossD1
+import com.wsr.output.softmax.SoftmaxWithLossD1
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
@@ -61,8 +62,9 @@ internal val json = Json {
         }
 
         polymorphic(Output::class) {
-            subclass(SigmoidWithLoss::class)
-            subclass(SoftmaxWithLoss::class)
+            subclass(MeanSquareD1::class)
+            subclass(SigmoidWithLossD1::class)
+            subclass(SoftmaxWithLossD1::class)
         }
     }
 }
