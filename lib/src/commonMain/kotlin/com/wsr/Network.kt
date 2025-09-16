@@ -8,15 +8,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = NetworkSerializer::class)
 class Network<I : IOType, O : IOType> internal constructor(internal val layers: List<Layer>) {
-    private val trainLambda: (List<IOType>, List<IOType>) -> List<IOType> by lazy {
-        layers
-            .reversed()
-            .fold(::output) { acc: (List<IOType>, List<IOType>) -> List<IOType>, layer: Layer ->
-                { input: List<IOType>, label: List<IOType> ->
-                    layer._train(input) { acc(it, label) }
-                }
+    private val trainLambda: (List<IOType>, List<IOType>) -> List<IOType> = layers
+        .reversed()
+        .fold(::output) { acc: (List<IOType>, List<IOType>) -> List<IOType>, layer: Layer ->
+            { input: List<IOType>, label: List<IOType> ->
+                layer._train(input) { acc(it, label) }
             }
-    }
+        }
 
     private fun output(input: List<IOType>, label: List<IOType>): List<IOType> = List(input.size) { index ->
         val y = input[index].value
