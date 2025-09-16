@@ -4,11 +4,8 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layers.affine.affine
 import com.wsr.layers.bias.bias
-import com.wsr.layers.conv.convD1
 import com.wsr.layers.function.relu.relu
-import com.wsr.layers.function.softmax.softmax
-import com.wsr.layers.pool.maxPool
-import com.wsr.output.softmaxWithLoss
+import com.wsr.output.softmax.softmaxWithLoss
 import maxIndex
 import java.util.Random
 
