@@ -3,7 +3,6 @@ import kotlin.time.measureTime
 
 fun main() {
     measureTime {
-        createMnistModel(1, 3)
+        createMnistModel(3, 3)
     }.also(::println)
-
 }
