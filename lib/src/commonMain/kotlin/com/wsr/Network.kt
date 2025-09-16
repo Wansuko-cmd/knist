@@ -3,30 +3,22 @@ package com.wsr
 import com.wsr.layers.Layer
 import com.wsr.layers.debug.DebugD1
 import com.wsr.layers.debug.DebugD2
+import com.wsr.output.Output
 import kotlinx.serialization.Serializable
 
 
 @Serializable(with = NetworkSerializer::class)
-class Network<I : IOType, O : IOType> internal constructor(internal val layers: List<Layer>) {
+class Network<I : IOType, O : IOType> internal constructor(
+    internal val layers: List<Layer>,
+    internal val output: Output,
+) {
     private val trainLambda: (List<IOType>, List<IOType>) -> List<IOType> = layers
         .reversed()
-        .fold(::output) { acc: (List<IOType>, List<IOType>) -> List<IOType>, layer: Layer ->
+        .fold(output::_train) { acc: (List<IOType>, List<IOType>) -> List<IOType>, layer: Layer ->
             { input: List<IOType>, label: List<IOType> ->
                 layer._train(input) { acc(it, label) }
             }
         }
-
-    private fun output(input: List<IOType>, label: List<IOType>): List<IOType> = List(input.size) { index ->
-        val y = input[index].value
-        val t = label[index].value
-        val delta = Array(y.size) { y[it] - t[it] }
-        // TODO if文を削除
-        when (input[index]) {
-            is IOType.D1 -> IOType.d1(value = delta)
-            is IOType.D2 -> IOType.d2(shape = input[index].shape, value = delta)
-            is IOType.D3 -> IOType.d3(shape = input[index].shape, value = delta)
-        }
-    }
 
     @Suppress("UNCHECKED_CAST")
     fun expect(input: I): O = expect(input = listOf(input))[0]
@@ -45,7 +37,10 @@ class Network<I : IOType, O : IOType> internal constructor(internal val layers: 
 
     fun toJson() = json.encodeToString(
         serializer = NetworkSerializer(),
-        value = Network(layers = layers.filter { it !is DebugD1 && it !is DebugD2 }),
+        value = Network(
+            layers = layers.filter { it !is DebugD1 && it !is DebugD2 },
+            output = output,
+        ),
     )
 
     companion object {
