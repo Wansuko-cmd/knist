@@ -8,6 +8,7 @@ import com.wsr.layers.conv.convD1
 import com.wsr.layers.function.relu.relu
 import com.wsr.layers.function.softmax.softmax
 import com.wsr.layers.pool.maxPool
+import com.wsr.output.softmaxWithLoss
 import maxIndex
 import java.util.Random
 
@@ -17,8 +18,8 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
         .affine(50)
         .reshapeD1()
         .affine(neuron = 512).bias().relu()
-        .affine(neuron = 10).softmax()
-        .build()
+        .affine(neuron = 10)
+        .softmaxWithLoss()
 
     val random = seed?.let { Random(seed.toLong()) } ?: Random()
 

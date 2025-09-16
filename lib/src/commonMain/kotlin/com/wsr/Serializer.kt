@@ -14,8 +14,11 @@ import com.wsr.layers.function.sigmoid.SigmoidD1
 import com.wsr.layers.function.softmax.SoftmaxD1
 import com.wsr.layers.pool.MaxPoolD1
 import com.wsr.layers.reshape.ReshapeD2ToD1
+import com.wsr.output.Output
+import com.wsr.output.SoftmaxWithLoss
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
@@ -55,20 +58,28 @@ internal val json = Json {
             // Reshape
             subclass(ReshapeD2ToD1::class)
         }
+
+        polymorphic(Output::class) {
+            subclass(SoftmaxWithLoss::class)
+        }
     }
 }
 
 internal class NetworkSerializer<I : IOType, O : IOType>() : KSerializer<Network<I, O>> {
-    private val serializer = json.serializersModule.serializer<List<Layer>>()
-    override val descriptor: SerialDescriptor = SerialDescriptor(
+    private val layerSerializer = json.serializersModule.serializer<List<Layer>>()
+    private val outputSerializer = json.serializersModule.serializer<Output>()
+
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor(
         serialName = "com.wsr.Network",
-        original = serializer.descriptor,
+        layerSerializer.descriptor,
+        outputSerializer.descriptor,
     )
 
     override fun serialize(encoder: Encoder, value: Network<I, O>) {
-        serializer.serialize(encoder, value.layers)
+        layerSerializer.serialize(encoder, value.layers)
+        outputSerializer.serialize(encoder, value.output)
     }
 
     override fun deserialize(decoder: Decoder) =
-        Network<I, O>(serializer.deserialize(decoder))
+        Network<I, O>(layerSerializer.deserialize(decoder), outputSerializer.deserialize(decoder))
 }

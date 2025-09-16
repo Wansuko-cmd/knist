@@ -6,14 +6,15 @@ import com.wsr.layers.affine.affine
 import com.wsr.layers.bias.bias
 import com.wsr.layers.function.relu.relu
 import com.wsr.layers.function.softmax.softmax
+import com.wsr.output.softmaxWithLoss
 import maxIndex
 
 fun createIrisModel(epoc: Int) {
     val (train, test) = irisDatasets.shuffled() to irisDatasets.shuffled()
     val network = NetworkBuilder.inputD1(inputSize = 4, rate = 0.01)
         .affine(neuron = 50).bias().relu()
-        .affine(neuron = 3).softmax()
-        .build()
+        .affine(neuron = 3)
+        .softmaxWithLoss()
 
     (1..epoc).forEach { epoc ->
         train.forEach { data ->
