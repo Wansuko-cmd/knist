@@ -7,18 +7,15 @@ import kotlin.math.exp
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class SoftmaxWithLoss internal constructor(val outputSize: Int) : Output.D1() {
+internal class SigmoidWithLoss internal constructor(val outputSize: Int) : Output.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> = input
 
     override fun train(input: List<IOType.D1>, label: List<IOType.D1>): List<IOType.D1> {
         val output = input.map { (value) ->
-            val max = value.max()
-            val exp = value.map { exp(it - max) }
-            val sum = exp.sum()
-            IOType.d1(outputSize) { exp[it] / sum }
+            IOType.d1(outputSize) { 1 / (1 + exp(-value[it])) }
         }
         return List(input.size) { i -> output[i] - label[i] }
     }
 }
 
-fun <T: IOType> NetworkBuilder.D1<T>.softmaxWithLoss() = addOutput(SigmoidWithLoss(inputSize))
+fun <T: IOType> NetworkBuilder.D1<T>.sigmoidWithLoss() = addOutput(SigmoidWithLoss(inputSize))
