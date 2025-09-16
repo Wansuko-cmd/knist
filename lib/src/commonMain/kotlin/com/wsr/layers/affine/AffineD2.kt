@@ -2,7 +2,6 @@ package com.wsr.layers.affine
 
 import com.wsr.NetworkBuilder
 import com.wsr.IOType
-import com.wsr.averageOf
 import com.wsr.d1.toD2
 import com.wsr.d2.dot
 import com.wsr.d2.toD3
@@ -16,7 +15,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 class AffineD2 internal constructor(
     private val channel: Int,
-    private val inputSize: Int,
     private val outputSize: Int,
     private val rate: Double,
     private var weight: IOType.D3,
@@ -54,7 +52,6 @@ fun <T : IOType> NetworkBuilder.D2<T>.affine(neuron: Int) =
     addLayer(
         layer = AffineD2(
             channel = inputX,
-            inputSize = inputY,
             outputSize = neuron,
             rate = rate,
             weight = IOType.d3(inputX, inputY, neuron) { _, _, _ ->

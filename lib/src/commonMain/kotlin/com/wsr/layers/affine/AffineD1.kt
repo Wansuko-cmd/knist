@@ -15,7 +15,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class AffineD1 internal constructor(
-    val inputSize: Int,
     override val outputSize: Int,
     private val rate: Double,
     private var weight: IOType.D2,
@@ -40,7 +39,6 @@ class AffineD1 internal constructor(
 fun <T : IOType> NetworkBuilder.D1<T>.affine(neuron: Int) =
     addLayer(
         layer = AffineD1(
-            inputSize = inputSize,
             outputSize = neuron,
             rate = rate,
             weight = IOType.d2(inputSize, neuron) { _, _ -> random.nextDouble(-1.0, 1.0) },
