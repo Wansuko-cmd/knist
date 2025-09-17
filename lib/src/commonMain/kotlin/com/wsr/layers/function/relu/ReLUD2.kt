@@ -6,7 +6,7 @@ import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
 @Serializable
-class ReluD2 internal constructor(
+class ReLUD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
 ) : Layer.D2() {
@@ -28,4 +28,4 @@ class ReluD2 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.relu() = addLayer(ReluD2(outputX = inputX, outputY = inputY))
+fun <T : IOType> NetworkBuilder.D2<T>.reLU() = addLayer(ReLUD2(outputX = inputX, outputY = inputY))

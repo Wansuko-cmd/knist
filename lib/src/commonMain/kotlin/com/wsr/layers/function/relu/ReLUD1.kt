@@ -6,7 +6,7 @@ import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
 @Serializable
-class ReluD1 internal constructor(override val outputSize: Int) : Layer.D1() {
+class ReLUD1 internal constructor(override val outputSize: Int) : Layer.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> = input.map(::forward)
 
     override fun train(
@@ -23,4 +23,4 @@ class ReluD1 internal constructor(override val outputSize: Int) : Layer.D1() {
     }
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.relu() = addLayer(ReluD1(outputSize = inputSize))
+fun <T : IOType> NetworkBuilder.D1<T>.reLU() = addLayer(ReLUD1(outputSize = inputSize))

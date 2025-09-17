@@ -8,8 +8,8 @@ import com.wsr.layers.bias.BiasD2
 import com.wsr.layers.conv.ConvD1
 import com.wsr.layers.function.linear.LinearD1
 import com.wsr.layers.function.linear.LinearD2
-import com.wsr.layers.function.relu.ReluD1
-import com.wsr.layers.function.relu.ReluD2
+import com.wsr.layers.function.relu.ReLUD1
+import com.wsr.layers.function.relu.ReLUD2
 import com.wsr.layers.function.sigmoid.SigmoidD1
 import com.wsr.layers.function.softmax.SoftmaxD1
 import com.wsr.layers.pool.MaxPoolD1
@@ -47,8 +47,8 @@ internal val json = Json {
             subclass(LinearD1::class)
             subclass(LinearD2::class)
 
-            subclass(ReluD1::class)
-            subclass(ReluD2::class)
+            subclass(ReLUD1::class)
+            subclass(ReLUD2::class)
 
             subclass(SigmoidD1::class)
 

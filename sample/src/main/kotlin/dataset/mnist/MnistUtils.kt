@@ -4,7 +4,7 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layers.affine.affine
 import com.wsr.layers.bias.bias
-import com.wsr.layers.function.relu.relu
+import com.wsr.layers.function.relu.reLU
 import com.wsr.output.softmax.softmaxWithLoss
 import maxIndex
 import java.util.Random
@@ -14,7 +14,7 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
 //        .convD1(filter = 30, kernel = 5, stride = 1, padding = 0).bias().relu().maxPool(2)
         .affine(50)
         .reshapeD1()
-        .affine(neuron = 512).bias().relu()
+        .affine(neuron = 512).bias().reLU()
         .affine(neuron = 10)
         .softmaxWithLoss()
 
