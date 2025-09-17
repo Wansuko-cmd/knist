@@ -6,7 +6,7 @@ import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
 @Serializable
-class ReLUD2 internal constructor(
+class LeakyReLUD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
 ) : Layer.D2() {
@@ -19,13 +19,15 @@ class ReLUD2 internal constructor(
         val output = input.map(::forward)
         val delta = calcDelta(output)
         return List(input.size) { i ->
-            IOType.d2(outputX, outputY) { x, y -> if (input[i][x, y] >= 0.0) delta[i][x, y] else 0.0 }
+            IOType.d2(outputX, outputY) { x, y ->
+                if (input[i][x, y] >= 0.0) delta[i][x, y] else 0.01 * delta[i][x, y]
+            }
         }
     }
 
     private fun forward(input: IOType.D2): IOType.D2 {
-        return IOType.d2(outputX, outputY) { x, y -> if (input[x, y] >= 0.0) input[x, y] else 0.0 }
+        return IOType.d2(outputX, outputY) { x, y -> if (input[x, y] >= 0.0) input[x, y] else 0.01 }
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.reLU() = addLayer(ReLUD2(outputX = inputX, outputY = inputY))
+fun <T : IOType> NetworkBuilder.D2<T>.leakyReLU() = addLayer(LeakyReLUD2(outputX = inputX, outputY = inputY))
