@@ -4,14 +4,14 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layers.affine.affine
 import com.wsr.layers.bias.bias
-import com.wsr.layers.function.relu.relu
+import com.wsr.layers.function.relu.reLU
 import com.wsr.output.softmax.softmaxWithLoss
 import maxIndex
 
 fun createIrisModel(epoc: Int) {
     val (train, test) = irisDatasets.shuffled() to irisDatasets.shuffled()
     val network = NetworkBuilder.inputD1(inputSize = 4, rate = 0.01)
-        .affine(neuron = 50).bias().relu()
+        .affine(neuron = 50).bias().reLU()
         .affine(neuron = 3)
         .softmaxWithLoss()
 
