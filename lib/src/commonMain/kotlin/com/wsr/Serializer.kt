@@ -8,9 +8,14 @@ import com.wsr.layers.bias.BiasD2
 import com.wsr.layers.conv.ConvD1
 import com.wsr.layers.function.linear.LinearD1
 import com.wsr.layers.function.linear.LinearD2
+import com.wsr.layers.function.relu.LeakyReLUD1
+import com.wsr.layers.function.relu.LeakyReLUD2
 import com.wsr.layers.function.relu.ReLUD1
 import com.wsr.layers.function.relu.ReLUD2
+import com.wsr.layers.function.relu.SwishD1
+import com.wsr.layers.function.relu.SwishD2
 import com.wsr.layers.function.sigmoid.SigmoidD1
+import com.wsr.layers.function.sigmoid.SigmoidD2
 import com.wsr.layers.function.softmax.SoftmaxD1
 import com.wsr.layers.pool.MaxPoolD1
 import com.wsr.layers.reshape.ReshapeD2ToD1
@@ -49,8 +54,13 @@ internal val json = Json {
 
             subclass(ReLUD1::class)
             subclass(ReLUD2::class)
+            subclass(LeakyReLUD1::class)
+            subclass(LeakyReLUD2::class)
+            subclass(SwishD1::class)
+            subclass(SwishD2::class)
 
             subclass(SigmoidD1::class)
+            subclass(SigmoidD2::class)
 
             subclass(SoftmaxD1::class)
 
