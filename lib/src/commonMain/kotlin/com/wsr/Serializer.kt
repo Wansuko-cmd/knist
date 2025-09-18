@@ -7,6 +7,7 @@ import com.wsr.layers.bias.BiasD1
 import com.wsr.layers.bias.BiasD2
 import com.wsr.layers.conv.ConvD1
 import com.wsr.layers.dropout.DropoutD1
+import com.wsr.layers.dropout.DropoutD2
 import com.wsr.layers.function.linear.LinearD1
 import com.wsr.layers.function.linear.LinearD2
 import com.wsr.layers.function.relu.LeakyReLUD1
@@ -51,6 +52,7 @@ internal val json = Json {
 
             // Dropout
             subclass(DropoutD1::class)
+            subclass(DropoutD2::class)
 
             // Function
             subclass(LinearD1::class)
