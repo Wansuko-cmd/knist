@@ -6,8 +6,6 @@ import com.wsr.d1.dot
 import com.wsr.d1.minus
 import com.wsr.d1.plus
 import com.wsr.d1.times
-import com.wsr.d1.toD2
-import com.wsr.d2.transpose
 import com.wsr.layers.Layer
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
@@ -44,7 +42,9 @@ class MinMaxNormD1 internal constructor(
 
         val dOutput = delta.map { it * alpha }
 
-        alpha -= rate * IOType.d1(alpha.shape) { x -> (0 until mean.size).sumOf { mean[it][x] * delta[it][x] } }
+        alpha -= rate * IOType.d1(alpha.shape) { x ->
+            (0 until input.size).sumOf { mean[it][x] * delta[it][x] } / input.size
+        }
 
         // 分母側(dy/d[max(x) - min(x)])
         val dDenominator = List(input.size) { -1 * denominator[it].pow(2) * numerator[it].dot(dOutput[it]) }
