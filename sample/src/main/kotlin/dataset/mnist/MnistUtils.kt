@@ -19,7 +19,7 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
         .affine(neuron = 512)
 
         .minMaxNorm()
-        .debug(::println)
+//        .debug(::println)
         .bias().reLU()
         .affine(neuron = 10)
 
