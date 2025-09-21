@@ -3,6 +3,12 @@ package com.wsr.layers.conv
 import com.wsr.NetworkBuilder
 import com.wsr.IOType
 import com.wsr.averageOf
+import com.wsr.d1.toD2
+import com.wsr.d2.convD1
+import com.wsr.d2.plus
+import com.wsr.d2.times
+import com.wsr.d2.toD3
+import com.wsr.d3.transpose
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -15,7 +21,7 @@ class ConvD1 internal constructor(
     private val padding: Int,
     private val inputSize: Int,
     private val rate: Double,
-    private val weight: IOType.D3,
+    private var weight: IOType.D3,
 ) : Layer.D2() {
     override val outputX: Int = filter
     override val outputY: Int = (inputSize - kernel + 2 * padding) / stride + 1
@@ -33,32 +39,45 @@ class ConvD1 internal constructor(
     ): List<IOType.D2> {
         val output = input.map { it.addPadding(padding) }.map(::forward)
         val delta = calcDelta(output)
-        for (f in 0 until filter) {
-            for (c in 0 until channel) {
+
+        val dw = List(input.size) { index ->
+            val delta = List(channel) { _ -> delta[index] }.toD3().transpose(1, 0, 2)
+            (0 until filter)
+                .map { input[index].convD1(delta[it]) }
+                .toD2()
+        }
+            .let { rate / input.size * it.reduce { acc, d2 -> acc + d2 } }
+            .let { List(filter) { _ -> it }.toD3() }
+
+        for (c in 0 until channel) {
+            for (f in 0 until filter) {
                 for (k in 0 until kernel) {
-                    var sum = 0.0
-                    for (d in 0 until outputY) {
-                        for (l in input.indices) {
-                            sum += input[l][c, k + d * stride] * delta[l][f, d]
-                        }
-                    }
-                    weight[f, c, k] -= rate / input.size * sum
+                    weight[c, f, k] -= dw[f, c, k]
                 }
             }
         }
+
+
+//        for (f in 0 until filter) {
+//            for (c in 0 until channel) {
+//                for (k in 0 until kernel) {
+//                    var sum = 0.0
+//                    for (d in 0 until outputY) {
+//                        for (l in input.indices) {
+//                            sum += input[l][c, k + d * stride] * delta[l][f, d]
+//                        }
+//                    }
+//                    weight[f, c, k] -= rate / input.size * sum
+//                }
+//            }
+//        }
         // TODO dxを計算する
         return input
     }
 
-    private fun forward(input: IOType.D2): IOType.D2 = IOType.d2(outputX, outputY) { filter, size ->
-        var sum = 0.0
-        for (c in 0 until channel) {
-            for (k in 0 until kernel) {
-                sum += input[c, size * stride + k] * weight[filter, c, k]
-            }
-        }
-        sum
-    }
+    private fun forward(input: IOType.D2): IOType.D2 = (0 until filter)
+        .map { input.convD1(weight[it]) }
+        .toD2()
 
     private fun IOType.D2.addPadding(padding: Int) = IOType.d2(
         x = shape[0],
