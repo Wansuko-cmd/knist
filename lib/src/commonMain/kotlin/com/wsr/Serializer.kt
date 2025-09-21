@@ -19,6 +19,7 @@ import com.wsr.layers.function.relu.SwishD2
 import com.wsr.layers.function.sigmoid.SigmoidD1
 import com.wsr.layers.function.sigmoid.SigmoidD2
 import com.wsr.layers.function.softmax.SoftmaxD1
+import com.wsr.layers.norm.MinMaxNormD1
 import com.wsr.layers.pool.MaxPoolD1
 import com.wsr.layers.reshape.ReshapeD2ToD1
 import com.wsr.output.mean.MeanSquareD1
@@ -69,6 +70,9 @@ internal val json = Json {
             subclass(SigmoidD2::class)
 
             subclass(SoftmaxD1::class)
+
+            // Norm
+            subclass(MinMaxNormD1::class)
 
             // Pool
             subclass(MaxPoolD1::class)

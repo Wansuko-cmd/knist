@@ -2,9 +2,12 @@ package com.wsr.layers.norm
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.d1.dot
 import com.wsr.d1.minus
 import com.wsr.d1.plus
 import com.wsr.d1.times
+import com.wsr.d1.toD2
+import com.wsr.d2.transpose
 import com.wsr.layers.Layer
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
@@ -16,85 +19,60 @@ class MinMaxNormD1 internal constructor(
     private var alpha: IOType.D1,
 ) : Layer.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> {
-        val f1 = input
-        val f2 = input
-        val f3 = input
-
-        val min = f2.map { it.value.min() }
-        val f4 = min
-        val f5 = min
-
-        val max = f3.map { it.value.max() }
-        val f6 = max
-
-        val f7 = f1.mapIndexed { i, f1 -> IOType.d1(f1.shape) { x -> f1[x] - f4[i] } }
-        val f8 = List(f6.size) { f6[it] - f5[it] }
-        val f9 = List(f8.size) { 1 / f8[it] }
-
-        val f10 = f7.mapIndexed { i, f7 -> IOType.d1(f7.shape) { f7[it] * f9[i] } }
-
-        return f10.map { it * alpha }
+        val min = input.map { it.value.min() }
+        val max = input.map { it.value.max() }
+        return List(input.size) {
+            val denominator = max[it] - min[it]
+            IOType.d1(outputSize) { x -> alpha[x] * (input[it][x] - min[it]) / denominator }
+        }
     }
 
     override fun train(
         input: List<IOType.D1>,
         calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
     ): List<IOType.D1> {
-        val f1 = input
-        val f2 = input
-        val f3 = input
+        val min = input.map { it.value.min() }
+        val max = input.map { it.value.max() }
 
-        val min = f2.map { it.value.min() }
-        val f4 = min
-        val f5 = min
+        val numerator = List(input.size) { IOType.d1(input[it].shape) { x -> input[it][x] - min[it] } }
+        val denominator = List(numerator.size) { 1 / (max[it] - min[it]) }
 
-        val max = f3.map { it.value.max() }
-        val f6 = max
+        val mean = List(input.size) { denominator[it] * numerator[it] }
+        val output = mean.map { alpha * it }
 
-        val f7 = f1.mapIndexed { i, f1 -> IOType.d1(f1.shape) { x -> f1[x] - f4[i] } }
-        val f8 = List(f6.size) { f6[it] - f5[it] }
-        val f9 = List(f8.size) { 1 / f8[it] }
+        val delta = calcDelta(output)
 
-        val f10 = f7.mapIndexed { i, f7 -> IOType.d1(f7.shape) { f7[it] * f9[i] } }
+        val dOutput = delta.map { it * alpha }
 
-        val delta = calcDelta(f10.map { it * alpha })
+        alpha -= rate * IOType.d1(alpha.shape) { x -> (0 until mean.size).sumOf { mean[it][x] * delta[it][x] } }
 
-        val d10 = delta.map { it * alpha }
-        alpha -= rate * IOType.d1(alpha.shape) { x -> (0 until f10.size).sumOf { f10[it][x] * delta[it][x] } }
+        // 分母側(dy/d[max(x) - min(x)])
+        val dDenominator = List(input.size) { -1 * denominator[it].pow(2) * numerator[it].dot(dOutput[it]) }
 
-        val d9 = List(delta.size) { IOType.d1(f7[it].shape) { x -> f7[it][x] * d10[it][x] } }
-        val d7 = List(delta.size) { IOType.d1(f7[it].shape) { x -> f9[it] * d10[it][x] } }
+        // 分子側(dy/d[x - min(x)])
+        val dNumerator = List(input.size) { denominator[it] * dOutput[it] }
 
-        val d8 = List(delta.size) { -1.0 / f8[it].pow(2) * d9[it].value.sum() }
-
-        val d6 = List(delta.size) { -1.0 * f5[it] * d8[it] }
-        val d5 = List(delta.size) { f6[it] * d8[it] }
-
-        val d4 = List(input.size) { f1[it] * d7[it] }
-        val d1 = List(input.size) { -1.0 * f4[it] * d7[it] }
-
-        val d2 = List(input.size) {
+        // 各要素(dy/dx, dy/min(x), dy/max(x))
+        val dx1 = List(input.size) { -1.0 * min[it] * dNumerator[it] }
+        val dx2 = List(input.size) {
+            // dy/min(x) <- max(x) - min(x)側
+            val dMin = max[it] * dDenominator[it]
             IOType.d1(outputSize) { x ->
-                if (f2[it][x] == min[it]) d4[it][x] + d5[it] else 0.0
+                if (input[it][x] == min[it]) input[it][x] * dNumerator[it][x] + dMin else 0.0
+            }
+        }
+        val dx3 = List(input.size) {
+            // dy/max(x)
+            val dMax = -1.0 * min[it] * dDenominator[it]
+            IOType.d1(outputSize) { x ->
+                if (input[it][x] == max[it]) dMax else 0.0
             }
         }
 
-        val d3 = List(input.size) {
-            IOType.d1(outputSize) { x ->
-                if (f3[it][x] == max[it]) d6[it] else 0.0
-            }
-        }
-
-        return List(input.size) { d1[it] + d2[it] + d3[it] }
+        return List(input.size) { dx1[it] + dx2[it] + dx3[it] }
     }
 
-    private fun IOType.D1.pow() = IOType.d1(shape) { this[it] * this[it] }
-
-    private operator fun Double.div(other: IOType.D1) = IOType.d1(other.shape) { if (other[it] != 0.0) this / other[it] else 0.0001 }
-
     private operator fun IOType.D1.times(other: IOType.D1) = IOType.d1(shape) { this[it] * other[it] }
-
-    private operator fun IOType.D1.div(other: IOType.D1) = IOType.d1(shape) { this[it] / other[it] }
 }
 
 fun <T : IOType> NetworkBuilder.D1<T>.minMaxNorm() = addLayer(

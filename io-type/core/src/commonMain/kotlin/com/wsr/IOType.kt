@@ -44,7 +44,7 @@ sealed interface IOType {
         override val shape: List<Int>,
     ) : IOType {
         operator fun get(x: Int, y: Int) = value[x * shape[1] + y]
-        operator fun get(x: Int) = d1(shape[1]) { y -> value[x * shape[1] + y] }
+        operator fun get(x: Int) = d1(value.sliceArray(x * shape[1] until x * shape[1] + shape[1]))
         operator fun set(x: Int, y: Int, element: Double) {
             value[x * shape[1] + y] = element
         }

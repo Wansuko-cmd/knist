@@ -2,7 +2,13 @@ package com.wsr.d1
 
 import com.wsr.IOType
 
-infix fun IOType.D1.dot(other: IOType.D1) = IOType.d1(size = shape[0]) { i -> this[i] * other[i] }
+infix fun IOType.D1.dot(other: IOType.D1): Double {
+    var sum = 0.0
+    for (i in value.indices) {
+        sum += this[i] * other[i]
+    }
+    return sum
+}
 
 infix fun IOType.D1.dot(other: IOType.D2) = IOType.d1(size = shape[0]) { i ->
     var sum = 0.0
