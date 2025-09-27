@@ -15,7 +15,14 @@ class MaxPoolD1 internal constructor(
     override val outputY: Int = inputSize / poolSize
 
     init {
-        check(inputSize % poolSize == 0)
+        check(inputSize % poolSize == 0) {
+            """
+                invalid parameter.
+                inputSize: $inputSize
+                poolSize: $poolSize
+                output: ${inputSize / poolSize.toDouble()}
+            """.trimIndent()
+        }
     }
 
     override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.map(::forward)

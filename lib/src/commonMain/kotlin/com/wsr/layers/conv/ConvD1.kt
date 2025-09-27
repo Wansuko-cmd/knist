@@ -2,15 +2,16 @@ package com.wsr.layers.conv
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.d1.average
-import com.wsr.d1.plus
-import com.wsr.d1.times
+import com.wsr.d1.deConvD1
 import com.wsr.d1.toD2
 import com.wsr.d2.convD1
 import com.wsr.d2.deConvD1
-import com.wsr.d2.plus
-import com.wsr.d2.times
+import com.wsr.d2.sum
 import com.wsr.d2.toD3
+import com.wsr.d3.average
+import com.wsr.d3.minus
+import com.wsr.d3.times
+import com.wsr.d3.transpose
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -29,7 +30,17 @@ class ConvD1 internal constructor(
     override val outputY: Int = (inputSize - kernel + 2 * padding) / stride + 1
 
     init {
-        check((inputSize - kernel + 2 * padding) % stride == 0)
+        check((inputSize - kernel + 2 * padding) % stride == 0) {
+            val output = (inputSize - kernel + 2 * padding) / stride.toDouble() + 1.0
+            """
+                invalid parameter.
+                inputSize: $inputSize
+                kernel: $kernel
+                padding: $padding
+                stride: $stride
+                output: (inputSize - kernel + 2 * padding) % stride + 1 = $output
+            """.trimIndent()
+        }
     }
 
     override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.map(::forward)
@@ -40,24 +51,32 @@ class ConvD1 internal constructor(
     ): List<IOType.D2> {
         val output = input.map(::forward)
         val delta = calcDelta(output)
-        val dw = List(input.size) { index -> input[index].deConvD1(delta[index]) }
-            .map { v ->  channel.toDouble() * v }
-            .let { rate * it.average() }
 
-        for (c in 0 until channel) {
-            for (f in 0 until filter) {
-                for (k in 0 until kernel) {
-                    weight[c, f, k] -= dw[k]
-                }
-            }
+        val reversed = IOType.d3(weight.shape) { x, y, z ->
+            val z = weight.shape[2] - z - 1
+            weight[x, y, z]
+        }
+            .transpose(1, 0, 2)
+        val dx = List(input.size) { index ->
+            (0 until channel)
+                .map { c -> delta[index].deConvD1(reversed[c], stride, padding).sum(axis = 0) }
+                .toD2()
         }
 
-        // TODO dxを計算する
-        return input
+        val dw = List(input.size) { index ->
+            (0 until filter).map { f ->
+                (0 until channel).map { c ->
+                    input[index][c].deConvD1(delta[index][f], stride, padding)
+                }.toD2()
+            }.toD3()
+        }
+        weight -= rate * dw.average()
+
+        return dx
     }
 
     private fun forward(input: IOType.D2): IOType.D2 = (0 until filter)
-        .map { input.convD1(weight[it], stride, padding) }
+        .map { input.convD1(weight[it], stride, padding).sum(axis = 0) }
         .toD2()
 }
 

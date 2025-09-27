@@ -22,13 +22,25 @@ fun IOType.D1.convD1(
 
 fun IOType.D1.deConvD1(
     filter: IOType.D1,
-    stride: Int = 1, // TODO
+    stride: Int = 1,
     padding: Int = 0,
 ): IOType.D1 {
     val filterSize = filter.shape[0]
-    val inputWithPadding = this.addPadding(filterSize - padding - 1)
-    return inputWithPadding.convD1(filter, stride, padding)
+    val input = this
+        .addStridePadding(stride)
+        .addPadding(filterSize - padding - 1)
+    return input.convD1(filter, stride, padding)
 }
+
+private fun IOType.D1.addStridePadding(stride: Int) = IOType.d1(
+    value = ArrayList<Double>().apply {
+        for (i in 0 until shape[0] - 1) {
+            add(value[i])
+            addAll(Array(stride - 1) { 0.0 })
+        }
+        add(value[shape[0] - 1])
+    }
+)
 
 private fun IOType.D1.addPadding(padding: Int) = IOType.d1(
     value = ArrayList<Double>().apply {
