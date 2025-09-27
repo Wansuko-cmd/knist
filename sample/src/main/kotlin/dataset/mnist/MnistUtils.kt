@@ -7,6 +7,7 @@ import com.wsr.layers.bias.bias
 import com.wsr.layers.conv.convD1
 import com.wsr.layers.debug.debug
 import com.wsr.layers.function.relu.reLU
+import com.wsr.layers.function.relu.swish
 import com.wsr.layers.norm.minMaxNorm
 import com.wsr.layers.pool.maxPool
 import com.wsr.output.softmax.softmaxWithLoss
@@ -15,13 +16,10 @@ import java.util.Random
 
 fun createMnistModel(epoc: Int, seed: Int? = null) {
     val network = NetworkBuilder.inputD2(x = 28, y = 28, rate = 0.01, seed = seed)
-        .convD1(filter = 30, kernel = 5, stride = 1, padding = 0).bias().reLU().maxPool(2)
-//        .affine(50)
+//        .affine(100).bias().swish().maxPool(2)
+        .convD1(filter = 30, kernel = 4, stride = 2, padding = 2).bias().reLU().maxPool(3)
         .reshapeD1()
         .affine(neuron = 512)
-
-//        .minMaxNorm()
-//        .debug(::println)
         .bias().reLU()
         .affine(neuron = 10)
 
@@ -49,6 +47,6 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
                 listOf(28, 28),
                 data.pixels.toMutableList(),
             ),
-        ).value.maxIndex() == data.label
+        ).value.also { println(it.toList()) }.maxIndex() == data.label
     }.let { println(it.toDouble() / test.size.toDouble()) }
 }
