@@ -20,6 +20,16 @@ fun IOType.D1.convD1(
     }
 }
 
+fun IOType.D1.deConvD1(
+    filter: IOType.D1,
+    stride: Int = 1, // TODO
+    padding: Int = 0,
+): IOType.D1 {
+    val filterSize = filter.shape[0]
+    val inputWithPadding = this.addPadding(filterSize - padding - 1)
+    return inputWithPadding.convD1(filter, stride, padding)
+}
+
 private fun IOType.D1.addPadding(padding: Int) = IOType.d1(
     value = ArrayList<Double>().apply {
         addAll(Array(padding) { 0.0 })
