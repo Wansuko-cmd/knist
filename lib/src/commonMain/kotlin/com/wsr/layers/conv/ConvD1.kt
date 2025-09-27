@@ -2,8 +2,15 @@ package com.wsr.layers.conv
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.d1.average
+import com.wsr.d1.plus
+import com.wsr.d1.times
 import com.wsr.d1.toD2
 import com.wsr.d2.convD1
+import com.wsr.d2.deConvD1
+import com.wsr.d2.plus
+import com.wsr.d2.times
+import com.wsr.d2.toD3
 import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
@@ -33,38 +40,18 @@ class ConvD1 internal constructor(
     ): List<IOType.D2> {
         val output = input.map(::forward)
         val delta = calcDelta(output)
+        val dw = List(input.size) { index -> input[index].deConvD1(delta[index]) }
+            .map { v ->  channel.toDouble() * v }
+            .let { rate * it.average() }
 
-//        val dw = List(input.size) { index ->
-//            val delta = List(channel) { _ -> delta[index] }.toD3().transpose(1, 0, 2)
-//            (0 until filter)
-//                .map { input[index].convD1(delta[it]) }
-//                .toD2()
-//        }
-//            .let { rate / input.size * it.reduce { acc, d2 -> acc + d2 } }
-//            .let { List(filter) { _ -> it }.toD3() }
-//
-//        for (c in 0 until channel) {
-//            for (f in 0 until filter) {
-//                for (k in 0 until kernel) {
-//                    weight[c, f, k] -= dw[f, c, k]
-//                }
-//            }
-//        }
-
-
-        for (f in 0 until filter) {
-            for (c in 0 until channel) {
+        for (c in 0 until channel) {
+            for (f in 0 until filter) {
                 for (k in 0 until kernel) {
-                    var sum = 0.0
-                    for (d in 0 until outputY) {
-                        for (l in input.indices) {
-                            sum += input[l][c, k + d * stride] * delta[l][f, d]
-                        }
-                    }
-                    weight[f, c, k] -= rate / input.size * sum
+                    weight[c, f, k] -= dw[k]
                 }
             }
         }
+
         // TODO dxを計算する
         return input
     }
