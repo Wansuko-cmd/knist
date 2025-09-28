@@ -1,20 +1,17 @@
 package com.wsr
 
-import com.wsr.layers.Layer
-import com.wsr.layers.debug.DebugD1
-import com.wsr.layers.debug.DebugD2
-import com.wsr.output.Output
+import com.wsr.process.debug.DebugD1
+import com.wsr.process.debug.DebugD2
 import kotlinx.serialization.Serializable
 
 
 @Serializable(with = NetworkSerializer::class)
 class Network<I : IOType, O : IOType> internal constructor(
     internal val layers: List<Layer>,
-    internal val output: Output,
 ) {
     private val trainLambda: (List<IOType>, List<IOType>) -> List<IOType> = layers
         .reversed()
-        .fold(output::_train) { acc: (List<IOType>, List<IOType>) -> List<IOType>, layer: Layer ->
+        .fold({ _, label -> label }) { acc: (List<IOType>, List<IOType>) -> List<IOType>, layer: Layer ->
             { input: List<IOType>, label: List<IOType> ->
                 layer._train(input) { acc(it, label) }
             }
@@ -37,10 +34,7 @@ class Network<I : IOType, O : IOType> internal constructor(
 
     fun toJson() = json.encodeToString(
         serializer = NetworkSerializer(),
-        value = Network(
-            layers = layers.filter { it !is DebugD1 && it !is DebugD2 },
-            output = output,
-        ),
+        value = Network(layers = layers.filter { it !is DebugD1 && it !is DebugD2 }),
     )
 
     companion object {
