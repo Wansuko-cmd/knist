@@ -1,16 +1,12 @@
 package com.wsr.layers
 
 import com.wsr.IOType
+import com.wsr.Layer
 import kotlinx.serialization.Serializable
 
 @Suppress("UNCHECKED_CAST")
 @Serializable
-sealed interface Process {
-    @Suppress("FunctionName")
-    fun _expect(input: List<IOType>): List<IOType>
-    @Suppress("FunctionName")
-    fun _train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType>
-
+sealed interface Process : Layer {
     @Serializable
     abstract class D1 : Process {
         abstract val outputSize: Int
