@@ -9,7 +9,7 @@ import com.wsr.d2.transpose
 import com.wsr.d3.minus
 import com.wsr.d3.times
 import com.wsr.d3.transpose
-import com.wsr.layers.Layer
+import com.wsr.layers.Process
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,7 +18,7 @@ class AffineD2 internal constructor(
     private val outputSize: Int,
     private val rate: Double,
     private var weight: IOType.D3,
-) : Layer.D2() {
+) : Process.D2() {
     override val outputX = channel
     override val outputY = outputSize
 

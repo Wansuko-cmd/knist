@@ -2,15 +2,12 @@ package com.wsr.layers.affine
 
 import com.wsr.NetworkBuilder
 import com.wsr.IOType
-import com.wsr.d1.average
-import com.wsr.d1.times
 import com.wsr.d1.toD2
 import com.wsr.d2.dot
 import com.wsr.d2.minus
-import com.wsr.d2.plus
 import com.wsr.d2.times
 import com.wsr.d2.transpose
-import com.wsr.layers.Layer
+import com.wsr.layers.Process
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,7 +15,7 @@ class AffineD1 internal constructor(
     override val outputSize: Int,
     private val rate: Double,
     private var weight: IOType.D2,
-) : Layer.D1() {
+) : Process.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> = forward(input)
 
     override fun train(

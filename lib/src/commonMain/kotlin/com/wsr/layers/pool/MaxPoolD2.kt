@@ -2,7 +2,7 @@ package com.wsr.layers.pool
 
 import com.wsr.NetworkBuilder
 import com.wsr.IOType
-import com.wsr.layers.Layer
+import com.wsr.layers.Process
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,7 +10,7 @@ class MaxPoolD2 internal constructor(
     val poolSize: Int,
     val channel: Int,
     val inputSize: Int,
-) : Layer.D2() {
+) : Process.D2() {
     override val outputX: Int = channel
     override val outputY: Int = inputSize / poolSize
 

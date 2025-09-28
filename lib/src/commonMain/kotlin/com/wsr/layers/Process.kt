@@ -5,14 +5,14 @@ import kotlinx.serialization.Serializable
 
 @Suppress("UNCHECKED_CAST")
 @Serializable
-sealed interface Layer {
+sealed interface Process {
     @Suppress("FunctionName")
     fun _expect(input: List<IOType>): List<IOType>
     @Suppress("FunctionName")
     fun _train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType>
 
     @Serializable
-    abstract class D1 : Layer {
+    abstract class D1 : Process {
         abstract val outputSize: Int
 
         protected abstract fun expect(input: List<IOType.D1>): List<IOType.D1>
@@ -33,7 +33,7 @@ sealed interface Layer {
     }
 
     @Serializable
-    abstract class D2 : Layer {
+    abstract class D2 : Process {
         abstract val outputX: Int
         abstract val outputY: Int
 
@@ -52,7 +52,7 @@ sealed interface Layer {
     }
 
     @Serializable
-    abstract class Reshape : Layer {
+    abstract class Reshape : Process {
         protected abstract fun expect(input: List<IOType>): List<IOType>
         protected abstract fun train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType>
 
