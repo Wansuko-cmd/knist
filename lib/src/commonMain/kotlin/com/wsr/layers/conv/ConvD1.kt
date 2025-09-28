@@ -2,11 +2,10 @@ package com.wsr.layers.conv
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.d1.convD1
 import com.wsr.d1.deConvD1
+import com.wsr.d1.sum
 import com.wsr.d1.toD2
-import com.wsr.d2.convD1
-import com.wsr.d2.deConvD1
-import com.wsr.d2.sum
 import com.wsr.d2.toD3
 import com.wsr.d3.average
 import com.wsr.d3.minus
@@ -58,8 +57,11 @@ class ConvD1 internal constructor(
         }
             .transpose(1, 0, 2)
         val dx = List(input.size) { index ->
-            (0 until channel)
-                .map { c -> delta[index].deConvD1(reversed[c], stride, padding).sum(axis = 0) }
+            (0 until channel).map { c ->
+                (0 until filter)
+                    .map { f -> delta[index][f].deConvD1(reversed[c][f], stride, padding) }
+                    .sum()
+            }
                 .toD2()
         }
 
@@ -76,7 +78,11 @@ class ConvD1 internal constructor(
     }
 
     private fun forward(input: IOType.D2): IOType.D2 = (0 until filter)
-        .map { input.convD1(weight[it], stride, padding).sum(axis = 0) }
+        .map { f ->
+            (0 until channel)
+                .map { c -> input[c].convD1(weight[f, c], stride, padding) }
+                .sum()
+        }
         .toD2()
 }
 
