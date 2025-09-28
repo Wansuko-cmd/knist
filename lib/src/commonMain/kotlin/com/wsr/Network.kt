@@ -1,7 +1,7 @@
 package com.wsr
 
-import com.wsr.layers.debug.DebugD1
-import com.wsr.layers.debug.DebugD2
+import com.wsr.process.debug.DebugD1
+import com.wsr.process.debug.DebugD2
 import kotlinx.serialization.Serializable
 
 
