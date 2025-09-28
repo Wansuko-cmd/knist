@@ -6,7 +6,7 @@ import com.wsr.d2.average
 import com.wsr.d2.minus
 import com.wsr.d2.plus
 import com.wsr.d2.times
-import com.wsr.layers.Layer
+import com.wsr.layers.Process
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -15,7 +15,7 @@ class BiasD2(
     override val outputY: Int,
     private val rate: Double,
     private var weight: IOType.D2,
-) : Layer.D2() {
+) : Process.D2() {
     override fun expect(input: List<IOType.D2>): List<IOType.D2> = input + weight
 
     override fun train(

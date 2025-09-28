@@ -1,23 +1,23 @@
 package com.wsr
 
-import com.wsr.layers.Layer
+import com.wsr.layers.Process
 import com.wsr.layers.reshape.ReshapeD2ToD1
 import com.wsr.output.Output
 import kotlin.random.Random
 
 sealed interface NetworkBuilder<I : IOType, O : IOType> {
-    val layers: List<Layer>
+    val layers: List<Process>
     val rate: Double
     val random: Random
 
     @ConsistentCopyVisibility
     data class D1<I : IOType> internal constructor(
         val inputSize: Int,
-        override val layers: List<Layer>,
+        override val layers: List<Process>,
         override val rate: Double,
         override val random: Random,
     ) : NetworkBuilder<I, IOType.D1> {
-        fun addLayer(layer: Layer.D1): D1<I> = copy(
+        fun addLayer(layer: Process.D1): D1<I> = copy(
             layers = layers + layer,
             inputSize = layer.outputSize,
         )
@@ -28,11 +28,11 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
     data class D2<I : IOType> internal constructor(
         val inputX: Int,
         val inputY: Int,
-        override val layers: List<Layer>,
+        override val layers: List<Process>,
         override val rate: Double,
         override val random: Random,
     ) : NetworkBuilder<I, IOType.D2> {
-        fun addLayer(layer: Layer.D2): D2<I> = copy(
+        fun addLayer(layer: Process.D2): D2<I> = copy(
             layers = layers + layer,
             inputX = layer.outputX,
             inputY = layer.outputY,

@@ -2,13 +2,13 @@ package com.wsr.layers.debug
 
 import com.wsr.NetworkBuilder
 import com.wsr.IOType
-import com.wsr.layers.Layer
+import com.wsr.layers.Process
 
 class DebugD1 internal constructor(
     override val outputSize: Int,
     private val onInput: (List<IOType.D1>) -> Unit,
     private val onDelta: (List<IOType.D1>) -> Unit,
-) : Layer.D1() {
+) : Process.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> = input.also { onInput(it) }
 
     override fun train(

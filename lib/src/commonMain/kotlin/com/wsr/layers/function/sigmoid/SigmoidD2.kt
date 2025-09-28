@@ -2,7 +2,7 @@ package com.wsr.layers.function.sigmoid
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.layers.Layer
+import com.wsr.layers.Process
 import kotlin.math.exp
 import kotlinx.serialization.Serializable
 
@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 class SigmoidD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
-) : Layer.D2() {
+) : Process.D2() {
     override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.map(::forward)
 
     override fun train(

@@ -2,12 +2,12 @@ package com.wsr.layers.function.softmax
 
 import com.wsr.NetworkBuilder
 import com.wsr.IOType
-import com.wsr.layers.Layer
+import com.wsr.layers.Process
 import kotlinx.serialization.Serializable
 import kotlin.math.exp
 
 @Serializable
-class SoftmaxD1 internal constructor(override val outputSize: Int) : Layer.D1() {
+class SoftmaxD1 internal constructor(override val outputSize: Int) : Process.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> = forward(input)
 
     override fun train(

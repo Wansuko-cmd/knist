@@ -6,7 +6,7 @@ import com.wsr.d1.dot
 import com.wsr.d1.minus
 import com.wsr.d1.plus
 import com.wsr.d1.times
-import com.wsr.layers.Layer
+import com.wsr.layers.Process
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
 
@@ -15,7 +15,7 @@ class MinMaxNormD1 internal constructor(
     override val outputSize: Int,
     private val rate: Double,
     private var alpha: IOType.D1,
-) : Layer.D1() {
+) : Process.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> {
         val min = input.map { it.value.min() }
         val max = input.map { it.value.max() }

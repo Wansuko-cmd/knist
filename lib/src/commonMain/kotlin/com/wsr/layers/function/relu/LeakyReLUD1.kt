@@ -2,11 +2,11 @@ package com.wsr.layers.function.relu
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.layers.Layer
+import com.wsr.layers.Process
 import kotlinx.serialization.Serializable
 
 @Serializable
-class LeakyReLUD1 internal constructor(override val outputSize: Int) : Layer.D1() {
+class LeakyReLUD1 internal constructor(override val outputSize: Int) : Process.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> = input.map(::forward)
 
     override fun train(

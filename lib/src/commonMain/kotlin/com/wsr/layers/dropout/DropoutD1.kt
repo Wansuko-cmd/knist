@@ -3,7 +3,7 @@ package com.wsr.layers.dropout
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.d1.times
-import com.wsr.layers.Layer
+import com.wsr.layers.Process
 import kotlin.random.Random
 import kotlinx.serialization.Serializable
 
@@ -12,7 +12,7 @@ class DropoutD1 internal constructor(
     override val outputSize: Int,
     private val ratio: Double,
     private val seed: Int? = null,
-) : Layer.D1() {
+) : Process.D1() {
     private val random by lazy { seed?.let { Random(it) } ?: Random }
 
     override fun expect(input: List<IOType.D1>): List<IOType.D1> = ratio * input

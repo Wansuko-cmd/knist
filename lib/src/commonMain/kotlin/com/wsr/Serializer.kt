@@ -1,6 +1,6 @@
 package com.wsr
 
-import com.wsr.layers.Layer
+import com.wsr.layers.Process
 import com.wsr.layers.affine.AffineD1
 import com.wsr.layers.affine.AffineD2
 import com.wsr.layers.bias.BiasD1
@@ -39,7 +39,7 @@ import kotlinx.serialization.serializer
 
 internal val json = Json {
     serializersModule = SerializersModule {
-        polymorphic(Layer::class) {
+        polymorphic(Process::class) {
             // Affine
             subclass(AffineD1::class)
             subclass(AffineD2::class)
@@ -90,7 +90,7 @@ internal val json = Json {
 }
 
 internal class NetworkSerializer<I : IOType, O : IOType>() : KSerializer<Network<I, O>> {
-    private val layerSerializer = json.serializersModule.serializer<List<Layer>>()
+    private val layerSerializer = json.serializersModule.serializer<List<Process>>()
     private val outputSerializer = json.serializersModule.serializer<Output>()
 
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor(

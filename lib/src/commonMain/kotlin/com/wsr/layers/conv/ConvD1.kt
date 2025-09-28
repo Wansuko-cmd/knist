@@ -11,7 +11,7 @@ import com.wsr.d3.average
 import com.wsr.d3.minus
 import com.wsr.d3.times
 import com.wsr.d3.transpose
-import com.wsr.layers.Layer
+import com.wsr.layers.Process
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -24,7 +24,7 @@ class ConvD1 internal constructor(
     private val inputSize: Int,
     private val rate: Double,
     private var weight: IOType.D3,
-) : Layer.D2() {
+) : Process.D2() {
     override val outputX: Int = filter
     override val outputY: Int = (inputSize - kernel + 2 * padding) / stride + 1
 
