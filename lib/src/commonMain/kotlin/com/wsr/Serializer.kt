@@ -20,7 +20,7 @@ import com.wsr.layers.function.sigmoid.SigmoidD1
 import com.wsr.layers.function.sigmoid.SigmoidD2
 import com.wsr.layers.function.softmax.SoftmaxD1
 import com.wsr.layers.norm.MinMaxNormD1
-import com.wsr.layers.pool.MaxPoolD1
+import com.wsr.layers.pool.MaxPoolD2
 import com.wsr.layers.reshape.ReshapeD2ToD1
 import com.wsr.output.mean.MeanSquareD1
 import com.wsr.output.Output
@@ -75,7 +75,7 @@ internal val json = Json {
             subclass(MinMaxNormD1::class)
 
             // Pool
-            subclass(MaxPoolD1::class)
+            subclass(MaxPoolD2::class)
 
             // Reshape
             subclass(ReshapeD2ToD1::class)

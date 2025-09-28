@@ -6,7 +6,7 @@ import com.wsr.layers.Layer
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MaxPoolD1 internal constructor(
+class MaxPoolD2 internal constructor(
     val poolSize: Int,
     val channel: Int,
     val inputSize: Int,
@@ -51,7 +51,7 @@ class MaxPoolD1 internal constructor(
 }
 
 fun <T: IOType> NetworkBuilder.D2<T>.maxPool(size: Int) = addLayer(
-    layer = MaxPoolD1(
+    layer = MaxPoolD2(
         poolSize = size,
         channel = inputX,
         inputSize = inputY,
