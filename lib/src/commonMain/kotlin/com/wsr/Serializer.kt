@@ -1,6 +1,5 @@
 package com.wsr
 
-import com.wsr.layers.Process
 import com.wsr.layers.affine.AffineD1
 import com.wsr.layers.affine.AffineD2
 import com.wsr.layers.bias.BiasD1
@@ -23,7 +22,6 @@ import com.wsr.layers.norm.MinMaxNormD1
 import com.wsr.layers.pool.MaxPoolD2
 import com.wsr.layers.reshape.ReshapeD2ToD1
 import com.wsr.output.mean.MeanSquareD1
-import com.wsr.output.Output
 import com.wsr.output.sigmoid.SigmoidWithLossD1
 import com.wsr.output.softmax.SoftmaxWithLossD1
 import kotlinx.serialization.KSerializer
@@ -39,7 +37,10 @@ import kotlinx.serialization.serializer
 
 internal val json = Json {
     serializersModule = SerializersModule {
-        polymorphic(Process::class) {
+        polymorphic(Layer::class) {
+            /**
+             * Process
+             */
             // Affine
             subclass(AffineD1::class)
             subclass(AffineD2::class)
@@ -77,11 +78,14 @@ internal val json = Json {
             // Pool
             subclass(MaxPoolD2::class)
 
-            // Reshape
+            /**
+             * Reshape
+             */
             subclass(ReshapeD2ToD1::class)
-        }
 
-        polymorphic(Output::class) {
+            /**
+             * Output
+             */
             subclass(MeanSquareD1::class)
             subclass(SigmoidWithLossD1::class)
             subclass(SoftmaxWithLossD1::class)
@@ -90,20 +94,17 @@ internal val json = Json {
 }
 
 internal class NetworkSerializer<I : IOType, O : IOType>() : KSerializer<Network<I, O>> {
-    private val layerSerializer = json.serializersModule.serializer<List<Process>>()
-    private val outputSerializer = json.serializersModule.serializer<Output>()
+    private val layerSerializer = json.serializersModule.serializer<List<Layer>>()
 
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor(
         serialName = "com.wsr.Network",
         layerSerializer.descriptor,
-        outputSerializer.descriptor,
     )
 
     override fun serialize(encoder: Encoder, value: Network<I, O>) {
         layerSerializer.serialize(encoder, value.layers)
-        outputSerializer.serialize(encoder, value.output)
     }
 
     override fun deserialize(decoder: Decoder) =
-        Network<I, O>(layerSerializer.deserialize(decoder), outputSerializer.deserialize(decoder))
+        Network<I, O>(layerSerializer.deserialize(decoder))
 }
