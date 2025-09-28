@@ -1,6 +1,6 @@
 package com.wsr
 
-import com.wsr.layers.Process
+import com.wsr.process.Process
 import com.wsr.output.Output
 import com.wsr.reshape.Reshape
 import kotlin.random.Random

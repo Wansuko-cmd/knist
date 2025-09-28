@@ -2,12 +2,12 @@ package dataset.mnist
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.layers.affine.affine
-import com.wsr.layers.bias.bias
-import com.wsr.layers.conv.convD1
-import com.wsr.layers.function.relu.reLU
-import com.wsr.layers.pool.maxPool
-import com.wsr.layers.reshape.reshapeToD1
+import com.wsr.process.affine.affine
+import com.wsr.process.bias.bias
+import com.wsr.process.conv.convD1
+import com.wsr.process.function.relu.reLU
+import com.wsr.process.pool.maxPool
+import com.wsr.reshape.reshapeToD1
 import com.wsr.output.softmax.softmaxWithLoss
 import maxIndex
 import java.util.Random
