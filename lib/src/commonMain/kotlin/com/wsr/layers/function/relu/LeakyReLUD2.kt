@@ -30,4 +30,4 @@ class LeakyReLUD2 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.leakyReLU() = addLayer(LeakyReLUD2(outputX = inputX, outputY = inputY))
+fun <T : IOType> NetworkBuilder.D2<T>.leakyReLU() = addProcess(LeakyReLUD2(outputX = inputX, outputY = inputY))

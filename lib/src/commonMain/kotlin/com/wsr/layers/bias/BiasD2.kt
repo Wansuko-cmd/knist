@@ -29,7 +29,7 @@ class BiasD2(
     }
 }
 
-fun <T: IOType> NetworkBuilder.D2<T>.bias() = addLayer(
+fun <T: IOType> NetworkBuilder.D2<T>.bias() = addProcess(
     layer = BiasD2(
         outputX = inputX,
         outputY = inputY,

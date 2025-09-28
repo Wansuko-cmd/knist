@@ -25,4 +25,4 @@ class LeakyReLUD1 internal constructor(override val outputSize: Int) : Process.D
     }
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.leakyReLU() = addLayer(LeakyReLUD1(outputSize = inputSize))
+fun <T : IOType> NetworkBuilder.D1<T>.leakyReLU() = addProcess(LeakyReLUD1(outputSize = inputSize))

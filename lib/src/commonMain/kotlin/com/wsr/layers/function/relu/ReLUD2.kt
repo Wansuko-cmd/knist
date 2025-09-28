@@ -28,4 +28,4 @@ class ReLUD2 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.reLU() = addLayer(ReLUD2(outputX = inputX, outputY = inputY))
+fun <T : IOType> NetworkBuilder.D2<T>.reLU() = addProcess(ReLUD2(outputX = inputX, outputY = inputY))

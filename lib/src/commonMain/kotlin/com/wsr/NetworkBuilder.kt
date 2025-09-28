@@ -17,7 +17,7 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
         override val rate: Double,
         override val random: Random,
     ) : NetworkBuilder<I, IOType.D1> {
-        fun addLayer(layer: Process.D1): D1<I> = copy(
+        fun addProcess(layer: Process.D1): D1<I> = copy(
             layers = layers + layer,
             inputSize = layer.outputSize,
         )
@@ -32,7 +32,7 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
         override val rate: Double,
         override val random: Random,
     ) : NetworkBuilder<I, IOType.D2> {
-        fun addLayer(layer: Process.D2): D2<I> = copy(
+        fun addProcess(layer: Process.D2): D2<I> = copy(
             layers = layers + layer,
             inputX = layer.outputX,
             inputY = layer.outputY,

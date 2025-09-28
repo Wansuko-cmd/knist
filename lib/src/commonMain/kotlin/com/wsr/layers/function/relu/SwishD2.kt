@@ -32,4 +32,4 @@ class SwishD2 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.swish() = addLayer(SwishD2(outputX = inputX, outputY = inputY))
+fun <T : IOType> NetworkBuilder.D2<T>.swish() = addProcess(SwishD2(outputX = inputX, outputY = inputY))

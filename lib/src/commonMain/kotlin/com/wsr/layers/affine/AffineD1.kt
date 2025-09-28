@@ -34,7 +34,7 @@ class AffineD1 internal constructor(
 }
 
 fun <T : IOType> NetworkBuilder.D1<T>.affine(neuron: Int) =
-    addLayer(
+    addProcess(
         layer = AffineD1(
             outputSize = neuron,
             rate = rate,

@@ -29,4 +29,4 @@ class SigmoidD2 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.sigmoid() = addLayer(SigmoidD2(outputX = inputX, outputY = inputY))
+fun <T : IOType> NetworkBuilder.D2<T>.sigmoid() = addProcess(SigmoidD2(outputX = inputX, outputY = inputY))
