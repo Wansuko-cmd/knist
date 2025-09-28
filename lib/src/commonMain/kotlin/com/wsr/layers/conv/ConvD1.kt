@@ -91,7 +91,7 @@ fun <T : IOType> NetworkBuilder.D2<T>.convD1(
     kernel: Int,
     stride: Int = 1,
     padding: Int = 0,
-) = addLayer(
+) = addProcess(
     layer = ConvD1(
         filter = filter,
         channel = inputX,

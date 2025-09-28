@@ -18,6 +18,6 @@ class LinearD2 internal constructor(
     ): List<IOType.D2> = calcDelta(input)
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.linear() = addLayer(
+fun <T : IOType> NetworkBuilder.D2<T>.linear() = addProcess(
     layer= LinearD2(outputX = inputX, outputY = inputY),
 )

@@ -75,7 +75,7 @@ class MinMaxNormD1 internal constructor(
     private operator fun IOType.D1.times(other: IOType.D1) = IOType.d1(shape) { this[it] * other[it] }
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.minMaxNorm() = addLayer(
+fun <T : IOType> NetworkBuilder.D1<T>.minMaxNorm() = addProcess(
     layer = MinMaxNormD1(
         outputSize = inputSize,
         rate = rate,

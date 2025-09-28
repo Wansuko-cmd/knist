@@ -28,7 +28,7 @@ class DebugD2 internal constructor(
 fun <T : IOType> NetworkBuilder.D2<T>.debug(
     onInput: (List<IOType.D2>) -> Unit = {},
     onDelta: (List<IOType.D2>) -> Unit = {},
-) = addLayer(
+) = addProcess(
     DebugD2(
         outputX = inputX,
         outputY = inputY,

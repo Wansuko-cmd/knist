@@ -28,7 +28,7 @@ class BiasD1 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.bias() = addLayer(
+fun <T : IOType> NetworkBuilder.D1<T>.bias() = addProcess(
     BiasD1(
         outputSize = inputSize,
         rate = rate,
