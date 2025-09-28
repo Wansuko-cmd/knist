@@ -19,5 +19,5 @@ class LinearD2 internal constructor(
 }
 
 fun <T : IOType> NetworkBuilder.D2<T>.linear() = addProcess(
-    layer= LinearD2(outputX = inputX, outputY = inputY),
+    process= LinearD2(outputX = inputX, outputY = inputY),
 )

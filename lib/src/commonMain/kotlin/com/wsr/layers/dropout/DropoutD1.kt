@@ -29,7 +29,7 @@ class DropoutD1 internal constructor(
 }
 
 fun <T : IOType> NetworkBuilder.D1<T>.dropout(ratio: Double, seed: Int? = null) = addProcess(
-    layer = DropoutD1(
+    process = DropoutD1(
         outputSize = inputSize,
         ratio = ratio,
         seed = seed,

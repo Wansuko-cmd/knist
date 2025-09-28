@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 sealed interface Reshape : Layer {
     @Serializable
     abstract class D2ToD1 : Reshape {
+        abstract val outputSize: Int
         protected abstract fun expect(input: List<IOType.D2>): List<IOType.D1>
         protected abstract fun train(
             input: List<IOType.D2>,

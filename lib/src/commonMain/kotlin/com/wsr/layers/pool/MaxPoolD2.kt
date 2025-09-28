@@ -51,7 +51,7 @@ class MaxPoolD2 internal constructor(
 }
 
 fun <T: IOType> NetworkBuilder.D2<T>.maxPool(size: Int) = addProcess(
-    layer = MaxPoolD2(
+    process = MaxPoolD2(
         poolSize = size,
         channel = inputX,
         inputSize = inputY,
