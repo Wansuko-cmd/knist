@@ -5,11 +5,11 @@ import com.wsr.common.iotype.IOType0d
 import com.wsr.common.iotype.IOType1d
 import com.wsr.common.iotype.IOType2d
 import com.wsr.common.maxIndex
-import com.wsr.layers.Layer
-import com.wsr.layers.input.Input0dLayer
-import com.wsr.layers.input.Input1dLayer
-import com.wsr.layers.input.Input2dLayer
-import com.wsr.layers.output.layer0d.Output0dLayer
+import com.wsr.process.Layer
+import com.wsr.process.input.Input0dLayer
+import com.wsr.process.input.Input1dLayer
+import com.wsr.process.input.Input2dLayer
+import com.wsr.process.output.layer0d.Output0dLayer
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 
