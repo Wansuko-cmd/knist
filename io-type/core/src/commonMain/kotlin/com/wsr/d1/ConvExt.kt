@@ -29,7 +29,7 @@ fun IOType.D1.deConvD1(
     val input = this
         .addStridePadding(stride)
         .addPadding(filterSize - padding - 1)
-    return input.convD1(filter, stride, padding)
+    return input.convD1(filter, stride = 1, padding = 0)
 }
 
 private fun IOType.D1.addStridePadding(stride: Int) = IOType.d1(
