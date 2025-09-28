@@ -1,19 +1,19 @@
 package com.wsr.layers.reshape
 
 import com.wsr.IOType
-import com.wsr.layers.Process
+import com.wsr.reshape.Reshape
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class ReshapeD2ToD1(val outputSize: Int) : Process.Reshape() {
+internal class ReshapeD2ToD1(val outputSize: Int) : Reshape.D2ToD1() {
     constructor(x: Int, y: Int): this(outputSize = x * y)
 
-    override fun expect(input: List<IOType>): List<IOType> = input.map { IOType.d1(it.value) }
+    override fun expect(input: List<IOType.D2>): List<IOType.D1> = input.map { IOType.d1(it.value) }
 
     override fun train(
-        input: List<IOType>,
-        calcDelta: (List<IOType>) -> List<IOType>,
-    ): List<IOType> {
+        input: List<IOType.D2>,
+        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
+    ): List<IOType.D2> {
         val output = input.map { IOType.d1(it.value) }
         val delta = calcDelta(output)
         return List(input.size) { i ->

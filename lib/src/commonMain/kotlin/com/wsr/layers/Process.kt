@@ -46,16 +46,4 @@ sealed interface Process : Layer {
                 calcDelta = { input: List<IOType.D2> -> calcDelta(input) as List<IOType.D2> },
             )
     }
-
-    @Serializable
-    abstract class Reshape : Process {
-        protected abstract fun expect(input: List<IOType>): List<IOType>
-        protected abstract fun train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType>
-
-        final override fun _expect(input: List<IOType>): List<IOType> = expect(input)
-        final override fun _train(
-            input: List<IOType>,
-            calcDelta: (List<IOType>) -> List<IOType>,
-        ): List<IOType> = train(input, calcDelta)
-    }
 }
