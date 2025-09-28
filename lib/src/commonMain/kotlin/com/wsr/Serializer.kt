@@ -24,6 +24,7 @@ import com.wsr.reshape.ReshapeD2ToD1
 import com.wsr.output.mean.MeanSquareD1
 import com.wsr.output.sigmoid.SigmoidWithLossD1
 import com.wsr.output.softmax.SoftmaxWithLossD1
+import com.wsr.reshape.GlobalAverageD2ToD1
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
@@ -82,6 +83,7 @@ internal val json = Json {
              * Reshape
              */
             subclass(ReshapeD2ToD1::class)
+            subclass(GlobalAverageD2ToD1::class)
 
             /**
              * Output
