@@ -30,7 +30,7 @@ class BiasD2(
 }
 
 fun <T: IOType> NetworkBuilder.D2<T>.bias() = addProcess(
-    layer = BiasD2(
+    process = BiasD2(
         outputX = inputX,
         outputY = inputY,
         rate = rate,

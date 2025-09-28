@@ -76,7 +76,7 @@ class MinMaxNormD1 internal constructor(
 }
 
 fun <T : IOType> NetworkBuilder.D1<T>.minMaxNorm() = addProcess(
-    layer = MinMaxNormD1(
+    process = MinMaxNormD1(
         outputSize = inputSize,
         rate = rate,
         alpha = IOType.d1(inputSize) { random.nextDouble(-1.0, 1.0) },
