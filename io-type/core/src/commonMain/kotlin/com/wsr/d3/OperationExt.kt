@@ -2,11 +2,11 @@ package com.wsr.d3
 
 import com.wsr.IOType
 
-operator fun IOType.D3.plus(other: IOType.D3) = IOType.d3(shape) { x, y, z -> this[x, y, z] + other[x, y, z] }
+
 
 operator fun IOType.D3.minus(other: IOType.D3) = IOType.d3(shape) { x, y, z -> this[x, y, z] - other[x, y, z] }
 
-operator fun List<IOType.D3>.plus(other: IOType.D3) = List(size) { this[it] + other }
+
 
 operator fun List<IOType.D3>.minus(other: IOType.D3) = List(size) { this[it] - other }
 

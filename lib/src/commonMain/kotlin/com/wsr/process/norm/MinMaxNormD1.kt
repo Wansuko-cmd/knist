@@ -4,11 +4,11 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.d1.dot
 import com.wsr.d1.minus
-import com.wsr.d1.plus
 import com.wsr.d1.times
+import com.wsr.operation.plus
 import com.wsr.process.Process
-import kotlin.math.pow
 import kotlinx.serialization.Serializable
+import kotlin.math.pow
 
 @Serializable
 class MinMaxNormD1 internal constructor(

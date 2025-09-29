@@ -5,15 +5,15 @@ import com.wsr.IOType
 internal expect object OperatorExt : IOperatorExt
 
 internal interface IOperatorExt {
-    operator fun IOType.D1.plus(other: IOType.D1) = IOType.d1(shape[0]) { this[it] + other[it] }
+
 
     operator fun IOType.D1.minus(other: IOType.D1) = IOType.d1(shape[0]) { this[it] - other[it] }
 
-    operator fun List<IOType.D1>.plus(other: IOType.D1) = List(size) { this[it] + other }
+
 
     operator fun List<IOType.D1>.minus(other: IOType.D1) = List(size) { this[it] - other }
 
-    operator fun List<IOType.D1>.plus(other: List<IOType.D1>) = List(size) { this[it] + other[it] }
+
 
     operator fun List<IOType.D1>.minus(other: List<IOType.D1>) = List(size) { this[it] - other[it] }
 
@@ -24,15 +24,9 @@ internal interface IOperatorExt {
     operator fun IOType.D1.div(other: Double) = IOType.d1(shape[0]) { this[it] / other }
 }
 
-operator fun IOType.D1.plus(other: IOType.D1) = with(OperatorExt) { this@plus.plus(other) }
-
 operator fun IOType.D1.minus(other: IOType.D1) = with(OperatorExt) { this@minus.minus(other) }
 
-operator fun List<IOType.D1>.plus(other: IOType.D1) = with(OperatorExt) { this@plus.plus(other) }
-
 operator fun List<IOType.D1>.minus(other: IOType.D1) = with(OperatorExt) { this@minus.minus(other) }
-
-operator fun List<IOType.D1>.plus(other: List<IOType.D1>) = with(OperatorExt) { this@plus.plus(other) }
 
 operator fun List<IOType.D1>.minus(other: List<IOType.D1>) = with(OperatorExt) { this@minus.minus(other) }
 
