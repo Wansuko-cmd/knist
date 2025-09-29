@@ -2,10 +2,10 @@ package com.wsr.output.sigmoid
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.d1.minus
+import com.wsr.operation.minus
 import com.wsr.output.Output
-import kotlin.math.exp
 import kotlinx.serialization.Serializable
+import kotlin.math.exp
 
 @Serializable
 internal class SigmoidWithLossD1 internal constructor(val outputSize: Int) : Output.D1() {

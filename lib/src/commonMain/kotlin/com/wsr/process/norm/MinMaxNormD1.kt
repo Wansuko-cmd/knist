@@ -3,8 +3,8 @@ package com.wsr.process.norm
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.d1.dot
-import com.wsr.d1.minus
 import com.wsr.d1.times
+import com.wsr.operation.minus
 import com.wsr.operation.plus
 import com.wsr.process.Process
 import kotlinx.serialization.Serializable
