@@ -3,9 +3,9 @@ package com.wsr.process.norm
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.d1.dot
-import com.wsr.d1.times
 import com.wsr.operation.minus
 import com.wsr.operation.plus
+import com.wsr.operation.times
 import com.wsr.process.Process
 import kotlinx.serialization.Serializable
 import kotlin.math.pow
