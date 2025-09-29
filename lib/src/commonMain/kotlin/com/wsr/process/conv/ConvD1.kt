@@ -2,12 +2,12 @@ package com.wsr.process.conv
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.average.average
 import com.wsr.d1.convD1
 import com.wsr.d1.deConvD1
 import com.wsr.d1.sum
 import com.wsr.d1.toD2
 import com.wsr.d2.toD3
-import com.wsr.d3.average
 import com.wsr.d3.minus
 import com.wsr.d3.times
 import com.wsr.d3.transpose
