@@ -6,9 +6,9 @@ import com.wsr.d1.toD2
 import com.wsr.d2.dot
 import com.wsr.d2.toD3
 import com.wsr.d2.transpose
-import com.wsr.d3.times
 import com.wsr.d3.transpose
 import com.wsr.operation.minus
+import com.wsr.operation.times
 import com.wsr.process.Process
 import kotlinx.serialization.Serializable
 
