@@ -2,7 +2,7 @@ package com.wsr.output.mean
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.d1.minus
+import com.wsr.operation.minus
 import com.wsr.output.Output
 import kotlinx.serialization.Serializable
 
