@@ -2,7 +2,7 @@ package com.wsr.process.bias
 
 import com.wsr.NetworkBuilder
 import com.wsr.IOType
-import com.wsr.d2.average
+import com.wsr.average.average
 import com.wsr.d2.minus
 import com.wsr.d2.plus
 import com.wsr.d2.times
