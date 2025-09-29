@@ -22,7 +22,8 @@ class IOType1d(
 
     override inline fun asIOType0d(): IOType0d = IOType0d(inner)
     override inline fun asIOType1d(): IOType1d = this
-    override inline fun asIOType2d(): IOType2d = throw DomainException.CannotCastDimensionException()
+    override inline fun asIOType2d(): IOType2d =
+        throw DomainException.CannotCastDimensionException()
 
     companion object {
         fun create(value: List<List<Double>>) = IOType1d(

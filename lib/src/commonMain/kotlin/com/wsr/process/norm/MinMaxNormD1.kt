@@ -32,7 +32,8 @@ class MinMaxNormD1 internal constructor(
         val min = input.map { it.value.min() }
         val max = input.map { it.value.max() }
 
-        val numerator = List(input.size) { IOType.d1(input[it].shape) { x -> input[it][x] - min[it] } }
+        val numerator =
+            List(input.size) { IOType.d1(input[it].shape) { x -> input[it][x] - min[it] } }
         val denominator = List(numerator.size) { 1 / (max[it] - min[it]) }
 
         val mean = List(input.size) { denominator[it] * numerator[it] }
@@ -47,7 +48,8 @@ class MinMaxNormD1 internal constructor(
         }
 
         // 分母側(dy/d[max(x) - min(x)])
-        val dDenominator = List(input.size) { -1 * denominator[it].pow(2) * numerator[it].dot(dOutput[it]) }
+        val dDenominator =
+            List(input.size) { -1 * denominator[it].pow(2) * numerator[it].dot(dOutput[it]) }
 
         // 分子側(dy/d[x - min(x)])
         val dNumerator = List(input.size) { denominator[it] * dOutput[it] }
@@ -72,7 +74,8 @@ class MinMaxNormD1 internal constructor(
         return List(input.size) { dx1[it] + dx2[it] + dx3[it] }
     }
 
-    private operator fun IOType.D1.times(other: IOType.D1) = IOType.d1(shape) { this[it] * other[it] }
+    private operator fun IOType.D1.times(other: IOType.D1) =
+        IOType.d1(shape) { this[it] * other[it] }
 }
 
 fun <T : IOType> NetworkBuilder.D1<T>.minMaxNorm() = addProcess(

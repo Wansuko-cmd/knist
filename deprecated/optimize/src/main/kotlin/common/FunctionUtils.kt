@@ -12,21 +12,30 @@ fun sigmoid(x: Double) = 1 / (1 + exp(-x))
  * 正方形のkernelじゃないとエラーを投げる
  * また奇数サイズのkernelを想定
  */
-inline fun List<List<Double>>.conv(kernel: List<List<Double>>, f: (Double) -> Double = { it }): List<List<Double>> {
+inline fun List<List<Double>>.conv(
+    kernel: List<List<Double>>,
+    f: (Double) -> Double = { it },
+): List<List<Double>> {
     return this
         .map { it.toTypedArray() }.toTypedArray()
         .convArray(kernel.map { it.toTypedArray() }.toTypedArray())
         .map { a -> a.map { f(it) } }
 }
 
-inline fun List<List<Double>>.convA(kernel: Array<Array<Double>>, f: (Double) -> Double = { it }): Array<Array<Double>> {
+inline fun List<List<Double>>.convA(
+    kernel: Array<Array<Double>>,
+    f: (Double) -> Double = { it },
+): Array<Array<Double>> {
     return this
         .map { it.toTypedArray() }.toTypedArray()
         .convArray(kernel)
         .map { a -> a.map { f(it) }.toTypedArray() }.toTypedArray()
 }
 
-inline fun Array<Array<Double>>.convArray(kernel: Array<Array<Double>>, f: (Double) -> Double = { it }): Array<Array<Double>> {
+inline fun Array<Array<Double>>.convArray(
+    kernel: Array<Array<Double>>,
+    f: (Double) -> Double = { it },
+): Array<Array<Double>> {
     val outputSize = this.size - kernel.size + 1
     val output = Array(outputSize) { Array(outputSize) { 0.0 } }
 

@@ -1,7 +1,7 @@
 package com.wsr.process.debug
 
-import com.wsr.NetworkBuilder
 import com.wsr.IOType
+import com.wsr.NetworkBuilder
 import com.wsr.process.Process
 
 class DebugD1 internal constructor(

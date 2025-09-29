@@ -3,8 +3,8 @@ package com.wsr.process.function.sigmoid
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.process.Process
-import kotlin.math.exp
 import kotlinx.serialization.Serializable
+import kotlin.math.exp
 
 @Serializable
 class SigmoidD2 internal constructor(
@@ -20,13 +20,17 @@ class SigmoidD2 internal constructor(
         val output = input.map(::forward)
         val delta = calcDelta(output)
         return List(input.size) { i ->
-            IOType.d2(outputX, outputY) { x, y -> delta[i][x, y] * output[i][x, y] * (1 - output[i][x, y]) }
+            IOType.d2(
+                outputX,
+                outputY,
+            ) { x, y -> delta[i][x, y] * output[i][x, y] * (1 - output[i][x, y]) }
         }
     }
 
     private fun forward(input: IOType.D2): IOType.D2 {
-        return IOType.d2(outputX, outputY) { x, y -> 1 / (1 + exp(-input[x, y]))  }
+        return IOType.d2(outputX, outputY) { x, y -> 1 / (1 + exp(-input[x, y])) }
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.sigmoid() = addProcess(SigmoidD2(outputX = inputX, outputY = inputY))
+fun <T : IOType> NetworkBuilder.D2<T>.sigmoid() =
+    addProcess(SigmoidD2(outputX = inputX, outputY = inputY))

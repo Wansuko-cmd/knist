@@ -26,4 +26,9 @@ private val signal1Datasets = (1..1000000)
     .chunked(64)
     .dropLast(1)
 
-val signalDatasets = signal0Datasets.map { SignalDataset(signal = it, label = 0) } + signal1Datasets.map { SignalDataset(signal = it, label = 1) }
+val signalDatasets = signal0Datasets.map {
+    SignalDataset(
+        signal = it,
+        label = 0,
+    )
+} + signal1Datasets.map { SignalDataset(signal = it, label = 1) }

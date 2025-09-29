@@ -18,7 +18,8 @@ class Bias0d(
         val inputArray = input.asIOType0d()
         val outputArray = output.asIOType0d()
         for (index in inputArray.indices) {
-            outputArray[index] = activationFunction(inputArray[index] + weight[index].asIOType0d()[index])
+            outputArray[index] =
+                activationFunction(inputArray[index] + weight[index].asIOType0d()[index])
         }
     }
 
@@ -52,5 +53,6 @@ class Bias0d(
     override fun createOutput(input: IOType): IOType0d =
         IOType0d(MutableList(input.asIOType0d().size) { 0.0 })
 
-    override fun createDelta(input: IOType): IOType0d = IOType0d(MutableList(input.asIOType0d().size) { 0.0 })
+    override fun createDelta(input: IOType): IOType0d =
+        IOType0d(MutableList(input.asIOType0d().size) { 0.0 })
 }

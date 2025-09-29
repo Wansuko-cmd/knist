@@ -1,7 +1,7 @@
 package com.wsr.process.pool
 
-import com.wsr.NetworkBuilder
 import com.wsr.IOType
+import com.wsr.NetworkBuilder
 import com.wsr.process.Process
 import kotlinx.serialization.Serializable
 
@@ -50,10 +50,10 @@ class MaxPoolD2 internal constructor(
     }
 }
 
-fun <T: IOType> NetworkBuilder.D2<T>.maxPool(size: Int) = addProcess(
+fun <T : IOType> NetworkBuilder.D2<T>.maxPool(size: Int) = addProcess(
     process = MaxPoolD2(
         poolSize = size,
         channel = inputX,
         inputSize = inputY,
-    )
+    ),
 )

@@ -11,8 +11,11 @@ class IOType0d(value: MutableList<Double>) : IOType {
     val size: Int = value.size
 
     override inline fun asIOType0d(): IOType0d = this
-    override inline fun asIOType1d(): IOType1d = throw DomainException.CannotCastDimensionException()
-    override inline fun asIOType2d(): IOType2d = throw DomainException.CannotCastDimensionException()
+    override inline fun asIOType1d(): IOType1d =
+        throw DomainException.CannotCastDimensionException()
+
+    override inline fun asIOType2d(): IOType2d =
+        throw DomainException.CannotCastDimensionException()
 
     inline operator fun get(index: Int) = inner[index]
     inline operator fun set(index: Int, value: Double) {

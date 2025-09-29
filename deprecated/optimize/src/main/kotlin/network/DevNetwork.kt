@@ -74,6 +74,7 @@ class DevNetwork private constructor(
                                 // 入力層の次に全結合なのでArray<Double>が来るはず
                                 is LayerType.Input, LayerType.MatMul ->
                                     output[i] as Array<Double>
+
                                 is LayerType.Conv ->
                                     (output[i] as Array<Array<Array<Double>>>)
                                         .map { it.flatten() }
@@ -83,6 +84,7 @@ class DevNetwork private constructor(
                             layer = i,
                         )
                     }
+
                     is LayerType.Conv -> {
                         conv(
                             // TODO: 全結合の次にConvがくる場合を想定していない
@@ -120,12 +122,19 @@ class DevNetwork private constructor(
         input: Array<Array<Array<Double>>>,
         layer: Int,
     ): Array<Array<Array<Double>>> {
-        val outputSize = input.first().size - (weights[layer][0][0] as Array<Array<Double>>).size + 1
-        val output: Array<Array<Array<Double>>> = Array(layers[layer + 1].size) { Array(outputSize) { Array(outputSize) { 0.0 } } }
+        val outputSize =
+            input.first().size - (weights[layer][0][0] as Array<Array<Double>>).size + 1
+        val output: Array<Array<Array<Double>>> =
+            Array(layers[layer + 1].size) { Array(outputSize) { Array(outputSize) { 0.0 } } }
         measureNanoTime {
             for (a in 0 until layers[layer + 1].size) {
                 for (b in 0 until layers[layer].size) {
-                    output[a].add(input[b].convArray(weights[layer][b][a] as Array<Array<Double>>, layers[layer + 1].activationFunction))
+                    output[a].add(
+                        input[b].convArray(
+                            weights[layer][b][a] as Array<Array<Double>>,
+                            layers[layer + 1].activationFunction,
+                        ),
+                    )
                 }
             }
         }
@@ -162,9 +171,10 @@ class DevNetwork private constructor(
                     is LayerType.MatMul -> {
                         for (b in 0 until layers[i].size) {
                             delta[i][b] = step(output[i][b] as Double) *
-                                (0 until layers[i + 1].size).sumOf { a -> delta[i + 1][a] * weights[i][b][a] as Double }
+                                    (0 until layers[i + 1].size).sumOf { a -> delta[i + 1][a] * weights[i][b][a] as Double }
                         }
                     }
+
                     is LayerType.Conv -> {
                         when (layers[i + 1].type) {
                             is LayerType.Input, LayerType.MatMul -> {
@@ -177,6 +187,7 @@ class DevNetwork private constructor(
                                         }
                                 }
                             }
+
                             is LayerType.Conv -> {
                                 for (b in 0 until layers[i].size) {
                                     delta[i][b] = (output[i][b] as Array<Array<Double>>)
@@ -215,6 +226,7 @@ class DevNetwork private constructor(
                         val out = when (layers[i].type) {
                             is LayerType.Input, LayerType.MatMul ->
                                 output[i] as Array<Double>
+
                             is LayerType.Conv ->
                                 (output[i] as Array<Array<Array<Double>>>)
                                     .map { it.flatten() }
@@ -223,10 +235,12 @@ class DevNetwork private constructor(
                         }
                         for (b in 0 until layers[i].size) {
                             for (a in 0 until layers[i + 1].size) {
-                                weights[i][b][a] = (weights[i][b][a] as Double) - rate * delta[i + 1][a] * out[b]
+                                weights[i][b][a] =
+                                    (weights[i][b][a] as Double) - rate * delta[i + 1][a] * out[b]
                             }
                         }
                     }
+
                     is LayerType.Conv -> {
                         for (b in 0 until layers[i].size) {
                             for (a in 0 until layers[i + 1].size) {
@@ -274,7 +288,14 @@ class DevNetwork private constructor(
                             when (after.type) {
                                 is LayerType.Input -> throw Exception()
                                 is LayerType.MatMul -> random.nextDouble(from = -1.0, until = 1.0)
-                                is LayerType.Conv -> Array(5) { Array(5) { random.nextDouble(-1.0, 1.0) } }
+                                is LayerType.Conv -> Array(5) {
+                                    Array(5) {
+                                        random.nextDouble(
+                                            -1.0,
+                                            1.0,
+                                        )
+                                    }
+                                }
                             }.let { weights[index][b][a] = it }
                         }
                     }

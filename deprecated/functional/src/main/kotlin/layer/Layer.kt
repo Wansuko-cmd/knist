@@ -54,7 +54,7 @@ class Layer private constructor(
     private fun List<List<Pair<Node, Double>>>.slideWeightToLeft(): List<List<Pair<Double, Node>>> =
         this.map { node ->
             listOf(Double.NEGATIVE_INFINITY to node.first().first) +
-                node.windowed(2) { (left, right) -> left.second to right.first }
+                    node.windowed(2) { (left, right) -> left.second to right.first }
         }
 
     /**
@@ -70,14 +70,23 @@ class Layer private constructor(
             val (weight, node) = it.first()
             val (v, y) = node.getVY(input)
             val error = if (node.isCorrespondOutputNode(label)) 1.0 else 0.0
-            weight to TrainNode.OutputNode(v = v, y = y, t = error, node.id, node.activationFunction)
+            weight to TrainNode.OutputNode(
+                v = v,
+                y = y,
+                t = error,
+                node.id,
+                node.activationFunction,
+            )
         }
+
         else ->
             this
                 // 先頭の同じIDの要素を括り出し
                 .groupBy { it.first().second.id }
                 .mapKeys { it.value.first().first() }
-                .mapValues { (_, value) -> value.map { it.drop(1) }.toTrainNodesTree(input, label, rate) }
+                .mapValues { (_, value) ->
+                    value.map { it.drop(1) }.toTrainNodesTree(input, label, rate)
+                }
                 .map {
                     val (v, y) = it.key.second.getVY(input)
                     it.key.first to TrainNode.NormalNode(
@@ -107,7 +116,7 @@ class Layer private constructor(
     private fun List<List<Pair<Double, TrainNode>>>.slideWeightToRight(): List<List<Pair<TrainNode, Double>>> =
         this.map { node ->
             node.windowed(2) { (left, right) -> left.second to right.first } +
-                (node.last().second to Double.NEGATIVE_INFINITY)
+                    (node.last().second to Double.NEGATIVE_INFINITY)
         }
 
     /**
@@ -123,6 +132,7 @@ class Layer private constructor(
                 id = node.id,
             ) to weight
         }
+
         else ->
             this
                 // 末尾の同じIDの要素を括り出し

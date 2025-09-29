@@ -9,8 +9,8 @@ import com.wsr.common.iotype.conv1d
 import com.wsr.common.iotype.deConv1d
 import com.wsr.common.iotype.innerProduct
 import com.wsr.common.iotype.resize
-import kotlin.random.Random
 import com.wsr.process.Layer
+import kotlin.random.Random
 
 class Conv1d(
     private val channel: Int,
@@ -38,7 +38,8 @@ class Conv1d(
                 )
             }
             for (outputTime in outputArray[outputChannel].indices) {
-                outputArray[outputChannel][outputTime] = activationFunction(outputArray[outputChannel][outputTime])
+                outputArray[outputChannel][outputTime] =
+                    activationFunction(outputArray[outputChannel][outputTime])
             }
         }
     }
@@ -92,7 +93,16 @@ class Conv1d(
 
     override fun createWeight(input: IOType, random: Random): Array<IOType> =
         Array(input.asIOType1d().indexSize) {
-            IOType1d.create(MutableList(channel) { MutableList(kernelSize) { random.nextDouble(-1.0, 1.0) } })
+            IOType1d.create(
+                MutableList(channel) {
+                    MutableList(kernelSize) {
+                        random.nextDouble(
+                            -1.0,
+                            1.0,
+                        )
+                    }
+                },
+            )
         }
 
     override fun createOutput(input: IOType): IOType1d =

@@ -32,7 +32,7 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
         println("epoc: $epoc")
         train.shuffled(random).take(5000).chunked(240).mapIndexed { i, data ->
             network.train(
-                input = data.map { IOType.d2(listOf(28, 28), it.pixels) } ,
+                input = data.map { IOType.d2(listOf(28, 28), it.pixels) },
                 label = data.map { (_, label) -> IOType.d1(10) { if (label == it) 1.0 else 0.0 } },
             )
             println("train: $i")

@@ -22,4 +22,4 @@ internal class SoftmaxWithLossD1 internal constructor(val outputSize: Int) : Out
     }
 }
 
-fun <T: IOType> NetworkBuilder.D1<T>.softmaxWithLoss() = addOutput(SoftmaxWithLossD1(inputSize))
+fun <T : IOType> NetworkBuilder.D1<T>.softmaxWithLoss() = addOutput(SoftmaxWithLossD1(inputSize))

@@ -3,8 +3,8 @@ package com.wsr.process.function.relu
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.process.Process
-import kotlin.math.exp
 import kotlinx.serialization.Serializable
+import kotlin.math.exp
 
 @Serializable
 class SwishD1 internal constructor(override val outputSize: Int) : Process.D1() {
@@ -17,7 +17,8 @@ class SwishD1 internal constructor(override val outputSize: Int) : Process.D1() 
         calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
     ): List<IOType.D1> {
         val sigmoid = input.map { input -> IOType.d1(outputSize) { 1 / (1 + exp(-input[it])) } }
-        val output = List(input.size) { i -> IOType.d1(outputSize) { input[i][it] * sigmoid[i][it] } }
+        val output =
+            List(input.size) { i -> IOType.d1(outputSize) { input[i][it] * sigmoid[i][it] } }
         val delta = calcDelta(output)
         return List(input.size) { i ->
             IOType.d1(outputSize) {

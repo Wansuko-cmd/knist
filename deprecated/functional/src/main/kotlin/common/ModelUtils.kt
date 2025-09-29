@@ -44,7 +44,8 @@ suspend fun createModel(
                 data.sepalLength,
                 data.sepalWidth,
             ),
-        ).also { println("$it, except: ${it.maxIndex()} label: ${data.label}") }.maxIndex() == data.label
+        ).also { println("$it, except: ${it.maxIndex()} label: ${data.label}") }
+            .maxIndex() == data.label
     }.also { println(it.toDouble() / test.size.toDouble()) }
 }
 

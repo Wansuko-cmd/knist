@@ -15,7 +15,9 @@ sealed interface Reshape : Layer {
             calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
         ): List<IOType.D2>
 
-        final override fun _expect(input: List<IOType>): List<IOType> = expect(input = input as List<IOType.D2>)
+        final override fun _expect(input: List<IOType>): List<IOType> =
+            expect(input = input as List<IOType.D2>)
+
         final override fun _train(
             input: List<IOType>,
             calcDelta: (List<IOType>) -> List<IOType>,
