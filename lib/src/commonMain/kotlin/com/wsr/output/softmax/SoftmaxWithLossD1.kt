@@ -2,11 +2,10 @@ package com.wsr.output.softmax
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.d1.minus
+import com.wsr.operation.minus
 import com.wsr.output.Output
-import com.wsr.output.sigmoid.SigmoidWithLossD1
-import kotlin.math.exp
 import kotlinx.serialization.Serializable
+import kotlin.math.exp
 
 @Serializable
 internal class SoftmaxWithLossD1 internal constructor(val outputSize: Int) : Output.D1() {
