@@ -2,14 +2,13 @@ package com.wsr.process.affine
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.d1.toD2
-import com.wsr.d2.dot
-import com.wsr.d2.toD3
-import com.wsr.d2.transpose
-import com.wsr.d3.transpose
-import com.wsr.operation.minus
-import com.wsr.operation.times
+import com.wsr.dot.dot
+import com.wsr.operator.minus
+import com.wsr.operator.times
 import com.wsr.process.Process
+import com.wsr.reshape.toD2
+import com.wsr.reshape.toD3
+import com.wsr.reshape.transpose
 import kotlinx.serialization.Serializable
 
 @Serializable
