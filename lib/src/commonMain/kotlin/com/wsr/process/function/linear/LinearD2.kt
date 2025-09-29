@@ -1,7 +1,7 @@
 package com.wsr.process.function.linear
 
-import com.wsr.NetworkBuilder
 import com.wsr.IOType
+import com.wsr.NetworkBuilder
 import com.wsr.process.Process
 import kotlinx.serialization.Serializable
 
@@ -19,5 +19,5 @@ class LinearD2 internal constructor(
 }
 
 fun <T : IOType> NetworkBuilder.D2<T>.linear() = addProcess(
-    process= LinearD2(outputX = inputX, outputY = inputY),
+    process = LinearD2(outputX = inputX, outputY = inputY),
 )

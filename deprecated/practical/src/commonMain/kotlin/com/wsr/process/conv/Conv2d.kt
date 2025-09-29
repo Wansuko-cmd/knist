@@ -62,7 +62,8 @@ class Conv2d(
             val weightArray = weight[inputChannel].asIOType2d().value
             for (outputChannel in weightArray.indices) {
                 weightArray[outputChannel].deConv2d(
-                    kernel = deltaArray[outputChannel].map { it.reversedArray() }.reversed().toTypedArray(),
+                    kernel = deltaArray[outputChannel].map { it.reversedArray() }.reversed()
+                        .toTypedArray(),
                     output = beforeDeltaArray[inputChannel],
                 )
             }
@@ -109,7 +110,7 @@ class Conv2d(
                 Array(input.asIOType2d().value.first().size - kernelSize + 1) {
                     DoubleArray(input.asIOType2d().value.first().first().size - kernelSize + 1)
                 }
-            }
+            },
         )
 
     override fun createDelta(input: IOType): IOType2d =
@@ -118,6 +119,6 @@ class Conv2d(
                 Array(input.asIOType2d().value.first().size - kernelSize + 1 + padding * 2) {
                     DoubleArray(input.asIOType2d().value.first().first().size - kernelSize + 1)
                 }
-            }
+            },
         )
 }

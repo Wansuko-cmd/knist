@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal class ReshapeD2ToD1(override val outputSize: Int) : Reshape.D2ToD1() {
-    constructor(x: Int, y: Int): this(outputSize = x * y)
+    constructor(x: Int, y: Int) : this(outputSize = x * y)
 
     override fun expect(input: List<IOType.D2>): List<IOType.D1> = input.map { IOType.d1(it.value) }
 

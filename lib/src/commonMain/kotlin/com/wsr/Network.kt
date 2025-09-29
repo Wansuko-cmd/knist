@@ -42,6 +42,6 @@ class Network<I : IOType, O : IOType> internal constructor(
             json.decodeFromString<Network<I, O>>(
                 deserializer = NetworkSerializer(),
                 string = value,
-        )
+            )
     }
 }

@@ -46,7 +46,7 @@ class Affine(
         val deltaArray = delta.asIOType0d()
         for (inputIndex in beforeDeltaArray.indices) {
             beforeDeltaArray[inputIndex] = step(beforeOutputArray[inputIndex]) *
-                deltaArray.innerProduct(weight[inputIndex].asIOType0d(), 0)
+                    deltaArray.innerProduct(weight[inputIndex].asIOType0d(), 0)
         }
     }
 

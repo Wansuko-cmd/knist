@@ -39,7 +39,7 @@ private fun IOType.D1.addStridePadding(stride: Int) = IOType.d1(
             addAll(Array(stride - 1) { 0.0 })
         }
         add(value[shape[0] - 1])
-    }
+    },
 )
 
 private fun IOType.D1.addPadding(padding: Int) = IOType.d1(

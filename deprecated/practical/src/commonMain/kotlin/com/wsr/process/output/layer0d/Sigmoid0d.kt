@@ -2,10 +2,10 @@
 
 package com.wsr.process.output.layer0d
 
+import com.wsr.DomainException
 import com.wsr.common.iotype.IOType
 import com.wsr.common.iotype.IOType0d
 import com.wsr.common.sigmoid
-import com.wsr.DomainException
 import com.wsr.process.Layer
 import kotlin.random.Random
 
@@ -16,7 +16,8 @@ class Sigmoid0d(
     override fun toLayer() = listOf(
         type(numOfNeuron, ::sigmoid),
         object : Layer<IOType0d> {
-            override val activationFunction: (Double) -> Double = { throw DomainException.UnreachableCodeException() }
+            override val activationFunction: (Double) -> Double =
+                { throw DomainException.UnreachableCodeException() }
 
             override inline fun forward(
                 input: IOType,
@@ -61,7 +62,8 @@ class Sigmoid0d(
             override fun createOutput(input: IOType): IOType0d =
                 IOType0d(MutableList(numOfNeuron) { 0.0 })
 
-            override fun createDelta(input: IOType): IOType0d = IOType0d(MutableList(numOfNeuron) { 0.0 })
+            override fun createDelta(input: IOType): IOType0d =
+                IOType0d(MutableList(numOfNeuron) { 0.0 })
         },
     )
 }

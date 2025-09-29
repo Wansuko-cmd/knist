@@ -58,7 +58,12 @@ class Bias2d(
             IOType2d(
                 Array(input.asIOType2d().value.size) { index ->
                     Array(input.asIOType2d().value[index].size) { row ->
-                        DoubleArray(input.asIOType2d().value[index][row].size) { random.nextDouble(-1.0, 1.0) }
+                        DoubleArray(input.asIOType2d().value[index][row].size) {
+                            random.nextDouble(
+                                -1.0,
+                                1.0,
+                            )
+                        }
                     }
                 },
             )

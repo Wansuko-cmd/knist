@@ -4,7 +4,7 @@
 fun main() {
     val (train: List<List<MinistDataset>>, test: List<List<MnistDataset>>) = MnistDataset.read()
 
-    val network: Network<List<List<List<Double>>>, Int> = 
+    val network: Network<List<List<List<Double>>>, Int> =
         NetworkBuilder(rate = 0.01)
             .input2d(channel = 1, width = 28, height = 28)
             .conv2d(channel = 4, kernelSize = 5).bias2d().relu()
@@ -22,7 +22,7 @@ fun main() {
             )
         }
     }
-    
+
     test.flatten().count { data ->
         network.expect(input = data.pixels) == data.label
     }.also { println(it.toDouble() / test.size.toDouble()) }

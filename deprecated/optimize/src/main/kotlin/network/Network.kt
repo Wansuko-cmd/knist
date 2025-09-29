@@ -5,8 +5,6 @@ import common.maxIndex
 import common.relu
 import common.sigmoid
 import common.step
-import java.awt.image.ConvolveOp
-import java.awt.image.Kernel
 import kotlin.random.Random
 
 /**
@@ -95,7 +93,7 @@ class Network private constructor(
             .mapDownIndexed { index, (before, after) ->
                 (0 until before).map { b ->
                     step(output[index][b]) *
-                        (0 until after).sumOf { a -> delta[0][a] * weights[index][b][a] }
+                            (0 until after).sumOf { a -> delta[0][a] * weights[index][b][a] }
                 }.let { delta.add(0, it) }
             }
         return delta

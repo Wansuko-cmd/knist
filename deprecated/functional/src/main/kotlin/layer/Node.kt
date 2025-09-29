@@ -36,6 +36,7 @@ class Node private constructor(
                     val v = before.zip(input) { (_, weight), input -> input * weight }.sum()
                     v to activationFunction(v)
                 }
+
                 else -> {
                     before
                         .sumOf { (node, weight) -> node.getVY(input).second * weight }

@@ -1,7 +1,7 @@
 package com.wsr.process.function.linear
 
-import com.wsr.NetworkBuilder
 import com.wsr.IOType
+import com.wsr.NetworkBuilder
 import com.wsr.process.Process
 import kotlinx.serialization.Serializable
 

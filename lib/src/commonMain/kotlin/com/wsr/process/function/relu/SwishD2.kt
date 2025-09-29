@@ -1,10 +1,10 @@
 package com.wsr.process.function.relu
 
-import com.wsr.NetworkBuilder
 import com.wsr.IOType
+import com.wsr.NetworkBuilder
 import com.wsr.process.Process
-import kotlin.math.exp
 import kotlinx.serialization.Serializable
+import kotlin.math.exp
 
 @Serializable
 class SwishD2 internal constructor(
@@ -22,7 +22,12 @@ class SwishD2 internal constructor(
         val sigmoid = input.map { input ->
             IOType.d2(outputX, outputY) { x, y -> 1 / (1 + exp(-input[x, y])) }
         }
-        val output = List(input.size) { i -> IOType.d2(outputX, outputY) { x, y -> input[i][x, y] * sigmoid[i][x, y] } }
+        val output = List(input.size) { i ->
+            IOType.d2(
+                outputX,
+                outputY,
+            ) { x, y -> input[i][x, y] * sigmoid[i][x, y] }
+        }
         val delta = calcDelta(output)
         return List(input.size) { i ->
             IOType.d2(outputX, outputY) { x, y ->
@@ -32,4 +37,5 @@ class SwishD2 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.swish() = addProcess(SwishD2(outputX = inputX, outputY = inputY))
+fun <T : IOType> NetworkBuilder.D2<T>.swish() =
+    addProcess(SwishD2(outputX = inputX, outputY = inputY))

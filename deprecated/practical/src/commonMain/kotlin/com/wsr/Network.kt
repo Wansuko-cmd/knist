@@ -36,7 +36,8 @@ class Network<T>(
         calcDelta(label)
         backward()
         lossValue =
-            lossValue.first + delta[delta.lastIndex - 1].asIOType0d().inner.map { it.absoluteValue }.average() to lossValue.second + 1
+            lossValue.first + delta[delta.lastIndex - 1].asIOType0d().inner.map { it.absoluteValue }
+                .average() to lossValue.second + 1
     }
 
     fun loss() = lossValue
@@ -72,7 +73,9 @@ class Network<T>(
                 layers = layers,
                 random = random,
                 rate = rate,
-                toIOType = { IOType1d.Companion.create(this.map { it.toMutableList() }.toMutableList()) },
+                toIOType = {
+                    IOType1d.Companion.create(this.map { it.toMutableList() }.toMutableList())
+                },
             )
         }
 

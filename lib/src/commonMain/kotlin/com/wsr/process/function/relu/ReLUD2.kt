@@ -1,7 +1,7 @@
 package com.wsr.process.function.relu
 
-import com.wsr.NetworkBuilder
 import com.wsr.IOType
+import com.wsr.NetworkBuilder
 import com.wsr.process.Process
 import kotlinx.serialization.Serializable
 
@@ -19,7 +19,10 @@ class ReLUD2 internal constructor(
         val output = input.map(::forward)
         val delta = calcDelta(output)
         return List(input.size) { i ->
-            IOType.d2(outputX, outputY) { x, y -> if (input[i][x, y] >= 0.0) delta[i][x, y] else 0.0 }
+            IOType.d2(
+                outputX,
+                outputY,
+            ) { x, y -> if (input[i][x, y] >= 0.0) delta[i][x, y] else 0.0 }
         }
     }
 
@@ -28,4 +31,5 @@ class ReLUD2 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.reLU() = addProcess(ReLUD2(outputX = inputX, outputY = inputY))
+fun <T : IOType> NetworkBuilder.D2<T>.reLU() =
+    addProcess(ReLUD2(outputX = inputX, outputY = inputY))

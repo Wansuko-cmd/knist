@@ -16,7 +16,7 @@ fun main() {
     val weight: List<List<MutableList<Double>>> =
         listOf(
             List(4) { MutableList(50) { random.nextDouble(-1.0, 1.0) } },
-            List(50) { MutableList(3) { random.nextDouble(-1.0, 1.0) } }
+            List(50) { MutableList(3) { random.nextDouble(-1.0, 1.0) } },
         )
     (0..100).forEach { _ ->
         train.forEach { train(it, weight) }
@@ -48,7 +48,9 @@ fun train(dataset: IrisDataset, weight: List<List<MutableList<Double>>>) {
     }
     val layer4 = layer3.map { sigmoid(it) }
     layer4
-        .onEachIndexed { index, tensor -> tensor.grad = tensor.output - if (dataset.label == index) 0.9 else 0.1 }
+        .onEachIndexed { index, tensor ->
+            tensor.grad = tensor.output - if (dataset.label == index) 0.9 else 0.1
+        }
         .onEach { it.calcGrad() }
         .forEach { it.backwardBefore() }
     for (i in weight[0].indices) {

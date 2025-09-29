@@ -28,11 +28,11 @@ class BiasD2(
     }
 }
 
-fun <T: IOType> NetworkBuilder.D2<T>.bias() = addProcess(
+fun <T : IOType> NetworkBuilder.D2<T>.bias() = addProcess(
     process = BiasD2(
         outputX = inputX,
         outputY = inputY,
         rate = rate,
-        weight = IOType.d2(inputX, inputY) { _, _ -> random.nextDouble(-1.0, 1.0) }
-    )
+        weight = IOType.d2(inputX, inputY) { _, _ -> random.nextDouble(-1.0, 1.0) },
+    ),
 )
