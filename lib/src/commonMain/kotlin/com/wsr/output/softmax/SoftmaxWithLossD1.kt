@@ -2,7 +2,7 @@ package com.wsr.output.softmax
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.operation.minus
+import com.wsr.operator.minus
 import com.wsr.output.Output
 import kotlinx.serialization.Serializable
 import kotlin.math.exp

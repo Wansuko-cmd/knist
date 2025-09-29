@@ -3,7 +3,7 @@ package com.wsr.reshape
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.average.average
-import com.wsr.d1.div
+import com.wsr.operator.div
 import kotlinx.serialization.Serializable
 
 @Serializable

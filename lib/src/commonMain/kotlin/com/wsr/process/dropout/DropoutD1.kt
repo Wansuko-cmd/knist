@@ -2,7 +2,7 @@ package com.wsr.process.dropout
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.operation.times
+import com.wsr.operator.times
 import com.wsr.process.Process
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
@@ -15,7 +15,7 @@ class DropoutD1 internal constructor(
 ) : Process.D1() {
     private val random by lazy { seed?.let { Random(it) } ?: Random }
 
-    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input.map { ratio * it }
+    override fun expect(input: List<IOType.D1>): List<IOType.D1> = ratio * input
 
     override fun train(
         input: List<IOType.D1>,
