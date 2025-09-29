@@ -42,13 +42,13 @@ class ConvD1 internal constructor(
         }
     }
 
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.map(::forward)
+    override fun expect(input: List<IOType.D2>): List<IOType.D2> = forward(input)
 
     override fun train(
         input: List<IOType.D2>,
         calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
     ): List<IOType.D2> {
-        val output = input.map(::forward)
+        val output = forward(input)
         val delta = calcDelta(output)
 
         val reversed = IOType.d3(weight.shape) { x, y, z ->
@@ -77,13 +77,78 @@ class ConvD1 internal constructor(
         return dx
     }
 
-    private fun forward(input: IOType.D2): IOType.D2 = (0 until filter)
-        .map { f ->
-            (0 until channel)
-                .map { c -> input[c].convD1(weight[f, c], stride, padding) }
-                .sum()
+//    private fun forward(input: List<IOType.D2>): List<IOType.D2> = input.map { input ->
+//        (0 until filter)
+//            .map { f ->
+//                (0 until channel)
+//                    .map { c -> input[c].convD1(weight[f, c], stride, padding) }
+//                    .sum()
+//            }
+//            .toD2()
+//    }
+
+    private fun forward(input: List<IOType.D2>): List<IOType.D2> {
+        val col = input.im2col(kernel, stride, padding)
+        val filter = weight.toCol()
+        val result = Array(filter.size) { DoubleArray(col.size) }
+        for (f in filter.indices) {
+            for (i in col.indices) {
+                result[f][i] = col[i] dot filter[f]
+            }
         }
-        .toD2()
+        return List(input.size) { b ->
+            IOType.d2(outputX, outputY) { f, o ->
+                result[f][b * outputY + o]
+            }
+        }
+    }
+
+
+    private fun List<IOType.D2>.im2col(
+        kernel: Int,
+        stride: Int = 1,
+        padding: Int = 0,
+    ): Array<DoubleArray> {
+        val (channel, inputSize) = first().shape
+        val output = (inputSize - kernel + 2 * padding) / stride + 1
+        val result = Array(this.size * output) { DoubleArray(kernel * channel) }
+        this.forEachIndexed { index, ioType ->
+            for (o in 0 until output) {
+                val row = index * output + o
+                for (k in 0 until kernel) {
+                    val inputIndex = o * stride + k - padding
+                    if (inputIndex in 0 until inputSize) {
+                        for (c in 0 until channel) {
+                            result[row][c * kernel + k] = ioType[c, inputIndex]
+                        }
+                    }
+                }
+            }
+        }
+        return result
+    }
+
+    private fun IOType.D3.toCol(): Array<DoubleArray> {
+        val filterCount = shape[0]
+        val channels = shape[1]
+        val kernel = shape[2]
+
+        return Array(filterCount) { f ->
+            DoubleArray(channels * kernel) { i ->
+                val c = i / kernel
+                val k = i % kernel
+                this[f, c, k]
+            }
+        }
+    }
+
+    private infix fun DoubleArray.dot(other: DoubleArray): Double {
+        var sum = 0.0
+        for (i in indices) {
+            sum += this[i] * other[i]
+        }
+        return sum
+    }
 }
 
 fun <T : IOType> NetworkBuilder.D2<T>.convD1(
