@@ -1,4 +1,4 @@
-package com.wsr.operation
+package com.wsr.operator
 
 import com.wsr.IOType
 
