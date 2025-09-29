@@ -42,28 +42,18 @@ class ConvD1 internal constructor(
         }
     }
 
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> = forward(input)
+    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.convD1(weight, stride, padding)
 
     override fun train(
         input: List<IOType.D2>,
         calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
     ): List<IOType.D2> {
-        val output = forward(input)
+        val output = input.convD1(weight, stride, padding)
         val delta = calcDelta(output)
 
-        val reversed = IOType.d3(weight.shape) { x, y, z ->
-            val z = weight.shape[2] - z - 1
-            weight[x, y, z]
-        }
+        val reversed = IOType.d3(weight.shape) { x, y, z -> weight[x, y, kernel - z - 1] }
             .transpose(1, 0, 2)
-        val dx = List(input.size) { index ->
-            (0 until channel).map { c ->
-                (0 until filter)
-                    .map { f -> delta[index][f].deConvD1(reversed[c][f], stride, padding) }
-                    .sum()
-            }
-                .toD2()
-        }
+        val dx = delta.deConvD1(reversed, stride, padding)
 
         val dw = List(input.size) { index ->
             (0 until filter).map { f ->
@@ -76,18 +66,6 @@ class ConvD1 internal constructor(
 
         return dx
     }
-
-//    private fun forward(input: List<IOType.D2>): List<IOType.D2> = input.map { input ->
-//        (0 until filter)
-//            .map { f ->
-//                (0 until channel)
-//                    .map { c -> input[c].convD1(weight[f, c], stride, padding) }
-//                    .sum()
-//            }
-//            .toD2()
-//    }
-
-    private fun forward(input: List<IOType.D2>): List<IOType.D2> = input.convD1(weight, stride, padding)
 }
 
 fun <T : IOType> NetworkBuilder.D2<T>.convD1(
