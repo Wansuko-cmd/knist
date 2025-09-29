@@ -1,4 +1,4 @@
-package com.wsr.d1
+package com.wsr.dot
 
 import com.wsr.IOType
 
