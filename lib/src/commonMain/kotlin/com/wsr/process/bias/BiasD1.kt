@@ -3,8 +3,8 @@ package com.wsr.process.bias
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.average.average
-import com.wsr.operator.plus
 import com.wsr.operator.minus
+import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.process.Process
 import kotlinx.serialization.Serializable

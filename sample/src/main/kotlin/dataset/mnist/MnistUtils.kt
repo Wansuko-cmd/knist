@@ -14,7 +14,8 @@ import java.util.Random
 fun createMnistModel(epoc: Int, seed: Int? = null) {
     val network = NetworkBuilder.inputD2(x = 28, y = 28, rate = 0.01, seed = seed)
 //        .affine(100).bias().swish().maxPool(2)
-        .convD1(filter = 30, kernel = 3).bias().reLU()
+        .convD1(filter = 16, kernel = 3).bias().reLU()
+        .convD1(filter = 32, kernel = 3).bias().reLU()
         .globalAverageToD1()
 //        .reshapeToD1()
         .affine(neuron = 512)
