@@ -11,7 +11,6 @@ import com.wsr.process.Process
 import com.wsr.reshape.toD2
 import com.wsr.reshape.toD3
 import com.wsr.reshape.transpose
-import com.wsr.sum.sum
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -42,7 +41,8 @@ class ConvD1 internal constructor(
         }
     }
 
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.convD1(weight, stride, padding)
+    override fun expect(input: List<IOType.D2>): List<IOType.D2> =
+        input.convD1(weight, stride, padding)
 
     override fun train(
         input: List<IOType.D2>,
