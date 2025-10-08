@@ -48,23 +48,14 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
     }
 
     companion object {
-        fun inputD1(
-            inputSize: Int,
-            rate: Double,
-            seed: Int? = null,
-        ) = D1<IOType.D1>(
+        fun inputD1(inputSize: Int, rate: Double, seed: Int? = null) = D1<IOType.D1>(
             inputSize = inputSize,
             rate = rate,
             random = seed?.let { Random(it) } ?: Random,
             layers = emptyList(),
         )
 
-        fun inputD2(
-            x: Int,
-            y: Int,
-            rate: Double,
-            seed: Int? = null,
-        ) = D2<IOType.D2>(
+        fun inputD2(x: Int, y: Int, rate: Double, seed: Int? = null) = D2<IOType.D2>(
             inputX = x,
             inputY = y,
             rate = rate,

@@ -8,20 +8,27 @@ import com.wsr.process.bias.bias
 import com.wsr.process.conv.convD1
 import com.wsr.process.function.relu.reLU
 import com.wsr.reshape.globalAverageToD1
-import maxIndex
 import java.util.Random
+import maxIndex
 
 fun createMnistModel(epoc: Int, seed: Int? = null) {
-    val network = NetworkBuilder.inputD2(x = 28, y = 28, rate = 0.01, seed = seed)
+    val network =
+        NetworkBuilder
+            .inputD2(x = 28, y = 28, rate = 0.01, seed = seed)
 //        .affine(100).bias().swish().maxPool(2)
-        .convD1(filter = 16, kernel = 3).bias().reLU()
-        .convD1(filter = 32, kernel = 3).bias().reLU()
-        .globalAverageToD1()
+            .convD1(filter = 16, kernel = 3)
+            .bias()
+            .reLU()
+            .convD1(filter = 32, kernel = 3)
+            .bias()
+            .reLU()
+            .globalAverageToD1()
 //        .reshapeToD1()
-        .affine(neuron = 512)
-        .bias().reLU()
-        .affine(neuron = 10)
-        .softmaxWithLoss()
+            .affine(neuron = 512)
+            .bias()
+            .reLU()
+            .affine(neuron = 10)
+            .softmaxWithLoss()
 
     val random = seed?.let { Random(seed.toLong()) } ?: Random()
 
@@ -39,12 +46,18 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
             println("train: $i")
         }
     }
-    test.count { data ->
-        network.expect(
-            input = IOType.d2(
-                listOf(28, 28),
-                data.pixels.toMutableList(),
-            ),
-        ).value.toTypedArray().also { println(it.toList()) }.maxIndex() == data.label
-    }.let { println(it.toDouble() / test.size.toDouble()) }
+    test
+        .count { data ->
+            network
+                .expect(
+                    input =
+                    IOType.d2(
+                        listOf(28, 28),
+                        data.pixels.toMutableList(),
+                    ),
+                ).value
+                .toTypedArray()
+                .also { println(it.toList()) }
+                .maxIndex() == data.label
+        }.let { println(it.toDouble() / test.size.toDouble()) }
 }

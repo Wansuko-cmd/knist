@@ -89,21 +89,23 @@ class ConvD1ExtTest {
         //          [2, 3, 4, 5, 6, 7, 8, 9]]
         // batch1: [[3, 4, 5, 6, 7, 8, 9, 10],
         //          [4, 5, 6, 7, 8, 9, 10, 11]]
-        val input = listOf(
-            IOType.d2(2, 8) { c, y -> (c + y + 1).toDouble() },
-            IOType.d2(2, 8) { c, y -> (c + y + 3).toDouble() },
-        )
+        val input =
+            listOf(
+                IOType.d2(2, 8) { c, y -> (c + y + 1).toDouble() },
+                IOType.d2(2, 8) { c, y -> (c + y + 3).toDouble() },
+            )
         // フィルタ数2, チャネル2, カーネル3
         // filter0: [[1, 0, -1], [1, 0, -1]]
         // filter1: [[0, 1, 0], [0, 1, 0]]
-        val weight = IOType.d3(2, 2, 3) { f, _, k ->
-            when {
-                f == 0 && k == 0 -> 1.0
-                f == 0 && k == 2 -> -1.0
-                f == 1 && k == 1 -> 1.0
-                else -> 0.0
+        val weight =
+            IOType.d3(2, 2, 3) { f, _, k ->
+                when {
+                    f == 0 && k == 0 -> 1.0
+                    f == 0 && k == 2 -> -1.0
+                    f == 1 && k == 1 -> 1.0
+                    else -> 0.0
+                }
             }
-        }
 
         val result = input.convD1(weight, stride = 1, padding = 0)
 
@@ -126,21 +128,23 @@ class ConvD1ExtTest {
         //          [2, 3, 4]]
         // batch1: [[3, 4, 5],
         //          [4, 5, 6]]
-        val input = listOf(
-            IOType.d2(2, 3) { c, y -> (c + y + 1).toDouble() },
-            IOType.d2(2, 3) { c, y -> (c + y + 3).toDouble() },
-        )
+        val input =
+            listOf(
+                IOType.d2(2, 3) { c, y -> (c + y + 1).toDouble() },
+                IOType.d2(2, 3) { c, y -> (c + y + 3).toDouble() },
+            )
         // フィルタ数2, チャネル2, カーネル3
         // filter0: [[1, 1, 1], [1, 1, 1]]
         // filter1: [[1, 0, -1], [1, 0, -1]]
-        val weight = IOType.d3(2, 2, 3) { f, _, k ->
-            when {
-                f == 0 -> 1.0
-                f == 1 && k == 0 -> 1.0
-                f == 1 && k == 2 -> -1.0
-                else -> 0.0
+        val weight =
+            IOType.d3(2, 2, 3) { f, _, k ->
+                when {
+                    f == 0 -> 1.0
+                    f == 1 && k == 0 -> 1.0
+                    f == 1 && k == 2 -> -1.0
+                    else -> 0.0
+                }
             }
-        }
 
         val result = input.deConvD1(weight, stride = 2, padding = 0)
 

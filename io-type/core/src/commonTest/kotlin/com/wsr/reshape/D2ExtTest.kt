@@ -9,10 +9,11 @@ import kotlin.test.assertEquals
 class D2ExtTest {
     @Test
     fun `List_D2のtoD3=D2をまとめたD3`() {
-        val list = listOf(
-            IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() },
-            IOType.d2(2, 3) { x, y -> (x * 3 + y + 7).toDouble() },
-        )
+        val list =
+            listOf(
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() },
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 7).toDouble() },
+            )
         val result = list.toD3()
         assertEquals(
             expected = IOType.d3(2, 2, 3) { x, y, z -> (y * 3 + z + 1 + x * 6).toDouble() },
@@ -38,10 +39,11 @@ class D2ExtTest {
 
     @Test
     fun `List_D2のtranspose=各D2をtransposeしたList_D2`() {
-        val list = listOf(
-            IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() },
-            IOType.d2(2, 3) { x, y -> (x * 3 + y + 7).toDouble() },
-        )
+        val list =
+            listOf(
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() },
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 7).toDouble() },
+            )
         val result = list.transpose()
         assertEquals(
             expected = IOType.d2(3, 2) { x, y -> (y * 3 + x + 1).toDouble() },

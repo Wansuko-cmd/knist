@@ -21,16 +21,18 @@ class DotExtTest {
     fun `Array_DoubleArray·Array_DoubleArray=行列積`() {
         // [[1, 2],
         //  [3, 4]]
-        val a = arrayOf(
-            doubleArrayOf(1.0, 2.0),
-            doubleArrayOf(3.0, 4.0),
-        )
+        val a =
+            arrayOf(
+                doubleArrayOf(1.0, 2.0),
+                doubleArrayOf(3.0, 4.0),
+            )
         // [[1, 2],
         //  [3, 4]]
-        val b = arrayOf(
-            doubleArrayOf(1.0, 2.0),
-            doubleArrayOf(3.0, 4.0),
-        )
+        val b =
+            arrayOf(
+                doubleArrayOf(1.0, 2.0),
+                doubleArrayOf(3.0, 4.0),
+            )
         val result = a dot b
 
         // 実装: result[f][i] = this[i] dot other[f]
