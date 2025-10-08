@@ -5,6 +5,7 @@ plugins {
 
 kotlin {
     applyDefaultHierarchyTemplate()
+    jvmToolchain(17)
     jvm()
 
     sourceSets {
@@ -12,6 +13,12 @@ kotlin {
             dependencies {
                 implementation(libs.coroutine)
                 implementation(libs.serialization)
+            }
+        }
+
+        val commonTest by getting {
+            dependencies {
+                implementation(libs.kotlin.test)
             }
         }
     }
