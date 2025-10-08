@@ -16,6 +16,12 @@ kotlin {
                 implementation(libs.serialization)
             }
         }
+
+        val commonTest by getting {
+            dependencies {
+                implementation(libs.kotlin.test)
+            }
+        }
     }
 }
 
