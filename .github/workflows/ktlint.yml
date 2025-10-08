@@ -1,0 +1,22 @@
+name: 'ktlintを実行'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ktlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 現ブランチからチェックアウト
+        uses: actions/checkout@v4
+
+      - name: ktlintを実行
+        uses: ScaCap/action-ktlint@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
