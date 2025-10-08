@@ -40,6 +40,6 @@ fun createIrisModel(epoc: Int) {
                     data.sepalWidth,
                 ),
             ),
-        ).value.maxIndex() == data.label
+        ).value.toTypedArray().maxIndex() == data.label
     }.let { println(it.toDouble() / test.size.toDouble()) }
 }

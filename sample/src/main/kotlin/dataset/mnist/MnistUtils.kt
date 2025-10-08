@@ -45,6 +45,6 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
                 listOf(28, 28),
                 data.pixels.toMutableList(),
             ),
-        ).value.also { println(it.toList()) }.maxIndex() == data.label
+        ).value.toTypedArray().also { println(it.toList()) }.maxIndex() == data.label
     }.let { println(it.toDouble() / test.size.toDouble()) }
 }
