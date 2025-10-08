@@ -1,14 +1,15 @@
 package com.wsr.dot
 
+import com.wsr.BLAS
 import com.wsr.IOType
 
-infix fun IOType.D1.dot(other: IOType.D1): Double {
-    var sum = 0.0
-    for (i in value.indices) {
-        sum += this[i] * other[i]
-    }
-    return sum
-}
+infix fun IOType.D1.dot(other: IOType.D1): Double = BLAS.ddot(
+    n = value.size,
+    x = value,
+    incX = 1,
+    y = other.value,
+    incY = 1,
+)
 
 infix fun IOType.D1.dot(other: IOType.D2) = IOType.d1(size = shape[0]) { i ->
     var sum = 0.0
