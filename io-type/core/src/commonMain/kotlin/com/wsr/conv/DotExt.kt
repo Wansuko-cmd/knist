@@ -1,5 +1,7 @@
 package com.wsr.conv
 
+import com.wsr.BLAS
+
 infix fun Array<DoubleArray>.dot(other: Array<DoubleArray>): Array<DoubleArray> {
     val result = Array(other.size) { DoubleArray(size) }
     for (f in other.indices) {
@@ -10,10 +12,10 @@ infix fun Array<DoubleArray>.dot(other: Array<DoubleArray>): Array<DoubleArray> 
     return result
 }
 
-infix fun DoubleArray.dot(other: DoubleArray): Double {
-    var sum = 0.0
-    for (i in indices) {
-        sum += this[i] * other[i]
-    }
-    return sum
-}
+infix fun DoubleArray.dot(other: DoubleArray): Double = BLAS.ddot(
+    n = this.size,
+    x = this,
+    incX = 1,
+    y = other,
+    incY = 1,
+)
