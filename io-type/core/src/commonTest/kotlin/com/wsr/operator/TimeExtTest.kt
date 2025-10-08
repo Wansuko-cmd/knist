@@ -19,10 +19,11 @@ class TimeExtTest {
 
     @Test
     fun `Double×List_D1=各要素にDoubleをかけたList_D1`() {
-        val list = listOf(
-            IOType.d1(listOf(1.0, 2.0, 3.0)),
-            IOType.d1(listOf(4.0, 5.0, 6.0)),
-        )
+        val list =
+            listOf(
+                IOType.d1(listOf(1.0, 2.0, 3.0)),
+                IOType.d1(listOf(4.0, 5.0, 6.0)),
+            )
         val result = 2.0 * list
         assertEquals(
             expected = IOType.d1(listOf(2.0, 4.0, 6.0)),
@@ -46,10 +47,11 @@ class TimeExtTest {
 
     @Test
     fun `Double×List_D2=各要素にDoubleをかけたList_D2`() {
-        val list = listOf(
-            IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
-            IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
-        )
+        val list =
+            listOf(
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+            )
         val result = 3.0 * list
         assertEquals(
             expected = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() * 3 },

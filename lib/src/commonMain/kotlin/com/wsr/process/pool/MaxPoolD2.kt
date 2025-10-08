@@ -6,31 +6,24 @@ import com.wsr.process.Process
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MaxPoolD2 internal constructor(
-    val poolSize: Int,
-    val channel: Int,
-    val inputSize: Int,
-) : Process.D2() {
+class MaxPoolD2 internal constructor(val poolSize: Int, val channel: Int, val inputSize: Int) : Process.D2() {
     override val outputX: Int = channel
     override val outputY: Int = inputSize / poolSize
 
     init {
         check(inputSize % poolSize == 0) {
             """
-                invalid parameter.
-                inputSize: $inputSize
-                poolSize: $poolSize
-                output: ${inputSize / poolSize.toDouble()}
+            invalid parameter.
+            inputSize: $inputSize
+            poolSize: $poolSize
+            output: ${inputSize / poolSize.toDouble()}
             """.trimIndent()
         }
     }
 
     override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.map(::forward)
 
-    override fun train(
-        input: List<IOType.D2>,
-        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
-    ): List<IOType.D2> {
+    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
         val output = input.map(::forward)
         val delta = calcDelta(output)
         return List(input.size) { index ->
@@ -51,7 +44,8 @@ class MaxPoolD2 internal constructor(
 }
 
 fun <T : IOType> NetworkBuilder.D2<T>.maxPool(size: Int) = addProcess(
-    process = MaxPoolD2(
+    process =
+    MaxPoolD2(
         poolSize = size,
         channel = inputX,
         inputSize = inputY,

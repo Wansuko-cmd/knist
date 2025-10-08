@@ -10,15 +10,20 @@ import maxIndex
 
 fun createIrisModel(epoc: Int) {
     val (train, test) = irisDatasets.shuffled() to irisDatasets.shuffled()
-    val network = NetworkBuilder.inputD1(inputSize = 4, rate = 0.01)
-        .affine(neuron = 50).bias().reLU()
-        .affine(neuron = 3)
-        .softmaxWithLoss()
+    val network =
+        NetworkBuilder
+            .inputD1(inputSize = 4, rate = 0.01)
+            .affine(neuron = 50)
+            .bias()
+            .reLU()
+            .affine(neuron = 3)
+            .softmaxWithLoss()
 
     (1..epoc).forEach { epoc ->
         train.forEach { data ->
             network.train(
-                input = IOType.d1(
+                input =
+                IOType.d1(
                     listOf(
                         data.petalLength,
                         data.petalWidth,
@@ -30,16 +35,21 @@ fun createIrisModel(epoc: Int) {
             )
         }
     }
-    test.count { data ->
-        network.expect(
-            input = IOType.d1(
-                listOf(
-                    data.petalLength,
-                    data.petalWidth,
-                    data.sepalLength,
-                    data.sepalWidth,
-                ),
-            ),
-        ).value.toTypedArray().maxIndex() == data.label
-    }.let { println(it.toDouble() / test.size.toDouble()) }
+    test
+        .count { data ->
+            network
+                .expect(
+                    input =
+                    IOType.d1(
+                        listOf(
+                            data.petalLength,
+                            data.petalWidth,
+                            data.sepalLength,
+                            data.sepalWidth,
+                        ),
+                    ),
+                ).value
+                .toTypedArray()
+                .maxIndex() == data.label
+        }.let { println(it.toDouble() / test.size.toDouble()) }
 }

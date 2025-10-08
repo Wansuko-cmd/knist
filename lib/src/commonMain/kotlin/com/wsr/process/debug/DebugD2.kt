@@ -12,10 +12,7 @@ class DebugD2 internal constructor(
 ) : Process.D2() {
     override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.also { onInput(it) }
 
-    override fun train(
-        input: List<IOType.D2>,
-        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
-    ): List<IOType.D2> {
+    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
         val input = input.also { onInput(it) }
         val delta = calcDelta(input).also { onDelta(it) }
         return delta

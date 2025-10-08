@@ -19,10 +19,11 @@ class PlusExtTest {
 
     @Test
     fun `List_D1_+D1=各要素にD1を足したList_D1_`() {
-        val list = listOf(
-            IOType.d1(listOf(1.0, 2.0, 3.0)),
-            IOType.d1(listOf(4.0, 5.0, 6.0)),
-        )
+        val list =
+            listOf(
+                IOType.d1(listOf(1.0, 2.0, 3.0)),
+                IOType.d1(listOf(4.0, 5.0, 6.0)),
+            )
         val b = IOType.d1(listOf(1.0, 1.0, 1.0))
         val result = list + b
         assertEquals(
@@ -48,10 +49,11 @@ class PlusExtTest {
 
     @Test
     fun `List_D2_+D2=各要素にD2を足したList_D2_`() {
-        val list = listOf(
-            IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
-            IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
-        )
+        val list =
+            listOf(
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+            )
         val b = IOType.d2(2, 2) { _, _ -> 1.0 }
         val result = list + b
         assertEquals(
@@ -77,10 +79,11 @@ class PlusExtTest {
 
     @Test
     fun `List_D3_+D3=各要素にD3を足したList_D3_`() {
-        val list = listOf(
-            IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
-            IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 10).toDouble() },
-        )
+        val list =
+            listOf(
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 10).toDouble() },
+            )
         val b = IOType.d3(2, 2, 2) { _, _, _ -> 1.0 }
         val result = list + b
         assertEquals(

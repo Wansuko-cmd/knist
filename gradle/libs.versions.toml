@@ -13,6 +13,9 @@ datetime = "0.7.1-0.6.x-compat"
 mockk = "1.14.5"
 truth = "1.4.4"
 
+# Ktlint
+ktlint = "13.0.0"
+
 [libraries]
 # kotlin
 coroutine = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutine" }
@@ -31,3 +34,4 @@ test = ["kotlin-test", "kotlin-junit", "kotlin-coroutine-test", "truth", "mockk"
 
 [plugins]
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }

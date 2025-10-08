@@ -19,11 +19,12 @@ class SumExtTest {
 
     @Test
     fun `List_D1のsum=各インデックスごとの合計を持つD1`() {
-        val list = listOf(
-            IOType.d1(listOf(1.0, 2.0, 3.0)),
-            IOType.d1(listOf(4.0, 5.0, 6.0)),
-            IOType.d1(listOf(7.0, 8.0, 9.0)),
-        )
+        val list =
+            listOf(
+                IOType.d1(listOf(1.0, 2.0, 3.0)),
+                IOType.d1(listOf(4.0, 5.0, 6.0)),
+                IOType.d1(listOf(7.0, 8.0, 9.0)),
+            )
         val result = list.sum()
         assertEquals(
             expected = IOType.d1(listOf(12.0, 15.0, 18.0)),

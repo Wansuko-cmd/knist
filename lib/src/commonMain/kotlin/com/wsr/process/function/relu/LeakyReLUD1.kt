@@ -9,10 +9,7 @@ import kotlinx.serialization.Serializable
 class LeakyReLUD1 internal constructor(override val outputSize: Int) : Process.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> = input.map(::forward)
 
-    override fun train(
-        input: List<IOType.D1>,
-        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
-    ): List<IOType.D1> {
+    override fun train(input: List<IOType.D1>, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
         val output = input.map(::forward)
         val delta = calcDelta(output)
         return List(input.size) { i ->
@@ -20,8 +17,14 @@ class LeakyReLUD1 internal constructor(override val outputSize: Int) : Process.D
         }
     }
 
-    private fun forward(input: IOType.D1): IOType.D1 {
-        return IOType.d1(outputSize) { if (input[it] >= 0.0) input[it] else 0.01 }
+    private fun forward(input: IOType.D1): IOType.D1 = IOType.d1(outputSize) {
+        if (input[it] >=
+            0.0
+        ) {
+            input[it]
+        } else {
+            0.01
+        }
     }
 }
 
