@@ -1,0 +1,80 @@
+@file:Suppress("NonAsciiCharacters")
+
+package com.wsr.process.pool
+
+import com.wsr.IOType
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class MaxPoolD2Test {
+    @Test
+    fun `MaxPoolD2の_expect=poolSize毎の最大値を取る`() {
+        val maxPool =
+            MaxPoolD2(
+                poolSize = 2,
+                channel = 1,
+                inputSize = 4,
+            )
+
+        // [[1, 2, 3, 4]]
+        val input =
+            listOf(
+                IOType.d2(1, 4) { _, y -> (y + 1).toDouble() },
+            )
+
+        // forward実装: IOType.d2(outputX, outputY) { x, y -> ... input[x, y] ... }
+        // outputY = inputSize / poolSize = 4 / 2 = 2
+        // y=0のとき: max(input[0,0], input[0,1]) = max(1, 2) = 2
+        // y=1のとき: max(input[0,1], input[0,2]) = max(2, 3) = 3
+        val result = maxPool._expect(input)
+
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0] as IOType.D2
+        assertEquals(expected = 2.0, actual = output[0, 0])
+        assertEquals(expected = 3.0, actual = output[0, 1])
+    }
+
+    @Test
+    fun `MaxPoolD2の_train=最大値の位置にdeltaを伝播`() {
+        val maxPool =
+            MaxPoolD2(
+                poolSize = 2,
+                channel = 1,
+                inputSize = 4,
+            )
+
+        // [[1, 3, 2, 4]]
+        val input =
+            listOf(
+                IOType.d2(1, 4) { _, y ->
+                    when (y) {
+                        0 -> 1.0
+                        1 -> 3.0
+                        2 -> 2.0
+                        else -> 4.0
+                    }
+                },
+            )
+
+        // deltaは[[2, 6]]を返す
+        val calcDelta: (List<IOType>) -> List<IOType> = {
+            listOf(IOType.d2(1, 2) { _, y -> if (y == 0) 2.0 else 6.0 })
+        }
+
+        val result = maxPool._train(input, calcDelta)
+
+        // forward: y=0でmax(input[0,0], input[0,1]) = max(1, 3) = 3
+        //          y=1でmax(input[0,1], input[0,2]) = max(3, 2) = 3
+        // trainの実装: o = i / poolSize
+        //   i=0: o=0, input[0,0]=1 != output[0,0]=3 → 0
+        //   i=1: o=0, input[0,1]=3 == output[0,0]=3 → delta[0,0]=2
+        //   i=2: o=1, input[0,2]=2 != output[0,1]=3 → 0
+        //   i=3: o=1, input[0,3]=4 != output[0,1]=3 → 0
+        assertEquals(expected = 1, actual = result.size)
+        val dx = result[0] as IOType.D2
+        assertEquals(expected = 0.0, actual = dx[0, 0])
+        assertEquals(expected = 2.0, actual = dx[0, 1])
+        assertEquals(expected = 0.0, actual = dx[0, 2])
+        assertEquals(expected = 0.0, actual = dx[0, 3])
+    }
+}
