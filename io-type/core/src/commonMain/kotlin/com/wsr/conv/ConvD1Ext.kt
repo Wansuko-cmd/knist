@@ -46,7 +46,7 @@ private fun IOType.D1.addStridePadding(stride: Int) = IOType.d1(
 private fun IOType.D1.addPadding(padding: Int) = IOType.d1(
     value = ArrayList<Double>().apply {
         addAll(Array(padding) { 0.0 })
-        addAll(value)
+        addAll(value.toTypedArray())
         addAll(Array(padding) { 0.0 })
     },
 )
