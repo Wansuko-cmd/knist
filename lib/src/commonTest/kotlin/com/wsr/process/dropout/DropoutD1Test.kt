@@ -3,6 +3,7 @@
 package com.wsr.process.dropout
 
 import com.wsr.IOType
+import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -52,13 +53,17 @@ class DropoutD1Test {
             listOf(IOType.d1(listOf(2.0, 4.0, 6.0)))
         }
 
+        // seed=42でrandom.nextDouble(0.0, 1.0)を3回呼び出したときの値を事前計算
+        val testRandom = Random(42)
+        val expectedMask = List(3) { if (testRandom.nextDouble(0.0, 1.0) <= 0.5) 1.0 else 0.0 }
+
         val result = dropout._train(input, calcDelta)
 
-        // maskはrandomで生成されるため、結果は確定的
-        // seed=42で生成されるマスクに基づいてdeltaが乗算される
+        // maskに基づいてdeltaが乗算される
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D1
-        // 具体的な値の検証はマスクに依存するため、サイズのみ確認
-        assertEquals(expected = 3, actual = dx.shape[0])
+        assertEquals(expected = 2.0 * expectedMask[0], actual = dx[0])
+        assertEquals(expected = 4.0 * expectedMask[1], actual = dx[1])
+        assertEquals(expected = 6.0 * expectedMask[2], actual = dx[2])
     }
 }
