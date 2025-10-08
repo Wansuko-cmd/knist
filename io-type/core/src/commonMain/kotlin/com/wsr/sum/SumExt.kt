@@ -14,13 +14,24 @@ fun List<IOType.D1>.sum(): IOType.D1 = IOType.d1(first().shape[0]) {
 
 fun IOType.D2.sum() = value.sum()
 
-fun IOType.D2.sum(axis: Int): IOType.D1 {
-    val outputSize = if (axis == 0) shape[1] else shape[0]
-    return IOType.d1(outputSize) {
-        var sum = 0.0
-        for (i in 0 until shape[axis]) {
-            sum += this[i, it]
+fun IOType.D2.sum(axis: Int): IOType.D1 = when (axis) {
+    0 ->
+        IOType.d1(shape[1]) {
+            var sum = 0.0
+            for (i in 0 until shape[0]) {
+                sum += this[i, it]
+            }
+            sum
         }
-        sum
-    }
+
+    1 ->
+        IOType.d1(shape[0]) {
+            var sum = 0.0
+            for (i in 0 until shape[1]) {
+                sum += this[it, i]
+            }
+            sum
+        }
+
+    else -> throw IllegalArgumentException("IOType.D2.sum axis is $axis not 0 or 1.")
 }

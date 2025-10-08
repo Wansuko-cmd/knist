@@ -14,6 +14,12 @@ kotlin {
                 implementation(libs.serialization)
             }
         }
+
+        val commonTest by getting {
+            dependencies {
+                implementation(libs.kotlin.test)
+            }
+        }
     }
 
     compilerOptions {
@@ -24,9 +30,13 @@ kotlin {
 publishing {
     publications {
         create<MavenPublication>(project.name) {
-            groupId = libs.versions.lib.group.id.get()
+            groupId =
+                libs.versions.lib.group.id
+                    .get()
             artifactId = "perceptron"
-            version = libs.versions.lib.version.get()
+            version =
+                libs.versions.lib.version
+                    .get()
         }
     }
 }

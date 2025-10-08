@@ -12,7 +12,9 @@ sealed interface IOType {
     @Serializable
     data class D1(override val value: DoubleArray) : IOType {
         override val shape = listOf(value.size)
+
         operator fun get(index: Int) = value[index]
+
         operator fun set(index: Int, element: Double) {
             value[index] = element
         }
@@ -37,12 +39,11 @@ sealed interface IOType {
     }
 
     @Serializable
-    data class D2(
-        override val value: DoubleArray,
-        override val shape: List<Int>,
-    ) : IOType {
+    data class D2(override val value: DoubleArray, override val shape: List<Int>) : IOType {
         operator fun get(x: Int, y: Int) = value[x * shape[1] + y]
+
         operator fun get(x: Int) = d1(value.sliceArray(x * shape[1] until x * shape[1] + shape[1]))
+
         operator fun set(x: Int, y: Int, element: Double) {
             value[x * shape[1] + y] = element
         }
@@ -67,16 +68,18 @@ sealed interface IOType {
     }
 
     @Serializable
-    data class D3(
-        override val value: DoubleArray,
-        override val shape: List<Int>,
-    ) : IOType {
+    data class D3(override val value: DoubleArray, override val shape: List<Int>) : IOType {
         operator fun get(x: Int, y: Int, z: Int) = value[(x * shape[1] + y) * shape[2] + z]
-        operator fun get(x: Int, y: Int) =
-            d1(shape[2]) { z -> value[(x * shape[1] + y) * shape[2] + z] }
 
-        operator fun get(x: Int) =
-            d2(shape[1], shape[2]) { y, z -> value[(x * shape[1] + y) * shape[2] + z] }
+        operator fun get(x: Int, y: Int) = d1(shape[2]) { z -> value[(x * shape[1] + y) * shape[2] + z] }
+
+        operator fun get(x: Int) = d2(shape[1], shape[2]) { y, z ->
+            value[
+                (x * shape[1] + y) *
+                    shape[2] +
+                    z,
+            ]
+        }
 
         operator fun set(x: Int, y: Int, z: Int, element: Double) {
             value[(x * shape[1] + y) * shape[2] + z] = element
@@ -109,7 +112,9 @@ sealed interface IOType {
         }
 
         inline fun d1(shape: List<Int>, init: (Int) -> Double = { 0.0 }) = d1(shape[0], init)
+
         fun d1(value: List<Double>) = D1(value = value.toDoubleArray())
+
         fun d1(value: DoubleArray) = D1(value = value)
 
         inline fun d2(x: Int, y: Int, init: (Int, Int) -> Double): D2 {
@@ -135,12 +140,7 @@ sealed interface IOType {
 
         fun d2(shape: List<Int>, value: DoubleArray) = D2(shape = shape, value = value)
 
-        inline fun d3(
-            x: Int,
-            y: Int,
-            z: Int,
-            init: (Int, Int, Int) -> Double = { _, _, _ -> 0.0 },
-        ): D3 {
+        inline fun d3(x: Int, y: Int, z: Int, init: (Int, Int, Int) -> Double = { _, _, _ -> 0.0 }): D3 {
             val value = DoubleArray(x * y * z)
             for (i in 0 until x) {
                 for (j in 0 until y) {

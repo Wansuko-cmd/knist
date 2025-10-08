@@ -18,10 +18,7 @@ class AffineD1 internal constructor(
 ) : Process.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> = forward(input)
 
-    override fun train(
-        input: List<IOType.D1>,
-        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
-    ): List<IOType.D1> {
+    override fun train(input: List<IOType.D1>, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
         val output = forward(input)
         val delta = calcDelta(output)
         val dx = weight.dot(delta)
@@ -33,11 +30,11 @@ class AffineD1 internal constructor(
     private fun forward(input: List<IOType.D1>): List<IOType.D1> = weight.transpose().dot(input)
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.affine(neuron: Int) =
-    addProcess(
-        process = AffineD1(
-            outputSize = neuron,
-            rate = rate,
-            weight = IOType.d2(inputSize, neuron) { _, _ -> random.nextDouble(-1.0, 1.0) },
-        ),
-    )
+fun <T : IOType> NetworkBuilder.D1<T>.affine(neuron: Int) = addProcess(
+    process =
+    AffineD1(
+        outputSize = neuron,
+        rate = rate,
+        weight = IOType.d2(inputSize, neuron) { _, _ -> random.nextDouble(-1.0, 1.0) },
+    ),
+)

@@ -18,10 +18,7 @@ class BiasD2(
 ) : Process.D2() {
     override fun expect(input: List<IOType.D2>): List<IOType.D2> = input + weight
 
-    override fun train(
-        input: List<IOType.D2>,
-        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
-    ): List<IOType.D2> {
+    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
         val output = input + weight
         val delta = calcDelta(output)
         weight -= rate * delta.average()
@@ -30,7 +27,8 @@ class BiasD2(
 }
 
 fun <T : IOType> NetworkBuilder.D2<T>.bias() = addProcess(
-    process = BiasD2(
+    process =
+    BiasD2(
         outputX = inputX,
         outputY = inputY,
         rate = rate,

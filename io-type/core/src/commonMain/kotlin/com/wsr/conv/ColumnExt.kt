@@ -2,11 +2,7 @@ package com.wsr.conv
 
 import com.wsr.IOType
 
-fun List<IOType.D2>.toColumn(
-    kernel: Int,
-    stride: Int = 1,
-    padding: Int = 0,
-): Array<DoubleArray> {
+fun List<IOType.D2>.toColumn(kernel: Int, stride: Int = 1, padding: Int = 0): Array<DoubleArray> {
     val (channel, inputSize) = first().shape
     val output = (inputSize - kernel + 2 * padding) / stride + 1
     val result = Array(this.size * output) { DoubleArray(kernel * channel) }
