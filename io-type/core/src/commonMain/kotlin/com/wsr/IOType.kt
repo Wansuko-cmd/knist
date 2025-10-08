@@ -105,7 +105,6 @@ sealed interface IOType {
     }
 
     companion object {
-        fun d1(vararg elements: Double) = D1(value = elements)
         fun d1(size: Int, init: (Int) -> Double = { 0.0 }) = D1(value = DoubleArray(size, init))
         fun d1(shape: List<Int>, init: (Int) -> Double = { 0.0 }) = d1(shape[0], init)
         fun d1(value: List<Double>) = D1(value = value.toDoubleArray())
