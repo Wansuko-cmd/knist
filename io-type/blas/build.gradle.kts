@@ -1,6 +1,5 @@
 plugins {
     kotlin("multiplatform") version "2.1.20"
-    alias(libs.plugins.serialization)
 }
 
 kotlin {
@@ -10,10 +9,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":io-type:blas"))
-
                 implementation(libs.coroutine)
-                implementation(libs.serialization)
             }
         }
 
@@ -32,13 +28,9 @@ kotlin {
 publishing {
     publications {
         create<MavenPublication>(project.name) {
-            groupId =
-                libs.versions.lib.group.id
-                    .get()
+            groupId = libs.versions.lib.group.id.get()
             artifactId = "perceptron"
-            version =
-                libs.versions.lib.version
-                    .get()
+            version = libs.versions.lib.version.get()
         }
     }
 }

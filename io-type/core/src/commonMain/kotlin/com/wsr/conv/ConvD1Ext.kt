@@ -3,6 +3,10 @@ package com.wsr.conv
 import com.wsr.IOType
 import com.wsr.reshape.toD2
 
+// TODO: より効率的な実装のため、OpenBLASのddot (Level 1 BLAS)を使うことを推奨
+// ddot: sum = x^T * y (ベクトルの内積)
+// 各出力位置での内積計算にddotを使用できるが、現在のBLAS.ddotは配列オフセットをサポートしていないため
+// オフセットパラメータの追加、またはsliceArrayによるコピー(非効率)が必要
 fun IOType.D1.convD1(filter: IOType.D1, stride: Int = 1, padding: Int = 0): IOType.D1 {
     val inputSize = shape[0]
     val filterSize = filter.shape[0]
@@ -48,6 +52,9 @@ private fun IOType.D1.addPadding(padding: Int) = IOType.d1(
 
 /**
  * バッチ対応版
+ * TODO: より効率的な実装のため、OpenBLASのdgemm (Level 3 BLAS)を使うことを推奨
+ * この実装はim2colアルゴリズムで畳み込みを行列積に変換しているため、dgemm最適化の恩恵を受けられる
+ * col dot filterの部分がdgemmで最適化可能(DotExt.ktのArray<DoubleArray>.dotを参照)
  */
 fun List<IOType.D2>.convD1(weight: IOType.D3, stride: Int = 1, padding: Int = 0): List<IOType.D2> {
     val (outputX, _, kernel) = weight.shape
