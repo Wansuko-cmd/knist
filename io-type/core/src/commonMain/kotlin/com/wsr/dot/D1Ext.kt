@@ -11,6 +11,8 @@ infix fun IOType.D1.dot(other: IOType.D1): Double = BLAS.ddot(
     incY = 1,
 )
 
+// この操作は D1[i] * sum(D2[i, :]) を計算する特殊な操作
+// 標準的なBLAS操作には該当しないため、現在の実装を維持
 infix fun IOType.D1.dot(other: IOType.D2) = IOType.d1(size = shape[0]) { i ->
     var sum = 0.0
     for (j in 0 until other.shape[1]) {

@@ -1,21 +1,44 @@
 package com.wsr.dot
 
+import com.wsr.BLAS
 import com.wsr.IOType
 
-infix fun IOType.D2.dot(other: IOType.D1) = IOType.d1(shape[0]) { i ->
-    var sum = 0.0
-    for (j in 0 until shape[1]) {
-        sum += this[i, j] * other[j]
-    }
-    sum
+infix fun IOType.D2.dot(other: IOType.D1): IOType.D1 {
+    val result = DoubleArray(shape[0])
+    BLAS.dgemv(
+        trans = false,
+        m = shape[0],
+        n = shape[1],
+        alpha = 1.0,
+        a = value,
+        lda = shape[1],
+        x = other.value,
+        incX = 1,
+        beta = 0.0,
+        y = result,
+        incY = 1,
+    )
+    return IOType.D1(result)
 }
 
-infix fun IOType.D2.dot(other: IOType.D2) = IOType.d2(shape[0], other.shape[1]) { x, y ->
-    var sum = 0.0
-    for (i in 0 until shape[1]) {
-        sum += this[x, i] * other[i, y]
-    }
-    sum
+infix fun IOType.D2.dot(other: IOType.D2): IOType.D2 {
+    val result = DoubleArray(shape[0] * other.shape[1])
+    BLAS.dgemm(
+        transA = false,
+        transB = false,
+        m = shape[0],
+        n = other.shape[1],
+        k = shape[1],
+        alpha = 1.0,
+        a = value,
+        lda = shape[1],
+        b = other.value,
+        ldb = other.shape[1],
+        beta = 0.0,
+        c = result,
+        ldc = other.shape[1],
+    )
+    return IOType.D2(result, listOf(shape[0], other.shape[1]))
 }
 
 @JvmName("dotToD1s")
