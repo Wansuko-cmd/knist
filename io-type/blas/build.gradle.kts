@@ -16,11 +16,7 @@ val copyNativeToResources by tasks.registering(Copy::class) {
 
 kotlin {
     applyDefaultHierarchyTemplate()
-    jvm {
-        val jvmProcessResources by tasks.getting {
-            dependsOn(copyNativeToResources)
-        }
-    }
+    jvm()
 
     sourceSets {
         val commonMain by getting {
