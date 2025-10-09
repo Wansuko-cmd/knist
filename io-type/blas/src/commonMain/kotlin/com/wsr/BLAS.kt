@@ -33,6 +33,50 @@ interface IBLAS {
     }
 
     /**
+     * Level 1 BLAS: ベクトルのスカラー倍
+     * x = alpha * x
+     *
+     * ベクトルまたは配列全体をスカラー値でスケーリング (in-place操作)
+     * スカラー倍、スカラー除算（alpha = 1/divisor）に使用
+     *
+     * @param n ベクトルの要素数
+     * @param alpha スカラー係数
+     * @param x ベクトルx (入出力: この配列が直接変更される)
+     * @param incX ベクトルxのストライド (通常は1、配列の何要素ごとにアクセスするか)
+     */
+    fun dscal(n: Int, alpha: Double, x: DoubleArray, incX: Int) {
+        var xi = 0
+        repeat(n) {
+            x[xi] *= alpha
+            xi += incX
+        }
+    }
+
+    /**
+     * Level 1 BLAS: ベクトルの定数倍加算
+     * y = alpha * x + y
+     *
+     * ベクトルやテンソルの加算・減算に使用
+     * 加算の場合はalpha=1.0、減算の場合はalpha=-1.0を指定
+     *
+     * @param n ベクトルの要素数
+     * @param alpha スカラー係数
+     * @param x ベクトルx (読み取り専用)
+     * @param incX ベクトルxのストライド (通常は1、配列の何要素ごとにアクセスするか)
+     * @param y ベクトルy (入出力: この配列が直接変更される)
+     * @param incY ベクトルyのストライド (通常は1、配列の何要素ごとにアクセスするか)
+     */
+    fun daxpy(n: Int, alpha: Double, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int) {
+        var xi = 0
+        var yi = 0
+        repeat(n) {
+            y[yi] += alpha * x[xi]
+            xi += incX
+            yi += incY
+        }
+    }
+
+    /**
      * Level 2 BLAS: 行列とベクトルの積
      * y = alpha * op(A) * x + beta * y
      * op(A) = A (trans=false) または A^T (trans=true)
