@@ -18,13 +18,7 @@ interface IBLAS {
      * @param incY ベクトルyのストライド (通常は1、配列の何要素ごとにアクセスするか)
      * @return 内積の結果 sum(x[i] * y[i])
      */
-    fun ddot(
-        n: Int,
-        x: DoubleArray,
-        incX: Int,
-        y: DoubleArray,
-        incY: Int,
-    ): Double {
+    fun ddot(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): Double {
         var result = 0.0
         var xi = 0
         var yi = 0
