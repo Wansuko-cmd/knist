@@ -19,6 +19,7 @@ rootProject.name = "perceptron"
 include(":sample")
 include(":lib")
 include(":io-type:core")
+include(":io-type:blas")
 
 // include(":deprecated:functional")
 // include(":deprecated:optimize")
