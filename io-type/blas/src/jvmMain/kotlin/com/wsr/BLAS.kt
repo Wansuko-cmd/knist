@@ -1,3 +1,3 @@
 package com.wsr
 
-actual object BLAS : IBLAS
+actual object BLAS : IBLAS by loadJBLAS() ?: object : IBLAS {}
