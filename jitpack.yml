@@ -4,3 +4,4 @@ install:
   - chmod 777 ./gradlew
   - ./gradlew lib:publishToMavenLocal
   - ./gradlew io-type:core:publishToMavenLocal
+  - ./gradlew io-type:blas:publishToMavenLocal
