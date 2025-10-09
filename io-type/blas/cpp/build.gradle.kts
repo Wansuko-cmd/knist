@@ -30,3 +30,12 @@ val cmakeBuild by tasks.registering(Exec::class) {
         "--config", "Release",
     )
 }
+
+// Cleanタスク
+tasks.register<Delete>("clean") {
+    group = "build"
+    description = "Delete native build directory (excluding OpenBLAS)"
+    delete(fileTree(projectDir.resolve("build")) {
+        exclude("**/openblas/**")
+    })
+}
