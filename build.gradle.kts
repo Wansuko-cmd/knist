@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.ktlint) apply false
     id("maven-publish")
-    kotlin("jvm") version "2.1.20" apply false
-    kotlin("multiplatform") version "2.1.20" apply false
+    kotlin("jvm") version "2.2.20" apply false
+    kotlin("multiplatform") version "2.2.20" apply false
 }
 
 subprojects {
