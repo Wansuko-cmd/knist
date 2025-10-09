@@ -2,11 +2,23 @@ plugins {
     kotlin("multiplatform")
 }
 
+val nativeLibFile = projectDir.resolve("cpp/build/libJBLAS.dylib")
+val jvmResourcesDir = projectDir.resolve("src/jvmMain/resources")
+
+val copyNativeToResources by tasks.registering(Copy::class) {
+    group = "build"
+    description = "Copy libJBLAS.dylib to JVM resources"
+
+    dependsOn(":io-type:blas:cpp:cmakeBuild")
+    from(nativeLibFile)
+    into(jvmResourcesDir)
+}
+
 kotlin {
     applyDefaultHierarchyTemplate()
     jvm {
         val jvmProcessResources by tasks.getting {
-            dependsOn(":io-type:blas:cpp:cmakeBuild")
+            dependsOn(copyNativeToResources)
         }
     }
 
