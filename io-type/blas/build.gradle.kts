@@ -4,7 +4,11 @@ plugins {
 
 kotlin {
     applyDefaultHierarchyTemplate()
-    jvm()
+    jvm {
+        val jvmProcessResources by tasks.getting {
+            dependsOn(":io-type:blas:cpp:cmakeBuild")
+        }
+    }
 
     sourceSets {
         val commonMain by getting {
