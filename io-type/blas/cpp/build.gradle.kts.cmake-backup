@@ -1,0 +1,81 @@
+apply(from = "../platform.gradle.kts")
+
+@Suppress("UNCHECKED_CAST")
+val platforms = (extra["platforms"] as List<*>).map { it as Any }
+val currentPlatform = extra["currentPlatform"] as String
+
+val configureTasks = mutableListOf<TaskProvider<Exec>>()
+val buildTasks = mutableListOf<TaskProvider<Exec>>()
+
+platforms.forEach { platformObj ->
+    // リフレクションを使ってプロパティにアクセス
+    val platform = platformObj::class.members
+    val name = platform.first { it.name == "name" }.call(platformObj) as String
+    val targetPlatform = platform.first { it.name == "targetPlatform" }.call(platformObj) as String
+    @Suppress("UNCHECKED_CAST")
+    val cmakeArgs = platform.first { it.name == "cmakeArgs" }.call(platformObj) as List<String>
+
+    val buildDir = projectDir.resolve("build/$targetPlatform")
+
+    // CMake Configure タスク
+    val configureTask = tasks.register<Exec>("cmakeConfigure$name") {
+        group = "build"
+        description = "Configure CMake for $targetPlatform"
+        workingDir = projectDir
+        doFirst {
+            buildDir.mkdirs()
+        }
+        commandLine = listOf(
+            "cmake",
+            "-S", projectDir.absolutePath,
+            "-B", buildDir.absolutePath,
+            "-DCMAKE_BUILD_TYPE=Release",
+            "-DTARGET_PLATFORM=$targetPlatform"
+        ) + cmakeArgs
+    }
+    configureTasks.add(configureTask)
+
+    // CMake Build タスク
+    val buildTask = tasks.register<Exec>("cmakeBuild$name") {
+        group = "build"
+        description = "Build native library for $targetPlatform"
+        dependsOn(configureTask)
+        workingDir = projectDir
+        commandLine = listOf(
+            "cmake",
+            "--build", buildDir.absolutePath,
+            "--config", "Release"
+        )
+    }
+    buildTasks.add(buildTask)
+}
+
+// 現在のプラットフォーム用のビルドタスク（後方互換性のため）
+val cmakeBuild by tasks.registering {
+    group = "build"
+    description = "Build native library for current platform ($currentPlatform)"
+    dependsOn("cmakeBuild$currentPlatform")
+}
+
+// 全プラットフォームをビルドするタスク
+val buildAllNative by tasks.registering {
+    group = "build"
+    description = "Build native libraries for all platforms"
+    dependsOn(buildTasks)
+}
+
+// Cleanタスク
+tasks.register<Delete>("clean") {
+    group = "build"
+    description = "Delete native build directory (excluding OpenBLAS)"
+    delete(fileTree(projectDir.resolve("build")) {
+        exclude("**/openblas/**")
+    })
+}
+
+// OpenBLASも含めて完全にクリーンするタスク
+tasks.register<Delete>("cleanAll") {
+    group = "build"
+    description = "Delete entire native build directory including OpenBLAS"
+    delete(projectDir.resolve("build"))
+}
