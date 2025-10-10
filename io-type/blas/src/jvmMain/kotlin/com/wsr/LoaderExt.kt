@@ -3,16 +3,16 @@ package com.wsr
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-private const val name = "JBLAS"
+private const val LIB_NAME = "JBLAS"
 
 internal fun loadJBLAS(): JBLAS? {
-    val resource = System.mapLibraryName(name)
+    val resource = System.mapLibraryName(LIB_NAME)
     val result = BLAS::class.java
         .classLoader
         .getResourceAsStream(resource)
         ?.use { inputStream ->
             val path = Files
-                .createTempDirectory(name)
+                .createTempDirectory(LIB_NAME)
                 .also { it.toFile().deleteOnExit() }
                 .resolve(resource)
             Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING)

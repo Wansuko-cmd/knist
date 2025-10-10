@@ -9,6 +9,30 @@ extern "C" {
 #endif
 /*
  * Class:     com_wsr_JBLAS
+ * Method:    ddot
+ * Signature: (I[DI[DI)D
+ */
+JNIEXPORT jdouble JNICALL Java_com_wsr_JBLAS_ddot
+  (JNIEnv *, jobject, jint, jdoubleArray, jint, jdoubleArray, jint);
+
+/*
+ * Class:     com_wsr_JBLAS
+ * Method:    dscal
+ * Signature: (ID[DI)V
+ */
+JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dscal
+  (JNIEnv *, jobject, jint, jdouble, jdoubleArray, jint);
+
+/*
+ * Class:     com_wsr_JBLAS
+ * Method:    daxpy
+ * Signature: (ID[DI[DI)V
+ */
+JNIEXPORT void JNICALL Java_com_wsr_JBLAS_daxpy
+  (JNIEnv *, jobject, jint, jdouble, jdoubleArray, jint, jdoubleArray, jint);
+
+/*
+ * Class:     com_wsr_JBLAS
  * Method:    dgemm
  * Signature: (ZZIIID[DI[DID[DI)V
  */
@@ -22,14 +46,6 @@ JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dgemm
  */
 JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dgemv
   (JNIEnv *, jobject, jboolean, jint, jint, jdouble, jdoubleArray, jint, jdoubleArray, jint, jdouble, jdoubleArray, jint);
-
-/*
- * Class:     com_wsr_JBLAS
- * Method:    ddot
- * Signature: (I[DI[DI)D
- */
-JNIEXPORT jdouble JNICALL Java_com_wsr_JBLAS_ddot
-  (JNIEnv *, jobject, jint, jdoubleArray, jint, jdoubleArray, jint);
 
 #ifdef __cplusplus
 }
