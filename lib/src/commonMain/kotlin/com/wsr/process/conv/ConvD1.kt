@@ -59,7 +59,7 @@ class ConvD1 internal constructor(
                     .map { f ->
                         (0 until channel)
                             .map { c ->
-                                input[index][c].deConvD1(delta[index][f], stride, padding)
+                                input[index][c].convD1(delta[index][f], stride, padding)
                             }.toD2()
                     }.toD3()
             }

@@ -115,12 +115,12 @@ class ConvD1Test {
         conv._train(input, calcDelta)
 
         // 更新後のexpect結果
-        // afterOutput = D2(value=[25.6, 32.7, 60.0, 79.7], shape=[2, 2])
+        // afterOutput = D2(value=[20.8, 26.4, 48.0, 64.0], shape=[2, 2])
         val afterOutput = conv._expect(input)[0] as IOType.D2
 
-        assertEquals(expected = 25.6, actual = afterOutput[0, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 32.7, actual = afterOutput[0, 1], absoluteTolerance = 1e-10)
-        assertEquals(expected = 60.0, actual = afterOutput[1, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 79.7, actual = afterOutput[1, 1], absoluteTolerance = 1e-10)
+        assertEquals(expected = 20.8, actual = afterOutput[0, 0], absoluteTolerance = 1e-10)
+        assertEquals(expected = 26.4, actual = afterOutput[0, 1], absoluteTolerance = 1e-10)
+        assertEquals(expected = 48.0, actual = afterOutput[1, 0], absoluteTolerance = 1e-10)
+        assertEquals(expected = 64.0, actual = afterOutput[1, 1], absoluteTolerance = 1e-10)
     }
 }
