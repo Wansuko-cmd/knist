@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 sealed interface IOType {
     val value: DoubleArray
     val shape: List<Int>
+    val enableBLAS get() = BLAS.isNative
 
     @Serializable
     data class D1(override val value: DoubleArray) : IOType {
