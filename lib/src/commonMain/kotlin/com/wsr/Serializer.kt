@@ -39,8 +39,10 @@ import com.wsr.process.function.sigmoid.SigmoidD2
 import com.wsr.process.function.softmax.SoftmaxD1
 import com.wsr.process.norm.MinMaxNormD1
 import com.wsr.process.pool.MaxPoolD2
-import com.wsr.reshape.GlobalAverageD2ToD1
-import com.wsr.reshape.ReshapeD2ToD1
+import com.wsr.reshape.gad.GlobalAverageD2ToD1
+import com.wsr.reshape.reshape.ReshapeD2ToD1
+import com.wsr.reshape.reshape.ReshapeD3ToD1
+import com.wsr.reshape.reshape.ReshapeD3ToD2
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
@@ -101,6 +103,8 @@ internal val json =
                      * Reshape
                      */
                     subclass(ReshapeD2ToD1::class)
+                    subclass(ReshapeD3ToD2::class)
+                    subclass(ReshapeD3ToD1::class)
                     subclass(GlobalAverageD2ToD1::class)
 
                     /**

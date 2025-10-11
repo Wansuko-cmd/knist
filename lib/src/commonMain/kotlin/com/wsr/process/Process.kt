@@ -45,4 +45,25 @@ sealed interface Process : Layer {
             calcDelta = { input: List<IOType.D2> -> calcDelta(input) as List<IOType.D2> },
         )
     }
+
+    @Serializable
+    abstract class D3 : Process {
+        abstract val outputX: Int
+        abstract val outputY: Int
+        abstract val outputZ: Int
+
+        protected abstract fun expect(input: List<IOType.D3>): List<IOType.D3>
+
+        protected abstract fun train(
+            input: List<IOType.D3>,
+            calcDelta: (List<IOType.D3>) -> List<IOType.D3>,
+        ): List<IOType.D3>
+
+        final override fun _expect(input: List<IOType>): List<IOType> = expect(input = input as List<IOType.D3>)
+
+        final override fun _train(input: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): List<IOType> = train(
+            input = input as List<IOType.D3>,
+            calcDelta = { input: List<IOType.D3> -> calcDelta(input) as List<IOType.D3> },
+        )
+    }
 }

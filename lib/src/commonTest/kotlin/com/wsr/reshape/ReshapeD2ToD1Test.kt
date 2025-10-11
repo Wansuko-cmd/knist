@@ -3,6 +3,7 @@
 package com.wsr.reshape
 
 import com.wsr.IOType
+import com.wsr.reshape.reshape.ReshapeD2ToD1
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
