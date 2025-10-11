@@ -15,7 +15,7 @@ class MinMaxNormD1Test {
             MinMaxNormD1(
                 outputSize = 3,
                 rate = 0.1,
-                alpha = alpha,
+                weight = alpha,
             )
 
         // [1, 2, 5]
@@ -43,7 +43,7 @@ class MinMaxNormD1Test {
             MinMaxNormD1(
                 outputSize = 3,
                 rate = 0.1,
-                alpha = alpha,
+                weight = alpha,
             )
 
         // [1, 2, 5]
@@ -73,7 +73,7 @@ class MinMaxNormD1Test {
             MinMaxNormD1(
                 outputSize = 3,
                 rate = 0.1,
-                alpha = alpha,
+                weight = alpha,
             )
 
         // [1, 3, 5] - min=1, max=5
