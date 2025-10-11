@@ -3,8 +3,10 @@ package com.wsr.process.affine
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.dot.dot
+import com.wsr.operator.div
 import com.wsr.operator.minus
 import com.wsr.operator.times
+import com.wsr.optimizer.Optimizer
 import com.wsr.process.Process
 import com.wsr.reshape.toD2
 import com.wsr.reshape.toD3
@@ -15,7 +17,7 @@ import kotlinx.serialization.Serializable
 class AffineD2 internal constructor(
     private val channel: Int,
     private val outputSize: Int,
-    private val rate: Double,
+    private val optimizer: Optimizer.D3,
     private var weight: IOType.D3,
 ) : Process.D2() {
     override val outputX = channel
@@ -30,7 +32,7 @@ class AffineD2 internal constructor(
         val dwi = input.toD3().transpose(1, 2, 0)
         val dwd = delta.toD3().transpose(1, 0, 2)
         val dw = (0 until channel).map { dwi[it].dot(dwd[it]) }.toD3()
-        weight -= rate / input.size * dw
+        weight -= optimizer.adapt(dw / input.size.toDouble())
         return dx
     }
 
@@ -44,14 +46,13 @@ class AffineD2 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.affine(neuron: Int) = addProcess(
+fun <T : IOType> NetworkBuilder.D2<T>.affine(neuron: Int, optimizer: Optimizer = this.optimizer) = addProcess(
     process =
     AffineD2(
         channel = inputX,
         outputSize = neuron,
-        rate = rate,
-        weight =
-        IOType.d3(inputX, inputY, neuron) { _, _, _ ->
+        optimizer = optimizer.d3(),
+        weight = IOType.d3(inputX, inputY, neuron) { _, _, _ ->
             random.nextDouble(-1.0, 1.0)
         },
     ),

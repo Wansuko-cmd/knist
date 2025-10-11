@@ -1,5 +1,6 @@
 package com.wsr
 
+import com.wsr.optimizer.Optimizer
 import com.wsr.output.Output
 import com.wsr.process.Process
 import com.wsr.reshape.Reshape
@@ -7,14 +8,14 @@ import kotlin.random.Random
 
 sealed interface NetworkBuilder<I : IOType, O : IOType> {
     val layers: List<Layer>
-    val rate: Double
+    val optimizer: Optimizer
     val random: Random
 
     @ConsistentCopyVisibility
     data class D1<I : IOType> internal constructor(
         val inputSize: Int,
         override val layers: List<Layer>,
-        override val rate: Double,
+        override val optimizer: Optimizer,
         override val random: Random,
     ) : NetworkBuilder<I, IOType.D1> {
         fun addProcess(process: Process.D1): D1<I> = copy(
@@ -30,7 +31,7 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
         val inputX: Int,
         val inputY: Int,
         override val layers: List<Layer>,
-        override val rate: Double,
+        override val optimizer: Optimizer,
         override val random: Random,
     ) : NetworkBuilder<I, IOType.D2> {
         fun addProcess(process: Process.D2): D2<I> = copy(
@@ -42,23 +43,23 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
         fun addReshape(reshape: Reshape.D2ToD1): D1<I> = D1(
             layers = layers + reshape,
             inputSize = reshape.outputSize,
-            rate = rate,
+            optimizer = optimizer,
             random = random,
         )
     }
 
     companion object {
-        fun inputD1(inputSize: Int, rate: Double, seed: Int? = null) = D1<IOType.D1>(
+        fun inputD1(inputSize: Int, optimizer: Optimizer, seed: Int? = null) = D1<IOType.D1>(
             inputSize = inputSize,
-            rate = rate,
+            optimizer = optimizer,
             random = seed?.let { Random(it) } ?: Random,
             layers = emptyList(),
         )
 
-        fun inputD2(x: Int, y: Int, rate: Double, seed: Int? = null) = D2<IOType.D2>(
+        fun inputD2(x: Int, y: Int, optimizer: Optimizer, seed: Int? = null) = D2<IOType.D2>(
             inputX = x,
             inputY = y,
-            rate = rate,
+            optimizer = optimizer,
             random = seed?.let { Random(it) } ?: Random,
             layers = emptyList(),
         )

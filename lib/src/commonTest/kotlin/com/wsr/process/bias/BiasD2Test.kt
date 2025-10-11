@@ -3,6 +3,7 @@
 package com.wsr.process.bias
 
 import com.wsr.IOType
+import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -15,7 +16,7 @@ class BiasD2Test {
             BiasD2(
                 outputX = 2,
                 outputY = 2,
-                rate = 0.1,
+                optimizer = Sgd(0.1).d2(),
                 weight = weight,
             )
 
@@ -44,7 +45,7 @@ class BiasD2Test {
             BiasD2(
                 outputX = 2,
                 outputY = 2,
-                rate = 0.1,
+                optimizer = Sgd(0.1).d2(),
                 weight = weight,
             )
 
@@ -78,7 +79,7 @@ class BiasD2Test {
             BiasD2(
                 outputX = 2,
                 outputY = 2,
-                rate = 0.1,
+                optimizer = Sgd(0.1).d2(),
                 weight = weight,
             )
 

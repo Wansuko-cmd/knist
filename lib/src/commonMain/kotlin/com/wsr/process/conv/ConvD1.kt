@@ -7,6 +7,7 @@ import com.wsr.conv.convD1
 import com.wsr.conv.deConvD1
 import com.wsr.operator.minus
 import com.wsr.operator.times
+import com.wsr.optimizer.Optimizer
 import com.wsr.process.Process
 import com.wsr.reshape.toD2
 import com.wsr.reshape.toD3
@@ -21,7 +22,7 @@ class ConvD1 internal constructor(
     private val stride: Int,
     private val padding: Int,
     private val inputSize: Int,
-    private val rate: Double,
+    private val optimizer: Optimizer.D3,
     private var weight: IOType.D3,
 ) : Process.D2() {
     override val outputX: Int = filter
@@ -63,13 +64,19 @@ class ConvD1 internal constructor(
                             }.toD2()
                     }.toD3()
             }
-        weight -= rate * dw.average()
+        weight -= optimizer.adapt(dw.average())
 
         return dx
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.convD1(filter: Int, kernel: Int, stride: Int = 1, padding: Int = 0) = addProcess(
+fun <T : IOType> NetworkBuilder.D2<T>.convD1(
+    filter: Int,
+    kernel: Int,
+    stride: Int = 1,
+    padding: Int = 0,
+    optimizer: Optimizer = this.optimizer,
+) = addProcess(
     process =
     ConvD1(
         filter = filter,
@@ -78,7 +85,7 @@ fun <T : IOType> NetworkBuilder.D2<T>.convD1(filter: Int, kernel: Int, stride: I
         stride = stride,
         padding = padding,
         inputSize = inputY,
-        rate = rate,
+        optimizer = optimizer.d3(),
         weight = IOType.d3(filter, inputX, kernel) { _, _, _ -> random.nextDouble(-1.0, 1.0) },
     ),
 )

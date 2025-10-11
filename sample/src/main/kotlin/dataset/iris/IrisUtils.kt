@@ -2,6 +2,7 @@ package dataset.iris
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.optimizer.sgd.Sgd
 import com.wsr.output.softmax.softmaxWithLoss
 import com.wsr.process.affine.affine
 import com.wsr.process.bias.bias
@@ -12,7 +13,7 @@ fun createIrisModel(epoc: Int) {
     val (train, test) = irisDatasets.shuffled() to irisDatasets.shuffled()
     val network =
         NetworkBuilder
-            .inputD1(inputSize = 4, rate = 0.01)
+            .inputD1(inputSize = 4, optimizer = Sgd(0.01))
             .affine(neuron = 50)
             .bias()
             .reLU()
