@@ -75,7 +75,7 @@ fun <T : IOType> NetworkBuilder.D2<T>.convD1(
     kernel: Int,
     stride: Int = 1,
     padding: Int = 0,
-    optimizer: Optimizer.D3 = this.optimizer.d3(),
+    optimizer: Optimizer = this.optimizer,
 ) = addProcess(
     process =
     ConvD1(
@@ -85,7 +85,7 @@ fun <T : IOType> NetworkBuilder.D2<T>.convD1(
         stride = stride,
         padding = padding,
         inputSize = inputY,
-        optimizer = optimizer,
+        optimizer = optimizer.d3(),
         weight = IOType.d3(filter, inputX, kernel) { _, _, _ -> random.nextDouble(-1.0, 1.0) },
     ),
 )
