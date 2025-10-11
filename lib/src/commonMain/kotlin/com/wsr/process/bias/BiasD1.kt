@@ -25,10 +25,10 @@ class BiasD1 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.bias(optimizer: Optimizer.D1 = this.optimizer.d1()) = addProcess(
+fun <T : IOType> NetworkBuilder.D1<T>.bias(optimizer: Optimizer = this.optimizer) = addProcess(
     BiasD1(
         outputSize = inputSize,
-        optimizer = optimizer,
+        optimizer = optimizer.d1(),
         weight = IOType.d1(inputSize) { random.nextDouble(-1.0, 1.0) },
     ),
 )

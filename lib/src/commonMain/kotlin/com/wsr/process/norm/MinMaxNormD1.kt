@@ -81,11 +81,11 @@ class MinMaxNormD1 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.minMaxNorm(optimizer: Optimizer.D1) = addProcess(
+fun <T : IOType> NetworkBuilder.D1<T>.minMaxNorm(optimizer: Optimizer = this.optimizer) = addProcess(
     process =
     MinMaxNormD1(
         outputSize = inputSize,
-        optimizer = optimizer,
+        optimizer = optimizer.d1(),
         weight = IOType.d1(inputSize) { random.nextDouble(-1.0, 1.0) },
     ),
 )
