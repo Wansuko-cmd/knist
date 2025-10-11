@@ -32,7 +32,7 @@ class AffineD2 internal constructor(
         val dwi = input.toD3().transpose(1, 2, 0)
         val dwd = delta.toD3().transpose(1, 0, 2)
         val dw = (0 until channel).map { dwi[it].dot(dwd[it]) }.toD3()
-        weight -= optimizer.adapt(weight, dw / input.size.toDouble())
+        weight = optimizer.adapt(weight, dw / input.size.toDouble())
         return dx
     }
 

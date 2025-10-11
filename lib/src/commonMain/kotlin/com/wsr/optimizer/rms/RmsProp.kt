@@ -2,6 +2,7 @@ package com.wsr.optimizer.rms
 
 import com.wsr.IOType
 import com.wsr.operator.div
+import com.wsr.operator.minus
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
@@ -39,7 +40,7 @@ internal data class RmsPropD1(private val rate: Double, private val rms: Double,
     override fun adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1 {
         velocity = rms * velocity + (1 - rms) * dw.pow(2)
         val e = IOType.d1(dw.shape) { E }
-        return rate / (velocity.sqrt() + e) * dw
+        return weight - rate / (velocity.sqrt() + e) * dw
     }
 }
 
@@ -50,7 +51,7 @@ internal data class RmsPropD2(private val rate: Double, private val rms: Double,
     override fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2 {
         velocity = rms * velocity + (1 - rms) * dw.pow(2)
         val e = IOType.d2(dw.shape) { _, _ -> E }
-        return rate / (velocity.sqrt() + e) * dw
+        return weight - rate / (velocity.sqrt() + e) * dw
     }
 }
 
@@ -61,6 +62,6 @@ internal data class RmsPropD3(private val rate: Double, private val rms: Double,
     override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 {
         velocity = rms * velocity + (1 - rms) * dw.pow(2)
         val e = IOType.d3(dw.shape) { _, _, _ -> E }
-        return rate / (velocity.sqrt() + e) * dw
+        return weight - rate / (velocity.sqrt() + e) * dw
     }
 }
