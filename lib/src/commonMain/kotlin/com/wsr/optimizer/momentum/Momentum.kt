@@ -7,7 +7,10 @@ import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Momentum(private val rate: Double, private val momentum: Double) : Optimizer {
+data class Momentum(
+    private val rate: Double,
+    private val momentum: Double = 0.9
+) : Optimizer {
     override fun d1(size: Int): Optimizer.D1 = MomentumD1(
         rate = rate,
         momentum = momentum,
