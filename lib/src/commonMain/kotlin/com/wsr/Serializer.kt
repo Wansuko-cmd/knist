@@ -57,11 +57,10 @@ internal val json =
         serializersModule =
             SerializersModule {
                 polymorphic(Layer::class) {
-                    // Affine
-
                     /**
                      * Process
                      */
+                    // Affine
                     subclass(AffineD1::class)
                     subclass(AffineD2::class)
 
