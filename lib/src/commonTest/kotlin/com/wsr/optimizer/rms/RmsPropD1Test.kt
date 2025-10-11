@@ -4,30 +4,26 @@ package com.wsr.optimizer.rms
 
 import com.wsr.IOType
 import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 class RmsPropD1Test {
     @Test
     fun `RmsPropD1の_adapt=初回呼び出し時の動作`() {
         val rmsPropD1 = RmsPropD1(rate = 0.1, rms = 0.9, shape = listOf(2))
 
+        // weight = [10, 20]
+        val weight = IOType.d1(listOf(10.0, 20.0))
         // dw = [1, 2]
         val dw = IOType.d1(listOf(1.0, 2.0))
 
         // 初回: v_0 = 0
         // v_1 = 0.9 * 0 + 0.1 * [1, 4] = [0.1, 0.4]
-        // adapt = 0.1 / (sqrt([0.1, 0.4]) + 1e-8) * [1, 2]
-        //       ≈ 0.1 / [0.316, 0.632] * [1, 2]
-        //       ≈ [0.316, 0.316] * [1, 2]
-        //       ≈ [0.316, 0.632]
-        val result = rmsPropD1.adapt(dw)
+        // adapt = weight - 0.1 / (sqrt([0.1, 0.4]) + 1e-8) * [1, 2]
+        val result = rmsPropD1.adapt(weight, dw)
 
-        // RMSPropは勾配の大きさに応じて学習率を調整するため、
-        // 大きな勾配には小さな更新、小さな勾配には大きな更新が適用される
-        assertTrue(result[0] > 0.0)
-        assertTrue(result[1] > 0.0)
-        // 勾配が大きい方（dw[1]=2）は更新量も大きくなる
-        assertTrue(result[1] > result[0])
+        // RMSPropは勾配の大きさに応じて学習率を調整するため、weightより小さくなる
+        assertEquals(expected = 9.6838, actual = result[0], absoluteTolerance = 1e-4)
+        assertEquals(expected = 19.6838, actual = result[1], absoluteTolerance = 1e-4)
     }
 
     @Test
@@ -35,20 +31,21 @@ class RmsPropD1Test {
         val rmsPropD1 = RmsPropD1(rate = 0.1, rms = 0.9, shape = listOf(2))
 
         // 1回目: dw = [1, 1]
+        var weight = IOType.d1(listOf(10.0, 10.0))
         val dw1 = IOType.d1(listOf(1.0, 1.0))
-        rmsPropD1.adapt(dw1)
+        val result1 = rmsPropD1.adapt(weight, dw1)
         // v_1 = 0.9 * 0 + 0.1 * [1, 1] = [0.1, 0.1]
+        assertEquals(expected = 9.6837, actual = result1[0], absoluteTolerance = 1e-4)
+        assertEquals(expected = 9.6837, actual = result1[1], absoluteTolerance = 1e-4)
 
         // 2回目: dw = [1, 1]
+        weight = result1
         val dw2 = IOType.d1(listOf(1.0, 1.0))
-        val result = rmsPropD1.adapt(dw2)
+        val result2 = rmsPropD1.adapt(weight, dw2)
         // v_2 = 0.9 * [0.1, 0.1] + 0.1 * [1, 1] = [0.09, 0.09] + [0.1, 0.1] = [0.19, 0.19]
-        // adapt = 0.1 / (sqrt([0.19, 0.19]) + 1e-8) * [1, 1]
-        //       ≈ 0.1 / [0.436, 0.436] * [1, 1]
-        //       ≈ [0.229, 0.229]
 
-        // velocityが蓄積されるため、1回目より更新量が小さくなる
-        assertTrue(result[0] > 0.0)
-        assertTrue(result[1] > 0.0)
+        // velocityが蓄積されるため、1回目より更新量が変化する
+        assertEquals(expected = 9.4544, actual = result2[0], absoluteTolerance = 1e-4)
+        assertEquals(expected = 9.4544, actual = result2[1], absoluteTolerance = 1e-4)
     }
 }

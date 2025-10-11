@@ -4,23 +4,23 @@ package com.wsr.optimizer.rms
 
 import com.wsr.IOType
 import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 class RmsPropD3Test {
     @Test
     fun `RmsPropD3の_adapt=初回呼び出し時の動作`() {
         val rmsPropD3 = RmsPropD3(rate = 0.1, rms = 0.9, shape = listOf(1, 1, 2))
 
+        // weight = [[[10, 20]]]
+        val weight = IOType.d3(1, 1, 2) { _, _, z -> (z + 1) * 10.0 }
         // dw = [[[1, 2]]]
         val dw = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toDouble() }
 
-        val result = rmsPropD3.adapt(dw)
+        val result = rmsPropD3.adapt(weight, dw)
 
         // RMSPropは適応的に学習率を調整する
-        assertTrue(result[0, 0, 0] > 0.0)
-        assertTrue(result[0, 0, 1] > 0.0)
-        assertTrue(result[0, 0, 0].isFinite())
-        assertTrue(result[0, 0, 1].isFinite())
+        assertEquals(expected = 9.6838, actual = result[0, 0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = 19.6838, actual = result[0, 0, 1], absoluteTolerance = 1e-4)
     }
 
     @Test
@@ -28,17 +28,20 @@ class RmsPropD3Test {
         val rmsPropD3 = RmsPropD3(rate = 0.1, rms = 0.9, shape = listOf(1, 1, 2))
 
         // 1回目
+        var weight = IOType.d3(1, 1, 2) { _, _, _ -> 10.0 }
         val dw1 = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toDouble() }
-        val result1 = rmsPropD3.adapt(dw1)
+        val result1 = rmsPropD3.adapt(weight, dw1)
+
+        assertEquals(expected = 9.6838, actual = result1[0, 0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = 9.6838, actual = result1[0, 0, 1], absoluteTolerance = 1e-4)
 
         // 2回目
+        weight = result1
         val dw2 = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toDouble() }
-        val result2 = rmsPropD3.adapt(dw2)
+        val result2 = rmsPropD3.adapt(weight, dw2)
 
         // velocityが蓄積されるため、更新量の傾向が変わる
-        assertTrue(result1[0, 0, 0] > 0.0)
-        assertTrue(result2[0, 0, 0] > 0.0)
-        assertTrue(result1[0, 0, 0].isFinite())
-        assertTrue(result2[0, 0, 0].isFinite())
+        assertEquals(expected = 9.4543, actual = result2[0, 0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = 9.4543, actual = result2[0, 0, 1], absoluteTolerance = 1e-4)
     }
 }

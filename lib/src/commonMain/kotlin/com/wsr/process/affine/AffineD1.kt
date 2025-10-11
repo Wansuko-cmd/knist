@@ -24,8 +24,8 @@ class AffineD1 internal constructor(
         val output = forward(input)
         val delta = calcDelta(output)
         val dx = weight.dot(delta)
-        val dw = input.toD2().transpose().dot(delta.toD2())
-        weight -= optimizer.adapt(dw / input.size.toDouble())
+        val dw = input.toD2().transpose().dot(delta.toD2()) / input.size.toDouble()
+        weight = optimizer.adapt(weight = weight, dw = dw)
         return dx
     }
 
