@@ -1,6 +1,7 @@
 package com.wsr.optimizer.sgd
 
 import com.wsr.IOType
+import com.wsr.operator.minus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
@@ -16,15 +17,15 @@ data class Sgd(private val rate: Double) : Optimizer {
 
 @Serializable
 internal data class SgdD1(private val rate: Double) : Optimizer.D1 {
-    override fun adapt(dw: IOType.D1): IOType.D1 = rate * dw
+    override fun adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1 = weight - rate * dw
 }
 
 @Serializable
 internal data class SgdD2(private val rate: Double) : Optimizer.D2 {
-    override fun adapt(dw: IOType.D2): IOType.D2 = rate * dw
+    override fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2 = weight - rate * dw
 }
 
 @Serializable
 internal data class SgdD3(private val rate: Double) : Optimizer.D3 {
-    override fun adapt(dw: IOType.D3): IOType.D3 = rate * dw
+    override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 = weight - rate * dw
 }
