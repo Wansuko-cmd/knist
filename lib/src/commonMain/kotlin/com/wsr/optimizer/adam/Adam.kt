@@ -13,11 +13,8 @@ import kotlinx.serialization.Serializable
 private const val E = 1e-8
 
 @Serializable
-data class Adam(
-    private val rate: Double,
-    private val momentum: Double = 0.9,
-    private val rms: Double = 0.999,
-) : Optimizer {
+data class Adam(private val rate: Double, private val momentum: Double = 0.9, private val rms: Double = 0.999) :
+    Optimizer {
     override fun d1(size: Int): Optimizer.D1 = AdamD1(
         rate = rate,
         momentum = momentum,
