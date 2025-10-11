@@ -8,8 +8,8 @@ import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.pow.pow
 import com.wsr.sqrt.sqrt
-import kotlinx.serialization.Serializable
 import kotlin.math.pow
+import kotlinx.serialization.Serializable
 
 private const val E = 1e-8
 
@@ -19,8 +19,7 @@ data class AdamW(
     private val momentum: Double = 0.9,
     private val rms: Double = 0.999,
     private val decay: Double = 0.01,
-) :
-    Optimizer {
+) : Optimizer {
     override fun d1(size: Int): Optimizer.D1 = AdamWD1(
         rate = rate,
         momentum = momentum,
