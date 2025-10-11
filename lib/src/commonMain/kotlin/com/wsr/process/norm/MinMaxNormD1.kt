@@ -85,7 +85,7 @@ fun <T : IOType> NetworkBuilder.D1<T>.minMaxNorm(optimizer: Optimizer = this.opt
     process =
     MinMaxNormD1(
         outputSize = inputSize,
-        optimizer = optimizer.d1(),
+        optimizer = optimizer.d1(inputSize),
         weight = IOType.d1(inputSize) { random.nextDouble(-1.0, 1.0) },
     ),
 )

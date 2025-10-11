@@ -15,7 +15,7 @@ class MinMaxNormD1Test {
         val norm =
             MinMaxNormD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1).d1(),
+                optimizer = Sgd(0.1).d1(size = alpha.shape[0]),
                 weight = alpha,
             )
 
@@ -43,7 +43,7 @@ class MinMaxNormD1Test {
         val norm =
             MinMaxNormD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1).d1(),
+                optimizer = Sgd(0.1).d1(size = alpha.shape[0]),
                 weight = alpha,
             )
 
@@ -73,7 +73,7 @@ class MinMaxNormD1Test {
         val norm =
             MinMaxNormD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1).d1(),
+                optimizer = Sgd(0.1).d1(size = alpha.shape[0]),
                 weight = alpha,
             )
 

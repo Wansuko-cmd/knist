@@ -16,7 +16,10 @@ class BiasD2Test {
             BiasD2(
                 outputX = 2,
                 outputY = 2,
-                optimizer = Sgd(0.1).d2(),
+                optimizer = Sgd(0.1).d2(
+                    x = weight.shape[0],
+                    y = weight.shape[1],
+                ),
                 weight = weight,
             )
 
@@ -45,7 +48,10 @@ class BiasD2Test {
             BiasD2(
                 outputX = 2,
                 outputY = 2,
-                optimizer = Sgd(0.1).d2(),
+                optimizer = Sgd(0.1).d2(
+                    x = weight.shape[0],
+                    y = weight.shape[1],
+                ),
                 weight = weight,
             )
 
@@ -79,7 +85,10 @@ class BiasD2Test {
             BiasD2(
                 outputX = 2,
                 outputY = 2,
-                optimizer = Sgd(0.1).d2(),
+                optimizer = Sgd(0.1).d2(
+                    x = weight.shape[0],
+                    y = weight.shape[1],
+                ),
                 weight = weight,
             )
 

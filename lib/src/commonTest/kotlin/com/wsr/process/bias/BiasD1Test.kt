@@ -15,7 +15,7 @@ class BiasD1Test {
         val bias =
             BiasD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1).d1(),
+                optimizer = Sgd(0.1).d1(size = weight.shape[0]),
                 weight = weight,
             )
 
@@ -48,7 +48,7 @@ class BiasD1Test {
         val bias =
             BiasD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1).d1(),
+                optimizer = Sgd(0.1).d1(size = weight.shape[0]),
                 weight = weight,
             )
 
@@ -79,7 +79,7 @@ class BiasD1Test {
         val bias =
             BiasD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1).d1(),
+                optimizer = Sgd(0.1).d1(size = weight.shape[0]),
                 weight = weight,
             )
 
