@@ -44,7 +44,7 @@ class MinMaxNormD1 internal constructor(
         weight -= optimizer.adapt(
             dw = IOType.d1(weight.shape) { x ->
                 (0 until input.size).sumOf { mean[it][x] * delta[it][x] } / input.size
-            }
+            },
         )
 
         // 分母側(dy/d[max(x) - min(x)])
