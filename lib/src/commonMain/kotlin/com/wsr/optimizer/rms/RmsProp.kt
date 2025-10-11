@@ -36,7 +36,7 @@ data class RmsProp(private val rate: Double, private val rms: Double = 0.9) : Op
 internal data class RmsPropD1(private val rate: Double, private val rms: Double, private val shape: List<Int>) :
     Optimizer.D1 {
     private var velocity: IOType.D1 = IOType.d1(shape)
-    override fun adapt(dw: IOType.D1): IOType.D1 {
+    override fun adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1 {
         velocity = rms * velocity + (1 - rms) * dw.pow(2)
         val e = IOType.d1(dw.shape) { E }
         return rate / (velocity.sqrt() + e) * dw
@@ -47,7 +47,7 @@ internal data class RmsPropD1(private val rate: Double, private val rms: Double,
 internal data class RmsPropD2(private val rate: Double, private val rms: Double, private val shape: List<Int>) :
     Optimizer.D2 {
     private var velocity: IOType.D2 = IOType.d2(shape)
-    override fun adapt(dw: IOType.D2): IOType.D2 {
+    override fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2 {
         velocity = rms * velocity + (1 - rms) * dw.pow(2)
         val e = IOType.d2(dw.shape) { _, _ -> E }
         return rate / (velocity.sqrt() + e) * dw
@@ -58,7 +58,7 @@ internal data class RmsPropD2(private val rate: Double, private val rms: Double,
 internal data class RmsPropD3(private val rate: Double, private val rms: Double, private val shape: List<Int>) :
     Optimizer.D3 {
     private var velocity: IOType.D3 = IOType.d3(shape)
-    override fun adapt(dw: IOType.D3): IOType.D3 {
+    override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 {
         velocity = rms * velocity + (1 - rms) * dw.pow(2)
         val e = IOType.d3(dw.shape) { _, _, _ -> E }
         return rate / (velocity.sqrt() + e) * dw

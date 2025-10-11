@@ -31,7 +31,7 @@ data class Momentum(private val rate: Double, private val momentum: Double = 0.9
 internal data class MomentumD1(private val rate: Double, private val momentum: Double, private val shape: List<Int>) :
     Optimizer.D1 {
     private var velocity: IOType.D1 = IOType.d1(shape)
-    override fun adapt(dw: IOType.D1): IOType.D1 {
+    override fun adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1 {
         velocity = momentum * velocity + dw
         return rate * velocity
     }
@@ -41,7 +41,7 @@ internal data class MomentumD1(private val rate: Double, private val momentum: D
 internal data class MomentumD2(private val rate: Double, private val momentum: Double, private val shape: List<Int>) :
     Optimizer.D2 {
     private var velocity: IOType.D2 = IOType.d2(shape)
-    override fun adapt(dw: IOType.D2): IOType.D2 {
+    override fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2 {
         velocity = momentum * velocity + dw
         return rate * velocity
     }
@@ -51,7 +51,7 @@ internal data class MomentumD2(private val rate: Double, private val momentum: D
 internal data class MomentumD3(private val rate: Double, private val momentum: Double, private val shape: List<Int>) :
     Optimizer.D3 {
     private var velocity: IOType.D3 = IOType.d3(shape)
-    override fun adapt(dw: IOType.D3): IOType.D3 {
+    override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 {
         velocity = momentum * velocity + dw
         return rate * velocity
     }
