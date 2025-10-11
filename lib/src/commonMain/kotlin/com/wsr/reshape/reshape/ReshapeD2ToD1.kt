@@ -1,7 +1,8 @@
-package com.wsr.reshape
+package com.wsr.reshape.reshape
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.reshape.Reshape
 import kotlinx.serialization.Serializable
 
 @Serializable
