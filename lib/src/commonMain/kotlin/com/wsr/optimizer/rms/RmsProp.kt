@@ -12,7 +12,10 @@ import kotlinx.serialization.Serializable
 private const val E = 1e-8
 
 @Serializable
-data class RmsProp(private val rate: Double, private val rms: Double) : Optimizer {
+data class RmsProp(
+    private val rate: Double,
+    private val rms: Double = 0.9,
+) : Optimizer {
     override fun d1(size: Int): Optimizer.D1 = RmsPropD1(
         rate = rate,
         rms = rms,
