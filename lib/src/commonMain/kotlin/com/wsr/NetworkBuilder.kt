@@ -71,6 +71,13 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
             optimizer = optimizer,
             random = random,
         )
+
+        fun addReshape(reshape: Reshape.D3ToD1): D1<I> = D1(
+            layers = layers + reshape,
+            inputSize = reshape.outputSize,
+            optimizer = optimizer,
+            random = random,
+        )
     }
 
     companion object {
