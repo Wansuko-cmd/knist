@@ -3,12 +3,12 @@ package com.wsr
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface IOType {
-    val value: DoubleArray
-    val shape: List<Int>
+sealed class IOType {
+    abstract val value: DoubleArray
+    abstract val shape: List<Int>
 
     @Serializable
-    data class D1(override val value: DoubleArray) : IOType {
+    data class D1(override val value: DoubleArray) : IOType() {
         override val shape = listOf(value.size)
 
         operator fun get(index: Int) = value[index]
@@ -17,27 +17,13 @@ sealed interface IOType {
             value[index] = element
         }
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
+        override fun equals(other: Any?): Boolean = super.equals(other)
 
-            other as D1
-
-            if (!value.contentEquals(other.value)) return false
-            if (shape != other.shape) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = value.contentHashCode()
-            result = 31 * result + shape.hashCode()
-            return result
-        }
+        override fun hashCode(): Int = super.hashCode()
     }
 
     @Serializable
-    data class D2(override val value: DoubleArray, override val shape: List<Int>) : IOType {
+    data class D2(override val value: DoubleArray, override val shape: List<Int>) : IOType() {
         operator fun get(x: Int, y: Int) = value[x * shape[1] + y]
 
         operator fun get(x: Int) = d1(value.sliceArray(x * shape[1] until x * shape[1] + shape[1]))
@@ -46,27 +32,13 @@ sealed interface IOType {
             value[x * shape[1] + y] = element
         }
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
+        override fun equals(other: Any?): Boolean = super.equals(other)
 
-            other as D2
-
-            if (!value.contentEquals(other.value)) return false
-            if (shape != other.shape) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = value.contentHashCode()
-            result = 31 * result + shape.hashCode()
-            return result
-        }
+        override fun hashCode(): Int = super.hashCode()
     }
 
     @Serializable
-    data class D3(override val value: DoubleArray, override val shape: List<Int>) : IOType {
+    data class D3(override val value: DoubleArray, override val shape: List<Int>) : IOType() {
         operator fun get(x: Int, y: Int, z: Int) = value[(x * shape[1] + y) * shape[2] + z]
 
         operator fun get(x: Int, y: Int): D1 {
@@ -86,23 +58,27 @@ sealed interface IOType {
             value[(x * shape[1] + y) * shape[2] + z] = element
         }
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
+        override fun equals(other: Any?): Boolean = super.equals(other)
 
-            other as D3
+        override fun hashCode(): Int = super.hashCode()
+    }
 
-            if (!value.contentEquals(other.value)) return false
-            if (shape != other.shape) return false
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
-            return true
-        }
+        other as IOType
 
-        override fun hashCode(): Int {
-            var result = value.contentHashCode()
-            result = 31 * result + shape.hashCode()
-            return result
-        }
+        if (!value.contentEquals(other.value)) return false
+        if (shape != other.shape) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = value.contentHashCode()
+        result = 31 * result + shape.hashCode()
+        return result
     }
 
     companion object {
