@@ -6,6 +6,7 @@ import com.wsr.dot.dot
 import com.wsr.operator.minus
 import com.wsr.operator.plus
 import com.wsr.operator.times
+import com.wsr.optimizer.Optimizer
 import com.wsr.process.Process
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
@@ -13,15 +14,15 @@ import kotlinx.serialization.Serializable
 @Serializable
 class MinMaxNormD1 internal constructor(
     override val outputSize: Int,
-    private val rate: Double,
-    private var alpha: IOType.D1,
+    private val optimizer: Optimizer.D1,
+    private var weight: IOType.D1,
 ) : Process.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> {
         val min = input.map { it.value.min() }
         val max = input.map { it.value.max() }
         return List(input.size) {
             val denominator = max[it] - min[it]
-            IOType.d1(outputSize) { x -> alpha[x] * (input[it][x] - min[it]) / denominator }
+            IOType.d1(outputSize) { x -> weight[x] * (input[it][x] - min[it]) / denominator }
         }
     }
 
@@ -34,16 +35,17 @@ class MinMaxNormD1 internal constructor(
         val denominator = List(numerator.size) { 1 / (max[it] - min[it]) }
 
         val mean = List(input.size) { denominator[it] * numerator[it] }
-        val output = mean.map { alpha * it }
+        val output = mean.map { weight * it }
 
         val delta = calcDelta(output)
 
-        val dOutput = delta.map { it * alpha }
+        val dOutput = delta.map { it * weight }
 
-        alpha -= rate *
-            IOType.d1(alpha.shape) { x ->
+        weight -= optimizer.adapt(
+            dw = IOType.d1(weight.shape) { x ->
                 (0 until input.size).sumOf { mean[it][x] * delta[it][x] } / input.size
-            }
+            },
+        )
 
         // 分母側(dy/d[max(x) - min(x)])
         val dDenominator =
@@ -79,11 +81,11 @@ class MinMaxNormD1 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.minMaxNorm() = addProcess(
+fun <T : IOType> NetworkBuilder.D1<T>.minMaxNorm(optimizer: Optimizer = this.optimizer) = addProcess(
     process =
     MinMaxNormD1(
         outputSize = inputSize,
-        rate = rate,
-        alpha = IOType.d1(inputSize) { random.nextDouble(-1.0, 1.0) },
+        optimizer = optimizer.d1(),
+        weight = IOType.d1(inputSize) { random.nextDouble(-1.0, 1.0) },
     ),
 )

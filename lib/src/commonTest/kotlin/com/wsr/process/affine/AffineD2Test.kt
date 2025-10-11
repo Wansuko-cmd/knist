@@ -3,6 +3,7 @@
 package com.wsr.process.affine
 
 import com.wsr.IOType
+import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -20,7 +21,7 @@ class AffineD2Test {
             AffineD2(
                 channel = 2,
                 outputSize = 2,
-                rate = 0.1,
+                optimizer = Sgd(0.1).d3(),
                 weight = weight,
             )
 
@@ -47,7 +48,7 @@ class AffineD2Test {
             AffineD2(
                 channel = 1,
                 outputSize = 2,
-                rate = 0.1,
+                optimizer = Sgd(0.1).d3(),
                 weight = weight,
             )
 
@@ -78,7 +79,7 @@ class AffineD2Test {
             AffineD2(
                 channel = 1,
                 outputSize = 2,
-                rate = 0.1,
+                optimizer = Sgd(0.1).d3(),
                 weight = weight,
             )
 

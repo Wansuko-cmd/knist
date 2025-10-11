@@ -1,41 +1,30 @@
-## 将来的なインターフェイス（想定）
+## 現状のインターフェイス
 
 ```kotlin
 fun main() {
     val (train: List<List<MinistDataset>>, test: List<List<MnistDataset>>) = MnistDataset.read()
 
-    val network: Network<List<List<List<Double>>>, Int> =
-        NetworkBuilder(rate = 0.01)
-            .input2d(channel = 1, width = 28, height = 28)
-            .conv2d(channel = 4, kernelSize = 5).bias2d().relu()
-            .conv2d(channel = 8, kernelSize = 5).bias2d().relu()
-            .affine(size = 50).bias0d().relu()
-            .affine(size = 10).bias0d().softmax()
-            .output0d()
+    val network: Network<IOType.D2, IOType.D1> = NetworkBuilder
+        .inputD2(x = 28, y = 28, optimizer = Sgd(0.01), seed = seed)
+        .convD1(filter = 16, kernel = 3).bias().reLU()
+        .convD1(filter = 32, kernel = 3).bias().reLU()
+        .reshapeToD1()
+        .affine(neuron = 512).bias().reLU()
+        .affine(neuron = 10)
+        .softmaxWithLoss()
 
     (1..epoc).forEach { epoc ->
         println("epoc: $epoc")
-        train.forEach { batch: List<MnistDataset> ->
+        train.forEach { batch: List<Pair<IOType.D2, IOType.D1>> ->
             network.train(
-                input = batch.map { it.pixels },
-                label = batch.map { it.label },
+                input = batch.map { (pixels, _) -> pixels },
+                label = batch.map { (_, label) -> label },
             )
         }
     }
-
-    test.flatten().count { data ->
-        network.expect(input = data.pixels) == data.label
-    }.also { println(it.toDouble() / test.size.toDouble()) }
+    
+    val expects = network.expect(input = test.map { (pixels, _) -> pixels })
+    expects.zip(test.map { (_, label) -> label }).count { (expect, label) -> expect == label }
+        .also { println(it.toDouble() / test.size.toDouble()) }
 }
 ```
-
-## 現状
-
-practicalにてAIの実装中（速度は遅い）
-
-## TODO
-
-- バッチ処理対応
-- インターフェイス修正
-- C++を用いた高速化
-- GPU対応

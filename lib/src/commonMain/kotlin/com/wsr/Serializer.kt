@@ -1,5 +1,9 @@
 package com.wsr
 
+import com.wsr.optimizer.Optimizer
+import com.wsr.optimizer.sgd.SgdD1
+import com.wsr.optimizer.sgd.SgdD2
+import com.wsr.optimizer.sgd.SgdD3
 import com.wsr.output.mean.MeanSquareD1
 import com.wsr.output.sigmoid.SigmoidWithLossD1
 import com.wsr.output.softmax.SoftmaxWithLossD1
@@ -94,6 +98,21 @@ internal val json =
                     subclass(MeanSquareD1::class)
                     subclass(SigmoidWithLossD1::class)
                     subclass(SoftmaxWithLossD1::class)
+                }
+
+                /**
+                 * Optimizer
+                 */
+                polymorphic(Optimizer.D1::class) {
+                    subclass(SgdD1::class)
+                }
+
+                polymorphic(Optimizer.D2::class) {
+                    subclass(SgdD2::class)
+                }
+
+                polymorphic(Optimizer.D3::class) {
+                    subclass(SgdD3::class)
                 }
             }
     }

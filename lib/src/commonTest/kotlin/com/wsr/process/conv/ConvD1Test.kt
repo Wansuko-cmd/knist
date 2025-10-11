@@ -3,6 +3,7 @@
 package com.wsr.process.conv
 
 import com.wsr.IOType
+import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -27,7 +28,7 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                rate = 0.1,
+                optimizer = Sgd(0.1).d3(),
                 weight = weight,
             )
 
@@ -60,7 +61,7 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                rate = 0.1,
+                optimizer = Sgd(0.1).d3(),
                 weight = weight,
             )
 
@@ -97,7 +98,7 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                rate = 0.1,
+                optimizer = Sgd(0.1).d3(),
                 weight = weight,
             )
 
