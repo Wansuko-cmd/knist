@@ -7,11 +7,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Sgd(private val rate: Double) : Optimizer {
-    override fun d1(): Optimizer.D1 = SgdD1(rate)
+    override fun d1(size: Int): Optimizer.D1 = SgdD1(rate)
 
-    override fun d2(): Optimizer.D2 = SgdD2(rate)
+    override fun d2(x: Int, y: Int): Optimizer.D2 = SgdD2(rate)
 
-    override fun d3(): Optimizer.D3 = SgdD3(rate)
+    override fun d3(x: Int, y: Int, z: Int): Optimizer.D3 = SgdD3(rate)
 }
 
 @Serializable
