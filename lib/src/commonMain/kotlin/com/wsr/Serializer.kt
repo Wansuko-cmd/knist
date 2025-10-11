@@ -4,6 +4,9 @@ import com.wsr.optimizer.Optimizer
 import com.wsr.optimizer.adam.AdamD1
 import com.wsr.optimizer.adam.AdamD2
 import com.wsr.optimizer.adam.AdamD3
+import com.wsr.optimizer.adam.AdamWD1
+import com.wsr.optimizer.adam.AdamWD2
+import com.wsr.optimizer.adam.AdamWD3
 import com.wsr.optimizer.momentum.MomentumD1
 import com.wsr.optimizer.momentum.MomentumD2
 import com.wsr.optimizer.momentum.MomentumD3
@@ -117,6 +120,7 @@ internal val json =
                     subclass(MomentumD1::class)
                     subclass(RmsPropD1::class)
                     subclass(AdamD1::class)
+                    subclass(AdamWD1::class)
                 }
 
                 polymorphic(Optimizer.D2::class) {
@@ -124,6 +128,7 @@ internal val json =
                     subclass(MomentumD2::class)
                     subclass(RmsPropD2::class)
                     subclass(AdamD2::class)
+                    subclass(AdamWD2::class)
                 }
 
                 polymorphic(Optimizer.D3::class) {
@@ -131,6 +136,7 @@ internal val json =
                     subclass(MomentumD3::class)
                     subclass(RmsPropD3::class)
                     subclass(AdamD3::class)
+                    subclass(AdamWD3::class)
                 }
             }
     }
