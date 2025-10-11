@@ -1,9 +1,10 @@
-package com.wsr.reshape
+package com.wsr.reshape.gad
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.average.average
 import com.wsr.operator.div
+import com.wsr.reshape.Reshape
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -8,7 +8,7 @@ import com.wsr.process.affine.affine
 import com.wsr.process.bias.bias
 import com.wsr.process.conv.convD1
 import com.wsr.process.function.relu.reLU
-import com.wsr.reshape.globalAverageToD1
+import com.wsr.reshape.gad.globalAverageToD1
 import java.util.Random
 import maxIndex
 
