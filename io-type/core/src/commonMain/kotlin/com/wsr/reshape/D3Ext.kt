@@ -2,52 +2,52 @@ package com.wsr.reshape
 
 import com.wsr.IOType
 
-fun IOType.D3.transpose(axisX: Int, axisY: Int, axisZ: Int): IOType.D3 {
-    val shape = listOf(shape[axisX], shape[axisY], shape[axisZ])
+fun IOType.D3.transpose(axisI: Int, axisJ: Int, axisK: Int): IOType.D3 {
+    val shape = listOf(shape[axisI], shape[axisJ], shape[axisK])
     return when {
-        axisX == 0 && axisY == 1 && axisZ == 2 -> this
-        axisX == 0 && axisY == 2 && axisZ == 1 ->
-            IOType.d3(shape) { x, y, z ->
+        axisI == 0 && axisJ == 1 && axisK == 2 -> this
+        axisI == 0 && axisJ == 2 && axisK == 1 ->
+            IOType.d3(shape) { i, j, k ->
                 get(
-                    x = x,
-                    y = z,
-                    z = y,
+                    i = i,
+                    j = k,
+                    k = j,
                 )
             }
 
-        axisX == 1 && axisY == 0 && axisZ == 2 ->
-            IOType.d3(shape) { x, y, z ->
+        axisI == 1 && axisJ == 0 && axisK == 2 ->
+            IOType.d3(shape) { i, j, k ->
                 get(
-                    x = y,
-                    y = x,
-                    z = z,
+                    i = j,
+                    j = i,
+                    k = k,
                 )
             }
 
-        axisX == 1 && axisY == 2 && axisZ == 0 ->
-            IOType.d3(shape) { x, y, z ->
+        axisI == 1 && axisJ == 2 && axisK == 0 ->
+            IOType.d3(shape) { i, j, k ->
                 get(
-                    x = z,
-                    y = x,
-                    z = y,
+                    i = k,
+                    j = i,
+                    k = j,
                 )
             }
 
-        axisX == 2 && axisY == 0 && axisZ == 1 ->
-            IOType.d3(shape) { x, y, z ->
+        axisI == 2 && axisJ == 0 && axisK == 1 ->
+            IOType.d3(shape) { i, j, k ->
                 get(
-                    x = y,
-                    y = z,
-                    z = x,
+                    i = j,
+                    j = k,
+                    k = i,
                 )
             }
 
-        axisX == 2 && axisY == 1 && axisZ == 0 ->
-            IOType.d3(shape) { x, y, z ->
+        axisI == 2 && axisJ == 1 && axisK == 0 ->
+            IOType.d3(shape) { i, j, k ->
                 get(
-                    x = z,
-                    y = y,
-                    z = x,
+                    i = k,
+                    j = j,
+                    k = i,
                 )
             }
 
