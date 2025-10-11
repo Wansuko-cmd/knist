@@ -2,6 +2,7 @@ package com.wsr.optimizer.adam
 
 import com.wsr.IOType
 import com.wsr.operator.div
+import com.wsr.operator.minus
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
@@ -58,7 +59,7 @@ internal data class AdamD1(
         val vHat = v / (1.0 - rms.pow(t.toDouble()))
 
         val e = IOType.d1(dw.shape) { E }
-        return rate / (vHat.sqrt() + e) * mHat
+        return weight - rate / (vHat.sqrt() + e) * mHat
     }
 }
 
@@ -83,7 +84,7 @@ internal data class AdamD2(
         val vHat = v / (1.0 - rms.pow(t.toDouble()))
 
         val e = IOType.d2(dw.shape) { _, _ -> E }
-        return rate / (vHat.sqrt() + e) * mHat
+        return weight - rate / (vHat.sqrt() + e) * mHat
     }
 }
 
@@ -108,6 +109,6 @@ internal data class AdamD3(
         val vHat = v / (1.0 - rms.pow(t.toDouble()))
 
         val e = IOType.d3(dw.shape) { _, _, _ -> E }
-        return rate / (vHat.sqrt() + e) * mHat
+        return weight - rate / (vHat.sqrt() + e) * mHat
     }
 }

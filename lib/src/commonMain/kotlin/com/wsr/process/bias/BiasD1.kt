@@ -20,7 +20,7 @@ class BiasD1 internal constructor(
     override fun train(input: List<IOType.D1>, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
         val output = input + weight
         val delta = calcDelta(output)
-        weight -= optimizer.adapt(weight, delta.average())
+        weight = optimizer.adapt(weight, delta.average())
         return delta
     }
 }

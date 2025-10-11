@@ -64,7 +64,7 @@ class ConvD1 internal constructor(
                             }.toD2()
                     }.toD3()
             }
-        weight -= optimizer.adapt(weight, dw.average())
+        weight = optimizer.adapt(weight, dw.average())
 
         return dx
     }
