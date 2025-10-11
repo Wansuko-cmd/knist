@@ -63,6 +63,40 @@ sealed class IOType {
         override fun hashCode(): Int = super.hashCode()
     }
 
+    @Serializable
+    data class D4(override val value: DoubleArray, override val shape: List<Int>) : IOType() {
+        operator fun get(i: Int, j: Int, k: Int, l: Int) = value[((i * shape[1] + j) * shape[2] + k) * shape[3] + l]
+
+        operator fun get(i: Int, j: Int, k: Int): D1 {
+            val start = ((i * shape[1] + j) * shape[2] + k) * shape[3]
+            return d1(value = value.sliceArray(start until start + shape[3]))
+        }
+
+        operator fun get(i: Int, j: Int): D2 {
+            val start = (i * shape[1] + j) * shape[2] * shape[3]
+            return d2(
+                shape = listOf(shape[2], shape[3]),
+                value = value.sliceArray(start until start + shape[2] * shape[3]),
+            )
+        }
+
+        operator fun get(i: Int): D3 {
+            val start = i * shape[1] * shape[2] * shape[3]
+            return d3(
+                shape = listOf(shape[1], shape[2], shape[3]),
+                value = value.sliceArray(start until start + shape[1] * shape[2] * shape[3])
+            )
+        }
+
+        operator fun set(i: Int, j: Int, k: Int, l: Int, element: Double) {
+            value[((i * shape[1] + j) * shape[2] + k) * shape[3] + l] = element
+        }
+
+        override fun equals(other: Any?): Boolean = super.equals(other)
+
+        override fun hashCode(): Int = super.hashCode()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -144,5 +178,34 @@ sealed class IOType {
         )
 
         fun d3(shape: List<Int>, value: DoubleArray) = D3(shape = shape, value = value)
+
+        inline fun d4(i: Int, j: Int, k: Int, l: Int, init: (Int, Int, Int, Int) -> Double = { _, _, _, _ -> 0.0 }): D4 {
+            val value = DoubleArray(i * j * k * l)
+            for (_i in 0 until i) {
+                for (_j in 0 until j) {
+                    for (_k in 0 until k) {
+                        for (_l in 0 until l) {
+                            value[((_i * j + _j) * k + _k) * l + _l] = init(_i, _j, _k, _l)
+                        }
+                    }
+                }
+            }
+            return D4(shape = listOf(i, j, k, l), value = value)
+        }
+
+        inline fun d4(shape: List<Int>, init: (Int, Int, Int, Int) -> Double = { _, _, _, _ -> 0.0 }) = d4(
+            i = shape[0],
+            j = shape[1],
+            k = shape[2],
+            l = shape[3],
+            init = init,
+        )
+
+        fun d4(shape: List<Int>, value: List<Double>) = D4(
+            value = value.toDoubleArray(),
+            shape = shape,
+        )
+
+        fun d4(shape: List<Int>, value: DoubleArray) = D4(shape = shape, value = value)
     }
 }
