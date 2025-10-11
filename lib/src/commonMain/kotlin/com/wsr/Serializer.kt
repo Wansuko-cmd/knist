@@ -1,6 +1,9 @@
 package com.wsr
 
 import com.wsr.optimizer.Optimizer
+import com.wsr.optimizer.momentum.MomentumD1
+import com.wsr.optimizer.momentum.MomentumD2
+import com.wsr.optimizer.momentum.MomentumD3
 import com.wsr.optimizer.sgd.SgdD1
 import com.wsr.optimizer.sgd.SgdD2
 import com.wsr.optimizer.sgd.SgdD3
@@ -105,14 +108,17 @@ internal val json =
                  */
                 polymorphic(Optimizer.D1::class) {
                     subclass(SgdD1::class)
+                    subclass(MomentumD1::class)
                 }
 
                 polymorphic(Optimizer.D2::class) {
                     subclass(SgdD2::class)
+                    subclass(MomentumD2::class)
                 }
 
                 polymorphic(Optimizer.D3::class) {
                     subclass(SgdD3::class)
+                    subclass(MomentumD3::class)
                 }
             }
     }

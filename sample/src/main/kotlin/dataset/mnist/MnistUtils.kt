@@ -2,22 +2,22 @@ package dataset.mnist
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.optimizer.sgd.Sgd
+import com.wsr.optimizer.momentum.Momentum
 import com.wsr.output.softmax.softmaxWithLoss
 import com.wsr.process.affine.affine
 import com.wsr.process.bias.bias
 import com.wsr.process.conv.convD1
 import com.wsr.process.function.relu.reLU
-import com.wsr.reshape.reshapeToD1
+import com.wsr.reshape.globalAverageToD1
 import java.util.Random
 import maxIndex
 
 fun createMnistModel(epoc: Int, seed: Int? = null) {
     val network = NetworkBuilder
-        .inputD2(x = 28, y = 28, optimizer = Sgd(0.01), seed = seed)
+        .inputD2(x = 28, y = 28, optimizer = Momentum(0.001, 0.9), seed = seed)
         .convD1(filter = 16, kernel = 3).bias().reLU()
         .convD1(filter = 32, kernel = 3).bias().reLU()
-        .reshapeToD1()
+        .globalAverageToD1()
         .affine(neuron = 512).bias().reLU()
         .affine(neuron = 10)
         .softmaxWithLoss()
