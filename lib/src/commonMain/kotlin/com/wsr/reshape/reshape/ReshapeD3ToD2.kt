@@ -7,10 +7,7 @@ import com.wsr.reshape.Reshape
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class ReshapeD3ToD2(
-    override val outputX: Int,
-    override val outputY: Int,
-) : Reshape.D3ToD2() {
+internal class ReshapeD3ToD2(override val outputX: Int, override val outputY: Int) : Reshape.D3ToD2() {
     override fun expect(input: List<IOType.D3>): List<IOType.D2> = input.map {
         IOType.d2(shape = listOf(outputX, outputY), value = it.value)
     }
@@ -35,7 +32,7 @@ fun <T : IOType> NetworkBuilder.D3<T>.reshapeToD2(outputX: Int, outputY: Int): D
             inputZ: $inputZ
             outputX: $outputX
             outputY: $outputY
-            """.trimIndent()
+        """.trimIndent()
     }
     return addReshape(
         reshape = ReshapeD3ToD2(
