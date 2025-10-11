@@ -42,6 +42,7 @@ class MinMaxNormD1 internal constructor(
         val dOutput = delta.map { it * weight }
 
         weight -= optimizer.adapt(
+            weight = weight,
             dw = IOType.d1(weight.shape) { x ->
                 (0 until input.size).sumOf { mean[it][x] * delta[it][x] } / input.size
             },

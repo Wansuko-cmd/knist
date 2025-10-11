@@ -8,14 +8,14 @@ interface Optimizer {
     fun d3(x: Int, y: Int, z: Int): D3
 
     interface D1 {
-        fun adapt(dw: IOType.D1): IOType.D1
+        fun adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1
     }
 
     interface D2 {
-        fun adapt(dw: IOType.D2): IOType.D2
+        fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2
     }
 
     interface D3 {
-        fun adapt(dw: IOType.D3): IOType.D3
+        fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3
     }
 }
