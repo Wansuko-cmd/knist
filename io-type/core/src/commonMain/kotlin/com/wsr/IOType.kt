@@ -11,10 +11,10 @@ sealed class IOType {
     data class D1(override val value: DoubleArray) : IOType() {
         override val shape = listOf(value.size)
 
-        operator fun get(indei: Int) = value[indei]
+        operator fun get(index: Int) = value[index]
 
-        operator fun set(indei: Int, element: Double) {
-            value[indei] = element
+        operator fun set(index: Int, element: Double) {
+            value[index] = element
         }
 
         override fun equals(other: Any?): Boolean = super.equals(other)
