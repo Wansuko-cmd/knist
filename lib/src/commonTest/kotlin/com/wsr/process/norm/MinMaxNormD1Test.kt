@@ -3,6 +3,7 @@
 package com.wsr.process.norm
 
 import com.wsr.IOType
+import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,7 +15,7 @@ class MinMaxNormD1Test {
         val norm =
             MinMaxNormD1(
                 outputSize = 3,
-                rate = 0.1,
+                optimizer = Sgd(0.1).d1(),
                 weight = alpha,
             )
 
@@ -42,7 +43,7 @@ class MinMaxNormD1Test {
         val norm =
             MinMaxNormD1(
                 outputSize = 3,
-                rate = 0.1,
+                optimizer = Sgd(0.1).d1(),
                 weight = alpha,
             )
 
@@ -72,7 +73,7 @@ class MinMaxNormD1Test {
         val norm =
             MinMaxNormD1(
                 outputSize = 3,
-                rate = 0.1,
+                optimizer = Sgd(0.1).d1(),
                 weight = alpha,
             )
 
