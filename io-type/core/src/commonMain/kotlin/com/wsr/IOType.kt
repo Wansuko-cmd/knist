@@ -50,7 +50,7 @@ sealed class IOType {
             val start = x * shape[1] * shape[2]
             return d2(
                 shape = listOf(shape[1], shape[2]),
-                value = value.sliceArray(start until start + shape[1] * shape[2])
+                value = value.sliceArray(start until start + shape[1] * shape[2]),
             )
         }
 
@@ -84,7 +84,7 @@ sealed class IOType {
             val start = i * shape[1] * shape[2] * shape[3]
             return d3(
                 shape = listOf(shape[1], shape[2], shape[3]),
-                value = value.sliceArray(start until start + shape[1] * shape[2] * shape[3])
+                value = value.sliceArray(start until start + shape[1] * shape[2] * shape[3]),
             )
         }
 
@@ -179,7 +179,15 @@ sealed class IOType {
 
         fun d3(shape: List<Int>, value: DoubleArray) = D3(shape = shape, value = value)
 
-        inline fun d4(i: Int, j: Int, k: Int, l: Int, init: (Int, Int, Int, Int) -> Double = { _, _, _, _ -> 0.0 }): D4 {
+        inline fun d4(
+            i: Int,
+            j: Int,
+            k: Int,
+            l: Int,
+            init: (Int, Int, Int, Int) -> Double = { _, _, _, _ ->
+                0.0
+            },
+        ): D4 {
             val value = DoubleArray(i * j * k * l)
             for (_i in 0 until i) {
                 for (_j in 0 until j) {
