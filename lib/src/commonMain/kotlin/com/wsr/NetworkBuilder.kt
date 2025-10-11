@@ -48,6 +48,31 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
         )
     }
 
+    @ConsistentCopyVisibility
+    data class D3<I : IOType> internal constructor(
+        val inputX: Int,
+        val inputY: Int,
+        val inputZ: Int,
+        override val layers: List<Layer>,
+        override val optimizer: Optimizer,
+        override val random: Random,
+    ) : NetworkBuilder<I, IOType.D2> {
+        fun addProcess(process: Process.D3): D3<I> = copy(
+            layers = layers + process,
+            inputX = process.outputX,
+            inputY = process.outputY,
+            inputZ = process.outputZ,
+        )
+
+        fun addReshape(reshape: Reshape.D3ToD2): D2<I> = D2(
+            layers = layers + reshape,
+            inputX = reshape.outputX,
+            inputY = reshape.outputY,
+            optimizer = optimizer,
+            random = random,
+        )
+    }
+
     companion object {
         fun inputD1(inputSize: Int, optimizer: Optimizer, seed: Int? = null) = D1<IOType.D1>(
             inputSize = inputSize,
@@ -59,6 +84,15 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
         fun inputD2(x: Int, y: Int, optimizer: Optimizer, seed: Int? = null) = D2<IOType.D2>(
             inputX = x,
             inputY = y,
+            optimizer = optimizer,
+            random = seed?.let { Random(it) } ?: Random,
+            layers = emptyList(),
+        )
+
+        fun inputD3(x: Int, y: Int, z: Int, optimizer: Optimizer, seed: Int? = null) = D3<IOType.D3>(
+            inputX = x,
+            inputY = y,
+            inputZ = z,
             optimizer = optimizer,
             random = seed?.let { Random(it) } ?: Random,
             layers = emptyList(),
