@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 class AdamD1Test {
     @Test
     fun `AdamD1の_adapt=初回呼び出し時の動作`() {
-        val adamD1 = AdamD1(rate = 0.001, momentum = 0.9, rms = 0.999)
+        val adamD1 = AdamD1(rate = 0.001, momentum = 0.9, rms = 0.999, shape = listOf(2))
 
         // dw = [1, 2]
         val dw = IOType.d1(listOf(1.0, 2.0))
@@ -31,7 +31,7 @@ class AdamD1Test {
 
     @Test
     fun `AdamD1の_adapt=2回目以降はモーメントが蓄積される`() {
-        val adamD1 = AdamD1(rate = 0.001, momentum = 0.9, rms = 0.999)
+        val adamD1 = AdamD1(rate = 0.001, momentum = 0.9, rms = 0.999, shape = listOf(2))
 
         // 1回目
         val dw1 = IOType.d1(listOf(1.0, 1.0))

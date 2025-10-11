@@ -28,7 +28,11 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                optimizer = Sgd(0.1).d3(),
+                optimizer = Sgd(0.1).d3(
+                    x = weight.shape[0],
+                    y = weight.shape[1],
+                    z = weight.shape[2],
+                ),
                 weight = weight,
             )
 
@@ -61,7 +65,11 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                optimizer = Sgd(0.1).d3(),
+                optimizer = Sgd(0.1).d3(
+                    x = weight.shape[0],
+                    y = weight.shape[1],
+                    z = weight.shape[2],
+                ),
                 weight = weight,
             )
 
@@ -98,7 +106,11 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                optimizer = Sgd(0.1).d3(),
+                optimizer = Sgd(0.1).d3(
+                    x = weight.shape[0],
+                    y = weight.shape[1],
+                    z = weight.shape[2],
+                ),
                 weight = weight,
             )
 

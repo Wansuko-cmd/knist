@@ -17,7 +17,10 @@ class AffineD1Test {
         val affine =
             AffineD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1).d2(),
+                optimizer = Sgd(0.1).d2(
+                    x = weight.shape[0],
+                    y = weight.shape[1],
+                ),
                 weight = weight,
             )
 
@@ -48,7 +51,10 @@ class AffineD1Test {
         val affine =
             AffineD1(
                 outputSize = 2,
-                optimizer = Sgd(0.1).d2(),
+                optimizer = Sgd(0.1).d2(
+                    x = weight.shape[0],
+                    y = weight.shape[1],
+                ),
                 weight = weight,
             )
 
@@ -80,7 +86,10 @@ class AffineD1Test {
         val affine =
             AffineD1(
                 outputSize = 2,
-                optimizer = Sgd(0.1).d2(),
+                optimizer = Sgd(0.1).d2(
+                    x = weight.shape[0],
+                    y = weight.shape[1],
+                ),
                 weight = weight,
             )
 

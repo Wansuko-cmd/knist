@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 class MomentumD3Test {
     @Test
     fun `MomentumD3の_adapt=初回呼び出し時はSGDと同じ`() {
-        val momentumD3 = MomentumD3(rate = 0.1, momentum = 0.9)
+        val momentumD3 = MomentumD3(rate = 0.1, momentum = 0.9, shape = listOf(1, 1, 2))
 
         // dw = [[[1, 2]]]
         val dw = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toDouble() }
@@ -23,7 +23,7 @@ class MomentumD3Test {
 
     @Test
     fun `MomentumD3の_adapt=2回目以降はvelocityが蓄積される`() {
-        val momentumD3 = MomentumD3(rate = 0.1, momentum = 0.9)
+        val momentumD3 = MomentumD3(rate = 0.1, momentum = 0.9, shape = listOf(1, 1, 2))
 
         // 1回目
         val dw1 = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toDouble() }
