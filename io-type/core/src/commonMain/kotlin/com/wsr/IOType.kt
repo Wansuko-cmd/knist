@@ -1,5 +1,3 @@
-@file:Suppress("JavaDefaultMethodsNotOverriddenByDelegation")
-
 package com.wsr
 
 import kotlinx.serialization.Serializable
@@ -8,7 +6,6 @@ import kotlinx.serialization.Serializable
 sealed interface IOType {
     val value: DoubleArray
     val shape: List<Int>
-    val enableBLAS get() = BLAS.isNative
 
     @Serializable
     data class D1(override val value: DoubleArray) : IOType {
@@ -72,14 +69,17 @@ sealed interface IOType {
     data class D3(override val value: DoubleArray, override val shape: List<Int>) : IOType {
         operator fun get(x: Int, y: Int, z: Int) = value[(x * shape[1] + y) * shape[2] + z]
 
-        operator fun get(x: Int, y: Int) = d1(shape[2]) { z -> value[(x * shape[1] + y) * shape[2] + z] }
+        operator fun get(x: Int, y: Int): D1 {
+            val start = (x * shape[1] + y) * shape[2]
+            return d1(value = value.sliceArray(start until start + shape[2]))
+        }
 
-        operator fun get(x: Int) = d2(shape[1], shape[2]) { y, z ->
-            value[
-                (x * shape[1] + y) *
-                    shape[2] +
-                    z,
-            ]
+        operator fun get(x: Int): D2 {
+            val start = x * shape[1] * shape[2]
+            return d2(
+                shape = listOf(shape[1], shape[2]),
+                value = value.sliceArray(start until start + shape[1] * shape[2])
+            )
         }
 
         operator fun set(x: Int, y: Int, z: Int, element: Double) {
@@ -106,6 +106,8 @@ sealed interface IOType {
     }
 
     companion object {
+        val enableBLAS get() = BLAS.isNative
+
         inline fun d1(size: Int, init: (Int) -> Double = { 0.0 }): D1 {
             val value = DoubleArray(size)
             for (i in 0 until size) value[i] = init(i)
