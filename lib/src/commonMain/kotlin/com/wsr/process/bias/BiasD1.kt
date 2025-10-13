@@ -2,8 +2,7 @@ package com.wsr.process.bias
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.average.average
-import com.wsr.operator.minus
+import com.wsr.collection.average
 import com.wsr.operator.plus
 import com.wsr.optimizer.Optimizer
 import com.wsr.process.Process

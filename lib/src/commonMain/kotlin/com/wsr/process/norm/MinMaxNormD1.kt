@@ -2,8 +2,7 @@ package com.wsr.process.norm
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.dot.dot
-import com.wsr.operator.minus
+import com.wsr.dot.inner.inner
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
@@ -49,8 +48,9 @@ class MinMaxNormD1 internal constructor(
         )
 
         // 分母側(dy/d[max(x) - min(x)])
-        val dDenominator =
-            List(input.size) { -1 * denominator[it].pow(2) * numerator[it].dot(dOutput[it]) }
+        val dDenominator = List(input.size) {
+            -1 * denominator[it].pow(2) * numerator[it].inner(dOutput[it])
+        }
 
         // 分子側(dy/d[x - min(x)])
         val dNumerator = List(input.size) { denominator[it] * dOutput[it] }
@@ -75,10 +75,6 @@ class MinMaxNormD1 internal constructor(
             }
 
         return List(input.size) { dx1[it] + dx2[it] + dx3[it] }
-    }
-
-    private operator fun IOType.D1.times(other: IOType.D1) = IOType.d1(shape) {
-        this[it] * other[it]
     }
 }
 
