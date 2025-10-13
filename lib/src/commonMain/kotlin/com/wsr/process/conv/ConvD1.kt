@@ -2,11 +2,9 @@ package com.wsr.process.conv
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.average.average
+import com.wsr.collection.average
 import com.wsr.conv.convD1
 import com.wsr.conv.deConvD1
-import com.wsr.operator.minus
-import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.process.Process
 import com.wsr.reshape.toD2

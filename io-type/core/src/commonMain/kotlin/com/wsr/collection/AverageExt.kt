@@ -1,4 +1,4 @@
-package com.wsr.average
+package com.wsr.collection
 
 import com.wsr.IOType
 

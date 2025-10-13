@@ -3,6 +3,7 @@
 package com.wsr.sum
 
 import com.wsr.IOType
+import com.wsr.collection.sum
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
