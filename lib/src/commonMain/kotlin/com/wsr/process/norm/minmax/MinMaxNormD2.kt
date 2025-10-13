@@ -2,6 +2,7 @@ package com.wsr.process.norm.minmax
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.collection.batchAverage
 import com.wsr.collection.sum
 import com.wsr.operator.plus
 import com.wsr.operator.times
@@ -44,8 +45,10 @@ class MinMaxNormD2 internal constructor(
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = IOType.d2(weight.shape) { x, y ->
-                (0 until input.size).sumOf { mean[it][x, y] * delta[it][x, y] } / input.size
+            dw = run {
+                val mean = mean.batchAverage()
+                val delta = delta.batchAverage()
+                IOType.d2(weight.shape) { x, y -> mean[x, y] * delta[x, y] }
             },
         )
 
