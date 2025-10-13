@@ -27,6 +27,9 @@ operator fun Double.times(other: IOType.D3): IOType.D3 {
     return IOType.d3(other.shape, result)
 }
 
+@JvmName("timesToD3s")
+operator fun Double.times(other: List<IOType.D3>) = other.map { this * it }
+
 operator fun IOType.D1.times(other: IOType.D1): IOType.D1 {
     val result = value.copyOf()
     for (i in result.indices) {
