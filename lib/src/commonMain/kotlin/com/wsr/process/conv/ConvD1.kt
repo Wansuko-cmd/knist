@@ -2,7 +2,7 @@ package com.wsr.process.conv
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.average
+import com.wsr.collection.batchAverage
 import com.wsr.conv.convD1
 import com.wsr.conv.deConvD1
 import com.wsr.optimizer.Optimizer
@@ -62,7 +62,7 @@ class ConvD1 internal constructor(
                             }.toD2()
                     }.toD3()
             }
-                .average()
+                .batchAverage()
         weight = optimizer.adapt(weight = weight, dw = dw)
 
         return dx
