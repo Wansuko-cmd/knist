@@ -8,11 +8,8 @@ import com.wsr.reshape.transpose
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class GlobalAverageD3ToD2(
-    private val inputX: Int,
-    private val inputY: Int,
-    private val inputZ: Int,
-) : Reshape.D3ToD2() {
+internal class GlobalAverageD3ToD2(private val inputX: Int, private val inputY: Int, private val inputZ: Int) :
+    Reshape.D3ToD2() {
     override val outputX: Int = inputY
     override val outputY: Int = inputZ
 
@@ -28,7 +25,7 @@ internal class GlobalAverageD3ToD2(
     }
 
     private fun forward(input: List<IOType.D3>) = input.map { input ->
-        val input = input.transpose(axisI = 2, axisJ =  0, axisK = 1)
+        val input = input.transpose(axisI = 2, axisJ = 0, axisK = 1)
         IOType.d2(outputX, outputY) { x, y ->
             input[x, y].value.average()
         }

@@ -3,15 +3,12 @@ package com.wsr.process.function.sigmoid
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.process.Process
-import kotlinx.serialization.Serializable
 import kotlin.math.exp
+import kotlinx.serialization.Serializable
 
 @Serializable
-class SigmoidD3 internal constructor(
-    override val outputX: Int,
-    override val outputY: Int,
-    override val outputZ: Int,
-) : Process.D3() {
+class SigmoidD3 internal constructor(override val outputX: Int, override val outputY: Int, override val outputZ: Int) :
+    Process.D3() {
     override fun expect(input: List<IOType.D3>): List<IOType.D3> = input.map(::forward)
 
     override fun train(input: List<IOType.D3>, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {

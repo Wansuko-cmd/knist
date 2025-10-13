@@ -6,12 +6,8 @@ import com.wsr.process.Process
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MaxPoolD3 internal constructor(
-    val poolSize: Int,
-    val channel: Int,
-    val inputX: Int,
-    val inputY: Int,
-) : Process.D3() {
+class MaxPoolD3 internal constructor(val poolSize: Int, val channel: Int, val inputX: Int, val inputY: Int) :
+    Process.D3() {
     override val outputX: Int = channel
     override val outputY: Int = inputX / poolSize
     override val outputZ: Int = inputY / poolSize

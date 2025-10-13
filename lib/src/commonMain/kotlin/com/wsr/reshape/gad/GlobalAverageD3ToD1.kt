@@ -7,11 +7,8 @@ import com.wsr.reshape.Reshape
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class GlobalAverageD3ToD1(
-    private val inputX: Int,
-    private val inputY: Int,
-    private val inputZ: Int,
-) : Reshape.D3ToD1() {
+internal class GlobalAverageD3ToD1(private val inputX: Int, private val inputY: Int, private val inputZ: Int) :
+    Reshape.D3ToD1() {
     override val outputSize: Int = inputX
 
     override fun expect(input: List<IOType.D3>): List<IOType.D1> = input.map { input ->

@@ -4,8 +4,8 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.operator.times
 import com.wsr.process.Process
-import kotlinx.serialization.Serializable
 import kotlin.random.Random
+import kotlinx.serialization.Serializable
 
 @Serializable
 class DropoutD3 internal constructor(
@@ -45,11 +45,11 @@ class DropoutD3 internal constructor(
 
 fun <T : IOType> NetworkBuilder.D3<T>.dropout(ratio: Double, seed: Int? = null) = addProcess(
     process =
-        DropoutD3(
-            outputX = inputX,
-            outputY = inputY,
-            outputZ = inputZ,
-            ratio = ratio,
-            seed = seed,
-        ),
+    DropoutD3(
+        outputX = inputX,
+        outputY = inputY,
+        outputZ = inputZ,
+        ratio = ratio,
+        seed = seed,
+    ),
 )
