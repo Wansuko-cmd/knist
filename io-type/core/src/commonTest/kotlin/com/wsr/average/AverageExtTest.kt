@@ -3,6 +3,7 @@
 package com.wsr.average
 
 import com.wsr.IOType
+import com.wsr.collection.average
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
