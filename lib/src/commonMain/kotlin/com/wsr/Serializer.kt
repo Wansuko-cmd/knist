@@ -26,6 +26,7 @@ import com.wsr.process.bias.BiasD2
 import com.wsr.process.conv.ConvD1
 import com.wsr.process.dropout.DropoutD1
 import com.wsr.process.dropout.DropoutD2
+import com.wsr.process.dropout.DropoutD3
 import com.wsr.process.function.linear.LinearD1
 import com.wsr.process.function.linear.LinearD2
 import com.wsr.process.function.linear.LinearD3
@@ -83,6 +84,7 @@ internal val json =
                     // Dropout
                     subclass(DropoutD1::class)
                     subclass(DropoutD2::class)
+                    subclass(DropoutD3::class)
 
                     // Function
                     subclass(LinearD1::class)
