@@ -3,6 +3,14 @@ package com.wsr.operator
 import com.wsr.BLAS
 import com.wsr.IOType
 
+operator fun IOType.D1.minus(other: Double): IOType.D1 {
+    val result = this.value.copyOf()
+    for (i in result.indices) {
+        result[i] -= other
+    }
+    return IOType.d1(result)
+}
+
 operator fun IOType.D1.minus(other: IOType.D1): IOType.D1 {
     val result = this.value.copyOf()
     BLAS.daxpy(n = result.size, alpha = -1.0, x = other.value, incX = 1, y = result, incY = 1)
