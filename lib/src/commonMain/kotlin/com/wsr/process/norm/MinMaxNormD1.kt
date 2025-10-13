@@ -76,10 +76,6 @@ class MinMaxNormD1 internal constructor(
 
         return List(input.size) { dx1[it] + dx2[it] + dx3[it] }
     }
-
-    private operator fun IOType.D1.times(other: IOType.D1) = IOType.d1(shape) {
-        this[it] * other[it]
-    }
 }
 
 fun <T : IOType> NetworkBuilder.D1<T>.minMaxNorm(optimizer: Optimizer = this.optimizer) = addProcess(
