@@ -1,6 +1,6 @@
 @file:Suppress("NonAsciiCharacters")
 
-package com.wsr.dot
+package com.wsr.dot.matmul
 
 import com.wsr.IOType
 import kotlin.test.Test
@@ -15,7 +15,7 @@ class D2ExtTest {
         val b = IOType.d1(listOf(1.0, 2.0, 3.0))
         // 1*1 + 2*2 + 3*3 = 14
         // 4*1 + 5*2 + 6*3 = 32
-        val result = a dot b
+        val result = a matMul b
         assertEquals(
             expected = IOType.d1(listOf(14.0, 32.0)),
             actual = result,
@@ -33,7 +33,7 @@ class D2ExtTest {
         val b = IOType.d2(3, 2) { x, y -> (x * 2 + y + 1).toDouble() }
         // [[1*1+2*3+3*5, 1*2+2*4+3*6], [4*1+5*3+6*5, 4*2+5*4+6*6]]
         // [[22, 28], [49, 64]]
-        val result = a dot b
+        val result = a matMul b
         assertEquals(
             expected =
             IOType.d2(2, 2) { x, y ->
@@ -56,7 +56,7 @@ class D2ExtTest {
                 IOType.d1(listOf(1.0, 0.0, 0.0)),
                 IOType.d1(listOf(0.0, 1.0, 0.0)),
             )
-        val result = a dot list
+        val result = a matMul list
         assertEquals(
             expected = IOType.d1(listOf(1.0, 4.0)),
             actual = result[0],
@@ -76,7 +76,7 @@ class D2ExtTest {
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
             )
         // [[1,2],[3,4]] dot [[1,2],[3,4]] = [[7,10],[15,22]]
-        val result = a dot list
+        val result = a matMul list
         assertEquals(
             expected =
             IOType.d2(2, 2) { x, y ->
@@ -118,7 +118,7 @@ class D2ExtTest {
             )
         // [[1,2],[3,4]] · [1,2] = [5, 11]
         // [[5,6],[7,8]] · [3,4] = [39, 53]
-        val result = list1 dot list2
+        val result = list1 matMul list2
         assertEquals(
             expected = IOType.d1(listOf(5.0, 11.0)),
             actual = result[0],
@@ -141,7 +141,7 @@ class D2ExtTest {
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
             )
-        val result = list1 dot list2
+        val result = list1 matMul list2
         assertEquals(
             expected =
             IOType.d2(2, 2) { x, y ->
