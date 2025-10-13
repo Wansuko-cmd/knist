@@ -40,6 +40,7 @@ import com.wsr.process.function.relu.SwishD2
 import com.wsr.process.function.relu.SwishD3
 import com.wsr.process.function.sigmoid.SigmoidD1
 import com.wsr.process.function.sigmoid.SigmoidD2
+import com.wsr.process.function.sigmoid.SigmoidD3
 import com.wsr.process.function.softmax.SoftmaxD1
 import com.wsr.process.norm.MinMaxNormD1
 import com.wsr.process.pool.MaxPoolD2
@@ -98,6 +99,7 @@ internal val json =
 
                     subclass(SigmoidD1::class)
                     subclass(SigmoidD2::class)
+                    subclass(SigmoidD3::class)
 
                     subclass(SoftmaxD1::class)
 
