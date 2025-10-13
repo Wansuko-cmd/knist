@@ -2,10 +2,8 @@ package com.wsr.process.affine
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.dot.dot
+import com.wsr.dot.matmul.matMul
 import com.wsr.operator.div
-import com.wsr.operator.minus
-import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.process.Process
 import com.wsr.reshape.toD2
@@ -23,13 +21,13 @@ class AffineD1 internal constructor(
     override fun train(input: List<IOType.D1>, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
         val output = forward(input)
         val delta = calcDelta(output)
-        val dx = weight.dot(delta)
-        val dw = input.toD2().transpose().dot(delta.toD2()) / input.size.toDouble()
+        val dx = weight.matMul(delta)
+        val dw = input.toD2().transpose().matMul(delta.toD2()) / input.size.toDouble()
         weight = optimizer.adapt(weight = weight, dw = dw)
         return dx
     }
 
-    private fun forward(input: List<IOType.D1>): List<IOType.D1> = weight.transpose().dot(input)
+    private fun forward(input: List<IOType.D1>): List<IOType.D1> = weight.transpose().matMul(input)
 }
 
 fun <T : IOType> NetworkBuilder.D1<T>.affine(neuron: Int, optimizer: Optimizer = this.optimizer) = addProcess(

@@ -1,9 +1,9 @@
-package com.wsr.dot
+package com.wsr.dot.matmul
 
 import com.wsr.BLAS
 import com.wsr.IOType
 
-infix fun IOType.D2.dot(other: IOType.D1): IOType.D1 {
+infix fun IOType.D2.matMul(other: IOType.D1): IOType.D1 {
     val result = DoubleArray(shape[0])
     BLAS.dgemv(
         trans = false,
@@ -21,7 +21,7 @@ infix fun IOType.D2.dot(other: IOType.D1): IOType.D1 {
     return IOType.D1(result)
 }
 
-infix fun IOType.D2.dot(other: IOType.D2): IOType.D2 {
+infix fun IOType.D2.matMul(other: IOType.D2): IOType.D2 {
     val result = DoubleArray(shape[0] * other.shape[1])
     BLAS.dgemm(
         transA = false,
@@ -41,14 +41,14 @@ infix fun IOType.D2.dot(other: IOType.D2): IOType.D2 {
     return IOType.D2(result, listOf(shape[0], other.shape[1]))
 }
 
-@JvmName("dotToD1s")
-infix fun IOType.D2.dot(other: List<IOType.D1>) = List(other.size) { this dot other[it] }
+@JvmName("matMulToD1s")
+infix fun IOType.D2.matMul(other: List<IOType.D1>) = List(other.size) { this matMul other[it] }
 
-@JvmName("dotToD2s")
-infix fun IOType.D2.dot(other: List<IOType.D2>) = List(other.size) { this dot other[it] }
+@JvmName("matMulToD2s")
+infix fun IOType.D2.matMul(other: List<IOType.D2>) = List(other.size) { this matMul other[it] }
 
-@JvmName("dotToD1s")
-infix fun List<IOType.D2>.dot(other: List<IOType.D1>) = List(size) { this[it] dot other[it] }
+@JvmName("matMulToD1s")
+infix fun List<IOType.D2>.matMul(other: List<IOType.D1>) = List(size) { this[it] matMul other[it] }
 
-@JvmName("dotToD2s")
-infix fun List<IOType.D2>.dot(other: List<IOType.D2>) = List(size) { this[it] dot other[it] }
+@JvmName("matMulToD2s")
+infix fun List<IOType.D2>.matMul(other: List<IOType.D2>) = List(size) { this[it] matMul other[it] }

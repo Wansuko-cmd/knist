@@ -1,4 +1,4 @@
-package com.wsr.sum
+package com.wsr.collection
 
 import com.wsr.IOType
 
