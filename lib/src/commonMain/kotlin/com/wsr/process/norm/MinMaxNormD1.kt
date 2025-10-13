@@ -2,15 +2,13 @@ package com.wsr.process.norm
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.dot.dot
 import com.wsr.dot.inner.inner
-import com.wsr.operator.minus
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.process.Process
-import kotlin.math.pow
 import kotlinx.serialization.Serializable
+import kotlin.math.pow
 
 @Serializable
 class MinMaxNormD1 internal constructor(
