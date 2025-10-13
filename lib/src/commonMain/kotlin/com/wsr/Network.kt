@@ -2,6 +2,7 @@ package com.wsr
 
 import com.wsr.process.debug.DebugD1
 import com.wsr.process.debug.DebugD2
+import com.wsr.process.debug.DebugD3
 import kotlinx.serialization.Serializable
 
 @Serializable(with = NetworkSerializer::class)
@@ -33,7 +34,7 @@ class Network<I : IOType, O : IOType> internal constructor(internal val layers: 
 
     fun toJson() = json.encodeToString(
         serializer = NetworkSerializer(),
-        value = Network(layers = layers.filter { it !is DebugD1 && it !is DebugD2 }),
+        value = Network(layers = layers.filter { it !is DebugD1 && it !is DebugD2 && it !is DebugD3 }),
     )
 
     companion object {
