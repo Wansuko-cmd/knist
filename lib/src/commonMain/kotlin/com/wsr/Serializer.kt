@@ -48,6 +48,7 @@ import com.wsr.process.function.softmax.SoftmaxD2
 import com.wsr.process.function.softmax.SoftmaxD3
 import com.wsr.process.norm.MinMaxNormD1
 import com.wsr.process.pool.MaxPoolD2
+import com.wsr.process.pool.MaxPoolD3
 import com.wsr.reshape.gad.GlobalAverageD2ToD1
 import com.wsr.reshape.reshape.ReshapeD2ToD1
 import com.wsr.reshape.reshape.ReshapeD3ToD1
@@ -116,6 +117,7 @@ internal val json =
 
                     // Pool
                     subclass(MaxPoolD2::class)
+                    subclass(MaxPoolD3::class)
 
                     /**
                      * Reshape
