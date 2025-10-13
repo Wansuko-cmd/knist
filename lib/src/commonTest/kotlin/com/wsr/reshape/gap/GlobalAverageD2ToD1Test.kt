@@ -1,6 +1,6 @@
 @file:Suppress("NonAsciiCharacters")
 
-package com.wsr.reshape
+package com.wsr.reshape.gap
 
 import com.wsr.IOType
 import com.wsr.reshape.gad.GlobalAverageD2ToD1
