@@ -6,12 +6,11 @@ import com.wsr.collection.batchAverage
 import com.wsr.collection.max
 import com.wsr.collection.min
 import com.wsr.dot.inner.inner
-import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.process.Process
-import kotlin.math.pow
 import kotlinx.serialization.Serializable
+import kotlin.math.pow
 
 @Serializable
 class MinMaxNormD1 internal constructor(
@@ -55,32 +54,28 @@ class MinMaxNormD1 internal constructor(
 
         // 分母側(dy/d[max(x) - min(x)])
         val dDenominator = List(input.size) {
-            -1 * denominator[it].pow(2) * numerator[it].inner(dOutput[it])
+            denominator[it].pow(2) * numerator[it].inner(dOutput[it])
         }
 
         // 分子側(dy/d[x - min(x)])
         val dNumerator = List(input.size) { denominator[it] * dOutput[it] }
 
-        // 各要素(dy/dx, dy/min(x), dy/max(x))
-        val dx1 = List(input.size) { -1.0 * min[it] * dNumerator[it] }
-        val dx2 =
-            List(input.size) {
-                // dy/min(x) <- max(x) - min(x)側
-                val dMin = max[it] * dDenominator[it]
-                IOType.d1(outputSize) { x ->
-                    if (input[it][x] == min[it]) input[it][x] * dNumerator[it][x] + dMin else 0.0
+        return List(input.size) {
+            IOType.d1(input[it].shape) { x ->
+                /**
+                 * dy/input + dy/min(x) + dy/max(x)
+                 * dy/dx = dNumerator
+                 * dy/min(x) = if(x == min(x)) -dNumerator + dDenominator else 0.0
+                 * dy/max(x) = if(x == max(x)) -dDenominator else 0.0
+                 */
+                val input = input[it][x]
+                when (input) {
+                    min[it] -> dDenominator[it]
+                    max[it] -> dNumerator[it][x] - dDenominator[it]
+                    else -> dNumerator[it][x]
                 }
             }
-        val dx3 =
-            List(input.size) {
-                // dy/max(x)
-                val dMax = -1.0 * min[it] * dDenominator[it]
-                IOType.d1(outputSize) { x ->
-                    if (input[it][x] == max[it]) dMax else 0.0
-                }
-            }
-
-        return List(input.size) { dx1[it] + dx2[it] + dx3[it] }
+        }
     }
 }
 
