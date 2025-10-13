@@ -31,10 +31,13 @@ import com.wsr.process.function.linear.LinearD2
 import com.wsr.process.function.linear.LinearD3
 import com.wsr.process.function.relu.LeakyReLUD1
 import com.wsr.process.function.relu.LeakyReLUD2
+import com.wsr.process.function.relu.LeakyReLUD3
 import com.wsr.process.function.relu.ReLUD1
 import com.wsr.process.function.relu.ReLUD2
+import com.wsr.process.function.relu.ReLUD3
 import com.wsr.process.function.relu.SwishD1
 import com.wsr.process.function.relu.SwishD2
+import com.wsr.process.function.relu.SwishD3
 import com.wsr.process.function.sigmoid.SigmoidD1
 import com.wsr.process.function.sigmoid.SigmoidD2
 import com.wsr.process.function.softmax.SoftmaxD1
@@ -85,10 +88,13 @@ internal val json =
 
                     subclass(ReLUD1::class)
                     subclass(ReLUD2::class)
+                    subclass(ReLUD3::class)
                     subclass(LeakyReLUD1::class)
                     subclass(LeakyReLUD2::class)
+                    subclass(LeakyReLUD3::class)
                     subclass(SwishD1::class)
                     subclass(SwishD2::class)
+                    subclass(SwishD3::class)
 
                     subclass(SigmoidD1::class)
                     subclass(SigmoidD2::class)
