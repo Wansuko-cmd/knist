@@ -23,6 +23,7 @@ import com.wsr.process.affine.AffineD1
 import com.wsr.process.affine.AffineD2
 import com.wsr.process.bias.BiasD1
 import com.wsr.process.bias.BiasD2
+import com.wsr.process.bias.BiasD3
 import com.wsr.process.conv.ConvD1
 import com.wsr.process.dropout.DropoutD1
 import com.wsr.process.dropout.DropoutD2
@@ -77,6 +78,7 @@ internal val json =
                     // Bias
                     subclass(BiasD1::class)
                     subclass(BiasD2::class)
+                    subclass(BiasD3::class)
 
                     // Conv
                     subclass(ConvD1::class)
