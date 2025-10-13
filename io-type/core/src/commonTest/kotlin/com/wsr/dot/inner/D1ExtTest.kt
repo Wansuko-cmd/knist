@@ -1,6 +1,6 @@
 @file:Suppress("NonAsciiCharacters")
 
-package com.wsr.dot
+package com.wsr.dot.inner
 
 import com.wsr.IOType
 import kotlin.test.Test
@@ -11,7 +11,7 @@ class D1ExtTest {
     fun `D1·D1=内積`() {
         val a = IOType.d1(listOf(1.0, 2.0, 3.0))
         val b = IOType.d1(listOf(4.0, 5.0, 6.0))
-        val result = a dot b
+        val result = a inner b
         assertEquals(
             expected = 32.0,
             actual = result,
@@ -27,7 +27,7 @@ class D1ExtTest {
                 IOType.d1(listOf(0.0, 1.0, 0.0)),
                 IOType.d1(listOf(0.0, 0.0, 1.0)),
             )
-        val result = a dot list
+        val result = a inner list
         assertEquals(
             expected = listOf(1.0, 2.0, 3.0),
             actual = result,
@@ -48,7 +48,7 @@ class D1ExtTest {
             )
         // 1*2 + 2*3 = 8
         // 3*4 + 4*5 = 32
-        val result = list1 dot list2
+        val result = list1 inner list2
         assertEquals(
             expected = listOf(8.0, 32.0),
             actual = result,
