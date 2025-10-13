@@ -57,7 +57,7 @@ class AverageExtTest {
         assertEquals(
             expected = IOType.Companion.d2(
                 2,
-                2
+                2,
             ) { x, y -> ((x * 2 + y + 1) + (x * 2 + y + 5)) / 2.0 },
             actual = result,
         )
@@ -73,11 +73,11 @@ class AverageExtTest {
         val result = input.average()
         assertEquals(
             expected =
-                IOType.Companion.d2(2, 2) { x, y ->
-                    val z0 = x * 4 + y * 2 + 0 + 1
-                    val z1 = x * 4 + y * 2 + 1 + 1
-                    (z0 + z1) / 2.0
-                },
+            IOType.Companion.d2(2, 2) { x, y ->
+                val z0 = x * 4 + y * 2 + 0 + 1
+                val z1 = x * 4 + y * 2 + 1 + 1
+                (z0 + z1) / 2.0
+            },
             actual = result,
         )
     }
