@@ -1,9 +1,8 @@
 @file:Suppress("NonAsciiCharacters")
 
-package com.wsr.reshape
+package com.wsr.reshape.reshape
 
 import com.wsr.IOType
-import com.wsr.reshape.reshape.ReshapeD2ToD1
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

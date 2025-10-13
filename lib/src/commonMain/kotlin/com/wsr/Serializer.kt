@@ -23,23 +23,35 @@ import com.wsr.process.affine.AffineD1
 import com.wsr.process.affine.AffineD2
 import com.wsr.process.bias.BiasD1
 import com.wsr.process.bias.BiasD2
+import com.wsr.process.bias.BiasD3
 import com.wsr.process.conv.ConvD1
 import com.wsr.process.dropout.DropoutD1
 import com.wsr.process.dropout.DropoutD2
+import com.wsr.process.dropout.DropoutD3
 import com.wsr.process.function.linear.LinearD1
 import com.wsr.process.function.linear.LinearD2
+import com.wsr.process.function.linear.LinearD3
 import com.wsr.process.function.relu.LeakyReLUD1
 import com.wsr.process.function.relu.LeakyReLUD2
+import com.wsr.process.function.relu.LeakyReLUD3
 import com.wsr.process.function.relu.ReLUD1
 import com.wsr.process.function.relu.ReLUD2
+import com.wsr.process.function.relu.ReLUD3
 import com.wsr.process.function.relu.SwishD1
 import com.wsr.process.function.relu.SwishD2
+import com.wsr.process.function.relu.SwishD3
 import com.wsr.process.function.sigmoid.SigmoidD1
 import com.wsr.process.function.sigmoid.SigmoidD2
+import com.wsr.process.function.sigmoid.SigmoidD3
 import com.wsr.process.function.softmax.SoftmaxD1
+import com.wsr.process.function.softmax.SoftmaxD2
+import com.wsr.process.function.softmax.SoftmaxD3
 import com.wsr.process.norm.MinMaxNormD1
 import com.wsr.process.pool.MaxPoolD2
+import com.wsr.process.pool.MaxPoolD3
 import com.wsr.reshape.gad.GlobalAverageD2ToD1
+import com.wsr.reshape.gad.GlobalAverageD3ToD1
+import com.wsr.reshape.gad.GlobalAverageD3ToD2
 import com.wsr.reshape.reshape.ReshapeD2ToD1
 import com.wsr.reshape.reshape.ReshapeD3ToD1
 import com.wsr.reshape.reshape.ReshapeD3ToD2
@@ -69,6 +81,7 @@ internal val json =
                     // Bias
                     subclass(BiasD1::class)
                     subclass(BiasD2::class)
+                    subclass(BiasD3::class)
 
                     // Conv
                     subclass(ConvD1::class)
@@ -76,36 +89,47 @@ internal val json =
                     // Dropout
                     subclass(DropoutD1::class)
                     subclass(DropoutD2::class)
+                    subclass(DropoutD3::class)
 
                     // Function
                     subclass(LinearD1::class)
                     subclass(LinearD2::class)
+                    subclass(LinearD3::class)
 
                     subclass(ReLUD1::class)
                     subclass(ReLUD2::class)
+                    subclass(ReLUD3::class)
                     subclass(LeakyReLUD1::class)
                     subclass(LeakyReLUD2::class)
+                    subclass(LeakyReLUD3::class)
                     subclass(SwishD1::class)
                     subclass(SwishD2::class)
+                    subclass(SwishD3::class)
 
                     subclass(SigmoidD1::class)
                     subclass(SigmoidD2::class)
+                    subclass(SigmoidD3::class)
 
                     subclass(SoftmaxD1::class)
+                    subclass(SoftmaxD2::class)
+                    subclass(SoftmaxD3::class)
 
                     // Norm
                     subclass(MinMaxNormD1::class)
 
                     // Pool
                     subclass(MaxPoolD2::class)
+                    subclass(MaxPoolD3::class)
 
                     /**
                      * Reshape
                      */
                     subclass(ReshapeD2ToD1::class)
-                    subclass(ReshapeD3ToD2::class)
                     subclass(ReshapeD3ToD1::class)
+                    subclass(ReshapeD3ToD2::class)
                     subclass(GlobalAverageD2ToD1::class)
+                    subclass(GlobalAverageD3ToD1::class)
+                    subclass(GlobalAverageD3ToD2::class)
 
                     /**
                      * Output
