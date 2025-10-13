@@ -28,6 +28,7 @@ import com.wsr.process.dropout.DropoutD1
 import com.wsr.process.dropout.DropoutD2
 import com.wsr.process.function.linear.LinearD1
 import com.wsr.process.function.linear.LinearD2
+import com.wsr.process.function.linear.LinearD3
 import com.wsr.process.function.relu.LeakyReLUD1
 import com.wsr.process.function.relu.LeakyReLUD2
 import com.wsr.process.function.relu.ReLUD1
@@ -80,6 +81,7 @@ internal val json =
                     // Function
                     subclass(LinearD1::class)
                     subclass(LinearD2::class)
+                    subclass(LinearD3::class)
 
                     subclass(ReLUD1::class)
                     subclass(ReLUD2::class)
