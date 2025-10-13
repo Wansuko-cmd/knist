@@ -11,6 +11,8 @@ fun IOType.D1.pow(n: Int): IOType.D1 {
     return IOType.d1(result)
 }
 
+fun List<IOType.D1>.pow(n: Int) = map { it.pow(n) }
+
 fun IOType.D2.pow(n: Int): IOType.D2 {
     val result = this.value.copyOf()
     for (i in result.indices) {
