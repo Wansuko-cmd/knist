@@ -2,10 +2,8 @@ package com.wsr.process.affine
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.dot.dot
+import com.wsr.dot.matmul.matMul
 import com.wsr.operator.div
-import com.wsr.operator.minus
-import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.process.Process
 import com.wsr.reshape.toD2
@@ -28,10 +26,10 @@ class AffineD2 internal constructor(
     override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
         val output = forward(input)
         val delta = calcDelta(output)
-        val dx = delta.map { delta -> (0 until channel).map { weight[it].dot(delta[it]) }.toD2() }
+        val dx = delta.map { delta -> (0 until channel).map { weight[it].matMul(delta[it]) }.toD2() }
         val dwi = input.toD3().transpose(1, 2, 0)
         val dwd = delta.toD3().transpose(1, 0, 2)
-        val dw = (0 until channel).map { dwi[it].dot(dwd[it]) }.toD3() / input.size.toDouble()
+        val dw = (0 until channel).map { dwi[it].matMul(dwd[it]) }.toD3() / input.size.toDouble()
         weight = optimizer.adapt(weight = weight, dw = dw)
         return dx
     }
@@ -40,7 +38,7 @@ class AffineD2 internal constructor(
         val weight = (0 until channel).map { weight[it].transpose() }
         return input.map { input ->
             (0 until channel)
-                .map { weight[it].dot(input[it]) }
+                .map { weight[it].matMul(input[it]) }
                 .toD2()
         }
     }
