@@ -6,7 +6,6 @@ import com.wsr.IOType
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
 
 class BiasD3Test {
     @Test
