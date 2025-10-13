@@ -27,7 +27,7 @@ class SumExtTest {
             )
         val result = list.sum()
         assertEquals(
-            expected = IOType.Companion.d1(listOf(12.0, 15.0, 18.0)),
+            expected = listOf(6.0, 15.0, 24.0),
             actual = result,
         )
     }
