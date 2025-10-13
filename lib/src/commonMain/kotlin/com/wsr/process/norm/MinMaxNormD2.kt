@@ -7,8 +7,8 @@ import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.process.Process
-import kotlinx.serialization.Serializable
 import kotlin.math.pow
+import kotlinx.serialization.Serializable
 
 @Serializable
 class MinMaxNormD2 internal constructor(
@@ -84,10 +84,10 @@ class MinMaxNormD2 internal constructor(
 
 fun <T : IOType> NetworkBuilder.D2<T>.minMaxNorm(optimizer: Optimizer = this.optimizer) = addProcess(
     process =
-        MinMaxNormD2(
-            outputX = inputX,
-            outputY = inputY,
-            optimizer = optimizer.d2(inputX, inputY),
-            weight = IOType.d2(inputX, inputY) { _, _ -> random.nextDouble(-1.0, 1.0) },
-        ),
+    MinMaxNormD2(
+        outputX = inputX,
+        outputY = inputY,
+        optimizer = optimizer.d2(inputX, inputY),
+        weight = IOType.d2(inputX, inputY) { _, _ -> random.nextDouble(-1.0, 1.0) },
+    ),
 )
