@@ -2,6 +2,8 @@ package com.wsr.process.norm.minmax
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.collection.max
+import com.wsr.collection.min
 import com.wsr.dot.inner.inner
 import com.wsr.operator.plus
 import com.wsr.operator.times
@@ -17,8 +19,8 @@ class MinMaxNormD1 internal constructor(
     private var weight: IOType.D1,
 ) : Process.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> {
-        val min = input.map { it.value.min() }
-        val max = input.map { it.value.max() }
+        val min = input.min()
+        val max = input.max()
         return List(input.size) {
             val denominator = max[it] - min[it]
             IOType.d1(outputSize) { x -> weight[x] * (input[it][x] - min[it]) / denominator }
@@ -26,11 +28,12 @@ class MinMaxNormD1 internal constructor(
     }
 
     override fun train(input: List<IOType.D1>, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
-        val min = input.map { it.value.min() }
-        val max = input.map { it.value.max() }
+        val min = input.min()
+        val max = input.max()
 
-        val numerator =
-            List(input.size) { IOType.d1(input[it].shape) { x -> input[it][x] - min[it] } }
+        val numerator = List(input.size) {
+            IOType.d1(input[it].shape) { x -> input[it][x] - min[it] }
+        }
         val denominator = List(numerator.size) { 1 / (max[it] - min[it]) }
 
         val mean = List(input.size) { denominator[it] * numerator[it] }
@@ -79,8 +82,7 @@ class MinMaxNormD1 internal constructor(
 }
 
 fun <T : IOType> NetworkBuilder.D1<T>.minMaxNorm(optimizer: Optimizer = this.optimizer) = addProcess(
-    process =
-    MinMaxNormD1(
+    process = MinMaxNormD1(
         outputSize = inputSize,
         optimizer = optimizer.d1(inputSize),
         weight = IOType.d1(inputSize) { random.nextDouble(-1.0, 1.0) },
