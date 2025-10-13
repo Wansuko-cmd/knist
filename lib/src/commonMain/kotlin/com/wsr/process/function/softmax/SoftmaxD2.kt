@@ -2,8 +2,8 @@ package com.wsr.process.function.softmax
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.process.Process
 import com.wsr.collection.sum
+import com.wsr.process.Process
 import kotlin.math.exp
 import kotlinx.serialization.Serializable
 

@@ -7,8 +7,8 @@ import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.process.Process
-import kotlinx.serialization.Serializable
 import kotlin.math.pow
+import kotlinx.serialization.Serializable
 
 @Serializable
 class MinMaxNormD1 internal constructor(
