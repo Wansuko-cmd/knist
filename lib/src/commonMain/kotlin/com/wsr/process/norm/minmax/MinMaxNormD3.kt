@@ -59,29 +59,27 @@ class MinMaxNormD3 internal constructor(
 
         // 分母側(dy/d[max(x) - min(x)])
         val dDenominator: List<Double> =
-            List(input.size) { -1 * denominator[it].pow(2) * (numerator[it] * dOutput[it]).sum() }
+            List(input.size) { denominator[it].pow(2) * (numerator[it] * dOutput[it]).sum() }
 
         // 分子側(dy/d[x - min(x)])
         val dNumerator = List(input.size) { denominator[it] * dOutput[it] }
 
-        // 各要素(dy/dx, dy/min(x), dy/max(x))
-        val dx1 = List(input.size) { -1.0 * min[it] * dNumerator[it] }
-        val dx2 = List(input.size) {
-            // dy/min(x) <- max(x) - min(x)側
-            val dMin = max[it] * dDenominator[it]
-            IOType.d3(outputX, outputY, outputZ) { x, y, z ->
-                if (input[it][x, y, z] == min[it]) input[it][x, y, z] * dNumerator[it][x, y, z] + dMin else 0.0
+        return List(input.size) {
+            IOType.d3(input[it].shape) { x, y, z ->
+                /**
+                 * dy/input + dy/min(x) + dy/max(x)
+                 * dy/dx = dNumerator
+                 * dy/min(x) = if(x == min(x)) -dNumerator + dDenominator else 0.0
+                 * dy/max(x) = if(x == max(x)) -dDenominator else 0.0
+                 */
+                val inputValue = input[it][x, y, z]
+                when (inputValue) {
+                    min[it] -> dDenominator[it]
+                    max[it] -> dNumerator[it][x, y, z] - dDenominator[it]
+                    else -> dNumerator[it][x, y, z]
+                }
             }
         }
-        val dx3 = List(input.size) {
-            // dy/max(x)
-            val dMax = -1.0 * min[it] * dDenominator[it]
-            IOType.d3(outputX, outputY, outputZ) { x, y, z ->
-                if (input[it][x, y, z] == max[it]) dMax else 0.0
-            }
-        }
-
-        return List(input.size) { dx1[it] + dx2[it] + dx3[it] }
     }
 
     private operator fun IOType.D3.times(other: IOType.D3) = IOType.d3(shape) { x, y, z ->
