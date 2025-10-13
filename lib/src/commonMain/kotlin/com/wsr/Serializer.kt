@@ -50,6 +50,7 @@ import com.wsr.process.norm.MinMaxNormD1
 import com.wsr.process.pool.MaxPoolD2
 import com.wsr.process.pool.MaxPoolD3
 import com.wsr.reshape.gad.GlobalAverageD2ToD1
+import com.wsr.reshape.gad.GlobalAverageD3ToD1
 import com.wsr.reshape.reshape.ReshapeD2ToD1
 import com.wsr.reshape.reshape.ReshapeD3ToD1
 import com.wsr.reshape.reshape.ReshapeD3ToD2
@@ -126,6 +127,7 @@ internal val json =
                     subclass(ReshapeD3ToD2::class)
                     subclass(ReshapeD3ToD1::class)
                     subclass(GlobalAverageD2ToD1::class)
+                    subclass(GlobalAverageD3ToD1::class)
 
                     /**
                      * Output
