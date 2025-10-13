@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 
 class SoftmaxD1Test {
     @Test
-    fun `SoftmaxD1の_expect=softmax関数を適用`() {
+    fun `SoftmaxD1の_expect=確率分布を計算する`() {
         val softmax = SoftmaxD1(outputSize = 3)
 
         // [[1, 2, 3]]
@@ -34,7 +34,7 @@ class SoftmaxD1Test {
     }
 
     @Test
-    fun `SoftmaxD1の_train=softmax微分を適用`() {
+    fun `SoftmaxD1の_train=Softmaxの微分を正しく計算する`() {
         val softmax = SoftmaxD1(outputSize = 2)
 
         // [[1, 2]]
