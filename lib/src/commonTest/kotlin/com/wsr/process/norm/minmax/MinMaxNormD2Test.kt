@@ -1,6 +1,6 @@
 @file:Suppress("NonAsciiCharacters")
 
-package com.wsr.process.norm
+package com.wsr.process.norm.minmax
 
 import com.wsr.IOType
 import com.wsr.optimizer.sgd.Sgd
