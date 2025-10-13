@@ -6,8 +6,8 @@ import com.wsr.operator.minus
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
-import com.wsr.pow.pow
-import com.wsr.sqrt.sqrt
+import com.wsr.power.pow
+import com.wsr.power.sqrt
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
 
