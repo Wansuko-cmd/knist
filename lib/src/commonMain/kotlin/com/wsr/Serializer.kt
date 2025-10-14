@@ -46,7 +46,12 @@ import com.wsr.process.function.sigmoid.SigmoidD3
 import com.wsr.process.function.softmax.SoftmaxD1
 import com.wsr.process.function.softmax.SoftmaxD2
 import com.wsr.process.function.softmax.SoftmaxD3
+import com.wsr.process.norm.layer.LayerNormD1
+import com.wsr.process.norm.layer.LayerNormD2
+import com.wsr.process.norm.layer.LayerNormD3
 import com.wsr.process.norm.minmax.MinMaxNormD1
+import com.wsr.process.norm.minmax.MinMaxNormD2
+import com.wsr.process.norm.minmax.MinMaxNormD3
 import com.wsr.process.pool.MaxPoolD2
 import com.wsr.process.pool.MaxPoolD3
 import com.wsr.reshape.gad.GlobalAverageD2ToD1
@@ -115,7 +120,12 @@ internal val json =
                     subclass(SoftmaxD3::class)
 
                     // Norm
+                    subclass(LayerNormD1::class)
+                    subclass(LayerNormD2::class)
+                    subclass(LayerNormD3::class)
                     subclass(MinMaxNormD1::class)
+                    subclass(MinMaxNormD2::class)
+                    subclass(MinMaxNormD3::class)
 
                     // Pool
                     subclass(MaxPoolD2::class)
