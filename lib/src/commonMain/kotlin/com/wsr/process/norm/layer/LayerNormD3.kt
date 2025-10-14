@@ -12,9 +12,9 @@ import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
 import com.wsr.process.Process
-import kotlinx.serialization.Serializable
 import kotlin.math.pow
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
 
 @Serializable
 class LayerNormD3 internal constructor(

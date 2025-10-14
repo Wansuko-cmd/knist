@@ -6,15 +6,15 @@ import com.wsr.collection.average
 import com.wsr.collection.batchAverage
 import com.wsr.collection.sum
 import com.wsr.operator.div
-import com.wsr.operator.plus
 import com.wsr.operator.minus
+import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
 import com.wsr.process.Process
-import kotlinx.serialization.Serializable
 import kotlin.math.pow
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
 
 @Serializable
 class LayerNormD2 internal constructor(
