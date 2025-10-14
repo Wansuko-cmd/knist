@@ -24,50 +24,44 @@ class LayerNormD1 internal constructor(
 ) : Process.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> {
         val average = input.average()
-        val numerator = List(input.size) {
-            IOType.d1(input[it].shape) { x -> input[it][x] - average[it] }
-        }
+        val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
         val denominator = variance.map { sqrt(it + 1e-10) }
 
-        return List(input.size) {
-            weight * (numerator[it] / denominator[it])
-        }
+        return weight * (numerator / denominator)
     }
 
     override fun train(input: List<IOType.D1>, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
         val average = input.average()
-        val numerator = List(input.size) { input[it] - average[it] }
+        val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
         val denominator = variance.map { sqrt(it + 1e-10) }
 
-        val normalize = List(input.size) { numerator[it] / denominator[it] }
-        val output = List(input.size) { weight * normalize[it] }
+        val normalize = numerator / denominator
+        val output = weight * normalize
         val delta = calcDelta(output)
 
-        val dOutput = delta.map { it * weight }
+        val dOutput = delta * weight
 
         weight = optimizer.adapt(
             weight = weight,
             dw = run {
                 val normalize = normalize.batchAverage()
                 val delta = delta.batchAverage()
-                IOType.d1(weight.shape) { x -> normalize[x] * delta[x] }
+                normalize * delta
             },
         )
 
         // dy/[x-average(x)]
-        val dNumerator = List(input.size) { dOutput[it] / denominator[it] }
+        val dNumerator = dOutput / denominator
 
         // dy/x <- (x-average(x)のx)
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx
-        val dx2 = List(input.size) {
-            -dNumerator[it].sum() / outputSize.toDouble()
-        }
+        val dx2 = List(input.size) { -dNumerator[it].sum() / outputSize.toDouble() }
 
         // dy/x <- variance(x)のx
         val dx3: List<IOType.D1> = List(input.size) {
