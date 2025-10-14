@@ -27,6 +27,9 @@ operator fun List<IOType.D1>.minus(other: List<Double>) = List(size) { this[it] 
 @JvmName("minusD1sToD1")
 operator fun List<IOType.D1>.minus(other: IOType.D1) = List(size) { this[it] - other }
 
+@JvmName("minusD1sToD1s")
+operator fun List<IOType.D1>.minus(other: List<IOType.D1>) = List(size) { this[it] - other[it] }
+
 /**
  * IOType.D2
  */
@@ -48,6 +51,9 @@ operator fun List<IOType.D2>.minus(other: List<Double>) = List(size) { this[it] 
 @JvmName("minusD2sToD2")
 operator fun List<IOType.D2>.minus(other: IOType.D2) = List(size) { this[it] - other }
 
+@JvmName("minusD2sToD2s")
+operator fun List<IOType.D2>.minus(other: List<IOType.D2>) = List(size) { this[it] - other[it] }
+
 /**
  * IOType.D3
  */
@@ -68,3 +74,6 @@ operator fun List<IOType.D3>.minus(other: List<Double>) = List(size) { this[it] 
 
 @JvmName("minusD3sToD3")
 operator fun List<IOType.D3>.minus(other: IOType.D3) = List(size) { this[it] - other }
+
+@JvmName("minusD3sToD3s")
+operator fun List<IOType.D3>.minus(other: List<IOType.D3>) = List(size) { this[it] - other[it] }
