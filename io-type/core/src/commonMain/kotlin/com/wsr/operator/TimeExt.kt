@@ -71,3 +71,5 @@ operator fun IOType.D3.times(other: IOType.D3): IOType.D3 {
     }
     return IOType.d3(shape, result)
 }
+
+operator fun IOType.D3.times(other: List<IOType.D3>) = other.map { this * it }
