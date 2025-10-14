@@ -2,6 +2,7 @@ package com.wsr.operator
 
 import com.wsr.BLAS
 import com.wsr.IOType
+import com.wsr.operator.plus
 
 operator fun Double.plus(other: IOType.D1): IOType.D1 {
     val result = other.value.copyOf()
@@ -27,7 +28,26 @@ operator fun IOType.D1.plus(other: IOType.D1): IOType.D1 {
 
 operator fun List<IOType.D1>.plus(other: IOType.D1) = List(size) { this[it] + other }
 
+@JvmName("plusToD1List")
 operator fun List<IOType.D1>.plus(other: List<IOType.D1>) = List(size) { this[it] + other[it] }
+
+@JvmName("plusDoublesToD2List")
+operator fun List<Double>.plus(other: List<IOType.D2>) = List(size) { this[it] + other[it] }
+
+@JvmName("plusD2ListToDoubles")
+operator fun List<IOType.D2>.plus(other: List<Double>) = List(size) { this[it] + other[it] }
+
+operator fun IOType.D2.plus(other: Double): IOType.D2 {
+    val result = this.value.copyOf()
+    for (i in result.indices) result[i] += other
+    return IOType.d2(shape, result)
+}
+
+operator fun Double.plus(other: IOType.D2): IOType.D2 = other + this
+
+operator fun Double.plus(other: List<IOType.D2>): List<IOType.D2> = other.map { this + it }
+
+operator fun List<IOType.D2>.plus(other: Double): List<IOType.D2> = map { it + other }
 
 operator fun IOType.D2.plus(other: IOType.D2): IOType.D2 {
     val result = this.value.copyOf()
@@ -36,6 +56,9 @@ operator fun IOType.D2.plus(other: IOType.D2): IOType.D2 {
 }
 
 operator fun List<IOType.D2>.plus(other: IOType.D2) = List(size) { this[it] + other }
+
+@JvmName("plusToD2List")
+operator fun List<IOType.D2>.plus(other: List<IOType.D2>) = List(size) { this[it] + other[it] }
 
 operator fun IOType.D3.plus(other: IOType.D3): IOType.D3 {
     val result = this.value.copyOf()
