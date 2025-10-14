@@ -19,7 +19,7 @@ operator fun Double.plus(other: List<IOType.D2>): List<IOType.D2> = other.map { 
 operator fun Double.plus(other: IOType.D3): IOType.D3 {
     val result = other.value.copyOf()
     for (i in result.indices) result[i] += this
-    return IOType.d3(shape = other.shape, value =result)
+    return IOType.d3(shape = other.shape, value = result)
 }
 
 @JvmName("plusToD1s")

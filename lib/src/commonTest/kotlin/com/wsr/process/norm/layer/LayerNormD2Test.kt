@@ -96,10 +96,18 @@ class LayerNormD2Test {
         val afterOutput = norm._expect(listOf(input[0]))[0] as IOType.D2
         val expectedStd = sqrt(2.0 + 1e-10)
         // output = [[2.1414, 2], [2, 1.8586]] * [[-2, 0], [0, 2]] / std
-        assertEquals(expected = (2.0 + 0.1 * 2.0 / expectedStd) * (-2.0 / expectedStd), actual = afterOutput[0, 0], absoluteTolerance = 1e-4)
+        assertEquals(
+            expected = (2.0 + 0.1 * 2.0 / expectedStd) * (-2.0 / expectedStd),
+            actual = afterOutput[0, 0],
+            absoluteTolerance = 1e-4,
+        )
         assertEquals(expected = 2.0 * (0.0 / expectedStd), actual = afterOutput[0, 1], absoluteTolerance = 1e-4)
         assertEquals(expected = 2.0 * (0.0 / expectedStd), actual = afterOutput[1, 0], absoluteTolerance = 1e-4)
-        assertEquals(expected = (2.0 - 0.1 * 2.0 / expectedStd) * (2.0 / expectedStd), actual = afterOutput[1, 1], absoluteTolerance = 1e-4)
+        assertEquals(
+            expected = (2.0 - 0.1 * 2.0 / expectedStd) * (2.0 / expectedStd),
+            actual = afterOutput[1, 1],
+            absoluteTolerance = 1e-4,
+        )
     }
 
     @Test
@@ -188,10 +196,7 @@ class LayerNormD2Test {
      * 損失関数（テスト用）
      * loss = Σ(output_ij * delta_ij)
      */
-    private fun calcLoss(
-        output: List<IOType>,
-        calcDelta: (List<IOType>) -> List<IOType>,
-    ): Double {
+    private fun calcLoss(output: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): Double {
         val delta = calcDelta(output)[0] as IOType.D2
         val out = output[0] as IOType.D2
         var loss = 0.0
