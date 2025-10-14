@@ -11,6 +11,7 @@ fun IOType.D1.pow(n: Int): IOType.D1 {
     return IOType.d1(result)
 }
 
+@JvmName("powD1List")
 fun List<IOType.D1>.pow(n: Int) = map { it.pow(n) }
 
 fun IOType.D2.pow(n: Int): IOType.D2 {
@@ -20,6 +21,9 @@ fun IOType.D2.pow(n: Int): IOType.D2 {
     }
     return IOType.d2(shape, result)
 }
+
+@JvmName("powD2List")
+fun List<IOType.D2>.pow(n: Int): List<IOType.D2> = map { it.pow(n) }
 
 fun IOType.D3.pow(n: Int): IOType.D3 {
     val result = this.value.copyOf()
