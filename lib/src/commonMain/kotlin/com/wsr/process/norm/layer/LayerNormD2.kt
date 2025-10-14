@@ -7,6 +7,7 @@ import com.wsr.collection.batchAverage
 import com.wsr.collection.sum
 import com.wsr.operator.div
 import com.wsr.operator.plus
+import com.wsr.operator.minus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
@@ -24,29 +25,23 @@ class LayerNormD2 internal constructor(
 ) : Process.D2() {
     override fun expect(input: List<IOType.D2>): List<IOType.D2> {
         val average = input.average().average()
-        val numerator = List(input.size) {
-            IOType.d2(input[it].shape) { x, y -> input[it][x, y] - average[it] }
-        }
+        val numerator = input - average
 
         val variance = numerator.pow(n = 2).average().average()
         val denominator = variance.map { sqrt(it + 1e-10) }
 
-        return List(input.size) {
-            weight * (numerator[it] / denominator[it])
-        }
+        return weight * (numerator / denominator)
     }
 
     override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
         val average = input.average().average()
-        val numerator = List(input.size) {
-            IOType.d2(input[it].shape) { x, y -> input[it][x, y] - average[it] }
-        }
+        val numerator = input - average
 
         val variance = numerator.pow(n = 2).average().average()
         val denominator = variance.map { sqrt(it + 1e-10) }
 
-        val normalize = List(input.size) { numerator[it] / denominator[it] }
-        val output = List(input.size) { weight * normalize[it] }
+        val normalize = numerator / denominator
+        val output = weight * normalize
         val delta = calcDelta(output)
 
         val dOutput = delta.map { it * weight }
@@ -56,12 +51,12 @@ class LayerNormD2 internal constructor(
             dw = run {
                 val normalize = normalize.batchAverage()
                 val delta = delta.batchAverage()
-                IOType.d2(weight.shape) { x, y -> normalize[x, y] * delta[x, y] }
+                normalize * delta
             },
         )
 
         // dy/[x-average(x)]
-        val dNumerator = List(input.size) { dOutput[it] / denominator[it] }
+        val dNumerator = dOutput / denominator
 
         // dy/x <- (x-average(x)のx)
         val dx1 = dNumerator
