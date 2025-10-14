@@ -22,7 +22,7 @@ operator fun Double.plus(other: IOType.D3): IOType.D3 {
     return IOType.d3(shape = other.shape, value = result)
 }
 
-@JvmName("plusToD1s")
+@JvmName("plusDoublesToD1s")
 operator fun List<Double>.plus(other: List<IOType.D1>): List<IOType.D1> = List(size) { this[it] + other[it] }
 
 @JvmName("plusDoublesToD2s")
@@ -46,12 +46,13 @@ operator fun IOType.D1.plus(other: IOType.D1): IOType.D1 {
     return IOType.d1(result)
 }
 
-@JvmName("plusToDoubles")
+@JvmName("plusD1sToDoubles")
 operator fun List<IOType.D1>.plus(other: List<Double>): List<IOType.D1> = other.plus(this)
 
+@JvmName("plusD1sToD1")
 operator fun List<IOType.D1>.plus(other: IOType.D1) = List(size) { this[it] + other }
 
-@JvmName("plusToD1List")
+@JvmName("plusD1sToD1s")
 operator fun List<IOType.D1>.plus(other: List<IOType.D1>) = List(size) { this[it] + other[it] }
 
 /**
@@ -74,9 +75,10 @@ operator fun List<IOType.D2>.plus(other: Double): List<IOType.D2> = map { it + o
 @JvmName("plusD2ListToDoubles")
 operator fun List<IOType.D2>.plus(other: List<Double>) = List(size) { this[it] + other[it] }
 
+@JvmName("plusD2sToD2")
 operator fun List<IOType.D2>.plus(other: IOType.D2) = List(size) { this[it] + other }
 
-@JvmName("plusD2sToD2List")
+@JvmName("plusD2sToD2s")
 operator fun List<IOType.D2>.plus(other: List<IOType.D2>) = List(size) { this[it] + other[it] }
 
 /**
@@ -94,10 +96,11 @@ operator fun IOType.D3.plus(other: IOType.D3): IOType.D3 {
     return IOType.d3(this.shape, result)
 }
 
-@JvmName("plusToDoubles")
+@JvmName("plusD3sToDoubles")
 operator fun List<IOType.D3>.plus(other: List<Double>): List<IOType.D3> = other.plus(this)
 
+@JvmName("plusD3sToD3")
 operator fun List<IOType.D3>.plus(other: IOType.D3) = List(size) { this[it] + other }
 
-@JvmName("plusToD1List")
+@JvmName("plusD3sToD3s")
 operator fun List<IOType.D3>.plus(other: List<IOType.D3>) = List(size) { this[it] + other[it] }

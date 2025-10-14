@@ -21,8 +21,14 @@ operator fun IOType.D1.div(other: Double): IOType.D1 {
     return IOType.d1(result)
 }
 
+@JvmName("divD1sToDouble")
+operator fun List<IOType.D1>.div(other: Double) = map { it / other }
+
 @JvmName("divD1sToDoubles")
 operator fun List<IOType.D1>.div(other: List<Double>) = List(size) { this[it] / other[it] }
+
+@JvmName("divD1sToD1")
+operator fun List<IOType.D1>.div(other: IOType.D1) = List(size) { IOType.d1(this[it].shape) { i -> this[it][i] / other[i] } }
 
 /**
  * IOType.D2
@@ -39,6 +45,9 @@ operator fun List<IOType.D2>.div(other: Double) = map { it / other }
 @JvmName("divD2sToDoubles")
 operator fun List<IOType.D2>.div(other: List<Double>) = List(size) { this[it] / other[it] }
 
+@JvmName("divD2sToD2")
+operator fun List<IOType.D2>.div(other: IOType.D2) = List(size) { IOType.d2(this[it].shape) { i, j -> this[it][i, j] / other[i, j] } }
+
 /**
  * IOType.D3
  */
@@ -53,3 +62,6 @@ operator fun List<IOType.D3>.div(other: Double) = map { it / other }
 
 @JvmName("divD3sToDoubles")
 operator fun List<IOType.D3>.div(other: List<Double>) = List(size) { this[it] / other[it] }
+
+@JvmName("divD3sToD3")
+operator fun List<IOType.D3>.div(other: IOType.D3) = List(size) { IOType.d3(this[it].shape) { i, j, k -> this[it][i, j, k] / other[i, j, k] } }
