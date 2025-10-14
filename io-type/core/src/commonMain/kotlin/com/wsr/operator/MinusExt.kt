@@ -51,11 +51,20 @@ operator fun List<IOType.D2>.minus(other: IOType.D2) = List(size) { this[it] - o
 /**
  * IOType.D3
  */
+operator fun IOType.D3.minus(other: Double): IOType.D3 {
+    val result = this.value.copyOf()
+    for (i in result.indices) result[i] -= other
+    return IOType.d3(shape = shape, value = result)
+}
+
 operator fun IOType.D3.minus(other: IOType.D3): IOType.D3 {
     val result = this.value.copyOf()
     BLAS.daxpy(n = result.size, alpha = -1.0, x = other.value, incX = 1, y = result, incY = 1)
     return IOType.d3(this.shape, result)
 }
+
+@JvmName("minusD3sToDoubles")
+operator fun List<IOType.D3>.minus(other: List<Double>) = List(size) { this[it] - other[it] }
 
 @JvmName("minusD3sToD3")
 operator fun List<IOType.D3>.minus(other: IOType.D3) = List(size) { this[it] - other }

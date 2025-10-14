@@ -47,3 +47,9 @@ operator fun IOType.D3.div(other: Double): IOType.D3 {
     BLAS.dscal(n = result.size, alpha = 1.0 / other, x = result, incX = 1)
     return IOType.d3(shape, result)
 }
+
+@JvmName("divD3sToDouble")
+operator fun List<IOType.D3>.div(other: Double) = map { it / other }
+
+@JvmName("divD3sToDoubles")
+operator fun List<IOType.D3>.div(other: List<Double>) = List(size) { this[it] / other[it] }
