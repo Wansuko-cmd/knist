@@ -2,7 +2,7 @@ package com.wsr.process.bias
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.average
+import com.wsr.collection.batchAverage
 import com.wsr.operator.plus
 import com.wsr.optimizer.Optimizer
 import com.wsr.process.Process
@@ -21,7 +21,7 @@ class BiasD3(
     override fun train(input: List<IOType.D3>, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
         val output = input + weight
         val delta = calcDelta(output)
-        weight = optimizer.adapt(weight = weight, dw = delta.average())
+        weight = optimizer.adapt(weight = weight, dw = delta.batchAverage())
         return delta
     }
 }
