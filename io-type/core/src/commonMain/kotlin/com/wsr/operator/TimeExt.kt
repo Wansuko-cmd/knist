@@ -38,7 +38,7 @@ operator fun Double.times(other: List<IOType.D3>) = other.map { this * it }
  */
 operator fun IOType.D1.times(other: Double): IOType.D1 {
     val result = value.copyOf()
-    for (i in result.indices) result[i] *= other
+    BLAS.dscal(n = result.size, alpha = other, x = result, incX = 1)
     return IOType.d1(result)
 }
 
@@ -67,7 +67,7 @@ operator fun List<IOType.D1>.times(other: List<IOType.D1>) = List(size) { this[i
  */
 operator fun IOType.D2.times(other: Double): IOType.D2 {
     val result = value.copyOf()
-    for (i in result.indices) result[i] *= other
+    BLAS.dscal(n = result.size, alpha = other, x = result, incX = 1)
     return IOType.d2(shape, result)
 }
 
@@ -94,7 +94,7 @@ operator fun List<IOType.D2>.times(other: List<IOType.D2>) = List(size) { this[i
  */
 operator fun IOType.D3.times(other: Double): IOType.D3 {
     val result = value.copyOf()
-    for (i in result.indices) result[i] *= other
+    BLAS.dscal(n = result.size, alpha = other, x = result, incX = 1)
     return IOType.d3(shape, result)
 }
 
