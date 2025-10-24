@@ -3,6 +3,7 @@
 package com.wsr.process.skip
 
 import com.wsr.IOType
+import com.wsr.Layer
 import com.wsr.NetworkBuilder
 import com.wsr.operator.plus
 import com.wsr.process.Process
@@ -12,7 +13,8 @@ private typealias CALC_DELTA_D2 = (List<IOType.D2>) -> List<IOType.D2>
 
 @Serializable
 class SkipD2 internal constructor(
-    private val layers: List<Process.D2> = emptyList(),
+    // List<Process.D2>だがSerializer対策
+    private val layers: List<Layer> = emptyList(),
     override val outputX: Int,
     override val outputY: Int,
 ) : Process.D2() {
@@ -20,7 +22,7 @@ class SkipD2 internal constructor(
         return input + layers.fold(input) { acc, layer -> layer._expect(acc) as List<IOType.D2> }
     }
 
-    private val trainChain: ((List<IOType.D2>) -> List<IOType.D2>) -> CALC_DELTA_D2 =
+    private val trainChain: ((List<IOType.D2>) -> List<IOType.D2>) -> CALC_DELTA_D2 by lazy {
         layers.foldRight(
             initial = { final: CALC_DELTA_D2 -> final },
         ) { layer, acc ->
@@ -30,6 +32,7 @@ class SkipD2 internal constructor(
                 }
             }
         }
+    }
 
     override fun train(
         input: List<IOType.D2>,
