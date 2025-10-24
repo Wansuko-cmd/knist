@@ -54,6 +54,9 @@ import com.wsr.process.norm.minmax.MinMaxNormD2
 import com.wsr.process.norm.minmax.MinMaxNormD3
 import com.wsr.process.pool.MaxPoolD2
 import com.wsr.process.pool.MaxPoolD3
+import com.wsr.process.skip.SkipD1
+import com.wsr.process.skip.SkipD2
+import com.wsr.process.skip.SkipD3
 import com.wsr.reshape.gad.GlobalAverageD2ToD1
 import com.wsr.reshape.gad.GlobalAverageD3ToD1
 import com.wsr.reshape.gad.GlobalAverageD3ToD2
@@ -130,6 +133,11 @@ internal val json =
                     // Pool
                     subclass(MaxPoolD2::class)
                     subclass(MaxPoolD3::class)
+
+                    // Skip
+                    subclass(SkipD1::class)
+                    subclass(SkipD2::class)
+                    subclass(SkipD3::class)
 
                     /**
                      * Reshape
