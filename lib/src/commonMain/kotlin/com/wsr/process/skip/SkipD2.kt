@@ -18,9 +18,8 @@ class SkipD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
 ) : Process.D2() {
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> {
-        return input + layers.fold(input) { acc, layer -> layer._expect(acc) as List<IOType.D2> }
-    }
+    override fun expect(input: List<IOType.D2>): List<IOType.D2> =
+        input + layers.fold(input) { acc, layer -> layer._expect(acc) as List<IOType.D2> }
 
     private val trainChain: ((List<IOType.D2>) -> List<IOType.D2>) -> CALC_DELTA_D2 by lazy {
         layers.foldRight(
@@ -34,10 +33,7 @@ class SkipD2 internal constructor(
         }
     }
 
-    override fun train(
-        input: List<IOType.D2>,
-        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
-    ): List<IOType.D2> {
+    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
         var skipDelta: List<IOType.D2> = emptyList()
 
         val final: CALC_DELTA_D2 = { acc ->
