@@ -3,15 +3,12 @@ package dataset.mnist
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.optimizer.adam.AdamW
-import com.wsr.optimizer.momentum.Momentum
 import com.wsr.output.softmax.softmaxWithLoss
 import com.wsr.process.affine.affine
 import com.wsr.process.bias.bias
-import com.wsr.process.conv.convD1
 import com.wsr.process.function.relu.reLU
 import com.wsr.process.norm.layer.layerNorm
 import com.wsr.process.skip.skip
-import com.wsr.reshape.gad.globalAverageToD1
 import com.wsr.reshape.reshape.reshapeToD1
 import java.util.Random
 import maxIndex
