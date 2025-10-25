@@ -37,7 +37,7 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
                 .layerNorm().affine(neuron = 128).bias().reLU()
         }
         .affine(neuron = 10)
-        .softmaxWithLoss(converter = LabelConverter(2))
+        .softmaxWithLoss(converter = { LabelConverter(inputSize) })
 
     // テストデータを用意
     val random = seed?.let { Random(seed.toLong()) } ?: Random()

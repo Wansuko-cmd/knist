@@ -19,7 +19,7 @@ internal class MeanSquareD1 internal constructor(val outputSize: Int) : Output.D
 
 fun <T> NetworkBuilder.D1<T>.meanSquare() = addOutput(MeanSquareD1(inputSize))
 
-fun <I, O> NetworkBuilder.D1<I>.meanSquare(converter: Converter.D1<O>) = addOutput(
+fun <I, O> NetworkBuilder.D1<I>.meanSquare(converter: NetworkBuilder.D1<I>.() -> Converter.D1<O>) = addOutput(
     output = MeanSquareD1(inputSize),
     converter = converter,
 )
