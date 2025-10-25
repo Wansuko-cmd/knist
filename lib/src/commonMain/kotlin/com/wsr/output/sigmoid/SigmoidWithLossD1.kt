@@ -23,7 +23,7 @@ internal class SigmoidWithLossD1 internal constructor(val outputSize: Int) : Out
 
 fun <T> NetworkBuilder.D1<T>.sigmoidWithLoss() = addOutput(SigmoidWithLossD1(inputSize))
 
-fun <I, O> NetworkBuilder.D1<I>.sigmoidWithLoss(converter: Converter.D1<O>) = addOutput(
+fun <I, O> NetworkBuilder.D1<I>.sigmoidWithLoss(converter: NetworkBuilder.D1<I>.() -> Converter.D1<O>) = addOutput(
     output = SigmoidWithLossD1(inputSize),
     converter = converter,
 )
