@@ -2,10 +2,11 @@ package com.wsr
 
 import com.wsr.converter.Converter
 import com.wsr.converter.linear.LinearD1
+import com.wsr.layer.Layer
 import com.wsr.optimizer.Optimizer
-import com.wsr.output.Output
-import com.wsr.process.Process
-import com.wsr.reshape.Reshape
+import com.wsr.layer.output.Output
+import com.wsr.layer.process.Process
+import com.wsr.layer.reshape.Reshape
 import kotlin.random.Random
 
 sealed interface NetworkBuilder<I, O> {
