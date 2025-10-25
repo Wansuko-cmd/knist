@@ -22,6 +22,14 @@ class SkipD1 internal constructor(
         when {
             inputSize == outputSize -> { it: IOType.D1 -> it }
             inputSize < outputSize -> { it: IOType.D1 -> IOType.d1(it.value.copyOf(outputSize)) }
+            inputSize % outputSize == 0 -> { it: IOType.D1 ->
+                val stride = inputSize / outputSize
+                val result = DoubleArray(outputSize) { i ->
+                    val index = i * stride
+                    it.value.sliceArray(index until index + stride).average()
+                }
+                IOType.d1(result)
+            }
             else -> throw IllegalArgumentException()
         }
     }
@@ -30,6 +38,11 @@ class SkipD1 internal constructor(
         when {
             inputSize == outputSize -> { it: IOType.D1 -> it }
             inputSize < outputSize -> { it: IOType.D1 -> IOType.d1(it.value.copyOf(inputSize)) }
+            inputSize % outputSize == 0 -> { it: IOType.D1 ->
+                val stride = inputSize / outputSize
+                val result = DoubleArray(inputSize) { i -> it.value[i / stride] / stride }
+                IOType.d1(result)
+            }
             else -> throw IllegalArgumentException()
         }
     }
