@@ -88,8 +88,8 @@ fun <T : IOType> NetworkBuilder.D1<T>.skip(
 
     check(
         inputSize == last.outputSize ||
-        inputSize < last.outputSize ||
-        inputSize % last.outputSize == 0
+            inputSize < last.outputSize ||
+            inputSize % last.outputSize == 0,
     ) {
         """
             invalid parameter.

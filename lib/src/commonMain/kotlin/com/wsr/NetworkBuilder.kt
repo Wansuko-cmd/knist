@@ -25,10 +25,8 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
 
         fun addOutput(output: Output.D1) = Network<I, IOType.D1>(layers + output)
 
-        fun repeat(
-            times: Int,
-            builder: D1<I>.(index: Int) -> D1<I>,
-        ): D1<I> = (0 until times).fold(this) { acc, i -> acc.builder(i) }
+        fun repeat(times: Int, builder: D1<I>.(index: Int) -> D1<I>): D1<I> =
+            (0 until times).fold(this) { acc, i -> acc.builder(i) }
     }
 
     @ConsistentCopyVisibility
@@ -52,10 +50,8 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
             random = random,
         )
 
-        fun repeat(
-            times: Int,
-            builder: D2<I>.(index: Int) -> D2<I>,
-        ): D2<I> = (0 until times).fold(this) { acc, i -> this.builder(i) }
+        fun repeat(times: Int, builder: D2<I>.(index: Int) -> D2<I>): D2<I> =
+            (0 until times).fold(this) { acc, i -> this.builder(i) }
     }
 
     @ConsistentCopyVisibility
@@ -89,10 +85,8 @@ sealed interface NetworkBuilder<I : IOType, O : IOType> {
             random = random,
         )
 
-        fun repeat(
-            times: Int,
-            builder: D3<I>.(index: Int) -> D3<I>,
-        ): D3<I> = (0 until times).fold(this) { acc, i -> this.builder(i) }
+        fun repeat(times: Int, builder: D3<I>.(index: Int) -> D3<I>): D3<I> =
+            (0 until times).fold(this) { acc, i -> this.builder(i) }
     }
 
     companion object {

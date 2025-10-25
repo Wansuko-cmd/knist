@@ -122,8 +122,8 @@ fun <T : IOType> NetworkBuilder.D3<T>.skip(
 
     check(
         (inputX == last.outputX && inputY == last.outputY && inputZ == last.outputZ) ||
-                (inputX < last.outputX && inputY < last.outputY && inputZ < last.outputZ) ||
-                (inputX % last.outputX == 0 && inputY % last.outputY == 0 && inputZ % last.outputZ == 0)
+            (inputX < last.outputX && inputY < last.outputY && inputZ < last.outputZ) ||
+            (inputX % last.outputX == 0 && inputY % last.outputY == 0 && inputZ % last.outputZ == 0),
     ) {
         """
             invalid parameter.
