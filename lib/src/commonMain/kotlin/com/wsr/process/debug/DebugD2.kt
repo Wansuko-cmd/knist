@@ -7,10 +7,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-class DebugD2 internal constructor(
-    override val outputX: Int,
-    override val outputY: Int,
-) : Process.D2() {
+class DebugD2 internal constructor(override val outputX: Int, override val outputY: Int) : Process.D2() {
     @Transient
     var onInput: (List<IOType.D2>) -> Unit = {}
 
@@ -29,15 +26,13 @@ class DebugD2 internal constructor(
 /**
  * ※Json化するとラムダ式はリセットされる
  */
-fun <T> NetworkBuilder.D2<T>.debug(
-    onInput: (List<IOType.D2>) -> Unit = {},
-    onDelta: (List<IOType.D2>) -> Unit = {}
-) = addProcess(
-    process = DebugD2(
-        outputX = inputX,
-        outputY = inputY,
-    ).apply {
-        this.onInput = onInput
-        this.onDelta = onDelta
-    }
-)
+fun <T> NetworkBuilder.D2<T>.debug(onInput: (List<IOType.D2>) -> Unit = {}, onDelta: (List<IOType.D2>) -> Unit = {}) =
+    addProcess(
+        process = DebugD2(
+            outputX = inputX,
+            outputY = inputY,
+        ).apply {
+            this.onInput = onInput
+            this.onDelta = onDelta
+        },
+    )

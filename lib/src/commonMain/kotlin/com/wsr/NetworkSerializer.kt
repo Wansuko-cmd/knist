@@ -35,6 +35,9 @@ import com.wsr.process.debug.DebugD3
 import com.wsr.process.dropout.DropoutD1
 import com.wsr.process.dropout.DropoutD2
 import com.wsr.process.dropout.DropoutD3
+import com.wsr.process.function.linear.LinearD1 as ProcessLinearD1
+import com.wsr.process.function.linear.LinearD2 as ProcessLinearD2
+import com.wsr.process.function.linear.LinearD3 as ProcessLinearD3
 import com.wsr.process.function.relu.LeakyReLUD1
 import com.wsr.process.function.relu.LeakyReLUD2
 import com.wsr.process.function.relu.LeakyReLUD3
@@ -67,6 +70,7 @@ import com.wsr.reshape.gad.GlobalAverageD3ToD2
 import com.wsr.reshape.reshape.ReshapeD2ToD1
 import com.wsr.reshape.reshape.ReshapeD3ToD1
 import com.wsr.reshape.reshape.ReshapeD3ToD2
+import kotlin.reflect.KClass
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
@@ -78,10 +82,6 @@ import kotlinx.serialization.modules.plus
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.serializer
-import kotlin.reflect.KClass
-import com.wsr.process.function.linear.LinearD1 as ProcessLinearD1
-import com.wsr.process.function.linear.LinearD2 as ProcessLinearD2
-import com.wsr.process.function.linear.LinearD3 as ProcessLinearD3
 
 class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
     private val converterSerializer = json.serializersModule.serializer<Converter>()
