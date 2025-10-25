@@ -1,6 +1,6 @@
 package com.wsr
 
-import com.wsr.converter.InputConverter
+import com.wsr.converter.Converter
 import com.wsr.converter.linear.LinearD1
 import com.wsr.converter.linear.LinearD2
 import com.wsr.converter.linear.LinearD3
@@ -188,7 +188,7 @@ internal val json =
                     subclass(AdamWD3::class)
                 }
 
-                polymorphic(InputConverter::class) {
+                polymorphic(Converter::class) {
                     subclass(LinearD1::class)
                     subclass(LinearD2::class)
                     subclass(LinearD3::class)
@@ -197,7 +197,7 @@ internal val json =
     }
 
 internal class NetworkSerializer<I, O : IOType> : KSerializer<Network<I, O>> {
-    private val converterSerializer = json.serializersModule.serializer<InputConverter>()
+    private val converterSerializer = json.serializersModule.serializer<Converter>()
     private val layerSerializer = json.serializersModule.serializer<List<Layer>>()
 
     override val descriptor: SerialDescriptor =
