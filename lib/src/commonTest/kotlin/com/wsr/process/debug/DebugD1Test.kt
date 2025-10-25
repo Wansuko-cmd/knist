@@ -11,11 +11,10 @@ class DebugD1Test {
     fun `DebugD1の_expect=入力をそのまま返し、onInputを呼び出す`() {
         var capturedInput: List<IOType.D1>? = null
         val debug =
-            DebugD1(
-                outputSize = 3,
-                onInput = { capturedInput = it },
-                onDelta = {},
-            )
+            DebugD1(outputSize = 3).apply {
+                onInput = { capturedInput = it }
+                onDelta = {}
+            }
 
         // [1, 2, 3]
         val input =
@@ -36,11 +35,10 @@ class DebugD1Test {
         var capturedInput: List<IOType.D1>? = null
         var capturedDelta: List<IOType.D1>? = null
         val debug =
-            DebugD1(
-                outputSize = 3,
-                onInput = { capturedInput = it },
-                onDelta = { capturedDelta = it },
-            )
+            DebugD1(outputSize = 3).apply {
+                onInput = { capturedInput = it }
+                onDelta = { capturedDelta = it }
+            }
 
         // [1, 2, 3]
         val input =
