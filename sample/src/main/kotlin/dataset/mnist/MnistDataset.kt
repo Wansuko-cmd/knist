@@ -4,12 +4,12 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.Converter
 import com.wsr.optimizer.Optimizer
-import kotlinx.serialization.Serializable
-import maxIndex
 import java.io.DataInputStream
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.zip.GZIPInputStream
+import kotlinx.serialization.Serializable
+import maxIndex
 
 data class MnistDataset(val pixels: List<Double>, val label: Int, val imageSize: Int) {
     override fun toString(): String = pixels

@@ -13,13 +13,7 @@ class LinearD3(override val outputX: Int, override val outputY: Int, override va
     override fun decode(input: List<IOType.D3>): List<IOType.D3> = input
 }
 
-fun NetworkBuilder.Companion.inputD3(
-    x: Int,
-    y: Int,
-    z: Int,
-    optimizer: Optimizer,
-    seed: Int? = null
-) = inputD3(
+fun NetworkBuilder.Companion.inputD3(x: Int, y: Int, z: Int, optimizer: Optimizer, seed: Int? = null) = inputD3(
     converter = LinearD3(x, y, z),
     optimizer = optimizer,
     seed = seed,
