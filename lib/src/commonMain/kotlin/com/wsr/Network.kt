@@ -1,9 +1,6 @@
 package com.wsr
 
 import com.wsr.converter.Converter
-import com.wsr.process.debug.DebugD1
-import com.wsr.process.debug.DebugD2
-import com.wsr.process.debug.DebugD3
 import kotlinx.serialization.Serializable
 
 @Serializable(with = NetworkSerializer::class)
@@ -37,19 +34,9 @@ class Network<I, O> internal constructor(
         trainLambda(inputConverter._encode(input), outputConverter._encode(label))
     }
 
-    fun toJson(): String = NetworkSerializer.json.encodeToString(
-        serializer = NetworkSerializer<I, O>(),
-        value = Network(
-            inputConverter = inputConverter,
-            outputConverter = outputConverter,
-            layers = layers.filter { it !is DebugD1 && it !is DebugD2 && it !is DebugD3 },
-        ),
-    )
+    fun toJson(): String = NetworkSerializer.encodeToString(this)
 
     companion object {
-        fun <I : IOType, O : IOType> fromJson(value: String) = NetworkSerializer.json.decodeFromString<Network<I, O>>(
-            deserializer = NetworkSerializer(),
-            string = value,
-        )
+        fun <I : IOType, O : IOType> fromJson(value: String) = NetworkSerializer.decodeFromString<I, O>(value)
     }
 }
