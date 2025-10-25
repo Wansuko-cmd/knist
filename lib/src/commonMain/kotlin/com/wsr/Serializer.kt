@@ -156,7 +156,17 @@ class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
             modules.add(module)
         }
 
-        internal val json
+        fun <I, O> encodeToString(value: Network<I, O>) = json.encodeToString(
+            serializer = NetworkSerializer(),
+            value = value,
+        )
+
+        fun <I, O> decodeFromString(value: String) = json.decodeFromString<Network<I, O>>(
+            deserializer = NetworkSerializer(),
+            string = value,
+        )
+
+        private val json
             get() = Json {
                 serializersModule = modules.reduce { acc, module -> acc + module }
             }
