@@ -196,7 +196,7 @@ internal val json =
             }
     }
 
-internal class NetworkSerializer<I, O : IOType> : KSerializer<Network<I, O>> {
+internal class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
     private val converterSerializer = json.serializersModule.serializer<Converter>()
     private val layerSerializer = json.serializersModule.serializer<List<Layer>>()
 
@@ -209,11 +209,13 @@ internal class NetworkSerializer<I, O : IOType> : KSerializer<Network<I, O>> {
 
     override fun serialize(encoder: Encoder, value: Network<I, O>) {
         converterSerializer.serialize(encoder, value.inputConverter)
+        converterSerializer.serialize(encoder, value.outputConverter)
         layerSerializer.serialize(encoder, value.layers)
     }
 
     override fun deserialize(decoder: Decoder) = Network<I, O>(
         inputConverter = converterSerializer.deserialize(decoder),
+        outputConverter = converterSerializer.deserialize(decoder),
         layers = layerSerializer.deserialize(decoder),
     )
 }
