@@ -2,12 +2,12 @@ package dataset.mnist
 
 import com.wsr.IOType
 import com.wsr.converter.Converter
-import kotlinx.serialization.Serializable
-import maxIndex
 import java.io.DataInputStream
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.zip.GZIPInputStream
+import kotlinx.serialization.Serializable
+import maxIndex
 
 data class MnistDataset(val pixels: List<Double>, val label: Int, val imageSize: Int) {
     override fun toString(): String = pixels
@@ -50,10 +50,7 @@ data class MnistDataset(val pixels: List<Double>, val label: Int, val imageSize:
 }
 
 @Serializable
-data class PixelConverter(
-    override val outputX: Int,
-    override val outputY: Int,
-) : Converter.D2<List<Double>>() {
+data class PixelConverter(override val outputX: Int, override val outputY: Int) : Converter.D2<List<Double>>() {
     override fun encode(input: List<List<Double>>): List<IOType.D2> = input
         .map { IOType.d2(listOf(28, 28), it) }
 
