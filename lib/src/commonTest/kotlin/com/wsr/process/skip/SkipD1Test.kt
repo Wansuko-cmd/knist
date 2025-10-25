@@ -137,4 +137,72 @@ class SkipD1Test {
         assertEquals(expected = 3.6, actual = afterOutput[0], absoluteTolerance = 1e-10)
         assertEquals(expected = 4.2, actual = afterOutput[1], absoluteTolerance = 1e-10)
     }
+
+    @Test
+    fun `SkipD1の_expect=inputSizeがoutputSizeより小さい場合にzero-paddingで拡張される`() {
+        // inputSize=2, outputSize=3
+        // サブ層: Affine([[1, 0], [0, 1], [0, 0]]) - 2次元を3次元に変換
+        val affine = AffineD1(
+            outputSize = 3,
+            optimizer = Sgd(0.1).d2(2, 3),
+            weight = IOType.d2(2, 3) { x, y -> if (x == y) 1.0 else 0.0 },
+        )
+
+        val skip = SkipD1(
+            layers = listOf(affine),
+            inputSize = 2,
+            outputSize = 3,
+        )
+
+        // input = [10, 20]
+        val input = listOf(IOType.d1(listOf(10.0, 20.0)))
+
+        // main path: Affine([[1,0,0],[0,1,0]]^T) dot [10, 20] = [10, 20, 0]
+        // skip path: [10, 20, 0] (zero-padding)
+        // 出力: [10, 20, 0] + [10, 20, 0] = [20, 40, 0]
+        val result = skip._expect(input)
+
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0] as IOType.D1
+        assertEquals(expected = 20.0, actual = output[0])
+        assertEquals(expected = 40.0, actual = output[1])
+        assertEquals(expected = 0.0, actual = output[2])
+    }
+
+    @Test
+    fun `SkipD1の_train=inputSizeがoutputSizeより小さい場合に勾配が正しく切り詰められる`() {
+        // inputSize=2, outputSize=3
+        // サブ層: Affine([[1, 0], [0, 1], [0, 0]]) - 恒等変換的に2->3次元変換
+        val affine = AffineD1(
+            outputSize = 3,
+            optimizer = Sgd(0.1).d2(2, 3),
+            weight = IOType.d2(2, 3) { x, y -> if (x == y) 1.0 else 0.0 },
+        )
+
+        val skip = SkipD1(
+            layers = listOf(affine),
+            inputSize = 2,
+            outputSize = 3,
+        )
+
+        // input = [1, 2]
+        val input = listOf(IOType.d1(listOf(1.0, 2.0)))
+
+        // 次の層からのdelta = [10, 20, 30]
+        val calcDelta: (List<IOType>) -> List<IOType> = {
+            listOf(IOType.d1(listOf(10.0, 20.0, 30.0)))
+        }
+
+        val result = skip._train(input, calcDelta)
+
+        assertEquals(expected = 1, actual = result.size)
+        val dx = result[0] as IOType.D1
+
+        // skip pathの勾配: [10, 20, 30] -> [10, 20] (最初の2要素のみ取る)
+        // main pathの勾配: Affine^Tを通過
+        //   [[1,0,0],[0,1,0]] dot [10, 20, 30] = [10, 20]
+        // 合計: [10, 20] + [10, 20] = [20, 40]
+        assertEquals(expected = 20.0, actual = dx[0])
+        assertEquals(expected = 40.0, actual = dx[1])
+    }
 }
