@@ -2,6 +2,7 @@ package com.wsr.output.softmax
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.converter.Converter
 import com.wsr.operator.minus
 import com.wsr.output.Output
 import kotlin.math.exp
@@ -24,3 +25,8 @@ internal class SoftmaxWithLossD1 internal constructor(val outputSize: Int) : Out
 }
 
 fun <T> NetworkBuilder.D1<T>.softmaxWithLoss() = addOutput(SoftmaxWithLossD1(inputSize))
+
+fun <I, O> NetworkBuilder.D1<I>.softmaxWithLoss(converter: Converter.D1<O>) = addOutput(
+    output = SoftmaxWithLossD1(inputSize),
+    converter = converter,
+)

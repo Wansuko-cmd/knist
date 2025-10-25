@@ -1,7 +1,7 @@
 package dataset.mnist
 
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.NetworkSerializer
 import com.wsr.optimizer.adam.AdamW
 import com.wsr.output.softmax.softmaxWithLoss
 import com.wsr.process.affine.affine
@@ -11,11 +11,21 @@ import com.wsr.process.norm.layer.layerNorm
 import com.wsr.process.skip.skip
 import com.wsr.reshape.reshape.reshapeToD1
 import java.util.Random
-import maxIndex
 
 fun createMnistModel(epoc: Int, seed: Int? = null) {
+    // カスタムした層をSerializerに登録
+    NetworkSerializer.apply {
+        register(PixelConverter::class)
+        register(LabelConverter::class)
+    }
+
+    // ニューラルネットワークを構築
     val network = NetworkBuilder
-        .inputD2(x = 28, y = 28, optimizer = AdamW(0.001), seed = seed)
+        .inputD2(
+            converter = PixelConverter(28, 28),
+            optimizer = AdamW(0.001),
+            seed = seed,
+        )
         .reshapeToD1()
         .affine(neuron = 512).bias().reLU()
         .repeat(5) {
@@ -31,36 +41,27 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
                 .layerNorm().affine(neuron = 128).bias().reLU()
         }
         .affine(neuron = 10)
-        .softmaxWithLoss()
+        .softmaxWithLoss(converter = LabelConverter(2))
 
+    // テストデータを用意
     val random = seed?.let { Random(seed.toLong()) } ?: Random()
-
     val dataset = MnistDataset.read().shuffled(random)
     val (train, test) = dataset.take(50000) to dataset.takeLast(10000).take(100)
-    println("${dataset.size}")
 
+    // 学習
     (1..epoc).forEach { epoc ->
         println("epoc: $epoc")
         train.shuffled(random).take(5000).chunked(240).mapIndexed { i, data ->
             network.train(
-                input = data.map { IOType.d2(listOf(28, 28), it.pixels) },
-                label = data.map { (_, label) -> IOType.d1(10) { if (label == it) 1.0 else 0.0 } },
+                input = data.map { it.pixels },
+                label = data.map { it.label },
             )
             println("train: $i")
         }
     }
+
+    // 予測
     test
-        .count { data ->
-            network
-                .expect(
-                    input =
-                    IOType.d2(
-                        listOf(28, 28),
-                        data.pixels.toMutableList(),
-                    ),
-                ).value
-                .toTypedArray()
-                .also { println(it.toList()) }
-                .maxIndex() == data.label
-        }.let { println(it.toDouble() / test.size.toDouble()) }
+        .count { data -> network.expect(input = data.pixels) == data.label }
+        .let { println(it.toDouble() / test.size.toDouble()) }
 }
