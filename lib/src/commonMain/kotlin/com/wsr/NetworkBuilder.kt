@@ -81,7 +81,7 @@ sealed interface NetworkBuilder<I, O> {
         override val layers: List<Layer>,
         override val optimizer: Optimizer,
         override val random: Random,
-    ) : NetworkBuilder<I, IOType.D2> {
+    ) : NetworkBuilder<I, IOType.D3> {
         fun addProcess(process: Process.D3): D3<I> = copy(
             layers = layers + process,
             inputX = process.outputX,
