@@ -15,12 +15,77 @@ private typealias CALC_DELTA_D3 = (List<IOType.D3>) -> List<IOType.D3>
 class SkipD3 internal constructor(
     // List<Process.D3>だがSerializer対策
     private val layers: List<Layer> = emptyList(),
+    private val inputX: Int,
+    private val inputY: Int,
+    private val inputZ: Int,
     override val outputX: Int,
     override val outputY: Int,
     override val outputZ: Int,
 ) : Process.D3() {
-    override fun expect(input: List<IOType.D3>): List<IOType.D3> =
-        input + layers.fold(input) { acc, layer -> layer._expect(acc) as List<IOType.D3> }
+    private val resizeToOutput: (IOType.D3) -> IOType.D3 by lazy {
+        when {
+            inputX == outputX && inputY == outputY && inputZ == outputZ -> { it: IOType.D3 -> it }
+            inputX <= outputX && inputY <= outputY && inputZ <= outputZ -> { it: IOType.D3 ->
+                val result = IOType.d3(listOf(outputX, outputY, outputZ))
+                for (i in 0 until inputX) {
+                    for (j in 0 until inputY) {
+                        for (k in 0 until inputZ) {
+                            result[i, j, k] = it[i, j, k]
+                        }
+                    }
+                }
+                result
+            }
+
+            inputX % outputX == 0 && inputY % outputY == 0 && inputZ % outputZ == 0 -> { it: IOType.D3 ->
+                val strideX = inputX / outputX
+                val strideY = inputY / outputY
+                val strideZ = inputZ / outputZ
+                IOType.d3(outputX, outputY, outputZ) { x, y, z ->
+                    val startX = x * strideX
+                    val startY = y * strideY
+                    val startZ = z * strideZ
+                    var sum = 0.0
+                    for (dx in 0 until strideX) {
+                        for (dy in 0 until strideY) {
+                            for (dz in 0 until strideZ) {
+                                sum += it[startX + dx, startY + dy, startZ + dz]
+                            }
+                        }
+                    }
+                    sum / (strideX * strideY * strideZ)
+                }
+            }
+
+            else -> throw IllegalArgumentException()
+        }
+    }
+
+    private val resizeToInput: (IOType.D3) -> IOType.D3 by lazy {
+        when {
+            inputX == outputX && inputY == outputY && inputZ == outputZ -> { it: IOType.D3 -> it }
+            inputX <= outputX && inputY <= outputY && inputZ <= outputZ -> { it: IOType.D3 ->
+                IOType.d3(inputX, inputY, inputZ) { x, y, z -> it[x, y, z] }
+            }
+
+            inputX % outputX == 0 && inputY % outputY == 0 && inputZ % outputZ == 0 -> { it: IOType.D3 ->
+                val strideX = inputX / outputX
+                val strideY = inputY / outputY
+                val strideZ = inputZ / outputZ
+                IOType.d3(inputX, inputY, inputZ) { x, y, z ->
+                    it[x / strideX, y / strideY, z / strideZ] / (strideX * strideY * strideZ)
+                }
+            }
+
+            else -> throw IllegalArgumentException()
+        }
+    }
+
+    override fun expect(input: List<IOType.D3>): List<IOType.D3> {
+        val main = layers.fold(input) { acc, layer -> layer._expect(acc) as List<IOType.D3> }
+        val skip = input.map(resizeToOutput)
+        return main + skip
+    }
 
     private val trainChain: ((List<IOType.D3>) -> List<IOType.D3>) -> CALC_DELTA_D3 by lazy {
         layers.foldRight(
@@ -38,12 +103,12 @@ class SkipD3 internal constructor(
         var skipDelta: List<IOType.D3> = emptyList()
 
         val final: CALC_DELTA_D3 = { acc ->
-            val output = input + acc
+            val output = input.map(resizeToOutput) + acc
             calcDelta(output).also { skipDelta = it }
         }
         val mainDelta = trainChain(final)(input)
 
-        return mainDelta + skipDelta
+        return mainDelta + skipDelta.map(resizeToInput)
     }
 }
 
@@ -55,23 +120,15 @@ fun <T : IOType> NetworkBuilder.D3<T>.skip(
         .filterIsInstance<Process.D3>()
 
     val last = layers.last()
-    check(inputX == last.outputX && inputY == last.outputY && inputZ == last.outputZ) {
-        """
-            invalid layers.
-            inputX: $inputX
-            inputY: $inputY
-            inputZ: $inputZ
-            outputX: ${last.outputX}
-            outputY: ${last.outputY}
-            outputZ: ${last.outputZ}
-        """.trimIndent()
-    }
 
     return addProcess(
         process = SkipD3(
-            outputX = inputX,
-            outputY = inputY,
-            outputZ = inputZ,
+            inputX = inputX,
+            inputY = inputY,
+            inputZ = inputZ,
+            outputX = last.outputX,
+            outputY = last.outputY,
+            outputZ = last.outputZ,
             layers = layers,
         ),
     )
