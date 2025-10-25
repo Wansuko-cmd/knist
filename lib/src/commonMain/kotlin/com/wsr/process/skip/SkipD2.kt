@@ -109,8 +109,19 @@ fun <T : IOType> NetworkBuilder.D2<T>.skip(
     val layers = builder().layers
         .drop(layers.size)
         .filterIsInstance<Process.D2>()
-
     val last = layers.last()
+
+    check(
+        (inputX == last.outputX && inputY == last.outputY) ||
+                (inputX < last.outputX && inputY < last.outputY) ||
+                (inputX % last.outputX == 0 && inputY % last.outputY == 0)
+    ) {
+        """
+            invalid parameter.
+            input: ($inputX, $inputY)
+            output: (${last.outputX}, ${last.outputY})
+        """.trimIndent()
+    }
 
     return addProcess(
         process = SkipD2(
