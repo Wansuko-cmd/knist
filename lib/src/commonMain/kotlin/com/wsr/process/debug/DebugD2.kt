@@ -3,13 +3,20 @@ package com.wsr.process.debug
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.process.Process
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
+@Serializable
 class DebugD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
-    private val onInput: (List<IOType.D2>) -> Unit,
-    private val onDelta: (List<IOType.D2>) -> Unit,
 ) : Process.D2() {
+    @Transient
+    var onInput: (List<IOType.D2>) -> Unit = {}
+
+    @Transient
+    var onDelta: (List<IOType.D2>) -> Unit = {}
+
     override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.also { onInput(it) }
 
     override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
@@ -20,14 +27,17 @@ class DebugD2 internal constructor(
 }
 
 /**
- * Json時には除かれる(lambdaは変換できないため)
+ * ※Json化するとラムダ式はリセットされる
  */
-fun <T> NetworkBuilder.D2<T>.debug(onInput: (List<IOType.D2>) -> Unit = {}, onDelta: (List<IOType.D2>) -> Unit = {}) =
-    addProcess(
-        DebugD2(
-            outputX = inputX,
-            outputY = inputY,
-            onInput = onInput,
-            onDelta = onDelta,
-        ),
-    )
+fun <T> NetworkBuilder.D2<T>.debug(
+    onInput: (List<IOType.D2>) -> Unit = {},
+    onDelta: (List<IOType.D2>) -> Unit = {}
+) = addProcess(
+    process = DebugD2(
+        outputX = inputX,
+        outputY = inputY,
+    ).apply {
+        this.onInput = onInput
+        this.onDelta = onDelta
+    }
+)

@@ -15,9 +15,10 @@ class DebugD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 2,
-            onInput = { inputCaptured = it },
-            onDelta = {},
-        )
+        ).apply {
+            onInput = { inputCaptured = it }
+            onDelta = {}
+        }
 
         val input = listOf(
             IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
@@ -41,9 +42,10 @@ class DebugD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 2,
-            onInput = { inputCaptured = it },
-            onDelta = { deltaCaptured = it },
-        )
+        ).apply {
+            onInput = { inputCaptured = it }
+            onDelta = { deltaCaptured = it }
+        }
 
         val input = listOf(
             IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
