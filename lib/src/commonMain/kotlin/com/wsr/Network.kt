@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = NetworkSerializer::class)
 class Network<I, O> internal constructor(
-    internal val inputConverter: Converter,
-    internal val outputConverter: Converter,
-    internal val layers: List<Layer>,
+    val inputConverter: Converter,
+    val outputConverter: Converter,
+    val layers: List<Layer>,
 ) {
     private val trainLambda: (List<IOType>, List<IOType>) -> List<IOType> =
         layers

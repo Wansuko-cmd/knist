@@ -3,14 +3,21 @@ package com.wsr.process.debug
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.process.Process
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
+@Serializable
 class DebugD3 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
     override val outputZ: Int,
-    private val onInput: (List<IOType.D3>) -> Unit,
-    private val onDelta: (List<IOType.D3>) -> Unit,
 ) : Process.D3() {
+    @Transient
+    var onInput: (List<IOType.D3>) -> Unit = {}
+
+    @Transient
+    var onDelta: (List<IOType.D3>) -> Unit = {}
+
     override fun expect(input: List<IOType.D3>): List<IOType.D3> = input.also { onInput(it) }
 
     override fun train(input: List<IOType.D3>, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
@@ -21,15 +28,18 @@ class DebugD3 internal constructor(
 }
 
 /**
- * Json時には除かれる(lambdaは変換できないため)
+ * ※Json化するとラムダ式はリセットされる
  */
-fun <T> NetworkBuilder.D3<T>.debug(onInput: (List<IOType.D3>) -> Unit = {}, onDelta: (List<IOType.D3>) -> Unit = {}) =
-    addProcess(
-        DebugD3(
-            outputX = inputX,
-            outputY = inputY,
-            outputZ = inputZ,
-            onInput = onInput,
-            onDelta = onDelta,
-        ),
-    )
+fun <T> NetworkBuilder.D3<T>.debug(
+    onInput: (List<IOType.D3>) -> Unit = {},
+    onDelta: (List<IOType.D3>) -> Unit = {}
+) = addProcess(
+    process = DebugD3(
+        outputX = inputX,
+        outputY = inputY,
+        outputZ = inputZ,
+    ).apply {
+        this.onInput = onInput
+        this.onDelta = onDelta
+    }
+)

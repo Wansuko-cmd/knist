@@ -29,6 +29,9 @@ import com.wsr.process.bias.BiasD1
 import com.wsr.process.bias.BiasD2
 import com.wsr.process.bias.BiasD3
 import com.wsr.process.conv.ConvD1
+import com.wsr.process.debug.DebugD1
+import com.wsr.process.debug.DebugD2
+import com.wsr.process.debug.DebugD3
 import com.wsr.process.dropout.DropoutD1
 import com.wsr.process.dropout.DropoutD2
 import com.wsr.process.dropout.DropoutD3
@@ -189,6 +192,11 @@ private val buildInSerializersModule = SerializersModule {
 
         // Conv
         subclass(ConvD1::class)
+
+        // Debug
+        subclass(DebugD1::class)
+        subclass(DebugD2::class)
+        subclass(DebugD3::class)
 
         // Dropout
         subclass(DropoutD1::class)

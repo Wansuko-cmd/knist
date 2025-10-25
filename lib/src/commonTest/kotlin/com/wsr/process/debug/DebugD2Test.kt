@@ -14,9 +14,10 @@ class DebugD2Test {
             DebugD2(
                 outputX = 2,
                 outputY = 2,
-                onInput = { capturedInput = it },
-                onDelta = {},
-            )
+            ).apply {
+                onInput = { capturedInput = it }
+                onDelta = {}
+            }
 
         // [[1, 2], [3, 4]]
         val input =
@@ -40,9 +41,10 @@ class DebugD2Test {
             DebugD2(
                 outputX = 2,
                 outputY = 2,
-                onInput = { capturedInput = it },
-                onDelta = { capturedDelta = it },
-            )
+            ).apply {
+                onInput = { capturedInput = it }
+                onDelta = { capturedDelta = it }
+            }
 
         // [[1, 2], [3, 4]]
         val input =
