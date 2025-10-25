@@ -16,8 +16,7 @@ sealed interface NetworkBuilder<I, O> {
     val optimizer: Optimizer
     val random: Random
 
-    @ConsistentCopyVisibility
-    data class D1<I> internal constructor(
+    data class D1<I>(
         val inputSize: Int,
         override val input: Converter,
         override val layers: List<Layer>,
@@ -45,8 +44,7 @@ sealed interface NetworkBuilder<I, O> {
             (0 until times).fold(this) { acc, i -> acc.builder(i) }
     }
 
-    @ConsistentCopyVisibility
-    data class D2<I> internal constructor(
+    data class D2<I>(
         val inputX: Int,
         val inputY: Int,
         override val input: Converter,
@@ -72,8 +70,7 @@ sealed interface NetworkBuilder<I, O> {
             (0 until times).fold(this) { acc, i -> this.builder(i) }
     }
 
-    @ConsistentCopyVisibility
-    data class D3<I> internal constructor(
+    data class D3<I>(
         val inputX: Int,
         val inputY: Int,
         val inputZ: Int,
@@ -110,59 +107,5 @@ sealed interface NetworkBuilder<I, O> {
             (0 until times).fold(this) { acc, i -> this.builder(i) }
     }
 
-    companion object {
-        fun inputD1(inputSize: Int, optimizer: Optimizer, seed: Int? = null) = D1<IOType.D1>(
-            inputSize = inputSize,
-            optimizer = optimizer,
-            random = seed?.let { Random(it) } ?: Random,
-            input = LinearD1(inputSize),
-            layers = emptyList(),
-        )
-
-        fun <T> inputD1(converter: Converter.D1<T>, optimizer: Optimizer, seed: Int? = null) = D1<T>(
-            inputSize = converter.outputSize,
-            optimizer = optimizer,
-            random = seed?.let { Random(it) } ?: Random,
-            input = converter,
-            layers = emptyList(),
-        )
-
-        fun inputD2(x: Int, y: Int, optimizer: Optimizer, seed: Int? = null) = D2<IOType.D2>(
-            inputX = x,
-            inputY = y,
-            optimizer = optimizer,
-            random = seed?.let { Random(it) } ?: Random,
-            input = LinearD2(x, y),
-            layers = emptyList(),
-        )
-
-        fun <T> inputD2(converter: Converter.D2<T>, optimizer: Optimizer, seed: Int? = null) = D2<T>(
-            inputX = converter.outputX,
-            inputY = converter.outputY,
-            optimizer = optimizer,
-            random = seed?.let { Random(it) } ?: Random,
-            input = converter,
-            layers = emptyList(),
-        )
-
-        fun inputD3(x: Int, y: Int, z: Int, optimizer: Optimizer, seed: Int? = null) = D3<IOType.D3>(
-            inputX = x,
-            inputY = y,
-            inputZ = z,
-            optimizer = optimizer,
-            random = seed?.let { Random(it) } ?: Random,
-            input = LinearD3(x, y, z),
-            layers = emptyList(),
-        )
-
-        fun <T> inputD3(converter: Converter.D3<T>, optimizer: Optimizer, seed: Int? = null) = D3<T>(
-            inputX = converter.outputX,
-            inputY = converter.outputY,
-            inputZ = converter.outputZ,
-            optimizer = optimizer,
-            random = seed?.let { Random(it) } ?: Random,
-            input = converter,
-            layers = emptyList(),
-        )
-    }
+    companion object
 }
