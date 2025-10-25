@@ -2,7 +2,9 @@ package com.wsr.converter.linear
 
 import com.wsr.IOType
 import com.wsr.converter.InputConverter
+import kotlinx.serialization.Serializable
 
+@Serializable
 class LinearD3(
     override val outputX: Int,
     override val outputY: Int,
