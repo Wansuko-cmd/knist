@@ -2,6 +2,7 @@ package com.wsr.output.sigmoid
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.converter.Converter
 import com.wsr.operator.minus
 import com.wsr.output.Output
 import kotlin.math.exp
@@ -21,3 +22,8 @@ internal class SigmoidWithLossD1 internal constructor(val outputSize: Int) : Out
 }
 
 fun <T> NetworkBuilder.D1<T>.sigmoidWithLoss() = addOutput(SigmoidWithLossD1(inputSize))
+
+fun <I, O> NetworkBuilder.D1<I>.sigmoidWithLoss(converter: Converter.D1<O>) = addOutput(
+    output = SigmoidWithLossD1(inputSize),
+    converter = converter,
+)

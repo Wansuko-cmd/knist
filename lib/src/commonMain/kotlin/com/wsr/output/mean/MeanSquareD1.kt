@@ -2,6 +2,7 @@ package com.wsr.output.mean
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.converter.Converter
 import com.wsr.operator.minus
 import com.wsr.output.Output
 import kotlinx.serialization.Serializable
@@ -17,3 +18,8 @@ internal class MeanSquareD1 internal constructor(val outputSize: Int) : Output.D
 }
 
 fun <T> NetworkBuilder.D1<T>.meanSquare() = addOutput(MeanSquareD1(inputSize))
+
+fun <I, O> NetworkBuilder.D1<I>.meanSquare(converter: Converter.D1<O>) = addOutput(
+    output = MeanSquareD1(inputSize),
+    converter = converter,
+)
