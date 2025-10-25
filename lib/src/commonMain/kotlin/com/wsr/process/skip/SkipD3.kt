@@ -118,8 +118,19 @@ fun <T : IOType> NetworkBuilder.D3<T>.skip(
     val layers = builder().layers
         .drop(layers.size)
         .filterIsInstance<Process.D3>()
-
     val last = layers.last()
+
+    check(
+        (inputX == last.outputX && inputY == last.outputY && inputZ == last.outputZ) ||
+                (inputX < last.outputX && inputY < last.outputY && inputZ < last.outputZ) ||
+                (inputX % last.outputX == 0 && inputY % last.outputY == 0 && inputZ % last.outputZ == 0)
+    ) {
+        """
+            invalid parameter.
+            input: ($inputX, $inputY, $inputZ)
+            output: (${last.outputX}, ${last.outputY}. ${last.outputZ})
+        """.trimIndent()
+    }
 
     return addProcess(
         process = SkipD3(
