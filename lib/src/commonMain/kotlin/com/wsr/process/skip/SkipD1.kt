@@ -15,10 +15,43 @@ private typealias CALC_DELTA_D1 = (List<IOType.D1>) -> List<IOType.D1>
 class SkipD1 internal constructor(
     // List<Process.D1>だがSerializer対策
     private val layers: List<Layer> = emptyList(),
+    private val inputSize: Int,
     override val outputSize: Int,
 ) : Process.D1() {
-    override fun expect(input: List<IOType.D1>): List<IOType.D1> =
-        input + layers.fold(input) { acc, layer -> layer._expect(acc) as List<IOType.D1> }
+    private val resizeToOutput: (IOType.D1) -> IOType.D1 by lazy {
+        when {
+            inputSize == outputSize -> { it: IOType.D1 -> it }
+            inputSize < outputSize -> { it: IOType.D1 -> IOType.d1(it.value.copyOf(outputSize)) }
+            inputSize % outputSize == 0 -> { it: IOType.D1 ->
+                val stride = inputSize / outputSize
+                val result = DoubleArray(outputSize) { i ->
+                    val index = i * stride
+                    it.value.sliceArray(index until index + stride).average()
+                }
+                IOType.d1(result)
+            }
+            else -> throw IllegalArgumentException()
+        }
+    }
+
+    private val resizeToInput: (IOType.D1) -> IOType.D1 by lazy {
+        when {
+            inputSize == outputSize -> { it: IOType.D1 -> it }
+            inputSize < outputSize -> { it: IOType.D1 -> IOType.d1(it.value.copyOf(inputSize)) }
+            inputSize % outputSize == 0 -> { it: IOType.D1 ->
+                val stride = inputSize / outputSize
+                val result = DoubleArray(inputSize) { i -> it.value[i / stride] / stride }
+                IOType.d1(result)
+            }
+            else -> throw IllegalArgumentException()
+        }
+    }
+
+    override fun expect(input: List<IOType.D1>): List<IOType.D1> {
+        val main = layers.fold(input) { acc, layer -> layer._expect(acc) as List<IOType.D1> }
+        val skip = input.map(resizeToOutput)
+        return main + skip
+    }
 
     private val trainChain: ((List<IOType.D1>) -> List<IOType.D1>) -> CALC_DELTA_D1 by lazy {
         layers.foldRight(
@@ -36,12 +69,12 @@ class SkipD1 internal constructor(
         var skipDelta: List<IOType.D1> = emptyList()
 
         val final: CALC_DELTA_D1 = { acc ->
-            val output = input + acc
+            val output = input.map(resizeToOutput) + acc
             calcDelta(output).also { skipDelta = it }
         }
         val mainDelta = trainChain(final)(input)
 
-        return mainDelta + skipDelta
+        return mainDelta + skipDelta.map(resizeToInput)
     }
 }
 
@@ -51,18 +84,24 @@ fun <T : IOType> NetworkBuilder.D1<T>.skip(
     val layers = builder().layers
         .drop(layers.size)
         .filterIsInstance<Process.D1>()
+    val last = layers.last()
 
-    check(inputSize == layers.last().outputSize) {
+    check(
+        inputSize == last.outputSize ||
+            inputSize < last.outputSize ||
+            inputSize % last.outputSize == 0,
+    ) {
         """
-            invalid layers.
-            inputSize: $inputSize
-            outputSize: ${layers.last().outputSize}
+            invalid parameter.
+            input: ($inputSize)
+            output: (${last.outputSize})
         """.trimIndent()
     }
 
     return addProcess(
         process = SkipD1(
-            outputSize = inputSize,
+            inputSize = inputSize,
+            outputSize = last.outputSize,
             layers = layers,
         ),
     )
