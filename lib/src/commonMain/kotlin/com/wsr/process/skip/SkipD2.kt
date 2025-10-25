@@ -113,8 +113,8 @@ fun <T : IOType> NetworkBuilder.D2<T>.skip(
 
     check(
         (inputX == last.outputX && inputY == last.outputY) ||
-                (inputX < last.outputX && inputY < last.outputY) ||
-                (inputX % last.outputX == 0 && inputY % last.outputY == 0)
+            (inputX < last.outputX && inputY < last.outputY) ||
+            (inputX % last.outputX == 0 && inputY % last.outputY == 0),
     ) {
         """
             invalid parameter.
