@@ -15,6 +15,7 @@ private typealias CALC_DELTA_D1 = (List<IOType.D1>) -> List<IOType.D1>
 class SkipD1 internal constructor(
     // List<Process.D1>だがSerializer対策
     private val layers: List<Layer> = emptyList(),
+    private val inputSize: Int,
     override val outputSize: Int,
 ) : Process.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> =
@@ -51,18 +52,20 @@ fun <T : IOType> NetworkBuilder.D1<T>.skip(
     val layers = builder().layers
         .drop(layers.size)
         .filterIsInstance<Process.D1>()
+    val last = layers.last()
 
-    check(inputSize == layers.last().outputSize) {
+    check(inputSize == last.outputSize) {
         """
             invalid layers.
             inputSize: $inputSize
-            outputSize: ${layers.last().outputSize}
+            outputSize: ${last.outputSize}
         """.trimIndent()
     }
 
     return addProcess(
         process = SkipD1(
-            outputSize = inputSize,
+            inputSize = inputSize,
+            outputSize = last.outputSize,
             layers = layers,
         ),
     )
