@@ -30,6 +30,6 @@ class SigmoidD3 internal constructor(override val outputX: Int, override val out
     ) { x, y, z -> 1 / (1 + exp(-input[x, y, z])) }
 }
 
-fun <T : IOType> NetworkBuilder.D3<T>.sigmoid() = addProcess(
+fun <T> NetworkBuilder.D3<T>.sigmoid() = addProcess(
     process = SigmoidD3(outputX = inputX, outputY = inputY, outputZ = inputZ),
 )

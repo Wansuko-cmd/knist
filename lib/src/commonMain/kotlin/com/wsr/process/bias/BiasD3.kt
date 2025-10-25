@@ -26,7 +26,7 @@ class BiasD3(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D3<T>.bias(optimizer: Optimizer = this.optimizer) = addProcess(
+fun <T> NetworkBuilder.D3<T>.bias(optimizer: Optimizer = this.optimizer) = addProcess(
     process = BiasD3(
         outputX = inputX,
         outputY = inputY,
