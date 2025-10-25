@@ -2,11 +2,9 @@ package com.wsr.converter.linear
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.NetworkBuilder.D3
 import com.wsr.converter.Converter
 import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
-import kotlin.random.Random
 
 @Serializable
 class LinearD3(override val outputX: Int, override val outputY: Int, override val outputZ: Int) :
@@ -21,12 +19,8 @@ fun NetworkBuilder.Companion.inputD3(
     z: Int,
     optimizer: Optimizer,
     seed: Int? = null
-) = D3<IOType.D3>(
-    inputX = x,
-    inputY = y,
-    inputZ = z,
+) = inputD3(
+    converter = LinearD3(x, y, z),
     optimizer = optimizer,
-    random = seed?.let { Random(it) } ?: Random,
-    input = LinearD3(x, y, z),
-    layers = emptyList(),
+    seed = seed,
 )
