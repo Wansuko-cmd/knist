@@ -15,11 +15,68 @@ private typealias CALC_DELTA_D2 = (List<IOType.D2>) -> List<IOType.D2>
 class SkipD2 internal constructor(
     // List<Process.D2>だがSerializer対策
     private val layers: List<Layer> = emptyList(),
+    private val inputX: Int,
+    private val inputY: Int,
     override val outputX: Int,
     override val outputY: Int,
 ) : Process.D2() {
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> =
-        input + layers.fold(input) { acc, layer -> layer._expect(acc) as List<IOType.D2> }
+    private val resizeToOutput: (IOType.D2) -> IOType.D2 by lazy {
+        when {
+            inputX == outputX && inputY == outputY -> { it: IOType.D2 -> it }
+            inputX <= outputX && inputY <= outputY -> { it: IOType.D2 ->
+                val result = IOType.d2(listOf(outputX, outputY))
+                for (i in 0 until inputX) {
+                    for (j in 0 until inputY) {
+                        result[i, j] = it[i, j]
+                    }
+                }
+                result
+            }
+
+            inputX % outputX == 0 && inputY % outputY == 0 -> { it: IOType.D2 ->
+                val strideX = inputX / outputX
+                val strideY = inputY / outputY
+                IOType.d2(outputX, outputY) { x, y ->
+                    val startX = x * strideX
+                    val startY = y * strideY
+                    var sum = 0.0
+                    for (dx in 0 until strideX) {
+                        for (dy in 0 until strideY) {
+                            sum += it[startX + dx, startY + dy]
+                        }
+                    }
+                    sum / (strideX * strideY)
+                }
+            }
+
+            else -> throw IllegalArgumentException()
+        }
+    }
+
+    private val resizeToInput: (IOType.D2) -> IOType.D2 by lazy {
+        when {
+            inputX == outputX && inputY == outputY -> { it: IOType.D2 -> it }
+            inputX <= outputX && inputY <= outputY -> { it: IOType.D2 ->
+                IOType.d2(inputX, inputY) { x, y -> it[x, y] }
+            }
+
+            inputX % outputX == 0 && inputY % outputY == 0 -> { it: IOType.D2 ->
+                val strideX = inputX / outputX
+                val strideY = inputY / outputY
+                IOType.d2(inputX, inputY) { x, y ->
+                    it[x / strideX, y / strideY] / (strideX * strideY)
+                }
+            }
+
+            else -> throw IllegalArgumentException()
+        }
+    }
+
+    override fun expect(input: List<IOType.D2>): List<IOType.D2> {
+        val main = layers.fold(input) { acc, layer -> layer._expect(acc) as List<IOType.D2> }
+        val skip = input.map(resizeToOutput)
+        return main + skip
+    }
 
     private val trainChain: ((List<IOType.D2>) -> List<IOType.D2>) -> CALC_DELTA_D2 by lazy {
         layers.foldRight(
@@ -37,12 +94,12 @@ class SkipD2 internal constructor(
         var skipDelta: List<IOType.D2> = emptyList()
 
         val final: CALC_DELTA_D2 = { acc ->
-            val output = input + acc
+            val output = input.map(resizeToOutput) + acc
             calcDelta(output).also { skipDelta = it }
         }
         val mainDelta = trainChain(final)(input)
 
-        return mainDelta + skipDelta
+        return mainDelta + skipDelta.map(resizeToInput)
     }
 }
 
@@ -54,20 +111,13 @@ fun <T : IOType> NetworkBuilder.D2<T>.skip(
         .filterIsInstance<Process.D2>()
 
     val last = layers.last()
-    check(inputX == last.outputX && inputY == last.outputY) {
-        """
-            invalid layers.
-            inputX: $inputX
-            inputY: $inputY
-            outputX: ${last.outputX}
-            outputY: ${last.outputY}
-        """.trimIndent()
-    }
 
     return addProcess(
         process = SkipD2(
-            outputX = inputX,
-            outputY = inputY,
+            inputX = inputX,
+            inputY = inputY,
+            outputX = last.outputX,
+            outputY = last.outputY,
             layers = layers,
         ),
     )
