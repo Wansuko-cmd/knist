@@ -1,6 +1,6 @@
 package com.wsr
 
-import com.wsr.converter.InputConverter
+import com.wsr.converter.Converter
 import com.wsr.process.debug.DebugD1
 import com.wsr.process.debug.DebugD2
 import com.wsr.process.debug.DebugD3
@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = NetworkSerializer::class)
 class Network<I, O : IOType> internal constructor(
-    internal val converter: InputConverter,
+    internal val converter: Converter,
     internal val layers: List<Layer>,
 ) {
     private val trainLambda: (List<IOType>, List<IOType>) -> List<IOType> =
@@ -25,14 +25,14 @@ class Network<I, O : IOType> internal constructor(
 
     @Suppress("UNCHECKED_CAST")
     fun expect(input: List<I>): List<O> = layers
-        .fold(converter._convert(input)) { acc, layer -> layer._expect(acc) } as List<O>
+        .fold(converter._encode(input)) { acc, layer -> layer._expect(acc) } as List<O>
 
     fun train(input: I, label: O) {
         train(input = listOf(input), label = listOf(label))
     }
 
     fun train(input: List<I>, label: List<O>) {
-        trainLambda(converter._convert(input), label)
+        trainLambda(converter._encode(input), label)
     }
 
     fun toJson(): String = json.encodeToString(
