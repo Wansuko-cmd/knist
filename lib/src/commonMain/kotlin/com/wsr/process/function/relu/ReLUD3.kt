@@ -29,6 +29,6 @@ class ReLUD3 internal constructor(override val outputX: Int, override val output
     ) { x, y, z -> if (input[x, y, z] >= 0.0) input[x, y, z] else 0.0 }
 }
 
-fun <T : IOType> NetworkBuilder.D3<T>.reLU() = addProcess(
+fun <T> NetworkBuilder.D3<T>.reLU() = addProcess(
     process = ReLUD3(outputX = inputX, outputY = inputY, outputZ = inputZ),
 )

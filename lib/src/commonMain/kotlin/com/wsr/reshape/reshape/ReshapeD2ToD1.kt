@@ -20,6 +20,6 @@ internal class ReshapeD2ToD1(override val outputSize: Int) : Reshape.D2ToD1() {
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.reshapeToD1() = addReshape(
+fun <T> NetworkBuilder.D2<T>.reshapeToD1() = addReshape(
     reshape = ReshapeD2ToD1(inputX = inputX, inputY = inputY),
 )

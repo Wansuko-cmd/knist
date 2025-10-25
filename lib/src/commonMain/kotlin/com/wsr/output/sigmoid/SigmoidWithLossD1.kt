@@ -20,4 +20,4 @@ internal class SigmoidWithLossD1 internal constructor(val outputSize: Int) : Out
     }
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.sigmoidWithLoss() = addOutput(SigmoidWithLossD1(inputSize))
+fun <T> NetworkBuilder.D1<T>.sigmoidWithLoss() = addOutput(SigmoidWithLossD1(inputSize))

@@ -21,4 +21,4 @@ class SigmoidD1 internal constructor(override val outputSize: Int) : Process.D1(
     private fun forward(input: IOType.D1) = IOType.d1(outputSize) { 1 / (1 + exp(-input[it])) }
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.sigmoid() = addProcess(SigmoidD1(outputSize = inputSize))
+fun <T> NetworkBuilder.D1<T>.sigmoid() = addProcess(SigmoidD1(outputSize = inputSize))

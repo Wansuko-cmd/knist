@@ -30,7 +30,7 @@ class AffineD1 internal constructor(
     private fun forward(input: List<IOType.D1>): List<IOType.D1> = weight.transpose().matMul(input)
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.affine(neuron: Int, optimizer: Optimizer = this.optimizer) = addProcess(
+fun <T> NetworkBuilder.D1<T>.affine(neuron: Int, optimizer: Optimizer = this.optimizer) = addProcess(
     process =
     AffineD1(
         outputSize = neuron,

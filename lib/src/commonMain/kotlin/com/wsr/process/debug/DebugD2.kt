@@ -22,7 +22,7 @@ class DebugD2 internal constructor(
 /**
  * Json時には除かれる(lambdaは変換できないため)
  */
-fun <T : IOType> NetworkBuilder.D2<T>.debug(
+fun <T> NetworkBuilder.D2<T>.debug(
     onInput: (List<IOType.D2>) -> Unit = {},
     onDelta: (List<IOType.D2>) -> Unit = {},
 ) = addProcess(

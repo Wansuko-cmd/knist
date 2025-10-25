@@ -43,7 +43,7 @@ class DropoutD3 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D3<T>.dropout(ratio: Double, seed: Int? = null) = addProcess(
+fun <T> NetworkBuilder.D3<T>.dropout(ratio: Double, seed: Int? = null) = addProcess(
     process =
     DropoutD3(
         outputX = inputX,

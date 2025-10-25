@@ -23,7 +23,7 @@ internal class ReshapeD3ToD2(override val outputX: Int, override val outputY: In
     }
 }
 
-fun <T : IOType> NetworkBuilder.D3<T>.reshapeToD2(outputX: Int, outputY: Int): D2<T> {
+fun <T> NetworkBuilder.D3<T>.reshapeToD2(outputX: Int, outputY: Int): D2<T> {
     check(inputX * inputY * inputZ == outputX * outputY) {
         """
             invalid parameter.

@@ -78,7 +78,7 @@ class SkipD1 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.skip(
+fun <T> NetworkBuilder.D1<T>.skip(
     builder: NetworkBuilder.D1<T>.() -> NetworkBuilder.D1<T>,
 ): NetworkBuilder.D1<T> {
     val layers = builder().layers

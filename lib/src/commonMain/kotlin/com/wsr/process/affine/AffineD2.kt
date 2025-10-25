@@ -44,7 +44,7 @@ class AffineD2 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.affine(neuron: Int, optimizer: Optimizer = this.optimizer) = addProcess(
+fun <T> NetworkBuilder.D2<T>.affine(neuron: Int, optimizer: Optimizer = this.optimizer) = addProcess(
     process =
     AffineD2(
         channel = inputX,
