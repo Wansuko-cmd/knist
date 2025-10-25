@@ -96,7 +96,7 @@ class LayerNormD1 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.layerNorm(optimizer: Optimizer = this.optimizer) = addProcess(
+fun <T> NetworkBuilder.D1<T>.layerNorm(optimizer: Optimizer = this.optimizer) = addProcess(
     process = LayerNormD1(
         outputSize = inputSize,
         optimizer = optimizer.d1(inputSize),

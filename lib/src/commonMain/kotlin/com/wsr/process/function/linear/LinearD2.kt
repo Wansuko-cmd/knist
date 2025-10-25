@@ -13,6 +13,6 @@ class LinearD2 internal constructor(override val outputX: Int, override val outp
         calcDelta(input)
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.linear() = addProcess(
+fun <T> NetworkBuilder.D2<T>.linear() = addProcess(
     process = LinearD2(outputX = inputX, outputY = inputY),
 )

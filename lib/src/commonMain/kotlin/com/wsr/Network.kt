@@ -1,12 +1,17 @@
 package com.wsr
 
+import com.wsr.converter.Converter
 import com.wsr.process.debug.DebugD1
 import com.wsr.process.debug.DebugD2
 import com.wsr.process.debug.DebugD3
 import kotlinx.serialization.Serializable
 
 @Serializable(with = NetworkSerializer::class)
-class Network<I : IOType, O : IOType> internal constructor(internal val layers: List<Layer>) {
+class Network<I, O> internal constructor(
+    internal val inputConverter: Converter,
+    internal val outputConverter: Converter,
+    internal val layers: List<Layer>,
+) {
     private val trainLambda: (List<IOType>, List<IOType>) -> List<IOType> =
         layers
             .reversed()
@@ -20,21 +25,25 @@ class Network<I : IOType, O : IOType> internal constructor(internal val layers: 
     fun expect(input: I): O = expect(input = listOf(input))[0]
 
     @Suppress("UNCHECKED_CAST")
-    fun expect(input: List<I>): List<O> = layers.fold<Layer, List<IOType>>(input) { acc, layer ->
-        layer._expect(acc)
-    } as List<O>
+    fun expect(input: List<I>): List<O> = layers
+        .fold(inputConverter._encode(input)) { acc, layer -> layer._expect(acc) }
+        .let { outputConverter._decode(it) } as List<O>
 
     fun train(input: I, label: O) {
         train(input = listOf(input), label = listOf(label))
     }
 
     fun train(input: List<I>, label: List<O>) {
-        trainLambda(input, label)
+        trainLambda(inputConverter._encode(input), outputConverter._encode(label))
     }
 
-    fun toJson() = json.encodeToString(
-        serializer = NetworkSerializer(),
-        value = Network(layers = layers.filter { it !is DebugD1 && it !is DebugD2 && it !is DebugD3 }),
+    fun toJson(): String = json.encodeToString(
+        serializer = NetworkSerializer<I, O>(),
+        value = Network(
+            inputConverter = inputConverter,
+            outputConverter = outputConverter,
+            layers = layers.filter { it !is DebugD1 && it !is DebugD2 && it !is DebugD3 },
+        ),
     )
 
     companion object {

@@ -50,7 +50,7 @@ class MaxPoolD3 internal constructor(val poolSize: Int, val channel: Int, val in
     }
 }
 
-fun <T : IOType> NetworkBuilder.D3<T>.maxPool(size: Int) = addProcess(
+fun <T> NetworkBuilder.D3<T>.maxPool(size: Int) = addProcess(
     process = MaxPoolD3(
         poolSize = size,
         channel = inputX,

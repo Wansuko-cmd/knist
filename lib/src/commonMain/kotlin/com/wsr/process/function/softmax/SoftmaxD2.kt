@@ -29,6 +29,6 @@ class SoftmaxD2 internal constructor(override val outputX: Int, override val out
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.softmax() = addProcess(
+fun <T> NetworkBuilder.D2<T>.softmax() = addProcess(
     process = SoftmaxD2(outputX = inputX, outputY = inputY),
 )
