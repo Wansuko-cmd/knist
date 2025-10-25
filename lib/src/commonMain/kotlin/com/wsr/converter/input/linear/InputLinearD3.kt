@@ -5,9 +5,10 @@ import com.wsr.converter.input.InputConverter
 import kotlinx.serialization.Serializable
 
 @Serializable
-class LinearD2(
+class InputLinearD3(
     override val outputX: Int,
     override val outputY: Int,
-) : InputConverter.D2<IOType.D2>() {
-    override fun convert(input: List<IOType.D2>): List<IOType.D2> = input
+    override val outputZ: Int,
+) : InputConverter.D3<IOType.D3>() {
+    override fun convert(input: List<IOType.D3>): List<IOType.D3> = input
 }
