@@ -208,12 +208,12 @@ internal class NetworkSerializer<I, O : IOType> : KSerializer<Network<I, O>> {
         )
 
     override fun serialize(encoder: Encoder, value: Network<I, O>) {
-        converterSerializer.serialize(encoder, value.converter)
+        converterSerializer.serialize(encoder, value.inputConverter)
         layerSerializer.serialize(encoder, value.layers)
     }
 
     override fun deserialize(decoder: Decoder) = Network<I, O>(
-        converter = converterSerializer.deserialize(decoder),
+        inputConverter = converterSerializer.deserialize(decoder),
         layers = layerSerializer.deserialize(decoder),
     )
 }
