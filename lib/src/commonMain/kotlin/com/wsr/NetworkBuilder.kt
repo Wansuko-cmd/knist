@@ -35,10 +35,7 @@ sealed interface NetworkBuilder<I, O> {
             layers = layers + output,
         )
 
-        fun <O> addOutput(
-            output: Output.D1,
-            converter: Converter.D1<O>,
-        ) = Network<I, O>(
+        fun <O> addOutput(output: Output.D1, converter: Converter.D1<O>) = Network<I, O>(
             inputConverter = input,
             outputConverter = converter,
             layers = layers + output,

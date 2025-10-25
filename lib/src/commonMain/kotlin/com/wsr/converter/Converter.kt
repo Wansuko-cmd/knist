@@ -11,7 +11,6 @@ sealed interface Converter {
     @Suppress("FunctionName")
     fun _decode(input: List<IOType>): List<*>
 
-
     abstract class D1<T> : Converter {
         abstract val outputSize: Int
         abstract fun encode(input: List<T>): List<IOType.D1>
