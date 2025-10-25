@@ -12,9 +12,8 @@ class LinearD1(override val outputSize: Int) : Converter.D1<IOType.D1>() {
     override fun decode(input: List<IOType.D1>): List<IOType.D1> = input
 }
 
-fun NetworkBuilder.Companion.inputD1(inputSize: Int, optimizer: Optimizer, seed: Int? = null) =
-    inputD1(
-        converter = LinearD1(inputSize),
-        optimizer = optimizer,
-        seed = seed,
-    )
+fun NetworkBuilder.Companion.inputD1(inputSize: Int, optimizer: Optimizer, seed: Int? = null) = inputD1(
+    converter = LinearD1(inputSize),
+    optimizer = optimizer,
+    seed = seed,
+)
