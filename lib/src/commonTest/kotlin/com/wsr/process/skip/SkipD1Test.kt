@@ -28,6 +28,7 @@ class SkipD1Test {
 
         val skip = SkipD1(
             layers = listOf(bias, affine),
+            inputSize = 2,
             outputSize = 2,
         )
 
@@ -57,6 +58,7 @@ class SkipD1Test {
 
         val skip = SkipD1(
             layers = listOf(biasLayer),
+            inputSize = 3,
             outputSize = 3,
         )
 
@@ -101,6 +103,7 @@ class SkipD1Test {
 
         val skip = SkipD1(
             layers = listOf(affineLayer, biasLayer),
+            inputSize = 2,
             outputSize = 2,
         )
 
