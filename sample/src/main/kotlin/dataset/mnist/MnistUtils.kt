@@ -10,28 +10,28 @@ import com.wsr.process.function.relu.reLU
 import com.wsr.process.norm.layer.layerNorm
 import com.wsr.process.skip.skip
 import com.wsr.reshape.reshape.reshapeToD1
-import java.util.Random
 import maxIndex
+import java.util.Random
 
 fun createMnistModel(epoc: Int, seed: Int? = null) {
     val network = NetworkBuilder
-        .inputD2(x = 28, y = 28, optimizer = AdamW(0.001, 0.9), seed = seed)
+        .inputD2(x = 28, y = 28, optimizer = AdamW(0.001), seed = seed)
         .reshapeToD1()
         .affine(neuron = 512).bias().reLU()
-        .let {
-            var layer = it
-            repeat(10) {
-                layer = layer.skip {
-                    this
-                        .layerNorm().affine(neuron = 512).bias().reLU()
-                        .layerNorm().affine(neuron = 512).bias().reLU()
-                }
+        .repeat(5) {
+            skip {
+                this
+                    .layerNorm().affine(neuron = 512).bias().reLU()
+                    .layerNorm().affine(neuron = 512).bias().reLU()
             }
-            layer
+        }
+        .skip {
+            this
+                .layerNorm().affine(neuron = 512).bias().reLU()
+                .layerNorm().affine(neuron = 128).bias().reLU()
         }
         .affine(neuron = 10)
         .softmaxWithLoss()
-    println(network.toJson())
 
     val random = seed?.let { Random(seed.toLong()) } ?: Random()
 
