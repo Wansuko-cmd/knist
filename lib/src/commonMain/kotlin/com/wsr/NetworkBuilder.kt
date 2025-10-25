@@ -2,8 +2,6 @@ package com.wsr
 
 import com.wsr.converter.Converter
 import com.wsr.converter.linear.LinearD1
-import com.wsr.converter.linear.LinearD2
-import com.wsr.converter.linear.LinearD3
 import com.wsr.optimizer.Optimizer
 import com.wsr.output.Output
 import com.wsr.process.Process
@@ -16,7 +14,8 @@ sealed interface NetworkBuilder<I, O> {
     val optimizer: Optimizer
     val random: Random
 
-    data class D1<I>(
+    @ConsistentCopyVisibility
+    data class D1<I> internal constructor(
         val inputSize: Int,
         override val input: Converter,
         override val layers: List<Layer>,
@@ -44,7 +43,8 @@ sealed interface NetworkBuilder<I, O> {
             (0 until times).fold(this) { acc, i -> acc.builder(i) }
     }
 
-    data class D2<I>(
+    @ConsistentCopyVisibility
+    data class D2<I> internal constructor(
         val inputX: Int,
         val inputY: Int,
         override val input: Converter,
@@ -70,7 +70,8 @@ sealed interface NetworkBuilder<I, O> {
             (0 until times).fold(this) { acc, i -> this.builder(i) }
     }
 
-    data class D3<I>(
+    @ConsistentCopyVisibility
+    data class D3<I> internal constructor(
         val inputX: Int,
         val inputY: Int,
         val inputZ: Int,
@@ -107,5 +108,32 @@ sealed interface NetworkBuilder<I, O> {
             (0 until times).fold(this) { acc, i -> this.builder(i) }
     }
 
-    companion object
+    companion object {
+        fun <T> inputD1(converter: Converter.D1<T>, optimizer: Optimizer, seed: Int? = null) = D1<T>(
+            inputSize = converter.outputSize,
+            optimizer = optimizer,
+            random = seed?.let { Random(it) } ?: Random,
+            input = converter,
+            layers = emptyList(),
+        )
+
+        fun <T> inputD2(converter: Converter.D2<T>, optimizer: Optimizer, seed: Int? = null) = D2<T>(
+            inputX = converter.outputX,
+            inputY = converter.outputY,
+            optimizer = optimizer,
+            random = seed?.let { Random(it) } ?: Random,
+            input = converter,
+            layers = emptyList(),
+        )
+
+        fun <T> inputD3(converter: Converter.D3<T>, optimizer: Optimizer, seed: Int? = null) = D3<T>(
+            inputX = converter.outputX,
+            inputY = converter.outputY,
+            inputZ = converter.outputZ,
+            optimizer = optimizer,
+            random = seed?.let { Random(it) } ?: Random,
+            input = converter,
+            layers = emptyList(),
+        )
+    }
 }
