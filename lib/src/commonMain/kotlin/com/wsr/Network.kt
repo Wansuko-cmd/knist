@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = NetworkSerializer::class)
 class Network<I, O : IOType> internal constructor(
-    internal val inputConverter: InputConverter,
+    internal val converter: InputConverter,
     internal val layers: List<Layer>,
 ) {
     private val trainLambda: (List<IOType>, List<IOType>) -> List<IOType> =
@@ -25,20 +25,20 @@ class Network<I, O : IOType> internal constructor(
 
     @Suppress("UNCHECKED_CAST")
     fun expect(input: List<I>): List<O> = layers
-        .fold(inputConverter._convert(input)) { acc, layer -> layer._expect(acc) } as List<O>
+        .fold(converter._convert(input)) { acc, layer -> layer._expect(acc) } as List<O>
 
     fun train(input: I, label: O) {
         train(input = listOf(input), label = listOf(label))
     }
 
     fun train(input: List<I>, label: List<O>) {
-        trainLambda(inputConverter._convert(input), label)
+        trainLambda(converter._convert(input), label)
     }
 
     fun toJson(): String = json.encodeToString(
         serializer = NetworkSerializer<I, O>(),
         value = Network(
-            inputConverter = inputConverter,
+            converter = converter,
             layers = layers.filter { it !is DebugD1 && it !is DebugD2 && it !is DebugD3 },
         ),
     )
