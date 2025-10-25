@@ -1,5 +1,9 @@
 package com.wsr
 
+import com.wsr.converter.InputConverter
+import com.wsr.converter.linear.LinearD1
+import com.wsr.converter.linear.LinearD2
+import com.wsr.converter.linear.LinearD3
 import com.wsr.optimizer.Optimizer
 import com.wsr.optimizer.adam.AdamD1
 import com.wsr.optimizer.adam.AdamD2
@@ -28,9 +32,6 @@ import com.wsr.process.conv.ConvD1
 import com.wsr.process.dropout.DropoutD1
 import com.wsr.process.dropout.DropoutD2
 import com.wsr.process.dropout.DropoutD3
-import com.wsr.process.function.linear.LinearD1
-import com.wsr.process.function.linear.LinearD2
-import com.wsr.process.function.linear.LinearD3
 import com.wsr.process.function.relu.LeakyReLUD1
 import com.wsr.process.function.relu.LeakyReLUD2
 import com.wsr.process.function.relu.LeakyReLUD3
@@ -73,6 +74,9 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.serializer
+import com.wsr.process.function.linear.LinearD1 as ProcessLinearD1
+import com.wsr.process.function.linear.LinearD2 as ProcessLinearD2
+import com.wsr.process.function.linear.LinearD3 as ProcessLinearD3
 
 internal val json =
     Json {
@@ -100,9 +104,9 @@ internal val json =
                     subclass(DropoutD3::class)
 
                     // Function
-                    subclass(LinearD1::class)
-                    subclass(LinearD2::class)
-                    subclass(LinearD3::class)
+                    subclass(ProcessLinearD1::class)
+                    subclass(ProcessLinearD2::class)
+                    subclass(ProcessLinearD3::class)
 
                     subclass(ReLUD1::class)
                     subclass(ReLUD2::class)
@@ -183,24 +187,33 @@ internal val json =
                     subclass(AdamD3::class)
                     subclass(AdamWD3::class)
                 }
+
+                polymorphic(InputConverter::class) {
+                    subclass(LinearD1::class)
+                    subclass(LinearD2::class)
+                    subclass(LinearD3::class)
+                }
             }
     }
 
 internal class NetworkSerializer<I, O : IOType> : KSerializer<Network<I, O>> {
+    private val converterSerializer = json.serializersModule.serializer<InputConverter>()
     private val layerSerializer = json.serializersModule.serializer<List<Layer>>()
 
     override val descriptor: SerialDescriptor =
         buildClassSerialDescriptor(
             serialName = "com.wsr.Network",
+            converterSerializer.descriptor,
             layerSerializer.descriptor,
         )
 
     override fun serialize(encoder: Encoder, value: Network<I, O>) {
+        converterSerializer.serialize(encoder, value.converter)
         layerSerializer.serialize(encoder, value.layers)
     }
 
     override fun deserialize(decoder: Decoder) = Network<I, O>(
-        converter = TODO(),
+        converter = converterSerializer.deserialize(decoder),
         layers = layerSerializer.deserialize(decoder),
     )
 }

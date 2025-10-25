@@ -10,8 +10,8 @@ import com.wsr.process.function.relu.reLU
 import com.wsr.process.norm.layer.layerNorm
 import com.wsr.process.skip.skip
 import com.wsr.reshape.reshape.reshapeToD1
-import java.util.Random
 import maxIndex
+import java.util.Random
 
 fun createMnistModel(epoc: Int, seed: Int? = null) {
     val network = NetworkBuilder

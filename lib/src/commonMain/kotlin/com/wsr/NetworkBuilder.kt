@@ -11,7 +11,7 @@ import com.wsr.reshape.Reshape
 import kotlin.random.Random
 
 sealed interface NetworkBuilder<I, O : IOType> {
-    val converter: InputConverter<I>
+    val converter: InputConverter
     val layers: List<Layer>
     val optimizer: Optimizer
     val random: Random
@@ -19,7 +19,7 @@ sealed interface NetworkBuilder<I, O : IOType> {
     @ConsistentCopyVisibility
     data class D1<I> internal constructor(
         val inputSize: Int,
-        override val converter: InputConverter<I>,
+        override val converter: InputConverter,
         override val layers: List<Layer>,
         override val optimizer: Optimizer,
         override val random: Random,
@@ -39,7 +39,7 @@ sealed interface NetworkBuilder<I, O : IOType> {
     data class D2<I> internal constructor(
         val inputX: Int,
         val inputY: Int,
-        override val converter: InputConverter<I>,
+        override val converter: InputConverter,
         override val layers: List<Layer>,
         override val optimizer: Optimizer,
         override val random: Random,
@@ -67,7 +67,7 @@ sealed interface NetworkBuilder<I, O : IOType> {
         val inputX: Int,
         val inputY: Int,
         val inputZ: Int,
-        override val converter: InputConverter<I>,
+        override val converter: InputConverter,
         override val layers: List<Layer>,
         override val optimizer: Optimizer,
         override val random: Random,
@@ -101,7 +101,7 @@ sealed interface NetworkBuilder<I, O : IOType> {
     }
 
     companion object {
-        fun inputD1(inputSize: Int, optimizer: Optimizer, seed: Int? = null) = D1(
+        fun inputD1(inputSize: Int, optimizer: Optimizer, seed: Int? = null) = D1<IOType.D1>(
             inputSize = inputSize,
             optimizer = optimizer,
             random = seed?.let { Random(it) } ?: Random,
@@ -109,7 +109,7 @@ sealed interface NetworkBuilder<I, O : IOType> {
             layers = emptyList(),
         )
 
-        fun <T> inputD1(converter: InputConverter.D1<T>, optimizer: Optimizer, seed: Int? = null) = D1(
+        fun <T> inputD1(converter: InputConverter.D1<T>, optimizer: Optimizer, seed: Int? = null) = D1<T>(
             inputSize = converter.outputSize,
             optimizer = optimizer,
             random = seed?.let { Random(it) } ?: Random,
@@ -117,7 +117,7 @@ sealed interface NetworkBuilder<I, O : IOType> {
             layers = emptyList(),
         )
 
-        fun inputD2(x: Int, y: Int, optimizer: Optimizer, seed: Int? = null) = D2(
+        fun inputD2(x: Int, y: Int, optimizer: Optimizer, seed: Int? = null) = D2<IOType.D2>(
             inputX = x,
             inputY = y,
             optimizer = optimizer,
@@ -126,7 +126,7 @@ sealed interface NetworkBuilder<I, O : IOType> {
             layers = emptyList(),
         )
 
-        fun <T> inputD2(converter: InputConverter.D2<T>, optimizer: Optimizer, seed: Int? = null) = D2(
+        fun <T> inputD2(converter: InputConverter.D2<T>, optimizer: Optimizer, seed: Int? = null) = D2<T>(
             inputX = converter.outputX,
             inputY = converter.outputY,
             optimizer = optimizer,
@@ -135,7 +135,7 @@ sealed interface NetworkBuilder<I, O : IOType> {
             layers = emptyList(),
         )
 
-        fun inputD3(x: Int, y: Int, z: Int, optimizer: Optimizer, seed: Int? = null) = D3(
+        fun inputD3(x: Int, y: Int, z: Int, optimizer: Optimizer, seed: Int? = null) = D3<IOType.D3>(
             inputX = x,
             inputY = y,
             inputZ = z,
@@ -145,7 +145,7 @@ sealed interface NetworkBuilder<I, O : IOType> {
             layers = emptyList(),
         )
 
-        fun <T> inputD3(converter: InputConverter.D3<T>, optimizer: Optimizer, seed: Int? = null) = D3(
+        fun <T> inputD3(converter: InputConverter.D3<T>, optimizer: Optimizer, seed: Int? = null) = D3<T>(
             inputX = converter.outputX,
             inputY = converter.outputY,
             inputZ = converter.outputZ,
