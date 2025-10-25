@@ -37,7 +37,7 @@ class Network<I, O> internal constructor(
         trainLambda(inputConverter._encode(input), outputConverter._encode(label))
     }
 
-    fun toJson(): String = json.encodeToString(
+    fun toJson(): String = NetworkSerializer.json.encodeToString(
         serializer = NetworkSerializer<I, O>(),
         value = Network(
             inputConverter = inputConverter,
@@ -47,7 +47,7 @@ class Network<I, O> internal constructor(
     )
 
     companion object {
-        fun <I : IOType, O : IOType> fromJson(value: String) = json.decodeFromString<Network<I, O>>(
+        fun <I : IOType, O : IOType> fromJson(value: String) = NetworkSerializer.json.decodeFromString<Network<I, O>>(
             deserializer = NetworkSerializer(),
             string = value,
         )
