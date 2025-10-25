@@ -1,9 +1,9 @@
 package com.wsr
 
-import com.wsr.converter.input.InputConverter
-import com.wsr.converter.input.linear.LinearD1
-import com.wsr.converter.input.linear.LinearD2
-import com.wsr.converter.input.linear.LinearD3
+import com.wsr.converter.InputConverter
+import com.wsr.converter.linear.LinearD1
+import com.wsr.converter.linear.LinearD2
+import com.wsr.converter.linear.LinearD3
 import com.wsr.optimizer.Optimizer
 import com.wsr.optimizer.adam.AdamD1
 import com.wsr.optimizer.adam.AdamD2

@@ -1,6 +1,6 @@
 package com.wsr
 
-import com.wsr.converter.input.InputConverter
+import com.wsr.converter.InputConverter
 import com.wsr.process.debug.DebugD1
 import com.wsr.process.debug.DebugD2
 import com.wsr.process.debug.DebugD3
