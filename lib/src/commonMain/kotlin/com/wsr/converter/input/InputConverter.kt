@@ -1,4 +1,4 @@
-package com.wsr.converter
+package com.wsr.converter.input
 
 import com.wsr.IOType
 

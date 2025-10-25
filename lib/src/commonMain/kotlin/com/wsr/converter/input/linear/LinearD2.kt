@@ -1,7 +1,7 @@
-package com.wsr.converter.linear
+package com.wsr.converter.input.linear
 
 import com.wsr.IOType
-import com.wsr.converter.InputConverter
+import com.wsr.converter.input.InputConverter
 import kotlinx.serialization.Serializable
 
 @Serializable
