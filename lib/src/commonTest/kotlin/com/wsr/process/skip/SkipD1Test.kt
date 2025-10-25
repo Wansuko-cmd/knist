@@ -28,6 +28,7 @@ class SkipD1Test {
 
         val skip = SkipD1(
             layers = listOf(bias, affine),
+            inputSize = 2,
             outputSize = 2,
         )
 
@@ -57,6 +58,7 @@ class SkipD1Test {
 
         val skip = SkipD1(
             layers = listOf(biasLayer),
+            inputSize = 3,
             outputSize = 3,
         )
 
@@ -101,6 +103,7 @@ class SkipD1Test {
 
         val skip = SkipD1(
             layers = listOf(affineLayer, biasLayer),
+            inputSize = 2,
             outputSize = 2,
         )
 
@@ -133,5 +136,152 @@ class SkipD1Test {
 
         assertEquals(expected = 3.6, actual = afterOutput[0], absoluteTolerance = 1e-10)
         assertEquals(expected = 4.2, actual = afterOutput[1], absoluteTolerance = 1e-10)
+    }
+
+    @Test
+    fun `SkipD1の_expect=inputSizeがoutputSizeより小さい場合にzero-paddingで拡張される`() {
+        // inputSize=2, outputSize=3
+        // サブ層: Affine([[1, 0], [0, 1], [0, 0]]) - 2次元を3次元に変換
+        val affine = AffineD1(
+            outputSize = 3,
+            optimizer = Sgd(0.1).d2(2, 3),
+            weight = IOType.d2(2, 3) { x, y -> if (x == y) 1.0 else 0.0 },
+        )
+
+        val skip = SkipD1(
+            layers = listOf(affine),
+            inputSize = 2,
+            outputSize = 3,
+        )
+
+        // input = [10, 20]
+        val input = listOf(IOType.d1(listOf(10.0, 20.0)))
+
+        // main path: Affine([[1,0,0],[0,1,0]]^T) dot [10, 20] = [10, 20, 0]
+        // skip path: [10, 20, 0] (zero-padding)
+        // 出力: [10, 20, 0] + [10, 20, 0] = [20, 40, 0]
+        val result = skip._expect(input)
+
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0] as IOType.D1
+        assertEquals(expected = 20.0, actual = output[0])
+        assertEquals(expected = 40.0, actual = output[1])
+        assertEquals(expected = 0.0, actual = output[2])
+    }
+
+    @Test
+    fun `SkipD1の_train=inputSizeがoutputSizeより小さい場合に勾配が正しく切り詰められる`() {
+        // inputSize=2, outputSize=3
+        // サブ層: Affine([[1, 0], [0, 1], [0, 0]]) - 恒等変換的に2->3次元変換
+        val affine = AffineD1(
+            outputSize = 3,
+            optimizer = Sgd(0.1).d2(2, 3),
+            weight = IOType.d2(2, 3) { x, y -> if (x == y) 1.0 else 0.0 },
+        )
+
+        val skip = SkipD1(
+            layers = listOf(affine),
+            inputSize = 2,
+            outputSize = 3,
+        )
+
+        // input = [1, 2]
+        val input = listOf(IOType.d1(listOf(1.0, 2.0)))
+
+        // 次の層からのdelta = [10, 20, 30]
+        val calcDelta: (List<IOType>) -> List<IOType> = {
+            listOf(IOType.d1(listOf(10.0, 20.0, 30.0)))
+        }
+
+        val result = skip._train(input, calcDelta)
+
+        assertEquals(expected = 1, actual = result.size)
+        val dx = result[0] as IOType.D1
+
+        // skip pathの勾配: [10, 20, 30] -> [10, 20] (最初の2要素のみ取る)
+        // main pathの勾配: Affine^Tを通過
+        //   [[1,0,0],[0,1,0]] dot [10, 20, 30] = [10, 20]
+        // 合計: [10, 20] + [10, 20] = [20, 40]
+        assertEquals(expected = 20.0, actual = dx[0])
+        assertEquals(expected = 40.0, actual = dx[1])
+    }
+
+    @Test
+    fun `SkipD1の_expect=inputSizeがoutputSizeより大きい場合にaverage poolingで縮小される`() {
+        // inputSize=6, outputSize=3, stride=2
+        // サブ層: Affine([[1,0,0,0,0,0],[0,1,0,0,0,0],[0,0,1,0,0,0]]) - 最初の3要素のみ取る
+        val affine = AffineD1(
+            outputSize = 3,
+            optimizer = Sgd(0.1).d2(6, 3),
+            weight = IOType.d2(6, 3) { x, y -> if (x == y) 1.0 else 0.0 },
+        )
+
+        val skip = SkipD1(
+            layers = listOf(affine),
+            inputSize = 6,
+            outputSize = 3,
+        )
+
+        // input = [1, 2, 3, 4, 5, 6]
+        val input = listOf(IOType.d1(listOf(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)))
+
+        // main path: Affine -> [1, 2, 3]
+        // skip path (average pooling):
+        //   [1, 2]の平均 = 1.5
+        //   [3, 4]の平均 = 3.5
+        //   [5, 6]の平均 = 5.5
+        //   -> [1.5, 3.5, 5.5]
+        // 出力: [1, 2, 3] + [1.5, 3.5, 5.5] = [2.5, 5.5, 8.5]
+        val result = skip._expect(input)
+
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0] as IOType.D1
+        assertEquals(expected = 2.5, actual = output[0])
+        assertEquals(expected = 5.5, actual = output[1])
+        assertEquals(expected = 8.5, actual = output[2])
+    }
+
+    @Test
+    fun `SkipD1の_train=inputSizeがoutputSizeより大きい場合に勾配が正しく分配される`() {
+        // inputSize=6, outputSize=3, stride=2
+        // サブ層: Affine([[1,0,0,0,0,0],[0,1,0,0,0,0],[0,0,1,0,0,0]]) - 最初の3要素のみ取る
+        val affine = AffineD1(
+            outputSize = 3,
+            optimizer = Sgd(0.1).d2(6, 3),
+            weight = IOType.d2(6, 3) { x, y -> if (x == y) 1.0 else 0.0 },
+        )
+
+        val skip = SkipD1(
+            layers = listOf(affine),
+            inputSize = 6,
+            outputSize = 3,
+        )
+
+        // input = [1, 2, 3, 4, 5, 6]
+        val input = listOf(IOType.d1(listOf(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)))
+
+        // 次の層からのdelta = [12, 24, 36]
+        val calcDelta: (List<IOType>) -> List<IOType> = {
+            listOf(IOType.d1(listOf(12.0, 24.0, 36.0)))
+        }
+
+        val result = skip._train(input, calcDelta)
+
+        assertEquals(expected = 1, actual = result.size)
+        val dx = result[0] as IOType.D1
+
+        // skip pathの勾配 (average poolingの逆伝播):
+        //   delta[0] = 12 -> [12/2, 12/2] = [6, 6]
+        //   delta[1] = 24 -> [24/2, 24/2] = [12, 12]
+        //   delta[2] = 36 -> [36/2, 36/2] = [18, 18]
+        //   -> [6, 6, 12, 12, 18, 18]
+        // main pathの勾配: [[1,0,0],[0,1,0],[0,0,1],[0,0,0],[0,0,0],[0,0,0]] dot [12, 24, 36] = [12, 24, 36, 0, 0, 0]
+        // 合計: [6+12, 6+24, 12+36, 12+0, 18+0, 18+0] = [18, 30, 48, 12, 18, 18]
+        assertEquals(expected = 18.0, actual = dx[0])
+        assertEquals(expected = 30.0, actual = dx[1])
+        assertEquals(expected = 48.0, actual = dx[2])
+        assertEquals(expected = 12.0, actual = dx[3])
+        assertEquals(expected = 18.0, actual = dx[4])
+        assertEquals(expected = 18.0, actual = dx[5])
     }
 }

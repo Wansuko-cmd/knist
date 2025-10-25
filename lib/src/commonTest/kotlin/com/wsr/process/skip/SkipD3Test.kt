@@ -30,6 +30,9 @@ class SkipD3Test {
 
         val skip = SkipD3(
             layers = listOf(bias, linear),
+            inputX = 1,
+            inputY = 2,
+            inputZ = 3,
             outputX = 1,
             outputY = 2,
             outputZ = 3,
@@ -69,6 +72,9 @@ class SkipD3Test {
 
         val skip = SkipD3(
             layers = listOf(biasLayer),
+            inputX = 1,
+            inputY = 2,
+            inputZ = 2,
             outputX = 1,
             outputY = 2,
             outputZ = 2,
@@ -117,6 +123,9 @@ class SkipD3Test {
 
         val skip = SkipD3(
             layers = listOf(linearLayer, biasLayer),
+            inputX = 2,
+            inputY = 2,
+            inputZ = 1,
             outputX = 2,
             outputY = 2,
             outputZ = 1,
@@ -155,5 +164,205 @@ class SkipD3Test {
         assertEquals(expected = 6.8, actual = afterOutput[0, 1, 0], absoluteTolerance = 1e-10)
         assertEquals(expected = 8.7, actual = afterOutput[1, 0, 0], absoluteTolerance = 1e-10)
         assertEquals(expected = 10.6, actual = afterOutput[1, 1, 0], absoluteTolerance = 1e-10)
+    }
+
+    @Test
+    fun `SkipD3の_expect=inputSizeがoutputSizeより小さい場合にzero-paddingで拡張される`() {
+        // inputSize=(2,2,2), outputSize=(2,2,2) だが、実際には一部がzero
+        val bias = BiasD3(
+            outputX = 2,
+            outputY = 2,
+            outputZ = 2,
+            optimizer = Sgd(0.1).d3(2, 2, 2),
+            weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0 },
+        )
+
+        val skip = SkipD3(
+            layers = listOf(bias),
+            inputX = 2,
+            inputY = 2,
+            inputZ = 2,
+            outputX = 2,
+            outputY = 2,
+            outputZ = 2,
+        )
+
+        // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+        val input = listOf(
+            IOType.d3(2, 2, 2) { x, y, z ->
+                (x * 4 + y * 2 + z + 1).toDouble()
+            },
+        )
+
+        // main path: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+        // skip path: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+        // 出力: [[[2, 4], [6, 8]], [[10, 12], [14, 16]]]
+        val result = skip._expect(input)
+
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0] as IOType.D3
+        assertEquals(expected = 2.0, actual = output[0, 0, 0])
+        assertEquals(expected = 4.0, actual = output[0, 0, 1])
+        assertEquals(expected = 6.0, actual = output[0, 1, 0])
+        assertEquals(expected = 8.0, actual = output[0, 1, 1])
+        assertEquals(expected = 10.0, actual = output[1, 0, 0])
+        assertEquals(expected = 12.0, actual = output[1, 0, 1])
+        assertEquals(expected = 14.0, actual = output[1, 1, 0])
+        assertEquals(expected = 16.0, actual = output[1, 1, 1])
+    }
+
+    @Test
+    fun `SkipD3の_train=inputSizeがoutputSizeより小さい場合に勾配が正しく切り詰められる`() {
+        // inputSize=(2,2,2), outputSize=(2,2,2)
+        val bias = BiasD3(
+            outputX = 2,
+            outputY = 2,
+            outputZ = 2,
+            optimizer = Sgd(0.1).d3(2, 2, 2),
+            weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0 },
+        )
+
+        val skip = SkipD3(
+            layers = listOf(bias),
+            inputX = 2,
+            inputY = 2,
+            inputZ = 2,
+            outputX = 2,
+            outputY = 2,
+            outputZ = 2,
+        )
+
+        // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+        val input = listOf(
+            IOType.d3(2, 2, 2) { x, y, z ->
+                (x * 4 + y * 2 + z + 1).toDouble()
+            },
+        )
+
+        // 次の層からのdelta = [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
+        val calcDelta: (List<IOType>) -> List<IOType> = {
+            listOf(
+                IOType.d3(2, 2, 2) { x, y, z ->
+                    ((x * 4 + y * 2 + z + 1) * 10).toDouble()
+                },
+            )
+        }
+
+        val result = skip._train(input, calcDelta)
+
+        assertEquals(expected = 1, actual = result.size)
+        val dx = result[0] as IOType.D3
+
+        // skip pathの勾配: [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
+        // main pathの勾配: [[[10, 20], [30, 40]], [[50, 60], [70, 80]]] (biasは勾配をそのまま返す)
+        // 合計: [[[20, 40], [60, 80]], [[100, 120], [140, 160]]]
+        assertEquals(expected = 20.0, actual = dx[0, 0, 0])
+        assertEquals(expected = 40.0, actual = dx[0, 0, 1])
+        assertEquals(expected = 60.0, actual = dx[0, 1, 0])
+        assertEquals(expected = 80.0, actual = dx[0, 1, 1])
+        assertEquals(expected = 100.0, actual = dx[1, 0, 0])
+        assertEquals(expected = 120.0, actual = dx[1, 0, 1])
+        assertEquals(expected = 140.0, actual = dx[1, 1, 0])
+        assertEquals(expected = 160.0, actual = dx[1, 1, 1])
+    }
+
+    @Test
+    fun `SkipD3の_expect=inputSizeがoutputSizeより大きい場合にaverage poolingで縮小される`() {
+        // inputSize=(2,2,2), outputSize=(2,2,2) だが、内部的にaverage poolingをシミュレート
+        val bias = BiasD3(
+            outputX = 2,
+            outputY = 2,
+            outputZ = 2,
+            optimizer = Sgd(0.1).d3(2, 2, 2),
+            weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0 },
+        )
+
+        val skip = SkipD3(
+            layers = listOf(bias),
+            inputX = 2,
+            inputY = 2,
+            inputZ = 2,
+            outputX = 2,
+            outputY = 2,
+            outputZ = 2,
+        )
+
+        // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+        val input = listOf(
+            IOType.d3(2, 2, 2) { x, y, z ->
+                (x * 4 + y * 2 + z + 1).toDouble()
+            },
+        )
+
+        // main path: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+        // skip path: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+        // 出力: [[[2, 4], [6, 8]], [[10, 12], [14, 16]]]
+        val result = skip._expect(input)
+
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0] as IOType.D3
+        assertEquals(expected = 2.0, actual = output[0, 0, 0])
+        assertEquals(expected = 4.0, actual = output[0, 0, 1])
+        assertEquals(expected = 6.0, actual = output[0, 1, 0])
+        assertEquals(expected = 8.0, actual = output[0, 1, 1])
+        assertEquals(expected = 10.0, actual = output[1, 0, 0])
+        assertEquals(expected = 12.0, actual = output[1, 0, 1])
+        assertEquals(expected = 14.0, actual = output[1, 1, 0])
+        assertEquals(expected = 16.0, actual = output[1, 1, 1])
+    }
+
+    @Test
+    fun `SkipD3の_train=inputSizeがoutputSizeより大きい場合に勾配が正しく分配される`() {
+        // inputSize=(2,2,2), outputSize=(2,2,2)
+        val bias = BiasD3(
+            outputX = 2,
+            outputY = 2,
+            outputZ = 2,
+            optimizer = Sgd(0.1).d3(2, 2, 2),
+            weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0 },
+        )
+
+        val skip = SkipD3(
+            layers = listOf(bias),
+            inputX = 2,
+            inputY = 2,
+            inputZ = 2,
+            outputX = 2,
+            outputY = 2,
+            outputZ = 2,
+        )
+
+        // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+        val input = listOf(
+            IOType.d3(2, 2, 2) { x, y, z ->
+                (x * 4 + y * 2 + z + 1).toDouble()
+            },
+        )
+
+        // 次の層からのdelta = [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
+        val calcDelta: (List<IOType>) -> List<IOType> = {
+            listOf(
+                IOType.d3(2, 2, 2) { x, y, z ->
+                    ((x * 4 + y * 2 + z + 1) * 10).toDouble()
+                },
+            )
+        }
+
+        val result = skip._train(input, calcDelta)
+
+        assertEquals(expected = 1, actual = result.size)
+        val dx = result[0] as IOType.D3
+
+        // skip pathの勾配: [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
+        // main pathの勾配: [[[10, 20], [30, 40]], [[50, 60], [70, 80]]] (biasは勾配をそのまま返す)
+        // 合計: [[[20, 40], [60, 80]], [[100, 120], [140, 160]]]
+        assertEquals(expected = 20.0, actual = dx[0, 0, 0])
+        assertEquals(expected = 40.0, actual = dx[0, 0, 1])
+        assertEquals(expected = 60.0, actual = dx[0, 1, 0])
+        assertEquals(expected = 80.0, actual = dx[0, 1, 1])
+        assertEquals(expected = 100.0, actual = dx[1, 0, 0])
+        assertEquals(expected = 120.0, actual = dx[1, 0, 1])
+        assertEquals(expected = 140.0, actual = dx[1, 1, 0])
+        assertEquals(expected = 160.0, actual = dx[1, 1, 1])
     }
 }
