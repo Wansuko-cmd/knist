@@ -5,6 +5,6 @@ import com.wsr.converter.input.InputConverter
 import kotlinx.serialization.Serializable
 
 @Serializable
-class InputLinearD1(override val outputSize: Int) : InputConverter.D1<IOType.D1>() {
+class LinearD1(override val outputSize: Int) : InputConverter.D1<IOType.D1>() {
     override fun convert(input: List<IOType.D1>): List<IOType.D1> = input
 }
