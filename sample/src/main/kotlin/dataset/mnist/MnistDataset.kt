@@ -1,13 +1,17 @@
 package dataset.mnist
 
 import com.wsr.IOType
+import com.wsr.NetworkBuilder
+import com.wsr.NetworkBuilder.D2
 import com.wsr.converter.Converter
+import com.wsr.optimizer.Optimizer
+import kotlinx.serialization.Serializable
+import maxIndex
 import java.io.DataInputStream
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.zip.GZIPInputStream
-import kotlinx.serialization.Serializable
-import maxIndex
+import kotlin.random.Random
 
 data class MnistDataset(val pixels: List<Double>, val label: Int, val imageSize: Int) {
     override fun toString(): String = pixels
@@ -56,6 +60,16 @@ data class PixelConverter(override val outputX: Int, override val outputY: Int) 
 
     override fun decode(input: List<IOType.D2>): List<List<Double>> = input.map { it.value.toList() }
 }
+
+fun NetworkBuilder.Companion.inputPx(x: Int, y: Int, optimizer: Optimizer, seed: Int? = null) = D2<List<Double>>(
+    inputX = x,
+    inputY = y,
+    optimizer = optimizer,
+    random = seed?.let { Random(it) } ?: Random,
+    input = PixelConverter(x, y),
+    layers = emptyList(),
+)
+
 
 @Serializable
 data class LabelConverter(override val outputSize: Int) : Converter.D1<Int>() {
