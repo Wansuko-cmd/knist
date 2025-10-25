@@ -21,11 +21,7 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
 
     // ニューラルネットワークを構築
     val network = NetworkBuilder
-        .inputD2(
-            converter = PixelConverter(28, 28),
-            optimizer = AdamW(0.001),
-            seed = seed,
-        )
+        .inputPx(x = 28, y = 28, optimizer = AdamW(0.001), seed = seed)
         .reshapeToD1()
         .affine(neuron = 512).bias().reLU()
         .repeat(5) {
@@ -41,7 +37,7 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
                 .layerNorm().affine(neuron = 128).bias().reLU()
         }
         .affine(neuron = 10)
-        .softmaxWithLoss(converter = LabelConverter(2))
+        .softmaxWithLoss(converter = { LabelConverter(inputSize) })
 
     // テストデータを用意
     val random = seed?.let { Random(seed.toLong()) } ?: Random()

@@ -2,8 +2,6 @@ package com.wsr
 
 import com.wsr.converter.Converter
 import com.wsr.converter.linear.LinearD1
-import com.wsr.converter.linear.LinearD2
-import com.wsr.converter.linear.LinearD3
 import com.wsr.optimizer.Optimizer
 import com.wsr.output.Output
 import com.wsr.process.Process
@@ -35,9 +33,9 @@ sealed interface NetworkBuilder<I, O> {
             layers = layers + output,
         )
 
-        fun <O> addOutput(output: Output.D1, converter: Converter.D1<O>) = Network<I, O>(
+        fun <O> addOutput(output: Output.D1, converter: D1<I>.() -> Converter.D1<O>) = Network<I, O>(
             inputConverter = input,
-            outputConverter = converter,
+            outputConverter = converter(),
             layers = layers + output,
         )
 
@@ -111,28 +109,11 @@ sealed interface NetworkBuilder<I, O> {
     }
 
     companion object {
-        fun inputD1(inputSize: Int, optimizer: Optimizer, seed: Int? = null) = D1<IOType.D1>(
-            inputSize = inputSize,
-            optimizer = optimizer,
-            random = seed?.let { Random(it) } ?: Random,
-            input = LinearD1(inputSize),
-            layers = emptyList(),
-        )
-
         fun <T> inputD1(converter: Converter.D1<T>, optimizer: Optimizer, seed: Int? = null) = D1<T>(
             inputSize = converter.outputSize,
             optimizer = optimizer,
             random = seed?.let { Random(it) } ?: Random,
             input = converter,
-            layers = emptyList(),
-        )
-
-        fun inputD2(x: Int, y: Int, optimizer: Optimizer, seed: Int? = null) = D2<IOType.D2>(
-            inputX = x,
-            inputY = y,
-            optimizer = optimizer,
-            random = seed?.let { Random(it) } ?: Random,
-            input = LinearD2(x, y),
             layers = emptyList(),
         )
 
@@ -142,16 +123,6 @@ sealed interface NetworkBuilder<I, O> {
             optimizer = optimizer,
             random = seed?.let { Random(it) } ?: Random,
             input = converter,
-            layers = emptyList(),
-        )
-
-        fun inputD3(x: Int, y: Int, z: Int, optimizer: Optimizer, seed: Int? = null) = D3<IOType.D3>(
-            inputX = x,
-            inputY = y,
-            inputZ = z,
-            optimizer = optimizer,
-            random = seed?.let { Random(it) } ?: Random,
-            input = LinearD3(x, y, z),
             layers = emptyList(),
         )
 
