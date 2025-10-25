@@ -32,6 +32,6 @@ internal class GlobalAverageD3ToD2(private val inputX: Int, private val inputY: 
     }
 }
 
-fun <T : IOType> NetworkBuilder.D3<T>.globalAverageToD2() = addReshape(
+fun <T> NetworkBuilder.D3<T>.globalAverageToD2() = addReshape(
     reshape = GlobalAverageD3ToD2(inputX, inputY, inputZ),
 )

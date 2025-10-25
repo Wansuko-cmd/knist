@@ -14,6 +14,6 @@ class LinearD3 internal constructor(override val outputX: Int, override val outp
         calcDelta(input)
 }
 
-fun <T : IOType> NetworkBuilder.D3<T>.linear() = addProcess(
+fun <T> NetworkBuilder.D3<T>.linear() = addProcess(
     process = LinearD3(outputX = inputX, outputY = inputY, outputZ = inputZ),
 )

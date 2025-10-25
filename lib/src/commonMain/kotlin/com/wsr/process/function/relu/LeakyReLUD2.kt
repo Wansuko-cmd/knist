@@ -30,4 +30,4 @@ class LeakyReLUD2 internal constructor(override val outputX: Int, override val o
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.leakyReLU() = addProcess(LeakyReLUD2(outputX = inputX, outputY = inputY))
+fun <T> NetworkBuilder.D2<T>.leakyReLU() = addProcess(LeakyReLUD2(outputX = inputX, outputY = inputY))

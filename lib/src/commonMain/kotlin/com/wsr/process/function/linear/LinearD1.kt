@@ -13,4 +13,4 @@ class LinearD1 internal constructor(override val outputSize: Int) : Process.D1()
         calcDelta(input)
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.linear() = addProcess(LinearD1(outputSize = inputSize))
+fun <T> NetworkBuilder.D1<T>.linear() = addProcess(LinearD1(outputSize = inputSize))

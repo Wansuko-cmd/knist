@@ -45,6 +45,6 @@ class SwishD3 internal constructor(override val outputX: Int, override val outpu
     }
 }
 
-fun <T : IOType> NetworkBuilder.D3<T>.swish() = addProcess(
+fun <T> NetworkBuilder.D3<T>.swish() = addProcess(
     process = SwishD3(outputX = inputX, outputY = inputY, outputZ = inputZ),
 )

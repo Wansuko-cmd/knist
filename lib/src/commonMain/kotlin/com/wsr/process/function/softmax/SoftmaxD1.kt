@@ -29,4 +29,4 @@ class SoftmaxD1 internal constructor(override val outputSize: Int) : Process.D1(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D1<T>.softmax() = addProcess(SoftmaxD1(outputSize = inputSize))
+fun <T> NetworkBuilder.D1<T>.softmax() = addProcess(SoftmaxD1(outputSize = inputSize))

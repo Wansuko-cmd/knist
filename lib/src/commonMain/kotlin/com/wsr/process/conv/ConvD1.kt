@@ -69,7 +69,7 @@ class ConvD1 internal constructor(
     }
 }
 
-fun <T : IOType> NetworkBuilder.D2<T>.convD1(
+fun <T> NetworkBuilder.D2<T>.convD1(
     filter: Int,
     kernel: Int,
     stride: Int = 1,
