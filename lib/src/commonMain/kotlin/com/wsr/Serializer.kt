@@ -32,6 +32,9 @@ import com.wsr.process.conv.ConvD1
 import com.wsr.process.dropout.DropoutD1
 import com.wsr.process.dropout.DropoutD2
 import com.wsr.process.dropout.DropoutD3
+import com.wsr.process.function.linear.LinearD1 as ProcessLinearD1
+import com.wsr.process.function.linear.LinearD2 as ProcessLinearD2
+import com.wsr.process.function.linear.LinearD3 as ProcessLinearD3
 import com.wsr.process.function.relu.LeakyReLUD1
 import com.wsr.process.function.relu.LeakyReLUD2
 import com.wsr.process.function.relu.LeakyReLUD3
@@ -74,9 +77,6 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.serializer
-import com.wsr.process.function.linear.LinearD1 as ProcessLinearD1
-import com.wsr.process.function.linear.LinearD2 as ProcessLinearD2
-import com.wsr.process.function.linear.LinearD3 as ProcessLinearD3
 
 internal val json =
     Json {
