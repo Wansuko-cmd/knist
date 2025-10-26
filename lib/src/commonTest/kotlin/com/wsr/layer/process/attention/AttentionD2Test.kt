@@ -149,7 +149,7 @@ class AttentionD2Test {
         // 重みが更新されたことを確認（出力が変わっている）
         assertTrue(
             beforeValue != afterValue,
-            "重みが更新されていません。before=$beforeValue, after=$afterValue"
+            "重みが更新されていません。before=$beforeValue, after=$afterValue",
         )
     }
 
