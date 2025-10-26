@@ -30,4 +30,7 @@ fun IOType.D2.sum(axis: Int): IOType.D1 = when (axis) {
     else -> throw IllegalArgumentException("IOType.D2.sum axis is $axis not 0 or 1.")
 }
 
+@JvmName("sumD2sWithAxis")
+fun List<IOType.D2>.sum(axis: Int): List<IOType.D1> = map { it.sum(axis) }
+
 fun IOType.D3.sum() = value.sum()
