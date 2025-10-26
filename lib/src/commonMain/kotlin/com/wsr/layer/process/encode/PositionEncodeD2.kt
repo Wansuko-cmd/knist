@@ -1,6 +1,7 @@
 package com.wsr.layer.process.encode
 
 import com.wsr.IOType
+import com.wsr.NetworkBuilder
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
 import kotlin.math.cos
@@ -37,3 +38,7 @@ class PositionEncodeD2(
         return calcDelta(output)
     }
 }
+
+fun <T> NetworkBuilder.D2<T>.positionEncode() = addProcess(
+    process = PositionEncodeD2(outputX = inputX, outputY = inputY),
+)
