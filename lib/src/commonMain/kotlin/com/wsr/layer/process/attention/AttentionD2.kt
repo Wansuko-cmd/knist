@@ -20,26 +20,39 @@ import kotlin.math.sqrt
 class AttentionD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
-    private var weightQ: IOType.D3,
-    private var weightK: IOType.D3,
-    private var weightV: IOType.D3,
-    private val optimizerQ: Optimizer.D3,
-    private val optimizerK: Optimizer.D3,
-    private val optimizerV: Optimizer.D3,
+    private val numOfHeads: Int,
+    private var weightQ: List<IOType.D3>,
+    private var weightK: List<IOType.D3>,
+    private var weightV: List<IOType.D3>,
+    private var weightO: IOType.D3,
+    private val optimizerQ: List<Optimizer.D3>,
+    private val optimizerK: List<Optimizer.D3>,
+    private val optimizerV: List<Optimizer.D3>,
+    private val optimizerO: Optimizer.D3,
 ) : Process.D2() {
+    private val dk = outputY / numOfHeads
+
     override fun expect(input: List<IOType.D2>): List<IOType.D2> {
-        val query = affine(input, weightQ)
-        val key = affine(input, weightK)
-        val value = affine(input, weightV)
+        val heads = List(numOfHeads) {
+            val query = affine(input, weightQ[it])
+            val key = affine(input, weightK[it])
+            val value = affine(input, weightV[it])
 
-        val mul = query.matMul(key.transpose())
-        val scaled = mul / sqrt(outputY.toDouble())
+            val mul = query.matMul(key.transpose())
+            val scaled = mul / sqrt(dk.toDouble())
 
-        val mask = IOType.d2(outputX, outputY) { x, y -> if (x > y) -1e9 else 0.0 }
-        val masked = scaled + mask
+            val mask = IOType.d2(outputX, outputX) { x, y -> if (x > y) -1e9 else 0.0 }
+            val masked = scaled + mask
 
-        val softmax = softmax(masked)
-        return softmax.matMul(value)
+            val softmax = softmax(masked)
+            softmax.matMul(value)
+        }
+        val concat = List(input.size) {
+            IOType.d2(outputX, outputY) { x, y ->
+                heads[y / dk][it][x, y % dk]
+            }
+        }
+        return affine(concat, weightO)
     }
 
     override fun train(
