@@ -32,6 +32,10 @@ sealed class IOType {
             value[i * shape[1] + j] = element
         }
 
+        operator fun set(i: Int, element: D1) {
+            element.value.copyInto(value, i * shape[1])
+        }
+
         override fun equals(other: Any?): Boolean = super.equals(other)
 
         override fun hashCode(): Int = super.hashCode()
