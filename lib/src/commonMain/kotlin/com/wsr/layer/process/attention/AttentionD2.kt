@@ -7,6 +7,7 @@ import com.wsr.dot.matmul.matMul
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
 import com.wsr.operator.plus
+import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.toD2
 import com.wsr.reshape.transpose
 import kotlinx.serialization.Serializable
@@ -17,21 +18,54 @@ import kotlin.math.sqrt
 class AttentionD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
-    private val weightQ: IOType.D3,
-    private val weightK: IOType.D3,
-    private val weightV: IOType.D3,
+    private var weightQ: IOType.D3,
+    private var weightK: IOType.D3,
+    private var weightV: IOType.D3,
+    private val optimizerQ: Optimizer.D3,
+    private val optimizerK: Optimizer.D3,
+    private val optimizerV: Optimizer.D3,
 ) : Process.D2() {
     override fun expect(input: List<IOType.D2>): List<IOType.D2> {
         val query = affine(input, weightQ)
         val key = affine(input, weightK)
         val value = affine(input, weightV)
-        return scaledDotAttention(query, key, value)
+
+        val mul = query.matMul(key.transpose())
+        val scaled = mul / sqrt(outputY.toDouble())
+
+        val mask = IOType.d2(outputX, outputY) { x, y -> if (x > y) -1e9 else 0.0 }
+        val masked = scaled + mask
+
+        val softmax = softmax(masked)
+        return softmax.matMul(value)
     }
 
     override fun train(
         input: List<IOType.D2>,
         calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
     ): List<IOType.D2> {
+        val query = affine(input, weightQ)
+        val key = affine(input, weightK)
+        val value = affine(input, weightV)
+
+        val mul = query.matMul(key.transpose())
+        val scaled = mul / sqrt(outputY.toDouble())
+
+        val mask = IOType.d2(outputX, outputY) { x, y -> if (x > y) -1e9 else 0.0 }
+        val masked = scaled + mask
+
+        val softmax = softmax(masked)
+        val output = softmax.matMul(value)
+
+        val delta = calcDelta(output)
+
+        // scaled dot attentionの逆伝播
+
+        // dwq, dwk, dwv, dxの計算
+
+        // wq, wk, wvの更新式
+
+        // dxを返す
         TODO()
     }
 
@@ -44,29 +78,10 @@ class AttentionD2 internal constructor(
         }
     }
 
-    private fun scaledDotAttention(
-        query: List<IOType.D2>,
-        key: List<IOType.D2>,
-        value: List<IOType.D2>,
-    ) = List(query.size) { index ->
-        val query = query[index]
-        val key = key[index]
-        val value = value[index]
-
-        val mul = query.matMul(key.transpose())
-        val scaled = mul / sqrt(key.shape[1].toDouble())
-
-        val mask = IOType.d2(scaled.shape) { x, y -> if (x > y) -1e9 else 0.0 }
-        val masked = scaled + mask
-
-        val softmax = softmax(masked)
-        softmax.matMul(value)
-    }
-
-    private fun softmax(input: IOType.D2): IOType.D2 {
+    private fun softmax(input: List<IOType.D2>): List<IOType.D2> = input.map { input ->
         val max = input.max(axis = 1)
         val exp = IOType.d2(shape = input.shape) { x, y -> exp(input[x, y] - max[x]) }
         val sum = exp.sum(axis = 1)
-        return IOType.d2(input.shape) { x, y -> exp[x, y] / sum[x] }
+        IOType.d2(input.shape) { x, y -> exp[x, y] / sum[x] }
     }
 }
