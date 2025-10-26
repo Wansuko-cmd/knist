@@ -2,7 +2,6 @@ package dataset.mnist
 
 import com.wsr.NetworkBuilder
 import com.wsr.NetworkSerializer
-import com.wsr.optimizer.adam.AdamW
 import com.wsr.layer.output.softmax.softmaxWithLoss
 import com.wsr.layer.process.affine.affine
 import com.wsr.layer.process.bias.bias
@@ -10,6 +9,7 @@ import com.wsr.layer.process.function.relu.reLU
 import com.wsr.layer.process.norm.layer.layerNorm
 import com.wsr.layer.process.skip.skip
 import com.wsr.layer.reshape.reshape.reshapeToD1
+import com.wsr.optimizer.adam.AdamW
 import java.util.Random
 
 fun createMnistModel(epoc: Int, seed: Int? = null) {
