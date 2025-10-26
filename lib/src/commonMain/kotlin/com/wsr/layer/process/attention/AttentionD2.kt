@@ -13,9 +13,9 @@ import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.toD2
 import com.wsr.reshape.toD3
 import com.wsr.reshape.transpose
-import kotlinx.serialization.Serializable
 import kotlin.math.exp
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
 
 @Serializable
 class AttentionD2 internal constructor(
@@ -56,10 +56,7 @@ class AttentionD2 internal constructor(
         return affine(concat, weightO)
     }
 
-    override fun train(
-        input: List<IOType.D2>,
-        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
-    ): List<IOType.D2> {
+    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
         val query = List(numOfHeads) { affine(input, weightQ[it]) }
         val key = List(numOfHeads) { affine(input, weightK[it]) }
         val value = List(numOfHeads) { affine(input, weightV[it]) }
