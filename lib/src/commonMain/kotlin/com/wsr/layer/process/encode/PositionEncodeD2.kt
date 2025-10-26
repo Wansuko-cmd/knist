@@ -4,11 +4,13 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
+import kotlinx.serialization.Serializable
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
 
-class PositionEncodeD2(
+@Serializable
+class PositionEncodeD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
 ) : Process.D2() {
