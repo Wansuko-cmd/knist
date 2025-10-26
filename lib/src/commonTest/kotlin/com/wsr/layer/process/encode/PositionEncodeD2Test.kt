@@ -31,26 +31,26 @@ class PositionEncodeD2Test {
         // 偶数次元と次の奇数次元で同じ周波数を使用
 
         // pos=0の場合（x=0）
-        val pe_0_0 = sin(0.0 / 10000.0.pow(0.0 / 4.0)) // sin(0) = 0.0
-        val pe_0_1 = cos(0.0 / 10000.0.pow(0.0 / 4.0)) // cos(0) = 1.0 (y=1 -> (y-1)=0)
-        val pe_0_2 = sin(0.0 / 10000.0.pow(2.0 / 4.0)) // sin(0) = 0.0
-        val pe_0_3 = cos(0.0 / 10000.0.pow(2.0 / 4.0)) // cos(0) = 1.0 (y=3 -> (y-1)=2)
+        val pe00 = sin(0.0 / 10000.0.pow(0.0 / 4.0)) // sin(0) = 0.0
+        val pe01 = cos(0.0 / 10000.0.pow(0.0 / 4.0)) // cos(0) = 1.0 (y=1 -> (y-1)=0)
+        val pe02 = sin(0.0 / 10000.0.pow(2.0 / 4.0)) // sin(0) = 0.0
+        val pe03 = cos(0.0 / 10000.0.pow(2.0 / 4.0)) // cos(0) = 1.0 (y=3 -> (y-1)=2)
 
-        assertEquals(expected = 1.0 + pe_0_0, actual = output[0, 0], absoluteTolerance = 1e-4)
-        assertEquals(expected = 1.0 + pe_0_1, actual = output[0, 1], absoluteTolerance = 1e-4)
-        assertEquals(expected = 1.0 + pe_0_2, actual = output[0, 2], absoluteTolerance = 1e-4)
-        assertEquals(expected = 1.0 + pe_0_3, actual = output[0, 3], absoluteTolerance = 1e-4)
+        assertEquals(expected = 1.0 + pe00, actual = output[0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = 1.0 + pe01, actual = output[0, 1], absoluteTolerance = 1e-4)
+        assertEquals(expected = 1.0 + pe02, actual = output[0, 2], absoluteTolerance = 1e-4)
+        assertEquals(expected = 1.0 + pe03, actual = output[0, 3], absoluteTolerance = 1e-4)
 
         // pos=1の場合（x=1）
-        val pe_1_0 = sin(1.0 / 10000.0.pow(0.0 / 4.0)) // sin(1)
-        val pe_1_1 = cos(1.0 / 10000.0.pow(0.0 / 4.0)) // cos(1) (y=1 -> (y-1)=0)
-        val pe_1_2 = sin(1.0 / 10000.0.pow(2.0 / 4.0)) // sin(1 / 100)
-        val pe_1_3 = cos(1.0 / 10000.0.pow(2.0 / 4.0)) // cos(1 / 100) (y=3 -> (y-1)=2)
+        val pe10 = sin(1.0 / 10000.0.pow(0.0 / 4.0)) // sin(1)
+        val pe11 = cos(1.0 / 10000.0.pow(0.0 / 4.0)) // cos(1) (y=1 -> (y-1)=0)
+        val pe12 = sin(1.0 / 10000.0.pow(2.0 / 4.0)) // sin(1 / 100)
+        val pe13 = cos(1.0 / 10000.0.pow(2.0 / 4.0)) // cos(1 / 100) (y=3 -> (y-1)=2)
 
-        assertEquals(expected = 1.0 + pe_1_0, actual = output[1, 0], absoluteTolerance = 1e-4)
-        assertEquals(expected = 1.0 + pe_1_1, actual = output[1, 1], absoluteTolerance = 1e-4)
-        assertEquals(expected = 1.0 + pe_1_2, actual = output[1, 2], absoluteTolerance = 1e-4)
-        assertEquals(expected = 1.0 + pe_1_3, actual = output[1, 3], absoluteTolerance = 1e-4)
+        assertEquals(expected = 1.0 + pe10, actual = output[1, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = 1.0 + pe11, actual = output[1, 1], absoluteTolerance = 1e-4)
+        assertEquals(expected = 1.0 + pe12, actual = output[1, 2], absoluteTolerance = 1e-4)
+        assertEquals(expected = 1.0 + pe13, actual = output[1, 3], absoluteTolerance = 1e-4)
     }
 
     @Test

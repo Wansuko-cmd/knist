@@ -3,8 +3,8 @@
 package com.wsr.layer.process.skip
 
 import com.wsr.IOType
-import com.wsr.layer.Layer
 import com.wsr.NetworkBuilder
+import com.wsr.layer.Layer
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
 import kotlinx.serialization.Serializable
