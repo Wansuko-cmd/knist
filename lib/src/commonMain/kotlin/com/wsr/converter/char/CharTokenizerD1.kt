@@ -7,9 +7,7 @@ import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 
 @Serializable
-class CharTokenizerD1 internal constructor(
-    override val outputSize: Int,
-) : Converter.D1<String>() {
+class CharTokenizerD1 internal constructor(override val outputSize: Int) : Converter.D1<String>() {
     override fun encode(input: List<String>): List<IOType.D1> = input.map { text ->
         IOType.D1(
             value = DoubleArray(outputSize) { index ->
@@ -34,11 +32,7 @@ class CharTokenizerD1 internal constructor(
     }
 }
 
-fun NetworkBuilder.Companion.charTokenizerD1(
-    maxInputSize: Int,
-    optimizer: Optimizer,
-    seed: Int? = null,
-) = inputD1(
+fun NetworkBuilder.Companion.charTokenizerD1(maxInputSize: Int, optimizer: Optimizer, seed: Int? = null) = inputD1(
     converter = CharTokenizerD1(maxInputSize),
     optimizer = optimizer,
     seed = seed,
