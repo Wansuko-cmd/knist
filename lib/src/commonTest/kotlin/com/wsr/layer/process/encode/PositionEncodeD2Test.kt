@@ -12,7 +12,7 @@ import kotlin.test.assertEquals
 class PositionEncodeD2Test {
     @Test
     fun `PositionEncodeD2の_expect=入力に位置エンコーディングを加算`() {
-        val positionEncode = PositionEncodeD2(outputX = 2, outputY = 4)
+        val positionEncode = PositionEncodeD2(outputX = 2, outputY = 4, waveLength = 10000.0)
 
         // 入力は全て1.0（位置エンコーディングの影響だけを見るため）
         val input =
@@ -55,7 +55,7 @@ class PositionEncodeD2Test {
 
     @Test
     fun `PositionEncodeD2の_train=deltaをそのまま返す`() {
-        val positionEncode = PositionEncodeD2(outputX = 2, outputY = 3)
+        val positionEncode = PositionEncodeD2(outputX = 2, outputY = 3, waveLength = 10000.0)
 
         // 入力は[[1, 2, 3], [4, 5, 6]]
         val input =
