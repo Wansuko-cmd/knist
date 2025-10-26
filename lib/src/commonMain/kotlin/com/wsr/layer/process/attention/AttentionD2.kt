@@ -59,61 +59,127 @@ class AttentionD2 internal constructor(
         input: List<IOType.D2>,
         calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
     ): List<IOType.D2> {
-        val query = affine(input, weightQ)
-        val key = affine(input, weightK)
-        val value = affine(input, weightV)
+        val query = List(numOfHeads) { affine(input, weightQ[it]) }
+        val key = List(numOfHeads) { affine(input, weightK[it]) }
+        val value = List(numOfHeads) { affine(input, weightV[it]) }
 
-        val mul = query.matMul(key.transpose())
-        val scaled = mul / sqrt(outputY.toDouble())
+        val softmax = List(numOfHeads) {
+            val mul = query[it].matMul(key[it].transpose())
+            val scaled = mul / sqrt(dk.toDouble())
 
-        val mask = IOType.d2(outputX, outputY) { x, y -> if (x > y) -1e9 else 0.0 }
-        val masked = scaled + mask
+            val mask = IOType.d2(outputX, outputX) { x, y -> if (x > y) -1e9 else 0.0 }
+            val masked = scaled + mask
 
-        val softmax = softmax(masked)
-        val output = softmax.matMul(value)
+            softmax(masked)
+        }
+
+        val heads = List(numOfHeads) { softmax[it].matMul(value[it]) }
+
+        val concat = List(input.size) {
+            IOType.d2(outputX, outputY) { x, y ->
+                heads[y / dk][it][x, y % dk]
+            }
+        }
+        val output = affine(concat, weightO)
 
         val delta = calcDelta(output)
 
-        // scaled dot attentionの逆伝播
-        val dValue = softmax.transpose().matMul(delta)
-        val dSoftmax = delta.matMul(value.transpose())
+        // 出力変換（weightO）の逆伝播
+        val dConcat = delta.map { d -> (0 until outputX).map { weightO[it].matMul(d[it]) }.toD2() }
+        val concatD3 = concat.toD3().transpose(1, 2, 0)
+        val deltaD3 = delta.toD3().transpose(1, 0, 2)
+        val dwo = (0 until outputX).map { concatD3[it].matMul(deltaD3[it]) }.toD3() / input.size.toDouble()
+        weightO = optimizerO.adapt(weightO, dwo)
 
-        val sum = (dSoftmax * softmax).sum(axis = 1)
-        val dMasked = List(input.size) { i ->
-            IOType.d2(outputX, outputY) { x, y ->
-                softmax[i][x, y] * (dSoftmax[i][x, y] - sum[i][x])
+        // Concatの逆伝播（各ヘッドへの勾配に分割）
+        val dHeads = List(numOfHeads) { headIndex ->
+            List(input.size) { batchIndex ->
+                IOType.d2(outputX, dk) { x, y ->
+                    val index = headIndex * dk + y
+                    dConcat[batchIndex][x, index]
+                }
+            }
+        }
+
+        // 各ヘッドのScaled-Dot-Attentionの逆伝播
+        val dValue = List(numOfHeads) { softmax[it].transpose().matMul(dHeads[it]) }
+        val dSoftmax = List(numOfHeads) { dHeads[it].matMul(value[it].transpose()) }
+
+        val sum = List(numOfHeads) { (dSoftmax[it] * softmax[it]).sum(axis = 1) }
+        val dMasked = List(numOfHeads) { im ->
+            List(input.size) { i ->
+                IOType.d2(outputX, outputX) { x, y ->
+                    softmax[im][i][x, y] * (dSoftmax[im][i][x, y] - sum[im][i][x])
+                }
             }
         }
 
         val dScaled = dMasked
-        val dMul = dScaled / sqrt(outputY.toDouble())
+        val dMul = List(numOfHeads) { dScaled[it] / sqrt(dk.toDouble()) }
 
-        val dQuery = dMul.matMul(key)
-        val dKey = dMul.transpose().matMul(query)
+        val dQuery = List(numOfHeads) { dMul[it].matMul(key[it]) }
+        val dKey = List(numOfHeads) { dMul[it].transpose().matMul(query[it]) }
 
-        // dwq, dwk, dwv, dxの計算
+        // Affineの逆伝播（各ヘッドのQ, K, V）
         val dwi = input.toD3().transpose(1, 2, 0)
 
-        val dxq = dQuery.map { delta -> (0 until outputX).map { weightQ[it].matMul(delta[it]) }.toD2() }
-        val dqw = dQuery.toD3().transpose(1, 0, 2)
-        val dwq = (0 until outputX).map { dwi[it].matMul(dqw[it]) }.toD3() / input.size.toDouble()
+        val dxq = List(numOfHeads) { n ->
+            dQuery[n]
+                .map { delta ->
+                    (0 until outputX)
+                        .map { weightQ[n][it].matMul(delta[it]) }
+                        .toD2()
+                }
+        }
+        val dqw = List(numOfHeads) { dQuery[it].toD3().transpose(1, 0, 2) }
+        val dwq = List(numOfHeads) { n ->
+            (0 until outputX)
+                .map { dwi[it].matMul(dqw[n][it]) }
+                .toD3() / input.size.toDouble()
+        }
 
-        val dxk = dKey.map { delta -> (0 until outputX).map { weightK[it].matMul(delta[it]) }.toD2() }
-        val dkw = dKey.toD3().transpose(1, 0, 2)
-        val dwk = (0 until outputX).map { dwi[it].matMul(dkw[it]) }.toD3() / input.size.toDouble()
+        val dxk = List(numOfHeads) { n ->
+            dKey[n]
+                .map { delta ->
+                    (0 until outputX)
+                        .map { weightK[n][it].matMul(delta[it]) }
+                        .toD2()
+                }
+        }
+        val dkw = List(numOfHeads) { dKey[it].toD3().transpose(1, 0, 2) }
+        val dwk = List(numOfHeads) { n ->
+            (0 until outputX)
+                .map { dwi[it].matMul(dkw[n][it]) }
+                .toD3() / input.size.toDouble()
+        }
 
-        val dxv = dValue.map { delta -> (0 until outputX).map { weightV[it].matMul(delta[it]) }.toD2() }
-        val dvw = dValue.toD3().transpose(1, 0, 2)
-        val dwv = (0 until outputX).map { dwi[it].matMul(dvw[it]) }.toD3() / input.size.toDouble()
+        val dxv = List(numOfHeads) { n ->
+            dValue[n]
+                .map { delta ->
+                    (0 until outputX)
+                        .map { weightV[n][it].matMul(delta[it]) }
+                        .toD2()
+                }
+        }
+        val dvw = List(numOfHeads) { dValue[it].toD3().transpose(1, 0, 2) }
+        val dwv = List(numOfHeads) { n ->
+            (0 until outputX)
+                .map { dwi[it].matMul(dvw[n][it]) }
+                .toD3() / input.size.toDouble()
+        }
 
+        // 重みの更新
+        weightQ = List(numOfHeads) { optimizerQ[it].adapt(weightQ[it], dwq[it]) }
+        weightK = List(numOfHeads) { optimizerK[it].adapt(weightK[it], dwk[it]) }
+        weightV = List(numOfHeads) { optimizerV[it].adapt(weightV[it], dwv[it]) }
 
-        // wq, wk, wvの更新式
-        weightQ = optimizerQ.adapt(weightQ, dwq)
-        weightK = optimizerK.adapt(weightK, dwk)
-        weightV = optimizerV.adapt(weightV, dwv)
-
-        // dxを返す
-        return dxq + dxk + dxv
+        // dx
+        return List(input.size) { batchIndex ->
+            (0 until numOfHeads)
+                .fold(IOType.d2(outputX, outputY) { _, _ -> 0.0 }) { acc, headIndex ->
+                    acc + dxq[headIndex][batchIndex] + dxk[headIndex][batchIndex] + dxv[headIndex][batchIndex]
+                }
+        }
     }
 
     private fun affine(input: List<IOType.D2>, weight: IOType.D3): List<IOType.D2> {
