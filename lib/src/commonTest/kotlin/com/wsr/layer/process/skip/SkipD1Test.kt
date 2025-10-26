@@ -3,10 +3,10 @@
 package com.wsr.layer.process.skip
 
 import com.wsr.IOType
-import com.wsr.optimizer.sgd.Sgd
 import com.wsr.layer.process.affine.AffineD1
 import com.wsr.layer.process.bias.BiasD1
 import com.wsr.layer.process.skip.SkipD1
+import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
