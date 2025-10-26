@@ -7,6 +7,7 @@ import com.wsr.dot.matmul.matMul
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
 import com.wsr.operator.plus
+import com.wsr.reshape.toD2
 import com.wsr.reshape.transpose
 import kotlinx.serialization.Serializable
 import kotlin.math.exp
@@ -16,13 +17,32 @@ import kotlin.math.sqrt
 class AttentionD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
+    private val weightQ: IOType.D3,
+    private val weightK: IOType.D3,
+    private val weightV: IOType.D3,
 ) : Process.D2() {
     override fun expect(input: List<IOType.D2>): List<IOType.D2> {
+        val query = affine(input, weightQ)
+        val key = affine(input, weightK)
+        val value = affine(input, weightV)
+        return scaledDotAttention(query, key, value)
+    }
+
+    override fun train(
+        input: List<IOType.D2>,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
         TODO()
     }
 
-    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> =
-        TODO()
+    private fun affine(input: List<IOType.D2>, weight: IOType.D3): List<IOType.D2> {
+        val weight = (0 until outputX).map { weight[it].transpose() }
+        return input.map { input ->
+            (0 until outputX)
+                .map { weight[it].matMul(input[it]) }
+                .toD2()
+        }
+    }
 
     private fun scaledDotAttention(
         query: List<IOType.D2>,
