@@ -14,29 +14,25 @@ class PositionEncodeD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
 ) : Process.D2() {
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.map { input ->
-        input + IOType.d2(input.shape) { x, y ->
+    private val position by lazy {
+        IOType.d2(outputX, outputY) { x, y ->
             if (y % 2 == 0) {
-                sin(x / 10000.0.pow(y / input.shape[1].toDouble()))
+                sin(x / 10000.0.pow(y / outputY.toDouble()))
             } else {
-                cos(x / 10000.0.pow(y / input.shape[1].toDouble()))
+                cos(x / 10000.0.pow((y - 1) / outputY.toDouble()))
             }
         }
+    }
+
+    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.map { input ->
+        input + position
     }
 
     override fun train(
         input: List<IOType.D2>,
         calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
     ): List<IOType.D2> {
-        val output = input.map { input ->
-            input + IOType.d2(input.shape) { x, y ->
-                if (y % 2 == 0) {
-                    sin(x / 10000.0.pow(y / input.shape[1].toDouble()))
-                } else {
-                    cos(x / 10000.0.pow(y / input.shape[1].toDouble()))
-                }
-            }
-        }
+        val output = input.map { input -> input + position }
         return calcDelta(output)
     }
 }

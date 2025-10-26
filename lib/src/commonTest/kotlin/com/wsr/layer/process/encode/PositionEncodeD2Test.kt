@@ -26,14 +26,15 @@ class PositionEncodeD2Test {
         val output = result[0] as IOType.D2
 
         // 位置エンコーディングの計算
-        // PE(pos, dim) = sin or cos(pos / 10000^(dim/d_model))
-        // 偶数次元: sin, 奇数次元: cos
+        // PE(pos, 2i) = sin(pos / 10000^(2i/d_model))
+        // PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
+        // 偶数次元と次の奇数次元で同じ周波数を使用
 
         // pos=0の場合（x=0）
         val pe_0_0 = sin(0.0 / 10000.0.pow(0.0 / 4.0)) // sin(0) = 0.0
-        val pe_0_1 = cos(0.0 / 10000.0.pow(1.0 / 4.0)) // cos(0) = 1.0
+        val pe_0_1 = cos(0.0 / 10000.0.pow(0.0 / 4.0)) // cos(0) = 1.0 (y=1 -> (y-1)=0)
         val pe_0_2 = sin(0.0 / 10000.0.pow(2.0 / 4.0)) // sin(0) = 0.0
-        val pe_0_3 = cos(0.0 / 10000.0.pow(3.0 / 4.0)) // cos(0) = 1.0
+        val pe_0_3 = cos(0.0 / 10000.0.pow(2.0 / 4.0)) // cos(0) = 1.0 (y=3 -> (y-1)=2)
 
         assertEquals(expected = 1.0 + pe_0_0, actual = output[0, 0], absoluteTolerance = 1e-4)
         assertEquals(expected = 1.0 + pe_0_1, actual = output[0, 1], absoluteTolerance = 1e-4)
@@ -42,9 +43,9 @@ class PositionEncodeD2Test {
 
         // pos=1の場合（x=1）
         val pe_1_0 = sin(1.0 / 10000.0.pow(0.0 / 4.0)) // sin(1)
-        val pe_1_1 = cos(1.0 / 10000.0.pow(1.0 / 4.0)) // cos(1 / 10000^0.25)
+        val pe_1_1 = cos(1.0 / 10000.0.pow(0.0 / 4.0)) // cos(1) (y=1 -> (y-1)=0)
         val pe_1_2 = sin(1.0 / 10000.0.pow(2.0 / 4.0)) // sin(1 / 100)
-        val pe_1_3 = cos(1.0 / 10000.0.pow(3.0 / 4.0)) // cos(1 / 10000^0.75)
+        val pe_1_3 = cos(1.0 / 10000.0.pow(2.0 / 4.0)) // cos(1 / 100) (y=3 -> (y-1)=2)
 
         assertEquals(expected = 1.0 + pe_1_0, actual = output[1, 0], absoluteTolerance = 1e-4)
         assertEquals(expected = 1.0 + pe_1_1, actual = output[1, 1], absoluteTolerance = 1e-4)
