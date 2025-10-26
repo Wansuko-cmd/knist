@@ -1,6 +1,7 @@
 package com.wsr.layer.process.attention
 
 import com.wsr.IOType
+import com.wsr.NetworkBuilder
 import com.wsr.collection.max
 import com.wsr.collection.sum
 import com.wsr.dot.matmul.matMul
@@ -197,4 +198,44 @@ class AttentionD2 internal constructor(
         val sum = exp.sum(axis = 1)
         IOType.d2(input.shape) { x, y -> exp[x, y] / sum[x] }
     }
+}
+
+fun <T> NetworkBuilder.D2<T>.attention(numOfHeads: Int): NetworkBuilder.D2<T> {
+    check(inputY % numOfHeads == 0) {
+        """
+            invalid parameter.
+            input: ($inputX, $inputY)
+            numOfHeads: $numOfHeads
+        """.trimIndent()
+    }
+    val dk = inputY / numOfHeads
+    return addProcess(
+        process = AttentionD2(
+            outputX = inputX,
+            outputY = inputY,
+            numOfHeads = numOfHeads,
+            weightQ = List(numOfHeads) {
+                IOType.d3(inputX, inputY, dk) { _, _, _ ->
+                    random.nextDouble(-1.0, 1.0)
+                }
+            },
+            weightK = List(numOfHeads) {
+                IOType.d3(inputX, inputY, dk) { _, _, _ ->
+                    random.nextDouble(-1.0, 1.0)
+                }
+            },
+            weightV = List(numOfHeads) {
+                IOType.d3(inputX, inputY, dk) { _, _, _ ->
+                    random.nextDouble(-1.0, 1.0)
+                }
+            },
+            weightO = IOType.d3(inputX, inputY, inputY) { _, _, _ ->
+                random.nextDouble(-1.0, 1.0)
+            },
+            optimizerQ = List(numOfHeads) { optimizer.d3(inputX, inputY, dk) },
+            optimizerK = List(numOfHeads) { optimizer.d3(inputX, inputY, dk) },
+            optimizerV = List(numOfHeads) { optimizer.d3(inputX, inputY, dk) },
+            optimizerO = optimizer.d3(inputX, inputY, inputY),
+        ),
+    )
 }
