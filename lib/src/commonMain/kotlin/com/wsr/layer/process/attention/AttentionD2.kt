@@ -7,8 +7,10 @@ import com.wsr.dot.matmul.matMul
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
 import com.wsr.operator.plus
+import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.toD2
+import com.wsr.reshape.toD3
 import com.wsr.reshape.transpose
 import kotlinx.serialization.Serializable
 import kotlin.math.exp
@@ -60,13 +62,45 @@ class AttentionD2 internal constructor(
         val delta = calcDelta(output)
 
         // scaled dot attentionの逆伝播
+        val dValue = softmax.transpose().matMul(delta)
+        val dSoftmax = delta.matMul(value.transpose())
+
+        val sum = (dSoftmax * softmax).sum(axis = 1)
+        val dMasked = List(input.size) { i ->
+            IOType.d2(outputX, outputY) { x, y ->
+                softmax[i][x, y] * (dSoftmax[i][x, y] - sum[i][x])
+            }
+        }
+
+        val dScaled = dMasked
+        val dMul = dScaled / sqrt(outputY.toDouble())
+
+        val dQuery = dMul.matMul(key)
+        val dKey = dMul.transpose().matMul(query)
 
         // dwq, dwk, dwv, dxの計算
+        val dwi = input.toD3().transpose(1, 2, 0)
+
+        val dxq = dQuery.map { delta -> (0 until outputX).map { weightQ[it].matMul(delta[it]) }.toD2() }
+        val dqw = dQuery.toD3().transpose(1, 0, 2)
+        val dwq = (0 until outputX).map { dwi[it].matMul(dqw[it]) }.toD3() / input.size.toDouble()
+
+        val dxk = dKey.map { delta -> (0 until outputX).map { weightK[it].matMul(delta[it]) }.toD2() }
+        val dkw = dKey.toD3().transpose(1, 0, 2)
+        val dwk = (0 until outputX).map { dwi[it].matMul(dkw[it]) }.toD3() / input.size.toDouble()
+
+        val dxv = dValue.map { delta -> (0 until outputX).map { weightV[it].matMul(delta[it]) }.toD2() }
+        val dvw = dValue.toD3().transpose(1, 0, 2)
+        val dwv = (0 until outputX).map { dwi[it].matMul(dvw[it]) }.toD3() / input.size.toDouble()
+
 
         // wq, wk, wvの更新式
+        weightQ = optimizerQ.adapt(weightQ, dwq)
+        weightK = optimizerK.adapt(weightK, dwk)
+        weightV = optimizerV.adapt(weightV, dwv)
 
         // dxを返す
-        TODO()
+        return dxq + dxk + dxv
     }
 
     private fun affine(input: List<IOType.D2>, weight: IOType.D3): List<IOType.D2> {
