@@ -290,7 +290,7 @@ class TokenEmbeddingD1ToD2Test {
         }
 
         // Token 2の初期重み (初期値: [3, 3])
-        val token2BeforeValue = 3.0  // 初期化時の値
+        val token2BeforeValue = 3.0 // 初期化時の値
 
         embedding._train(input, calcDelta)
 

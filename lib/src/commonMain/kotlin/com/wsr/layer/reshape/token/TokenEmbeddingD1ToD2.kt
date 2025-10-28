@@ -6,8 +6,8 @@ import com.wsr.layer.reshape.Reshape
 import com.wsr.operator.div
 import com.wsr.operator.plus
 import com.wsr.optimizer.Optimizer
-import kotlinx.serialization.Serializable
 import kotlin.repeat
+import kotlinx.serialization.Serializable
 
 @Serializable
 class TokenEmbeddingD1ToD2 internal constructor(
