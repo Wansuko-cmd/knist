@@ -44,7 +44,7 @@ internal data class AdamD1(
     private val momentum: Double,
     private val rms: Double,
     private val shape: List<Int>,
-) : Optimizer.D1 {
+) : Optimizer.D1() {
     private var m: IOType.D1 = IOType.d1(shape)
     private var v: IOType.D1 = IOType.d1(shape)
     private val e = IOType.d1(shape) { E }
@@ -69,7 +69,7 @@ internal data class AdamD2(
     private val momentum: Double,
     private val rms: Double,
     private val shape: List<Int>,
-) : Optimizer.D2 {
+) : Optimizer.D2() {
     private var m: IOType.D2 = IOType.d2(shape)
     private var v: IOType.D2 = IOType.d2(shape)
     private val e = IOType.d2(shape) { _, _ -> E }
@@ -94,7 +94,7 @@ internal data class AdamD3(
     private val momentum: Double,
     private val rms: Double,
     private val shape: List<Int>,
-) : Optimizer.D3 {
+) : Optimizer.D3() {
     private var m: IOType.D3 = IOType.d3(shape)
     private var v: IOType.D3 = IOType.d3(shape)
     private val e: IOType.D3 = IOType.d3(shape) { _, _, _ -> E }
