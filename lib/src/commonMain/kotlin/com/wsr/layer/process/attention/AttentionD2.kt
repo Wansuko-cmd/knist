@@ -13,9 +13,9 @@ import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.toD2
 import com.wsr.reshape.toD3
 import com.wsr.reshape.transpose
-import kotlinx.serialization.Serializable
 import kotlin.math.exp
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
 
 @Serializable
 class AttentionD2 internal constructor(
@@ -196,11 +196,8 @@ class AttentionD2 internal constructor(
     }
 }
 
-fun <T> NetworkBuilder.D2<T>.attention(
-    numOfHeads: Int,
-    dim: Int = inputY / numOfHeads,
-): NetworkBuilder.D2<T> {
-    return addProcess(
+fun <T> NetworkBuilder.D2<T>.attention(numOfHeads: Int, dim: Int = inputY / numOfHeads): NetworkBuilder.D2<T> =
+    addProcess(
         process = AttentionD2(
             outputX = inputX,
             outputY = inputY,
@@ -230,4 +227,3 @@ fun <T> NetworkBuilder.D2<T>.attention(
             optimizerO = optimizer.d3(inputX, numOfHeads * dim, inputY),
         ),
     )
-}
