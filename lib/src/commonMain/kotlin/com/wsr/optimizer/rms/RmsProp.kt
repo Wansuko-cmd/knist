@@ -35,7 +35,7 @@ data class RmsProp(private val rate: Double, private val rms: Double = 0.9) : Op
 
 @Serializable
 internal data class RmsPropD1(private val rate: Double, private val rms: Double, private val shape: List<Int>) :
-    Optimizer.D1 {
+    Optimizer.D1() {
     private var velocity: IOType.D1 = IOType.d1(shape)
     private val e = IOType.d1(shape) { E }
 
@@ -47,7 +47,7 @@ internal data class RmsPropD1(private val rate: Double, private val rms: Double,
 
 @Serializable
 internal data class RmsPropD2(private val rate: Double, private val rms: Double, private val shape: List<Int>) :
-    Optimizer.D2 {
+    Optimizer.D2() {
     private var velocity: IOType.D2 = IOType.d2(shape)
     private val e = IOType.d2(shape) { _, _ -> E }
 
@@ -59,7 +59,7 @@ internal data class RmsPropD2(private val rate: Double, private val rms: Double,
 
 @Serializable
 internal data class RmsPropD3(private val rate: Double, private val rms: Double, private val shape: List<Int>) :
-    Optimizer.D3 {
+    Optimizer.D3() {
     private var velocity: IOType.D3 = IOType.d3(shape)
     private val e = IOType.d3(shape) { _, _, _ -> E }
 
