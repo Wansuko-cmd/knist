@@ -7,25 +7,25 @@ import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Sgd(private val rate: Double) : Optimizer {
-    override fun d1(size: Int): Optimizer.D1 = SgdD1(rate)
+data class Sgd(private val rate: Double, private val maxNorm: Double = Double.MAX_VALUE) : Optimizer {
+    override fun d1(size: Int): Optimizer.D1 = SgdD1(rate, maxNorm)
 
-    override fun d2(x: Int, y: Int): Optimizer.D2 = SgdD2(rate)
+    override fun d2(x: Int, y: Int): Optimizer.D2 = SgdD2(rate, maxNorm)
 
-    override fun d3(x: Int, y: Int, z: Int): Optimizer.D3 = SgdD3(rate)
+    override fun d3(x: Int, y: Int, z: Int): Optimizer.D3 = SgdD3(rate, maxNorm)
 }
 
 @Serializable
-internal data class SgdD1(private val rate: Double) : Optimizer.D1 {
+internal data class SgdD1(private val rate: Double, private val maxNorm: Double) : Optimizer.D1(maxNorm) {
     override fun adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1 = weight - rate * dw
 }
 
 @Serializable
-internal data class SgdD2(private val rate: Double) : Optimizer.D2 {
+internal data class SgdD2(private val rate: Double, private val maxNorm: Double) : Optimizer.D2(maxNorm) {
     override fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2 = weight - rate * dw
 }
 
 @Serializable
-internal data class SgdD3(private val rate: Double) : Optimizer.D3 {
+internal data class SgdD3(private val rate: Double, private val maxNorm: Double) : Optimizer.D3(maxNorm) {
     override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 = weight - rate * dw
 }

@@ -19,12 +19,14 @@ data class AdamW(
     private val momentum: Double = 0.9,
     private val rms: Double = 0.999,
     private val decay: Double = 0.01,
+    private val maxNorm: Double = Double.MAX_VALUE,
 ) : Optimizer {
     override fun d1(size: Int): Optimizer.D1 = AdamWD1(
         rate = rate,
         momentum = momentum,
         rms = rms,
         decay = decay,
+        maxNorm = maxNorm,
         shape = listOf(size),
     )
 
@@ -33,6 +35,7 @@ data class AdamW(
         momentum = momentum,
         rms = rms,
         decay = decay,
+        maxNorm = maxNorm,
         shape = listOf(x, y),
     )
 
@@ -41,6 +44,7 @@ data class AdamW(
         momentum = momentum,
         rms = rms,
         decay = decay,
+        maxNorm = maxNorm,
         shape = listOf(x, y, z),
     )
 }
@@ -51,8 +55,9 @@ internal data class AdamWD1(
     private val momentum: Double,
     private val rms: Double,
     private val decay: Double,
+    private val maxNorm: Double,
     private val shape: List<Int>,
-) : Optimizer.D1 {
+) : Optimizer.D1(maxNorm) {
     private var m: IOType.D1 = IOType.d1(shape)
     private var v: IOType.D1 = IOType.d1(shape)
     private val e = IOType.d1(shape) { E }
@@ -77,8 +82,9 @@ internal data class AdamWD2(
     private val momentum: Double,
     private val rms: Double,
     private val decay: Double,
+    private val maxNorm: Double,
     private val shape: List<Int>,
-) : Optimizer.D2 {
+) : Optimizer.D2(maxNorm) {
     private var m: IOType.D2 = IOType.d2(shape)
     private var v: IOType.D2 = IOType.d2(shape)
     private val e = IOType.d2(shape) { _, _ -> E }
@@ -103,8 +109,9 @@ internal data class AdamWD3(
     private val momentum: Double,
     private val rms: Double,
     private val decay: Double,
+    private val maxNorm: Double,
     private val shape: List<Int>,
-) : Optimizer.D3 {
+) : Optimizer.D3(maxNorm) {
     private var m: IOType.D3 = IOType.d3(shape)
     private var v: IOType.D3 = IOType.d3(shape)
     private val e: IOType.D3 = IOType.d3(shape) { _, _, _ -> E }

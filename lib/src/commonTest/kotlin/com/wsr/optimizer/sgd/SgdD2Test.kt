@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 class SgdD2Test {
     @Test
     fun `SgdD2の_adapt=勾配に学習率を乗算した値を返す`() {
-        val sgdD2 = SgdD2(rate = 0.1)
+        val sgdD2 = SgdD2(rate = 0.1, maxNorm = Double.MAX_VALUE)
 
         // weight = [[10, 20], [30, 40]]
         val weight = IOType.d2(2, 2) { x, y -> (x * 20 + y * 10 + 10).toDouble() }
