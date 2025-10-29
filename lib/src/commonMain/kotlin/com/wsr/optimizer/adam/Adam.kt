@@ -10,16 +10,22 @@ import com.wsr.power.pow
 import com.wsr.power.sqrt
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
+import kotlin.math.max
 
 private const val E = 1e-8
 
 @Serializable
-data class Adam(private val rate: Double, private val momentum: Double = 0.9, private val rms: Double = 0.999) :
-    Optimizer {
+data class Adam(
+    private val rate: Double,
+    private val momentum: Double = 0.9,
+    private val rms: Double = 0.999,
+    private val maxNorm: Double = Double.MAX_VALUE,
+) : Optimizer {
     override fun d1(size: Int): Optimizer.D1 = AdamD1(
         rate = rate,
         momentum = momentum,
         rms = rms,
+        maxNorm = maxNorm,
         shape = listOf(size),
     )
 
@@ -27,6 +33,7 @@ data class Adam(private val rate: Double, private val momentum: Double = 0.9, pr
         rate = rate,
         momentum = momentum,
         rms = rms,
+        maxNorm = maxNorm,
         shape = listOf(x, y),
     )
 
@@ -34,6 +41,7 @@ data class Adam(private val rate: Double, private val momentum: Double = 0.9, pr
         rate = rate,
         momentum = momentum,
         rms = rms,
+        maxNorm = maxNorm,
         shape = listOf(x, y, z),
     )
 }
@@ -43,8 +51,9 @@ internal data class AdamD1(
     private val rate: Double,
     private val momentum: Double,
     private val rms: Double,
+    private val maxNorm: Double,
     private val shape: List<Int>,
-) : Optimizer.D1() {
+) : Optimizer.D1(maxNorm) {
     private var m: IOType.D1 = IOType.d1(shape)
     private var v: IOType.D1 = IOType.d1(shape)
     private val e = IOType.d1(shape) { E }
@@ -68,8 +77,9 @@ internal data class AdamD2(
     private val rate: Double,
     private val momentum: Double,
     private val rms: Double,
+    private val maxNorm: Double,
     private val shape: List<Int>,
-) : Optimizer.D2() {
+) : Optimizer.D2(maxNorm) {
     private var m: IOType.D2 = IOType.d2(shape)
     private var v: IOType.D2 = IOType.d2(shape)
     private val e = IOType.d2(shape) { _, _ -> E }
@@ -93,8 +103,9 @@ internal data class AdamD3(
     private val rate: Double,
     private val momentum: Double,
     private val rms: Double,
+    private val maxNorm: Double,
     private val shape: List<Int>,
-) : Optimizer.D3() {
+) : Optimizer.D3(maxNorm) {
     private var m: IOType.D3 = IOType.d3(shape)
     private var v: IOType.D3 = IOType.d3(shape)
     private val e: IOType.D3 = IOType.d3(shape) { _, _, _ -> E }
