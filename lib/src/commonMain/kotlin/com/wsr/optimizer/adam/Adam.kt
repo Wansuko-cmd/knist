@@ -10,7 +10,6 @@ import com.wsr.power.pow
 import com.wsr.power.sqrt
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
-import kotlin.math.max
 
 private const val E = 1e-8
 
