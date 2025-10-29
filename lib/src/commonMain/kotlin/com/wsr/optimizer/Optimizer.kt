@@ -4,8 +4,8 @@ import com.wsr.IOType
 import com.wsr.collection.sum
 import com.wsr.operator.times
 import com.wsr.power.pow
-import kotlinx.serialization.Serializable
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
 
 interface Optimizer {
     fun d1(size: Int): D1
