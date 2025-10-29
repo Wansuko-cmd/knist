@@ -9,7 +9,15 @@ import kotlin.test.assertEquals
 class AdamWD1Test {
     @Test
     fun `AdamWD1の_adapt=初回呼び出し時の動作`() {
-        val adamWD1 = AdamWD1(rate = 0.001, momentum = 0.9, rms = 0.999, decay = 0.01, shape = listOf(2))
+        val adamWD1 =
+            AdamWD1(
+                rate = 0.001,
+                momentum = 0.9,
+                rms = 0.999,
+                decay = 0.01,
+                maxNorm = Double.MAX_VALUE,
+                shape = listOf(2),
+            )
 
         // weight = [10.0, 20.0]
         val weight = IOType.d1(listOf(10.0, 20.0))
@@ -34,7 +42,15 @@ class AdamWD1Test {
 
     @Test
     fun `AdamWD1の_adapt=2回目以降はモーメントが蓄積される`() {
-        val adamWD1 = AdamWD1(rate = 0.001, momentum = 0.9, rms = 0.999, decay = 0.01, shape = listOf(2))
+        val adamWD1 =
+            AdamWD1(
+                rate = 0.001,
+                momentum = 0.9,
+                rms = 0.999,
+                decay = 0.01,
+                maxNorm = Double.MAX_VALUE,
+                shape = listOf(2),
+            )
 
         // 1回目
         var weight = IOType.d1(listOf(10.0, 10.0))
