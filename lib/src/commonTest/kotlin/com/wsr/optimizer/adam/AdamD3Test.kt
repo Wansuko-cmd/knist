@@ -9,7 +9,8 @@ import kotlin.test.assertEquals
 class AdamD3Test {
     @Test
     fun `AdamD3の_adapt=初回呼び出し時の動作`() {
-        val adamD3 = AdamD3(rate = 0.001, momentum = 0.9, rms = 0.999, shape = listOf(1, 1, 2))
+        val adamD3 =
+            AdamD3(rate = 0.001, momentum = 0.9, rms = 0.999, maxNorm = Double.MAX_VALUE, shape = listOf(1, 1, 2))
 
         // weight = [[[10, 20]]]
         val weight = IOType.d3(1, 1, 2) { _, _, z -> (z + 1) * 10.0 }
@@ -25,7 +26,8 @@ class AdamD3Test {
 
     @Test
     fun `AdamD3の_adapt=2回目以降はモーメントが蓄積される`() {
-        val adamD3 = AdamD3(rate = 0.001, momentum = 0.9, rms = 0.999, shape = listOf(1, 1, 2))
+        val adamD3 =
+            AdamD3(rate = 0.001, momentum = 0.9, rms = 0.999, maxNorm = Double.MAX_VALUE, shape = listOf(1, 1, 2))
 
         // 1回目
         var weight = IOType.d3(1, 1, 2) { _, _, _ -> 10.0 }

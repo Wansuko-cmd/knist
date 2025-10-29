@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 class RmsPropD1Test {
     @Test
     fun `RmsPropD1の_adapt=初回呼び出し時の動作`() {
-        val rmsPropD1 = RmsPropD1(rate = 0.1, rms = 0.9, shape = listOf(2))
+        val rmsPropD1 = RmsPropD1(rate = 0.1, rms = 0.9, maxNorm = Double.MAX_VALUE, shape = listOf(2))
 
         // weight = [10, 20]
         val weight = IOType.d1(listOf(10.0, 20.0))
@@ -28,7 +28,7 @@ class RmsPropD1Test {
 
     @Test
     fun `RmsPropD1の_adapt=2回目以降はvelocityが蓄積される`() {
-        val rmsPropD1 = RmsPropD1(rate = 0.1, rms = 0.9, shape = listOf(2))
+        val rmsPropD1 = RmsPropD1(rate = 0.1, rms = 0.9, maxNorm = Double.MAX_VALUE, shape = listOf(2))
 
         // 1回目: dw = [1, 1]
         var weight = IOType.d1(listOf(10.0, 10.0))
