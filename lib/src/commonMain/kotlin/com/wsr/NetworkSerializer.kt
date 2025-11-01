@@ -188,6 +188,7 @@ class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
 
         @OptIn(ExperimentalSerializationApi::class)
         fun <I, O> decodeFromBufferedSource(source: BufferedSource) = json.decodeFromBufferedSource<Network<I, O>>(
+            deserializer = NetworkSerializer(),
             source = source,
         )
 

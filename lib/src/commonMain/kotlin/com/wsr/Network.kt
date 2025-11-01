@@ -39,7 +39,7 @@ class Network<I, O> internal constructor(
 
     fun toJson(): String = NetworkSerializer.encodeToString(this)
 
-    fun <I, O> toJson(sink: BufferedSink) {
+    fun toJson(sink: BufferedSink) {
         NetworkSerializer.encodeToBufferedSink(
             value = this,
             sink = sink,
