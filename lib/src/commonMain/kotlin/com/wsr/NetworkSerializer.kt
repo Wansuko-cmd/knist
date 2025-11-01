@@ -1,6 +1,7 @@
 package com.wsr
 
 import com.wsr.converter.Converter
+import com.wsr.converter.char.CharTokenizerD1
 import com.wsr.converter.linear.LinearD1
 import com.wsr.converter.linear.LinearD2
 import com.wsr.converter.linear.LinearD3
@@ -10,6 +11,7 @@ import com.wsr.layer.output.sigmoid.SigmoidWithLossD1
 import com.wsr.layer.output.softmax.SoftmaxWithLossD1
 import com.wsr.layer.process.affine.AffineD1
 import com.wsr.layer.process.affine.AffineD2
+import com.wsr.layer.process.attention.AttentionD2
 import com.wsr.layer.process.bias.BiasD1
 import com.wsr.layer.process.bias.BiasD2
 import com.wsr.layer.process.bias.BiasD3
@@ -56,6 +58,7 @@ import com.wsr.layer.reshape.gad.GlobalAverageD3ToD2
 import com.wsr.layer.reshape.reshape.ReshapeD2ToD1
 import com.wsr.layer.reshape.reshape.ReshapeD3ToD1
 import com.wsr.layer.reshape.reshape.ReshapeD3ToD2
+import com.wsr.layer.reshape.token.TokenEmbeddingD1ToD2
 import com.wsr.optimizer.Optimizer
 import com.wsr.optimizer.adam.AdamD1
 import com.wsr.optimizer.adam.AdamD2
@@ -73,17 +76,22 @@ import com.wsr.optimizer.sgd.SgdD1
 import com.wsr.optimizer.sgd.SgdD2
 import com.wsr.optimizer.sgd.SgdD3
 import kotlin.reflect.KClass
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.okio.decodeFromBufferedSource
+import kotlinx.serialization.json.okio.encodeToBufferedSink
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.plus
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.serializer
+import okio.BufferedSink
+import okio.BufferedSource
 
 class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
     private val converterSerializer = json.serializersModule.serializer<Converter>()
@@ -166,9 +174,21 @@ class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
             value = value,
         )
 
+        @OptIn(ExperimentalSerializationApi::class)
+        fun <I, O> encodeToBufferedSink(value: Network<I, O>, sink: BufferedSink) = json.encodeToBufferedSink(
+            serializer = NetworkSerializer(),
+            value = value,
+            sink = sink,
+        )
+
         fun <I, O> decodeFromString(value: String) = json.decodeFromString<Network<I, O>>(
             deserializer = NetworkSerializer(),
             string = value,
+        )
+
+        @OptIn(ExperimentalSerializationApi::class)
+        fun <I, O> decodeFromBufferedSource(source: BufferedSource) = json.decodeFromBufferedSource<Network<I, O>>(
+            source = source,
         )
 
         private val json
@@ -186,6 +206,9 @@ private val buildInSerializersModule = SerializersModule {
         // Affine
         subclass(AffineD1::class)
         subclass(AffineD2::class)
+
+        // Attention
+        subclass(AttentionD2::class)
 
         // Bias
         subclass(BiasD1::class)
@@ -251,12 +274,18 @@ private val buildInSerializersModule = SerializersModule {
         /**
          * Reshape
          */
-        subclass(ReshapeD2ToD1::class)
-        subclass(ReshapeD3ToD1::class)
-        subclass(ReshapeD3ToD2::class)
+        // Global Average
         subclass(GlobalAverageD2ToD1::class)
         subclass(GlobalAverageD3ToD1::class)
         subclass(GlobalAverageD3ToD2::class)
+
+        // Reshape
+        subclass(ReshapeD2ToD1::class)
+        subclass(ReshapeD3ToD1::class)
+        subclass(ReshapeD3ToD2::class)
+
+        // Token
+        subclass(TokenEmbeddingD1ToD2::class)
 
         /**
          * Output
@@ -294,6 +323,10 @@ private val buildInSerializersModule = SerializersModule {
     }
 
     polymorphic(Converter::class) {
+        // Char
+        subclass(CharTokenizerD1::class)
+
+        // Linear
         subclass(LinearD1::class)
         subclass(LinearD2::class)
         subclass(LinearD3::class)
