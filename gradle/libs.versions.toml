@@ -12,7 +12,7 @@ datetime = "0.7.1-0.6.x-compat"
 serialization = "1.9.0"
 
 # okio
-okio = "3.16.2Z"
+okio = "3.16.2"
 
 # test
 mockk = "1.14.5"
