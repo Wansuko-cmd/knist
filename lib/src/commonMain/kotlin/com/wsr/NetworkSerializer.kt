@@ -1,6 +1,7 @@
 package com.wsr
 
 import com.wsr.converter.Converter
+import com.wsr.converter.char.CharTokenizerD1
 import com.wsr.converter.linear.LinearD1
 import com.wsr.converter.linear.LinearD2
 import com.wsr.converter.linear.LinearD3
@@ -10,6 +11,7 @@ import com.wsr.layer.output.sigmoid.SigmoidWithLossD1
 import com.wsr.layer.output.softmax.SoftmaxWithLossD1
 import com.wsr.layer.process.affine.AffineD1
 import com.wsr.layer.process.affine.AffineD2
+import com.wsr.layer.process.attention.AttentionD2
 import com.wsr.layer.process.bias.BiasD1
 import com.wsr.layer.process.bias.BiasD2
 import com.wsr.layer.process.bias.BiasD3
@@ -56,6 +58,7 @@ import com.wsr.layer.reshape.gad.GlobalAverageD3ToD2
 import com.wsr.layer.reshape.reshape.ReshapeD2ToD1
 import com.wsr.layer.reshape.reshape.ReshapeD3ToD1
 import com.wsr.layer.reshape.reshape.ReshapeD3ToD2
+import com.wsr.layer.reshape.token.TokenEmbeddingD1ToD2
 import com.wsr.optimizer.Optimizer
 import com.wsr.optimizer.adam.AdamD1
 import com.wsr.optimizer.adam.AdamD2
@@ -204,6 +207,9 @@ private val buildInSerializersModule = SerializersModule {
         subclass(AffineD1::class)
         subclass(AffineD2::class)
 
+        // Attention
+        subclass(AttentionD2::class)
+
         // Bias
         subclass(BiasD1::class)
         subclass(BiasD2::class)
@@ -268,12 +274,18 @@ private val buildInSerializersModule = SerializersModule {
         /**
          * Reshape
          */
-        subclass(ReshapeD2ToD1::class)
-        subclass(ReshapeD3ToD1::class)
-        subclass(ReshapeD3ToD2::class)
+        // Global Average
         subclass(GlobalAverageD2ToD1::class)
         subclass(GlobalAverageD3ToD1::class)
         subclass(GlobalAverageD3ToD2::class)
+
+        // Reshape
+        subclass(ReshapeD2ToD1::class)
+        subclass(ReshapeD3ToD1::class)
+        subclass(ReshapeD3ToD2::class)
+
+        // Token
+        subclass(TokenEmbeddingD1ToD2::class)
 
         /**
          * Output
@@ -311,6 +323,10 @@ private val buildInSerializersModule = SerializersModule {
     }
 
     polymorphic(Converter::class) {
+        // Char
+        subclass(CharTokenizerD1::class)
+
+        // Linear
         subclass(LinearD1::class)
         subclass(LinearD2::class)
         subclass(LinearD3::class)
