@@ -72,6 +72,7 @@ import com.wsr.optimizer.rms.RmsPropD3
 import com.wsr.optimizer.sgd.SgdD1
 import com.wsr.optimizer.sgd.SgdD2
 import com.wsr.optimizer.sgd.SgdD3
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.reflect.KClass
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -79,11 +80,15 @@ import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.okio.decodeFromBufferedSource
+import kotlinx.serialization.json.okio.encodeToBufferedSink
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.plus
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.serializer
+import okio.BufferedSink
+import okio.BufferedSource
 
 class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
     private val converterSerializer = json.serializersModule.serializer<Converter>()
@@ -166,9 +171,21 @@ class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
             value = value,
         )
 
+        @OptIn(ExperimentalSerializationApi::class)
+        fun <I, O> encodeToBufferedSink(value: Network<I, O>, sink: BufferedSink) = json.encodeToBufferedSink(
+            serializer = NetworkSerializer(),
+            value = value,
+            sink = sink,
+        )
+
         fun <I, O> decodeFromString(value: String) = json.decodeFromString<Network<I, O>>(
             deserializer = NetworkSerializer(),
             string = value,
+        )
+
+        @OptIn(ExperimentalSerializationApi::class)
+        fun <I, O> decodeFromBufferedSource(source: BufferedSource) = json.decodeFromBufferedSource<Network<I, O>>(
+            source = source,
         )
 
         private val json

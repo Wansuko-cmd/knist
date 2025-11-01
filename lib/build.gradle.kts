@@ -13,7 +13,11 @@ kotlin {
                 api(project(":io-type:core"))
 
                 implementation(libs.coroutine)
+
                 implementation(libs.serialization)
+                implementation(libs.serialization.okio)
+
+                implementation(libs.okio)
             }
         }
 
