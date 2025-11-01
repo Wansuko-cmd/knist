@@ -3,6 +3,8 @@ package com.wsr
 import com.wsr.converter.Converter
 import com.wsr.layer.Layer
 import kotlinx.serialization.Serializable
+import okio.BufferedSink
+import okio.BufferedSource
 
 @Serializable(with = NetworkSerializer::class)
 class Network<I, O> internal constructor(
@@ -37,7 +39,16 @@ class Network<I, O> internal constructor(
 
     fun toJson(): String = NetworkSerializer.encodeToString(this)
 
+    fun <I, O> toJson(sink: BufferedSink) {
+        NetworkSerializer.encodeToBufferedSink(
+            value = this,
+            sink = sink,
+        )
+    }
+
     companion object {
-        fun <I : IOType, O : IOType> fromJson(value: String) = NetworkSerializer.decodeFromString<I, O>(value)
+        fun <I, O> fromJson(value: String) = NetworkSerializer.decodeFromString<I, O>(value)
+
+        fun <I, O> fromJson(source: BufferedSource) = NetworkSerializer.decodeFromBufferedSource<I, O>(source)
     }
 }
