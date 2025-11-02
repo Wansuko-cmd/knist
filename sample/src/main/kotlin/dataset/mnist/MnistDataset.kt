@@ -3,6 +3,7 @@ package dataset.mnist
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.Converter
+import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
 import java.io.DataInputStream
 import java.nio.file.Files
@@ -59,10 +60,10 @@ data class PixelConverter(override val outputX: Int, override val outputY: Int) 
     override fun decode(input: List<IOType.D2>): List<List<Double>> = input.map { it.value.toList() }
 }
 
-fun NetworkBuilder.Companion.inputPx(x: Int, y: Int, optimizer: Optimizer, seed: Int? = null) = inputD2(
+fun NetworkBuilder.Companion.inputPx(x: Int, y: Int, optimizer: Optimizer, initializer: WeightInitializer) = inputD2(
     converter = PixelConverter(x, y),
     optimizer = optimizer,
-    seed = seed,
+    initializer = initializer,
 )
 
 @Serializable

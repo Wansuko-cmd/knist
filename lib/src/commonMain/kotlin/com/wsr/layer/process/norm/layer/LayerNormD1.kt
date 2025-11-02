@@ -5,6 +5,8 @@ import com.wsr.NetworkBuilder
 import com.wsr.collection.average
 import com.wsr.collection.batchAverage
 import com.wsr.collection.sum
+import com.wsr.initializer.Fixed
+import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
 import com.wsr.operator.minus
@@ -96,10 +98,17 @@ class LayerNormD1 internal constructor(
     }
 }
 
-fun <T> NetworkBuilder.D1<T>.layerNorm(optimizer: Optimizer = this.optimizer) = addProcess(
+fun <T> NetworkBuilder.D1<T>.layerNorm(
+    optimizer: Optimizer = this.optimizer,
+    initializer: WeightInitializer = Fixed(1.0),
+) = addProcess(
     process = LayerNormD1(
         outputSize = inputSize,
         optimizer = optimizer.d1(inputSize),
-        weight = IOType.d1(inputSize) { random.nextDouble(-1.0, 1.0) },
+        weight = initializer.d1(
+            input = listOf(inputSize),
+            output = listOf(inputSize),
+            size = inputSize,
+        ),
     ),
 )

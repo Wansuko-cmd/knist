@@ -3,6 +3,8 @@ package com.wsr.layer.process.bias
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.collection.batchAverage
+import com.wsr.initializer.Fixed
+import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
 import com.wsr.optimizer.Optimizer
@@ -26,12 +28,19 @@ class BiasD3(
     }
 }
 
-fun <T> NetworkBuilder.D3<T>.bias(optimizer: Optimizer = this.optimizer) = addProcess(
-    process = BiasD3(
-        outputX = inputX,
-        outputY = inputY,
-        outputZ = inputZ,
-        optimizer = optimizer.d3(inputX, inputY, inputZ),
-        weight = IOType.d3(inputX, inputY, inputZ) { _, _, _ -> random.nextDouble(-1.0, 1.0) },
-    ),
-)
+fun <T> NetworkBuilder.D3<T>.bias(optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = Fixed(0.0)) =
+    addProcess(
+        process = BiasD3(
+            outputX = inputX,
+            outputY = inputY,
+            outputZ = inputZ,
+            optimizer = optimizer.d3(inputX, inputY, inputZ),
+            weight = initializer.d3(
+                input = listOf(inputX, inputY, inputZ),
+                output = listOf(inputX, inputY, inputZ),
+                x = inputX,
+                y = inputY,
+                z = inputZ,
+            ),
+        ),
+    )
