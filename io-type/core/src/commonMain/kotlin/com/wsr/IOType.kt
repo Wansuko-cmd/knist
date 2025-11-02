@@ -134,7 +134,7 @@ sealed class IOType {
 
         fun d1(value: DoubleArray) = D1(value = value)
 
-        inline fun d2(i: Int, j: Int, init: (Int, Int) -> Double): D2 {
+        inline fun d2(i: Int, j: Int, init: (Int, Int) -> Double = { _, _ -> 0.0 }): D2 {
             val value = DoubleArray(i * j)
             for (_i in 0 until i) {
                 for (_j in 0 until j) {

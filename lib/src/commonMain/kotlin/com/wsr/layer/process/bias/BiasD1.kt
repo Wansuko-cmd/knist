@@ -28,6 +28,6 @@ fun <T> NetworkBuilder.D1<T>.bias(optimizer: Optimizer = this.optimizer) = addPr
     BiasD1(
         outputSize = inputSize,
         optimizer = optimizer.d1(inputSize),
-        weight = IOType.d1(inputSize) { random.nextDouble(-1.0, 1.0) },
+        weight = IOType.d1(inputSize),
     ),
 )

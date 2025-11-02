@@ -65,8 +65,11 @@ fun <T> NetworkBuilder.D1<T>.tokenEmbedding(
         outputY = tokenSize,
         vocabSize = vocabSize,
         optimizer = optimizer.d2(vocabSize, tokenSize),
-        weight = IOType.d2(vocabSize, tokenSize) { _, _ ->
-            random.nextDouble(-0.1, 0.1)
-        },
+        weight = initializer.d2(
+            input = listOf(vocabSize),
+            output = listOf(tokenSize),
+            x = vocabSize,
+            y = tokenSize,
+        ),
     ),
 )

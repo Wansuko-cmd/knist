@@ -35,6 +35,11 @@ fun <T> NetworkBuilder.D1<T>.affine(neuron: Int, optimizer: Optimizer = this.opt
     AffineD1(
         outputSize = neuron,
         optimizer = optimizer.d2(inputSize, neuron),
-        weight = IOType.d2(inputSize, neuron) { _, _ -> random.nextDouble(-1.0, 1.0) },
+        weight = initializer.d2(
+            input = listOf(inputSize),
+            output = listOf(neuron),
+            x = inputSize,
+            y = neuron,
+        ),
     ),
 )

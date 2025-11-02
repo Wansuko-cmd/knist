@@ -106,6 +106,6 @@ fun <T> NetworkBuilder.D3<T>.layerNorm(optimizer: Optimizer = this.optimizer) = 
         outputY = inputY,
         outputZ = inputZ,
         optimizer = optimizer.d3(inputX, inputY, inputZ),
-        weight = IOType.d3(inputX, inputY, inputZ) { _, _, _ -> random.nextDouble(-1.0, 1.0) },
+        weight = IOType.d3(inputX, inputY, inputZ) { _, _, _ -> 1.0 },
     ),
 )
