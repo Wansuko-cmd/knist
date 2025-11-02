@@ -2,6 +2,7 @@ package com.wsr.layer.reshape.token
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.reshape.Reshape
 import com.wsr.operator.div
 import com.wsr.operator.plus
@@ -59,6 +60,7 @@ fun <T> NetworkBuilder.D1<T>.tokenEmbedding(
     vocabSize: Int,
     tokenSize: Int,
     optimizer: Optimizer = this.optimizer,
+    initializer: WeightInitializer = this.initializer,
 ): NetworkBuilder.D2<T> = addReshape(
     reshape = TokenEmbeddingD1ToD2(
         outputX = inputSize,

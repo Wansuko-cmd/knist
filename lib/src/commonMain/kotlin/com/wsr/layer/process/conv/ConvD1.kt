@@ -5,6 +5,7 @@ import com.wsr.NetworkBuilder
 import com.wsr.collection.batchAverage
 import com.wsr.conv.convD1
 import com.wsr.conv.deConvD1
+import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.toD2
@@ -75,6 +76,7 @@ fun <T> NetworkBuilder.D2<T>.convD1(
     stride: Int = 1,
     padding: Int = 0,
     optimizer: Optimizer = this.optimizer,
+    initializer: WeightInitializer = this.initializer,
 ) = addProcess(
     process =
     ConvD1(
