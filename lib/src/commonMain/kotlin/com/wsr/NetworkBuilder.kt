@@ -2,7 +2,6 @@ package com.wsr
 
 import com.wsr.converter.Converter
 import com.wsr.converter.linear.LinearD1
-import com.wsr.initializer.He
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Layer
 import com.wsr.layer.output.Output
@@ -132,7 +131,7 @@ sealed interface NetworkBuilder<I, O> {
         fun <T> inputD1(
             converter: Converter.D1<T>,
             optimizer: Optimizer,
-            initializer: WeightInitializer = He(),
+            initializer: WeightInitializer,
             seed: Int? = null,
         ) = D1<T>(
             inputSize = converter.outputSize,
@@ -146,7 +145,7 @@ sealed interface NetworkBuilder<I, O> {
         fun <T> inputD2(
             converter: Converter.D2<T>,
             optimizer: Optimizer,
-            initializer: WeightInitializer = He(),
+            initializer: WeightInitializer,
             seed: Int? = null,
         ) = D2<T>(
             inputX = converter.outputX,
@@ -161,7 +160,7 @@ sealed interface NetworkBuilder<I, O> {
         fun <T> inputD3(
             converter: Converter.D3<T>,
             optimizer: Optimizer,
-            initializer: WeightInitializer = He(),
+            initializer: WeightInitializer,
             seed: Int? = null,
         ) = D3<T>(
             inputX = converter.outputX,
