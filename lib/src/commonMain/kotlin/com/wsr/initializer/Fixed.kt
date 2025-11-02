@@ -1,9 +1,7 @@
 package com.wsr.initializer
 
 import com.wsr.IOType
-import kotlinx.serialization.Serializable
 
-@Serializable
 class Fixed(private val value: Double) : WeightInitializer {
     override fun d1(
         input: List<Int>,

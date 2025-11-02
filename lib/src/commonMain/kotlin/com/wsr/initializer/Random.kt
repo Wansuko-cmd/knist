@@ -1,16 +1,14 @@
 package com.wsr.initializer
 
 import com.wsr.IOType
-import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
-@Serializable
 class Random(
-    private val seed: Int? = null,
+    seed: Int? = null,
     private val from: Double = -1.0,
     private val until: Double = 1.0,
 ) : WeightInitializer {
-    private val random by lazy { seed?.let { Random(it) } ?: Random }
+    private val random = seed?.let { Random(it) } ?: Random
     override fun d1(
         input: List<Int>,
         output: List<Int>,

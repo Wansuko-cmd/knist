@@ -1,13 +1,11 @@
 package com.wsr.initializer
 
 import com.wsr.IOType
-import kotlinx.serialization.Serializable
 import kotlin.math.sqrt
 import kotlin.random.Random
 
-@Serializable
-class Xavier(private val seed: Int? = null) : WeightInitializer {
-    private val random by lazy { seed?.let { Random(it) } ?: Random }
+class Xavier(seed: Int? = null) : WeightInitializer {
+    private val random = seed?.let { Random(it) } ?: Random
     override fun d1(
         input: List<Int>,
         output: List<Int>,
