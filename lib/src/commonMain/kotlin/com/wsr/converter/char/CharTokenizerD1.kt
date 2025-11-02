@@ -3,6 +3,7 @@ package com.wsr.converter.char
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.Converter
+import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 
@@ -32,8 +33,9 @@ class CharTokenizerD1 internal constructor(override val outputSize: Int) : Conve
     }
 }
 
-fun NetworkBuilder.Companion.charTokenizerD1(maxInputSize: Int, optimizer: Optimizer, seed: Int? = null) = inputD1(
-    converter = CharTokenizerD1(maxInputSize),
-    optimizer = optimizer,
-    seed = seed,
-)
+fun NetworkBuilder.Companion.charTokenizerD1(maxInputSize: Int, optimizer: Optimizer, initializer: WeightInitializer) =
+    inputD1(
+        converter = CharTokenizerD1(maxInputSize),
+        optimizer = optimizer,
+        initializer = initializer,
+    )

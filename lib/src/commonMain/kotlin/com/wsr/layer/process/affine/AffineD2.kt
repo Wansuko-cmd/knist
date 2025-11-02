@@ -3,6 +3,7 @@ package com.wsr.layer.process.affine
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.dot.matmul.matMul
+import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
 import com.wsr.optimizer.Optimizer
@@ -44,14 +45,22 @@ class AffineD2 internal constructor(
     }
 }
 
-fun <T> NetworkBuilder.D2<T>.affine(neuron: Int, optimizer: Optimizer = this.optimizer) = addProcess(
+fun <T> NetworkBuilder.D2<T>.affine(
+    neuron: Int,
+    optimizer: Optimizer = this.optimizer,
+    initializer: WeightInitializer = this.initializer,
+) = addProcess(
     process =
     AffineD2(
         channel = inputX,
         outputSize = neuron,
         optimizer = optimizer.d3(inputX, inputY, neuron),
-        weight = IOType.d3(inputX, inputY, neuron) { _, _, _ ->
-            random.nextDouble(-1.0, 1.0)
-        },
+        weight = initializer.d3(
+            input = listOf(inputY),
+            output = listOf(neuron),
+            x = inputX,
+            y = inputY,
+            z = neuron,
+        ),
     ),
 )

@@ -10,7 +10,7 @@ fun main() {
 
     // ニューラルネットワークを構築
     val network = NetworkBuilder
-        .inputPx(x = 28, y = 28, optimizer = AdamW(0.001), seed = seed)
+        .inputPx(x = 28, y = 28, optimizer = AdamW(0.001), initializer = He(seed))
         .reshapeToD1()
         .affine(neuron = 512).bias().reLU()
         .repeat(5) {

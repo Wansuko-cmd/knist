@@ -2,18 +2,18 @@ package com.wsr
 
 import com.wsr.converter.Converter
 import com.wsr.converter.linear.LinearD1
+import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Layer
 import com.wsr.layer.output.Output
 import com.wsr.layer.process.Process
 import com.wsr.layer.reshape.Reshape
 import com.wsr.optimizer.Optimizer
-import kotlin.random.Random
 
 sealed interface NetworkBuilder<I, O> {
     val input: Converter
     val layers: List<Layer>
     val optimizer: Optimizer
-    val random: Random
+    val initializer: WeightInitializer
 
     @ConsistentCopyVisibility
     data class D1<I> internal constructor(
@@ -21,7 +21,7 @@ sealed interface NetworkBuilder<I, O> {
         override val input: Converter,
         override val layers: List<Layer>,
         override val optimizer: Optimizer,
-        override val random: Random,
+        override val initializer: WeightInitializer,
     ) : NetworkBuilder<I, IOType.D1> {
         fun addProcess(process: Process.D1): D1<I> = copy(
             layers = layers + process,
@@ -46,7 +46,7 @@ sealed interface NetworkBuilder<I, O> {
             inputX = reshape.outputX,
             inputY = reshape.outputY,
             optimizer = optimizer,
-            random = random,
+            initializer = initializer,
         )
 
         fun repeat(times: Int, builder: D1<I>.(index: Int) -> D1<I>): D1<I> =
@@ -60,7 +60,7 @@ sealed interface NetworkBuilder<I, O> {
         override val input: Converter,
         override val layers: List<Layer>,
         override val optimizer: Optimizer,
-        override val random: Random,
+        override val initializer: WeightInitializer,
     ) : NetworkBuilder<I, IOType.D2> {
         fun addProcess(process: Process.D2): D2<I> = copy(
             layers = layers + process,
@@ -73,7 +73,7 @@ sealed interface NetworkBuilder<I, O> {
             layers = layers + reshape,
             inputSize = reshape.outputSize,
             optimizer = optimizer,
-            random = random,
+            initializer = initializer,
         )
 
         fun repeat(times: Int, builder: D2<I>.(index: Int) -> D2<I>): D2<I> =
@@ -88,7 +88,7 @@ sealed interface NetworkBuilder<I, O> {
         override val input: Converter,
         override val layers: List<Layer>,
         override val optimizer: Optimizer,
-        override val random: Random,
+        override val initializer: WeightInitializer,
     ) : NetworkBuilder<I, IOType.D3> {
         fun addProcess(process: Process.D3): D3<I> = copy(
             layers = layers + process,
@@ -103,7 +103,7 @@ sealed interface NetworkBuilder<I, O> {
             inputX = reshape.outputX,
             inputY = reshape.outputY,
             optimizer = optimizer,
-            random = random,
+            initializer = initializer,
         )
 
         fun addReshape(reshape: Reshape.D3ToD1): D1<I> = D1(
@@ -111,7 +111,7 @@ sealed interface NetworkBuilder<I, O> {
             layers = layers + reshape,
             inputSize = reshape.outputSize,
             optimizer = optimizer,
-            random = random,
+            initializer = initializer,
         )
 
         fun repeat(times: Int, builder: D3<I>.(index: Int) -> D3<I>): D3<I> =
@@ -119,29 +119,29 @@ sealed interface NetworkBuilder<I, O> {
     }
 
     companion object {
-        fun <T> inputD1(converter: Converter.D1<T>, optimizer: Optimizer, seed: Int? = null) = D1<T>(
+        fun <T> inputD1(converter: Converter.D1<T>, optimizer: Optimizer, initializer: WeightInitializer) = D1<T>(
             inputSize = converter.outputSize,
             optimizer = optimizer,
-            random = seed?.let { Random(it) } ?: Random,
+            initializer = initializer,
             input = converter,
             layers = emptyList(),
         )
 
-        fun <T> inputD2(converter: Converter.D2<T>, optimizer: Optimizer, seed: Int? = null) = D2<T>(
+        fun <T> inputD2(converter: Converter.D2<T>, optimizer: Optimizer, initializer: WeightInitializer) = D2<T>(
             inputX = converter.outputX,
             inputY = converter.outputY,
             optimizer = optimizer,
-            random = seed?.let { Random(it) } ?: Random,
+            initializer = initializer,
             input = converter,
             layers = emptyList(),
         )
 
-        fun <T> inputD3(converter: Converter.D3<T>, optimizer: Optimizer, seed: Int? = null) = D3<T>(
+        fun <T> inputD3(converter: Converter.D3<T>, optimizer: Optimizer, initializer: WeightInitializer) = D3<T>(
             inputX = converter.outputX,
             inputY = converter.outputY,
             inputZ = converter.outputZ,
             optimizer = optimizer,
-            random = seed?.let { Random(it) } ?: Random,
+            initializer = initializer,
             input = converter,
             layers = emptyList(),
         )
