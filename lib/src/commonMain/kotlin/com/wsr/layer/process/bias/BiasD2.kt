@@ -27,19 +27,17 @@ class BiasD2(
     }
 }
 
-fun <T> NetworkBuilder.D2<T>.bias(
-    optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = Fixed(0.0),
-) = addProcess(
-    process = BiasD2(
-        outputX = inputX,
-        outputY = inputY,
-        optimizer = optimizer.d2(inputX, inputY),
-        weight = initializer.d2(
-            input = listOf(inputX, inputY),
-            output = listOf(inputX, inputY),
-            x = inputX,
-            y = inputY,
+fun <T> NetworkBuilder.D2<T>.bias(optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = Fixed(0.0)) =
+    addProcess(
+        process = BiasD2(
+            outputX = inputX,
+            outputY = inputY,
+            optimizer = optimizer.d2(inputX, inputY),
+            weight = initializer.d2(
+                input = listOf(inputX, inputY),
+                output = listOf(inputX, inputY),
+                x = inputX,
+                y = inputY,
+            ),
         ),
-    ),
-)
+    )

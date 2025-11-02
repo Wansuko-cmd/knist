@@ -119,11 +119,7 @@ sealed interface NetworkBuilder<I, O> {
     }
 
     companion object {
-        fun <T> inputD1(
-            converter: Converter.D1<T>,
-            optimizer: Optimizer,
-            initializer: WeightInitializer,
-        ) = D1<T>(
+        fun <T> inputD1(converter: Converter.D1<T>, optimizer: Optimizer, initializer: WeightInitializer) = D1<T>(
             inputSize = converter.outputSize,
             optimizer = optimizer,
             initializer = initializer,
@@ -131,11 +127,7 @@ sealed interface NetworkBuilder<I, O> {
             layers = emptyList(),
         )
 
-        fun <T> inputD2(
-            converter: Converter.D2<T>,
-            optimizer: Optimizer,
-            initializer: WeightInitializer,
-        ) = D2<T>(
+        fun <T> inputD2(converter: Converter.D2<T>, optimizer: Optimizer, initializer: WeightInitializer) = D2<T>(
             inputX = converter.outputX,
             inputY = converter.outputY,
             optimizer = optimizer,
@@ -144,11 +136,7 @@ sealed interface NetworkBuilder<I, O> {
             layers = emptyList(),
         )
 
-        fun <T> inputD3(
-            converter: Converter.D3<T>,
-            optimizer: Optimizer,
-            initializer: WeightInitializer,
-        ) = D3<T>(
+        fun <T> inputD3(converter: Converter.D3<T>, optimizer: Optimizer, initializer: WeightInitializer) = D3<T>(
             inputX = converter.outputX,
             inputY = converter.outputY,
             inputZ = converter.outputZ,

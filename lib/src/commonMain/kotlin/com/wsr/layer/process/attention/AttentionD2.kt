@@ -14,9 +14,9 @@ import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.toD2
 import com.wsr.reshape.toD3
 import com.wsr.reshape.transpose
-import kotlinx.serialization.Serializable
 import kotlin.math.exp
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
 
 @Serializable
 class AttentionD2 internal constructor(
@@ -198,53 +198,53 @@ class AttentionD2 internal constructor(
 }
 
 fun <T> NetworkBuilder.D2<T>.attention(
-    numOfHeads: Int, dim: Int = inputY / numOfHeads,
+    numOfHeads: Int,
+    dim: Int = inputY / numOfHeads,
     optimizer: Optimizer = this.optimizer,
     initializer: WeightInitializer = this.initializer,
-): NetworkBuilder.D2<T> =
-    addProcess(
-        process = AttentionD2(
-            outputX = inputX,
-            outputY = inputY,
-            numOfHeads = numOfHeads,
-            dim = dim,
-            weightQ = List(numOfHeads) {
-                initializer.d3(
-                    input = listOf(inputY),
-                    output = listOf(dim),
-                    x = inputX,
-                    y = inputY,
-                    z = dim,
-                )
-            },
-            weightK = List(numOfHeads) {
-                initializer.d3(
-                    input = listOf(inputY),
-                    output = listOf(dim),
-                    x = inputX,
-                    y = inputY,
-                    z = dim,
-                )
-            },
-            weightV = List(numOfHeads) {
-                initializer.d3(
-                    input = listOf(inputY),
-                    output = listOf(dim),
-                    x = inputX,
-                    y = inputY,
-                    z = dim,
-                )
-            },
-            weightO = initializer.d3(
-                input = listOf(numOfHeads * dim),
-                output = listOf(inputY),
+): NetworkBuilder.D2<T> = addProcess(
+    process = AttentionD2(
+        outputX = inputX,
+        outputY = inputY,
+        numOfHeads = numOfHeads,
+        dim = dim,
+        weightQ = List(numOfHeads) {
+            initializer.d3(
+                input = listOf(inputY),
+                output = listOf(dim),
                 x = inputX,
-                y = numOfHeads * dim,
-                z = inputY,
-            ),
-            optimizerQ = List(numOfHeads) { optimizer.d3(inputX, inputY, dim) },
-            optimizerK = List(numOfHeads) { optimizer.d3(inputX, inputY, dim) },
-            optimizerV = List(numOfHeads) { optimizer.d3(inputX, inputY, dim) },
-            optimizerO = optimizer.d3(inputX, numOfHeads * dim, inputY),
+                y = inputY,
+                z = dim,
+            )
+        },
+        weightK = List(numOfHeads) {
+            initializer.d3(
+                input = listOf(inputY),
+                output = listOf(dim),
+                x = inputX,
+                y = inputY,
+                z = dim,
+            )
+        },
+        weightV = List(numOfHeads) {
+            initializer.d3(
+                input = listOf(inputY),
+                output = listOf(dim),
+                x = inputX,
+                y = inputY,
+                z = dim,
+            )
+        },
+        weightO = initializer.d3(
+            input = listOf(numOfHeads * dim),
+            output = listOf(inputY),
+            x = inputX,
+            y = numOfHeads * dim,
+            z = inputY,
         ),
-    )
+        optimizerQ = List(numOfHeads) { optimizer.d3(inputX, inputY, dim) },
+        optimizerK = List(numOfHeads) { optimizer.d3(inputX, inputY, dim) },
+        optimizerV = List(numOfHeads) { optimizer.d3(inputX, inputY, dim) },
+        optimizerO = optimizer.d3(inputX, numOfHeads * dim, inputY),
+    ),
+)

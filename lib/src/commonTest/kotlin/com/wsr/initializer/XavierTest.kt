@@ -4,7 +4,6 @@ package com.wsr.initializer
 
 import kotlin.math.sqrt
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class XavierTest {

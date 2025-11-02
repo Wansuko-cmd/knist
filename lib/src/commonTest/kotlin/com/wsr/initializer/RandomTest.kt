@@ -3,7 +3,6 @@
 package com.wsr.initializer
 
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class RandomTest {
