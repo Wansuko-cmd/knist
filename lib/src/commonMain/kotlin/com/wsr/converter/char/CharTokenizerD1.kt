@@ -37,10 +37,8 @@ fun NetworkBuilder.Companion.charTokenizerD1(
     maxInputSize: Int,
     optimizer: Optimizer,
     initializer: WeightInitializer,
-    seed: Int? = null,
 ) = inputD1(
     converter = CharTokenizerD1(maxInputSize),
     optimizer = optimizer,
     initializer = initializer,
-    seed = seed,
 )

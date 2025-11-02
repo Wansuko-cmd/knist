@@ -22,7 +22,7 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
 
     // ニューラルネットワークを構築
     val network = NetworkBuilder
-        .inputPx(x = 28, y = 28, optimizer = AdamW(0.001), initializer = He(seed = seed), seed = seed)
+        .inputPx(x = 28, y = 28, optimizer = AdamW(0.001), initializer = He(seed = seed))
         .reshapeToD1()
         .affine(neuron = 512).bias().reLU()
         .repeat(5) {

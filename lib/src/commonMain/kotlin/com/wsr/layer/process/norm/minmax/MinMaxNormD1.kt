@@ -6,6 +6,8 @@ import com.wsr.collection.batchAverage
 import com.wsr.collection.max
 import com.wsr.collection.min
 import com.wsr.dot.inner.inner
+import com.wsr.initializer.Fixed
+import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
@@ -79,10 +81,17 @@ class MinMaxNormD1 internal constructor(
     }
 }
 
-fun <T> NetworkBuilder.D1<T>.minMaxNorm(optimizer: Optimizer = this.optimizer) = addProcess(
+fun <T> NetworkBuilder.D1<T>.minMaxNorm(
+    optimizer: Optimizer = this.optimizer,
+    initializer: WeightInitializer = Fixed(1.0),
+) = addProcess(
     process = MinMaxNormD1(
         outputSize = inputSize,
         optimizer = optimizer.d1(inputSize),
-        weight = IOType.d1(inputSize) { random.nextDouble(-1.0, 1.0) },
+        weight = initializer.d1(
+            input = listOf(inputSize),
+            output = listOf(inputSize),
+            size = inputSize,
+        ),
     ),
 )
