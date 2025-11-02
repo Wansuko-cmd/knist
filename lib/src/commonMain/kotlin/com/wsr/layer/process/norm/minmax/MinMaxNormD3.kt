@@ -4,6 +4,8 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.collection.batchAverage
 import com.wsr.collection.sum
+import com.wsr.initializer.Fixed
+import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
@@ -86,13 +88,22 @@ class MinMaxNormD3 internal constructor(
     }
 }
 
-fun <T> NetworkBuilder.D3<T>.minMaxNorm(optimizer: Optimizer = this.optimizer) = addProcess(
+fun <T> NetworkBuilder.D3<T>.minMaxNorm(
+    optimizer: Optimizer = this.optimizer,
+    initializer: WeightInitializer = Fixed(1.0),
+) = addProcess(
     process =
     MinMaxNormD3(
         outputX = inputX,
         outputY = inputY,
         outputZ = inputZ,
         optimizer = optimizer.d3(inputX, inputY, inputZ),
-        weight = IOType.d3(inputX, inputY, inputZ) { _, _, _ -> random.nextDouble(-1.0, 1.0) },
+        weight = initializer.d3(
+            input = listOf(inputX, inputY, inputZ),
+            output = listOf(inputX, inputY, inputZ),
+            x = inputX,
+            y = inputY,
+            z = inputZ,
+        ),
     ),
 )

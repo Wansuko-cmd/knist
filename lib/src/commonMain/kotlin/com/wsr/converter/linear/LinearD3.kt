@@ -20,10 +20,8 @@ fun NetworkBuilder.Companion.inputD3(
     z: Int,
     optimizer: Optimizer,
     initializer: WeightInitializer,
-    seed: Int? = null,
 ) = inputD3(
     converter = LinearD3(x, y, z),
     optimizer = optimizer,
     initializer = initializer,
-    seed = seed,
 )

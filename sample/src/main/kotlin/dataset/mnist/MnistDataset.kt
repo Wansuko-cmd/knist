@@ -65,12 +65,10 @@ fun NetworkBuilder.Companion.inputPx(
     y: Int,
     optimizer: Optimizer,
     initializer: WeightInitializer,
-    seed: Int? = null,
 ) = inputD2(
     converter = PixelConverter(x, y),
     optimizer = optimizer,
     initializer = initializer,
-    seed = seed,
 )
 
 @Serializable

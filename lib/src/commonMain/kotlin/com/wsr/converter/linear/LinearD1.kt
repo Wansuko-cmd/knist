@@ -17,10 +17,8 @@ fun NetworkBuilder.Companion.inputD1(
     inputSize: Int,
     optimizer: Optimizer,
     initializer: WeightInitializer,
-    seed: Int? = null,
 ) = inputD1(
     converter = LinearD1(inputSize),
     optimizer = optimizer,
     initializer = initializer,
-    seed = seed,
 )
