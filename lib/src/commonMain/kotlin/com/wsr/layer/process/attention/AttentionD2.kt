@@ -13,9 +13,9 @@ import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.toD2
 import com.wsr.reshape.toD3
 import com.wsr.reshape.transpose
+import kotlinx.serialization.Serializable
 import kotlin.math.exp
 import kotlin.math.sqrt
-import kotlinx.serialization.Serializable
 
 @Serializable
 class AttentionD2 internal constructor(
@@ -204,23 +204,39 @@ fun <T> NetworkBuilder.D2<T>.attention(numOfHeads: Int, dim: Int = inputY / numO
             numOfHeads = numOfHeads,
             dim = dim,
             weightQ = List(numOfHeads) {
-                IOType.d3(inputX, inputY, dim) { _, _, _ ->
-                    random.nextDouble(-1.0, 1.0)
-                }
+                initializer.d3(
+                    input = listOf(inputY),
+                    output = listOf(dim),
+                    x = inputX,
+                    y = inputY,
+                    z = dim,
+                )
             },
             weightK = List(numOfHeads) {
-                IOType.d3(inputX, inputY, dim) { _, _, _ ->
-                    random.nextDouble(-1.0, 1.0)
-                }
+                initializer.d3(
+                    input = listOf(inputY),
+                    output = listOf(dim),
+                    x = inputX,
+                    y = inputY,
+                    z = dim,
+                )
             },
             weightV = List(numOfHeads) {
-                IOType.d3(inputX, inputY, dim) { _, _, _ ->
-                    random.nextDouble(-1.0, 1.0)
-                }
+                initializer.d3(
+                    input = listOf(inputY),
+                    output = listOf(dim),
+                    x = inputX,
+                    y = inputY,
+                    z = dim,
+                )
             },
-            weightO = IOType.d3(inputX, numOfHeads * dim, inputY) { _, _, _ ->
-                random.nextDouble(-1.0, 1.0)
-            },
+            weightO = initializer.d3(
+                input = listOf(numOfHeads * dim),
+                output = listOf(inputY),
+                x = inputX,
+                y = numOfHeads * dim,
+                z = inputY,
+            ),
             optimizerQ = List(numOfHeads) { optimizer.d3(inputX, inputY, dim) },
             optimizerK = List(numOfHeads) { optimizer.d3(inputX, inputY, dim) },
             optimizerV = List(numOfHeads) { optimizer.d3(inputX, inputY, dim) },

@@ -104,6 +104,6 @@ fun <T> NetworkBuilder.D2<T>.layerNorm(optimizer: Optimizer = this.optimizer) = 
         outputX = inputX,
         outputY = inputY,
         optimizer = optimizer.d2(inputX, inputY),
-        weight = IOType.d2(inputX, inputY) { _, _ -> random.nextDouble(-1.0, 1.0) },
+        weight = IOType.d2(inputX, inputY) { _, _ -> 1.0 },
     ),
 )

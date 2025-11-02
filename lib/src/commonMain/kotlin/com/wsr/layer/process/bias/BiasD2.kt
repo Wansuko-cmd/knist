@@ -30,6 +30,6 @@ fun <T> NetworkBuilder.D2<T>.bias(optimizer: Optimizer = this.optimizer) = addPr
         outputX = inputX,
         outputY = inputY,
         optimizer = optimizer.d2(inputX, inputY),
-        weight = IOType.d2(inputX, inputY) { _, _ -> random.nextDouble(-1.0, 1.0) },
+        weight = IOType.d2(inputX, inputY),
     ),
 )

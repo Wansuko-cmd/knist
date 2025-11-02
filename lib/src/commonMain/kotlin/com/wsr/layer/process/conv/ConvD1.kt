@@ -85,6 +85,12 @@ fun <T> NetworkBuilder.D2<T>.convD1(
         padding = padding,
         inputSize = inputY,
         optimizer = optimizer.d3(filter, inputX, kernel),
-        weight = IOType.d3(filter, inputX, kernel) { _, _, _ -> random.nextDouble(-1.0, 1.0) },
+        weight = initializer.d3(
+            input = listOf(inputX, kernel),
+            output = listOf(filter, kernel),
+            x = filter,
+            y = inputX,
+            z = kernel,
+        ),
     ),
 )
