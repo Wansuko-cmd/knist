@@ -16,7 +16,7 @@ class SoftmaxWithLossD1Test {
             listOf(
                 IOType.d1(listOf(1.0, 2.0, 3.0)),
             )
-        val softmax = SoftmaxWithLossD1(outputSize = 3)
+        val softmax = SoftmaxWithLossD1(outputSize = 3, temperature = 1.0)
         val result = softmax._expect(input)
 
         assertEquals(expected = input, actual = result)
@@ -34,7 +34,7 @@ class SoftmaxWithLossD1Test {
             listOf(
                 IOType.d1(listOf(0.0, 0.0, 1.0)),
             )
-        val softmax = SoftmaxWithLossD1(outputSize = 3)
+        val softmax = SoftmaxWithLossD1(outputSize = 3, temperature = 1.0)
         val result = softmax._train(input, label)
 
         // max = 3
