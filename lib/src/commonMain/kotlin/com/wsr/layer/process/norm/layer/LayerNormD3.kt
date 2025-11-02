@@ -5,6 +5,8 @@ import com.wsr.NetworkBuilder
 import com.wsr.collection.average
 import com.wsr.collection.batchAverage
 import com.wsr.collection.sum
+import com.wsr.initializer.Fixed
+import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
 import com.wsr.operator.minus
@@ -100,12 +102,21 @@ class LayerNormD3 internal constructor(
     }
 }
 
-fun <T> NetworkBuilder.D3<T>.layerNorm(optimizer: Optimizer = this.optimizer) = addProcess(
+fun <T> NetworkBuilder.D3<T>.layerNorm(
+    optimizer: Optimizer = this.optimizer,
+    initializer: WeightInitializer = Fixed(1.0),
+) = addProcess(
     process = LayerNormD3(
         outputX = inputX,
         outputY = inputY,
         outputZ = inputZ,
         optimizer = optimizer.d3(inputX, inputY, inputZ),
-        weight = IOType.d3(inputX, inputY, inputZ) { _, _, _ -> 1.0 },
+        weight = initializer.d3(
+            input = listOf(inputX, inputY, inputZ),
+            output = listOf(inputX, inputY, inputZ),
+            x = inputX,
+            y = inputY,
+            z = inputZ,
+        ),
     ),
 )

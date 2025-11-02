@@ -5,6 +5,7 @@ import com.wsr.NetworkBuilder
 import com.wsr.collection.max
 import com.wsr.collection.sum
 import com.wsr.dot.matmul.matMul
+import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
 import com.wsr.operator.plus
@@ -196,7 +197,11 @@ class AttentionD2 internal constructor(
     }
 }
 
-fun <T> NetworkBuilder.D2<T>.attention(numOfHeads: Int, dim: Int = inputY / numOfHeads): NetworkBuilder.D2<T> =
+fun <T> NetworkBuilder.D2<T>.attention(
+    numOfHeads: Int, dim: Int = inputY / numOfHeads,
+    optimizer: Optimizer = this.optimizer,
+    initializer: WeightInitializer = this.initializer,
+): NetworkBuilder.D2<T> =
     addProcess(
         process = AttentionD2(
             outputX = inputX,

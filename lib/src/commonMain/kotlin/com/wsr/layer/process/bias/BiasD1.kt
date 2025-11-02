@@ -3,6 +3,8 @@ package com.wsr.layer.process.bias
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.collection.batchAverage
+import com.wsr.initializer.Fixed
+import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
 import com.wsr.optimizer.Optimizer
@@ -24,10 +26,17 @@ class BiasD1 internal constructor(
     }
 }
 
-fun <T> NetworkBuilder.D1<T>.bias(optimizer: Optimizer = this.optimizer) = addProcess(
+fun <T> NetworkBuilder.D1<T>.bias(
+    optimizer: Optimizer = this.optimizer,
+    initializer: WeightInitializer = Fixed(0.0),
+) = addProcess(
     BiasD1(
         outputSize = inputSize,
         optimizer = optimizer.d1(inputSize),
-        weight = IOType.d1(inputSize),
+        weight = initializer.d1(
+            input = listOf(inputSize),
+            output = listOf(inputSize),
+            size = inputSize,
+        )
     ),
 )

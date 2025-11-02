@@ -3,6 +3,7 @@ package com.wsr.layer.process.affine
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.dot.matmul.matMul
+import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
 import com.wsr.optimizer.Optimizer
@@ -30,7 +31,11 @@ class AffineD1 internal constructor(
     private fun forward(input: List<IOType.D1>): List<IOType.D1> = weight.transpose().matMul(input)
 }
 
-fun <T> NetworkBuilder.D1<T>.affine(neuron: Int, optimizer: Optimizer = this.optimizer) = addProcess(
+fun <T> NetworkBuilder.D1<T>.affine(
+    neuron: Int,
+    optimizer: Optimizer = this.optimizer,
+    initializer: WeightInitializer = this.initializer,
+) = addProcess(
     process =
     AffineD1(
         outputSize = neuron,
