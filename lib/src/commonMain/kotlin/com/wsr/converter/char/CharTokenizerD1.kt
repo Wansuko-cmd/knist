@@ -33,12 +33,9 @@ class CharTokenizerD1 internal constructor(override val outputSize: Int) : Conve
     }
 }
 
-fun NetworkBuilder.Companion.charTokenizerD1(
-    maxInputSize: Int,
-    optimizer: Optimizer,
-    initializer: WeightInitializer,
-) = inputD1(
-    converter = CharTokenizerD1(maxInputSize),
-    optimizer = optimizer,
-    initializer = initializer,
-)
+fun NetworkBuilder.Companion.charTokenizerD1(maxInputSize: Int, optimizer: Optimizer, initializer: WeightInitializer) =
+    inputD1(
+        converter = CharTokenizerD1(maxInputSize),
+        optimizer = optimizer,
+        initializer = initializer,
+    )

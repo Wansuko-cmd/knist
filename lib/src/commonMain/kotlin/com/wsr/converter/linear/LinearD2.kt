@@ -13,12 +13,7 @@ class LinearD2(override val outputX: Int, override val outputY: Int) : Converter
     override fun decode(input: List<IOType.D2>): List<IOType.D2> = input
 }
 
-fun NetworkBuilder.Companion.inputD2(
-    x: Int,
-    y: Int,
-    optimizer: Optimizer,
-    initializer: WeightInitializer,
-) = inputD2(
+fun NetworkBuilder.Companion.inputD2(x: Int, y: Int, optimizer: Optimizer, initializer: WeightInitializer) = inputD2(
     converter = LinearD2(x, y),
     optimizer = optimizer,
     initializer = initializer,

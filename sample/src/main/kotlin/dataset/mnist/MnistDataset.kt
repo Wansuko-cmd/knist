@@ -60,12 +60,7 @@ data class PixelConverter(override val outputX: Int, override val outputY: Int) 
     override fun decode(input: List<IOType.D2>): List<List<Double>> = input.map { it.value.toList() }
 }
 
-fun NetworkBuilder.Companion.inputPx(
-    x: Int,
-    y: Int,
-    optimizer: Optimizer,
-    initializer: WeightInitializer,
-) = inputD2(
+fun NetworkBuilder.Companion.inputPx(x: Int, y: Int, optimizer: Optimizer, initializer: WeightInitializer) = inputD2(
     converter = PixelConverter(x, y),
     optimizer = optimizer,
     initializer = initializer,
