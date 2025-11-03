@@ -6,10 +6,10 @@ import com.wsr.IOType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class CharTokenizerD1Test {
+class CharsD1Test {
     @Test
-    fun `CharTokenizerD1のencode=文字列を文字IDのリストに変換する`() {
-        val converter = CharTokenizerD1(outputSize = 10)
+    fun `CharsD1のencode=文字列を文字IDのリストに変換する`() {
+        val converter = CharsD1(outputSize = 10)
 
         val input = listOf("hello", "abc")
 
@@ -39,8 +39,8 @@ class CharTokenizerD1Test {
     }
 
     @Test
-    fun `CharTokenizerD1のencode=outputSizeを超える文字は切り捨てられる`() {
-        val converter = CharTokenizerD1(outputSize = 3)
+    fun `CharsD1のencode=outputSizeを超える文字は切り捨てられる`() {
+        val converter = CharsD1(outputSize = 3)
 
         val input = listOf("hello")
 
@@ -57,8 +57,8 @@ class CharTokenizerD1Test {
     }
 
     @Test
-    fun `CharTokenizerD1のencode=語彙にない文字は0に変換される`() {
-        val converter = CharTokenizerD1(outputSize = 5)
+    fun `CharsD1のencode=語彙にない文字は0に変換される`() {
+        val converter = CharsD1(outputSize = 5)
 
         // '漢' は語彙に含まれていない
         val input = listOf("a漢b")
@@ -77,8 +77,8 @@ class CharTokenizerD1Test {
     }
 
     @Test
-    fun `CharTokenizerD1のencode=特殊文字も正しく変換される`() {
-        val converter = CharTokenizerD1(outputSize = 10)
+    fun `CharsD1のencode=特殊文字も正しく変換される`() {
+        val converter = CharsD1(outputSize = 10)
 
         val input = listOf("hello, world!")
 
@@ -100,8 +100,8 @@ class CharTokenizerD1Test {
     }
 
     @Test
-    fun `CharTokenizerD1のdecode=文字IDのリストを文字列に変換する`() {
-        val converter = CharTokenizerD1(outputSize = 10)
+    fun `CharsD1のdecode=文字IDのリストを文字列に変換する`() {
+        val converter = CharsD1(outputSize = 10)
 
         val input = listOf(
             IOType.d1(listOf(8.0, 5.0, 12.0, 12.0, 15.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
@@ -120,8 +120,8 @@ class CharTokenizerD1Test {
     }
 
     @Test
-    fun `CharTokenizerD1のdecode=範囲外のIDは無視される`() {
-        val converter = CharTokenizerD1(outputSize = 5)
+    fun `CharsD1のdecode=範囲外のIDは無視される`() {
+        val converter = CharsD1(outputSize = 5)
 
         val input = listOf(
             IOType.d1(listOf(1.0, 99.0, 2.0, 0.0, 0.0)),
@@ -136,8 +136,8 @@ class CharTokenizerD1Test {
     }
 
     @Test
-    fun `CharTokenizerD1の往復変換=encode後にdecodeすると元に戻る（paddingあり）`() {
-        val converter = CharTokenizerD1(outputSize = 10)
+    fun `CharsD1の往復変換=encode後にdecodeすると元に戻る（paddingあり）`() {
+        val converter = CharsD1(outputSize = 10)
 
         val input = listOf("hello", "test")
 
@@ -153,8 +153,8 @@ class CharTokenizerD1Test {
     }
 
     @Test
-    fun `CharTokenizerD1の往復変換=decode後にencodeしても同じ結果になる`() {
-        val converter = CharTokenizerD1(outputSize = 10)
+    fun `CharsD1の往復変換=decode後にencodeしても同じ結果になる`() {
+        val converter = CharsD1(outputSize = 10)
 
         val input = listOf(
             IOType.d1(listOf(8.0, 5.0, 12.0, 12.0, 15.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
@@ -174,14 +174,14 @@ class CharTokenizerD1Test {
     }
 
     @Test
-    fun `CharTokenizerD1のvocabSize=語彙数を返す`() {
+    fun `CharsD1のvocabSize=語彙数を返す`() {
         // " abcdefghijklmnopqrstuvwxyz.,!?" の文字数
-        assertEquals(expected = 31, actual = CharTokenizerD1.vocabSize)
+        assertEquals(expected = 31, actual = CharsD1.vocabSize)
     }
 
     @Test
-    fun `CharTokenizerD1のencode=空文字列は全てpaddingになる`() {
-        val converter = CharTokenizerD1(outputSize = 5)
+    fun `CharsD1のencode=空文字列は全てpaddingになる`() {
+        val converter = CharsD1(outputSize = 5)
 
         val input = listOf("")
 

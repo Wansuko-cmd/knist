@@ -8,7 +8,7 @@ import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 
 @Serializable
-class CharTokenizerD1 internal constructor(override val outputSize: Int) : Converter.D1<String>() {
+class CharsD1(override val outputSize: Int) : Converter.D1<String>() {
     override fun encode(input: List<String>): List<IOType.D1> = input.map { text ->
         IOType.D1(
             value = DoubleArray(outputSize) { index ->
@@ -26,16 +26,16 @@ class CharTokenizerD1 internal constructor(override val outputSize: Int) : Conve
             .joinToString("")
     }
 
-    companion object {
+    companion object Companion {
         private val chars = " abcdefghijklmnopqrstuvwxyz.,!?".toList()
         private val charToId = chars.mapIndexed { index, char -> char to index.toDouble() }.toMap()
         val vocabSize = chars.size
     }
 }
 
-fun NetworkBuilder.Companion.charTokenizerD1(maxInputSize: Int, optimizer: Optimizer, initializer: WeightInitializer) =
+fun NetworkBuilder.Companion.charsD1(maxLength: Int, optimizer: Optimizer, initializer: WeightInitializer) =
     inputD1(
-        converter = CharTokenizerD1(maxInputSize),
+        converter = CharsD1(maxLength),
         optimizer = optimizer,
         initializer = initializer,
     )

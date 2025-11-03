@@ -1,7 +1,7 @@
 package com.wsr
 
 import com.wsr.converter.Converter
-import com.wsr.converter.char.CharTokenizerD1
+import com.wsr.converter.char.CharsD1
 import com.wsr.converter.linear.LinearD1
 import com.wsr.converter.linear.LinearD2
 import com.wsr.converter.linear.LinearD3
@@ -325,7 +325,7 @@ private val buildInSerializersModule = SerializersModule {
 
     polymorphic(Converter::class) {
         // Char
-        subclass(CharTokenizerD1::class)
+        subclass(CharsD1::class)
 
         // Linear
         subclass(LinearD1::class)
