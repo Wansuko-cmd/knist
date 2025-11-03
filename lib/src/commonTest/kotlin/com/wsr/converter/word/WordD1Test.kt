@@ -110,7 +110,7 @@ class WordD1Test {
         // Softmax出力のような確率分布を想定
         val input = listOf(
             IOType.d1(listOf(0.1, 0.2, 0.5, 0.15, 0.05)), // index 2 (hello) が最大
-            IOType.d1(listOf(0.05, 0.1, 0.15, 0.6, 0.1)),  // index 3 (world) が最大
+            IOType.d1(listOf(0.05, 0.1, 0.15, 0.6, 0.1)), // index 3 (world) が最大
         )
 
         val result = converter.decode(input)
