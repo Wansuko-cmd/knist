@@ -1,6 +1,7 @@
 package com.wsr
 
 import com.wsr.converter.Converter
+import com.wsr.converter.char.CharD1
 import com.wsr.converter.char.CharsD1
 import com.wsr.converter.linear.LinearD1
 import com.wsr.converter.linear.LinearD2
@@ -327,6 +328,7 @@ private val buildInSerializersModule = SerializersModule {
 
     polymorphic(Converter::class) {
         // Char
+        subclass(CharD1::class)
         subclass(CharsD1::class)
 
         // Linear
