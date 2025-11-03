@@ -8,10 +8,7 @@ import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 
 @Serializable
-class WordD1(
-    private val words: List<String>,
-    private val unknownIndex: Int,
-) : Converter.D1<String>() {
+class WordD1(private val words: List<String>, private val unknownIndex: Int) : Converter.D1<String>() {
     override val outputSize = words.size
     private val wordToId = words.mapIndexed { index, word -> word to index }.toMap()
 

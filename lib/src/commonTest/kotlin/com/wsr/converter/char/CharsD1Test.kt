@@ -19,23 +19,23 @@ class CharsD1Test {
 
         // "hello" -> [8.0, 5.0, 12.0, 12.0, 15.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         val output0 = result[0]
-        assertEquals(expected = 8.0, actual = output0[0])  // h
-        assertEquals(expected = 5.0, actual = output0[1])  // e
+        assertEquals(expected = 8.0, actual = output0[0]) // h
+        assertEquals(expected = 5.0, actual = output0[1]) // e
         assertEquals(expected = 12.0, actual = output0[2]) // l
         assertEquals(expected = 12.0, actual = output0[3]) // l
         assertEquals(expected = 15.0, actual = output0[4]) // o
-        assertEquals(expected = 0.0, actual = output0[5])  // padding (space)
-        assertEquals(expected = 0.0, actual = output0[6])  // padding (space)
-        assertEquals(expected = 0.0, actual = output0[7])  // padding (space)
-        assertEquals(expected = 0.0, actual = output0[8])  // padding (space)
-        assertEquals(expected = 0.0, actual = output0[9])  // padding (space)
+        assertEquals(expected = 0.0, actual = output0[5]) // padding (space)
+        assertEquals(expected = 0.0, actual = output0[6]) // padding (space)
+        assertEquals(expected = 0.0, actual = output0[7]) // padding (space)
+        assertEquals(expected = 0.0, actual = output0[8]) // padding (space)
+        assertEquals(expected = 0.0, actual = output0[9]) // padding (space)
 
         // "abc" -> [1.0, 2.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         val output1 = result[1]
-        assertEquals(expected = 1.0, actual = output1[0])  // a
-        assertEquals(expected = 2.0, actual = output1[1])  // b
-        assertEquals(expected = 3.0, actual = output1[2])  // c
-        assertEquals(expected = 0.0, actual = output1[3])  // padding (space)
+        assertEquals(expected = 1.0, actual = output1[0]) // a
+        assertEquals(expected = 2.0, actual = output1[1]) // b
+        assertEquals(expected = 3.0, actual = output1[2]) // c
+        assertEquals(expected = 0.0, actual = output1[3]) // padding (space)
     }
 
     @Test
@@ -51,8 +51,8 @@ class CharsD1Test {
         // "hello" -> [8.0, 5.0, 12.0] (最初の3文字のみ)
         val output = result[0]
         assertEquals(expected = 3, actual = output.shape[0])
-        assertEquals(expected = 8.0, actual = output[0])  // h
-        assertEquals(expected = 5.0, actual = output[1])  // e
+        assertEquals(expected = 8.0, actual = output[0]) // h
+        assertEquals(expected = 5.0, actual = output[1]) // e
         assertEquals(expected = 12.0, actual = output[2]) // l
     }
 
@@ -69,11 +69,11 @@ class CharsD1Test {
 
         // "a漢b" -> [1.0, 0.0, 2.0, 0.0, 0.0]
         val output = result[0]
-        assertEquals(expected = 1.0, actual = output[0])  // a
-        assertEquals(expected = 0.0, actual = output[1])  // 漢 (unknown)
-        assertEquals(expected = 2.0, actual = output[2])  // b
-        assertEquals(expected = 0.0, actual = output[3])  // padding (space)
-        assertEquals(expected = 0.0, actual = output[4])  // padding (space)
+        assertEquals(expected = 1.0, actual = output[0]) // a
+        assertEquals(expected = 0.0, actual = output[1]) // 漢 (unknown)
+        assertEquals(expected = 2.0, actual = output[2]) // b
+        assertEquals(expected = 0.0, actual = output[3]) // padding (space)
+        assertEquals(expected = 0.0, actual = output[4]) // padding (space)
     }
 
     @Test
@@ -87,13 +87,13 @@ class CharsD1Test {
         assertEquals(expected = 1, actual = result.size)
 
         val output = result[0]
-        assertEquals(expected = 8.0, actual = output[0])  // h
-        assertEquals(expected = 5.0, actual = output[1])  // e
+        assertEquals(expected = 8.0, actual = output[0]) // h
+        assertEquals(expected = 5.0, actual = output[1]) // e
         assertEquals(expected = 12.0, actual = output[2]) // l
         assertEquals(expected = 12.0, actual = output[3]) // l
         assertEquals(expected = 15.0, actual = output[4]) // o
         assertEquals(expected = 28.0, actual = output[5]) // ,
-        assertEquals(expected = 0.0, actual = output[6])  // (space)
+        assertEquals(expected = 0.0, actual = output[6]) // (space)
         assertEquals(expected = 23.0, actual = output[7]) // w
         assertEquals(expected = 15.0, actual = output[8]) // o
         assertEquals(expected = 18.0, actual = output[9]) // r

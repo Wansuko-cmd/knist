@@ -33,9 +33,8 @@ class CharsD1(override val outputSize: Int) : Converter.D1<String>() {
     }
 }
 
-fun NetworkBuilder.Companion.charsD1(maxLength: Int, optimizer: Optimizer, initializer: WeightInitializer) =
-    inputD1(
-        converter = CharsD1(maxLength),
-        optimizer = optimizer,
-        initializer = initializer,
-    )
+fun NetworkBuilder.Companion.charsD1(maxLength: Int, optimizer: Optimizer, initializer: WeightInitializer) = inputD1(
+    converter = CharsD1(maxLength),
+    optimizer = optimizer,
+    initializer = initializer,
+)
