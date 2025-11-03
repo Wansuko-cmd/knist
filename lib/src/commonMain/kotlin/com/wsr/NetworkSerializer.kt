@@ -1,10 +1,12 @@
 package com.wsr
 
 import com.wsr.converter.Converter
-import com.wsr.converter.char.CharTokenizerD1
+import com.wsr.converter.char.CharsD1
 import com.wsr.converter.linear.LinearD1
 import com.wsr.converter.linear.LinearD2
 import com.wsr.converter.linear.LinearD3
+import com.wsr.converter.word.WordD1
+import com.wsr.converter.word.WordsD1
 import com.wsr.layer.Layer
 import com.wsr.layer.output.mean.MeanSquareD1
 import com.wsr.layer.output.sigmoid.SigmoidWithLossD1
@@ -325,11 +327,15 @@ private val buildInSerializersModule = SerializersModule {
 
     polymorphic(Converter::class) {
         // Char
-        subclass(CharTokenizerD1::class)
+        subclass(CharsD1::class)
 
         // Linear
         subclass(LinearD1::class)
         subclass(LinearD2::class)
         subclass(LinearD3::class)
+
+        // Word
+        subclass(WordD1::class)
+        subclass(WordsD1::class)
     }
 }

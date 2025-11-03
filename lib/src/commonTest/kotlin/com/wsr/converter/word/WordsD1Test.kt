@@ -1,0 +1,213 @@
+@file:Suppress("NonAsciiCharacters")
+
+package com.wsr.converter.word
+
+import com.wsr.IOType
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class WordsD1Test {
+    private val words = listOf("<PAD>", "<UNK>", "hello", "world", "test")
+    private val paddingIndex = 0
+    private val unknownIndex = 1
+
+    @Test
+    fun `WordsD1のencode=単語リストをIDのリストに変換する`() {
+        val converter = WordsD1(
+            outputSize = 5,
+            words = words,
+            unknownIndex = unknownIndex,
+            paddingIndex = paddingIndex,
+        )
+
+        val input = listOf(
+            listOf("hello", "world"),
+            listOf("test"),
+        )
+
+        val result = converter.encode(input)
+
+        assertEquals(expected = 2, actual = result.size)
+
+        // 1つ目: ["hello", "world"] -> [2.0, 3.0, 0.0, 0.0, 0.0]
+        val output0 = result[0]
+        assertEquals(expected = 2.0, actual = output0[0])
+        assertEquals(expected = 3.0, actual = output0[1])
+        assertEquals(expected = 0.0, actual = output0[2]) // padding
+        assertEquals(expected = 0.0, actual = output0[3]) // padding
+        assertEquals(expected = 0.0, actual = output0[4]) // padding
+
+        // 2つ目: ["test"] -> [4.0, 0.0, 0.0, 0.0, 0.0]
+        val output1 = result[1]
+        assertEquals(expected = 4.0, actual = output1[0])
+        assertEquals(expected = 0.0, actual = output1[1]) // padding
+        assertEquals(expected = 0.0, actual = output1[2]) // padding
+        assertEquals(expected = 0.0, actual = output1[3]) // padding
+        assertEquals(expected = 0.0, actual = output1[4]) // padding
+    }
+
+    @Test
+    fun `WordsD1のencode=未知語はunknownIndexに変換される`() {
+        val converter = WordsD1(
+            outputSize = 5,
+            words = words,
+            unknownIndex = unknownIndex,
+            paddingIndex = paddingIndex,
+        )
+
+        val input = listOf(
+            listOf("hello", "unknown", "world"),
+        )
+
+        val result = converter.encode(input)
+
+        assertEquals(expected = 1, actual = result.size)
+
+        // ["hello", "unknown", "world"] -> [2.0, 1.0, 3.0, 0.0, 0.0]
+        val output = result[0]
+        assertEquals(expected = 2.0, actual = output[0]) // hello
+        assertEquals(expected = 1.0, actual = output[1]) // unknown -> <UNK>
+        assertEquals(expected = 3.0, actual = output[2]) // world
+        assertEquals(expected = 0.0, actual = output[3]) // padding
+        assertEquals(expected = 0.0, actual = output[4]) // padding
+    }
+
+    @Test
+    fun `WordsD1のencode=outputSizeを超える入力は切り捨てられる`() {
+        val converter = WordsD1(
+            outputSize = 3,
+            words = words,
+            unknownIndex = unknownIndex,
+            paddingIndex = paddingIndex,
+        )
+
+        val input = listOf(
+            listOf("hello", "world", "test", "hello", "world"),
+        )
+
+        val result = converter.encode(input)
+
+        assertEquals(expected = 1, actual = result.size)
+
+        // ["hello", "world", "test", "hello", "world"] -> [2.0, 3.0, 4.0]
+        val output = result[0]
+        assertEquals(expected = 3, actual = output.shape[0])
+        assertEquals(expected = 2.0, actual = output[0])
+        assertEquals(expected = 3.0, actual = output[1])
+        assertEquals(expected = 4.0, actual = output[2])
+    }
+
+    @Test
+    fun `WordsD1のdecode=IDのリストを単語リストに変換する`() {
+        val converter = WordsD1(
+            outputSize = 5,
+            words = words,
+            unknownIndex = unknownIndex,
+            paddingIndex = paddingIndex,
+        )
+
+        val input = listOf(
+            IOType.d1(listOf(2.0, 3.0, 0.0, 0.0, 0.0)),
+            IOType.d1(listOf(4.0, 0.0, 0.0, 0.0, 0.0)),
+        )
+
+        val result = converter.decode(input)
+
+        assertEquals(expected = 2, actual = result.size)
+
+        // [2.0, 3.0, 0.0, 0.0, 0.0] -> ["hello", "world"] (paddingは削除)
+        assertEquals(expected = listOf("hello", "world"), actual = result[0])
+
+        // [4.0, 0.0, 0.0, 0.0, 0.0] -> ["test"] (paddingは削除)
+        assertEquals(expected = listOf("test"), actual = result[1])
+    }
+
+    @Test
+    fun `WordsD1のdecode=未知のインデックスは無視される`() {
+        val converter = WordsD1(
+            outputSize = 5,
+            words = words,
+            unknownIndex = unknownIndex,
+            paddingIndex = paddingIndex,
+        )
+
+        val input = listOf(
+            IOType.d1(listOf(2.0, 99.0, 3.0, 0.0, 0.0)),
+        )
+
+        val result = converter.decode(input)
+
+        assertEquals(expected = 1, actual = result.size)
+
+        // [2.0, 99.0, 3.0, 0.0, 0.0] -> ["hello", "world"] (99は範囲外なので無視)
+        assertEquals(expected = listOf("hello", "world"), actual = result[0])
+    }
+
+    @Test
+    fun `WordsD1のdecode=unknownIndexはUNKに変換される`() {
+        val converter = WordsD1(
+            outputSize = 5,
+            words = words,
+            unknownIndex = unknownIndex,
+            paddingIndex = paddingIndex,
+        )
+
+        val input = listOf(
+            IOType.d1(listOf(2.0, 1.0, 3.0, 0.0, 0.0)),
+        )
+
+        val result = converter.decode(input)
+
+        assertEquals(expected = 1, actual = result.size)
+
+        // [2.0, 1.0, 3.0, 0.0, 0.0] -> ["hello", "<UNK>", "world"]
+        assertEquals(expected = listOf("hello", "<UNK>", "world"), actual = result[0])
+    }
+
+    @Test
+    fun `WordsD1の往復変換=encode後にdecodeすると元に戻る（パディングは削除される）`() {
+        val converter = WordsD1(
+            outputSize = 5,
+            words = words,
+            unknownIndex = unknownIndex,
+            paddingIndex = paddingIndex,
+        )
+
+        val input = listOf(
+            listOf("hello", "world"),
+            listOf("test"),
+        )
+
+        // encode -> decode
+        val encoded = converter.encode(input)
+        val decoded = converter.decode(encoded)
+
+        assertEquals(expected = input, actual = decoded)
+    }
+
+    @Test
+    fun `WordsD1の往復変換=decode後にencodeしても同じ結果になる`() {
+        val converter = WordsD1(
+            outputSize = 5,
+            words = words,
+            unknownIndex = unknownIndex,
+            paddingIndex = paddingIndex,
+        )
+
+        val input = listOf(
+            IOType.d1(listOf(2.0, 3.0, 0.0, 0.0, 0.0)),
+        )
+
+        // decode -> encode
+        val decoded = converter.decode(input)
+        val encoded = converter.encode(decoded)
+
+        // 結果は元の入力と同じになる
+        assertEquals(expected = input.size, actual = encoded.size)
+        for (i in input.indices) {
+            for (j in 0 until input[i].shape[0]) {
+                assertEquals(expected = input[i][j], actual = encoded[i][j])
+            }
+        }
+    }
+}
