@@ -2,6 +2,7 @@ package com.wsr.converter.word
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.collection.maxIndex
 import com.wsr.converter.Converter
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
@@ -17,23 +18,7 @@ class WordD1(private val words: List<String>, private val unknownIndex: Int) : C
         IOType.d1(outputSize).also { it[id] = 1.0 }
     }
 
-    override fun decode(input: List<IOType.D1>): List<String> = input.map { input ->
-        val index = input.maxIndex() ?: unknownIndex
-        words[index]
-    }
-
-    private fun IOType.D1.maxIndex(): Int? {
-        if (value.isEmpty()) return null
-        var index = 0
-        var max = Double.MIN_VALUE
-        for (i in value.indices) {
-            if (max < this[i]) {
-                index = i
-                max = this[i]
-            }
-        }
-        return index
-    }
+    override fun decode(input: List<IOType.D1>): List<String> = input.map { input -> words[input.maxIndex()] }
 }
 
 fun NetworkBuilder.Companion.wordD1(
