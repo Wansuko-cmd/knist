@@ -9,7 +9,7 @@ import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 
 @Serializable
-class CharD1() : Converter.D1<Char>() {
+class CharD1 : Converter.D1<Char>() {
     override val outputSize = chars.size
     override fun encode(input: List<Char>): List<IOType.D1> = input.map { char ->
         val id = charToId[char] ?: 0
