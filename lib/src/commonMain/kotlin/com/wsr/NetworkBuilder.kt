@@ -2,6 +2,7 @@ package com.wsr
 
 import com.wsr.converter.Converter
 import com.wsr.converter.linear.LinearD1
+import com.wsr.converter.linear.LinearD2
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Layer
 import com.wsr.layer.output.Output
@@ -66,6 +67,18 @@ sealed interface NetworkBuilder<I, O> {
             layers = layers + process,
             inputX = process.outputX,
             inputY = process.outputY,
+        )
+
+        fun addOutput(output: Output.D2) = Network<I, IOType.D2>(
+            inputConverter = input,
+            outputConverter = LinearD2(inputX, inputY),
+            layers = layers + output,
+        )
+
+        fun <O> addOutput(output: Output.D2, converter: D2<I>.() -> Converter.D2<O>) = Network<I, O>(
+            inputConverter = input,
+            outputConverter = converter(),
+            layers = layers + output,
         )
 
         fun addReshape(reshape: Reshape.D2ToD1): D1<I> = D1(
