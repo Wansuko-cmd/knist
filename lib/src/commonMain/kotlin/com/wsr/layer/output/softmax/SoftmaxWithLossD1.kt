@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal class SoftmaxWithLossD1 internal constructor(val outputSize: Int, val temperature: Double) : Output.D1() {
-    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input.also { println(it) }
+    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input
 
     override fun train(input: List<IOType.D1>, label: List<IOType.D1>): List<IOType.D1> {
         val input = input / temperature

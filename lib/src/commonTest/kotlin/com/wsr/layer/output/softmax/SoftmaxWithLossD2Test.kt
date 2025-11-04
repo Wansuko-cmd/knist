@@ -1,0 +1,208 @@
+@file:Suppress("NonAsciiCharacters")
+
+package com.wsr.layer.output.softmax
+
+import com.wsr.IOType
+import kotlin.math.exp
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class SoftmaxWithLossD2Test {
+    @Test
+    fun `SoftmaxWithLossD2の_expect=入力をそのまま返す`() {
+        // [[1, 2, 3], [4, 5, 6]]
+        val input =
+            listOf(
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() },
+            )
+        val softmax = SoftmaxWithLossD2(outputX = 2, outputY = 3, temperature = 1.0)
+        val result = softmax._expect(input)
+
+        assertEquals(expected = input, actual = result)
+    }
+
+    @Test
+    fun `SoftmaxWithLossD2の_train=各行にsoftmax適用後にラベルを引いた値を返す`() {
+        // [[1, 2, 3]]
+        val input =
+            listOf(
+                IOType.d2(1, 3) { _, y -> (y + 1).toDouble() },
+            )
+        // [[0, 0, 1]] (one-hot: クラス2が正解)
+        val label =
+            listOf(
+                IOType.d2(1, 3) { _, y -> if (y == 2) 1.0 else 0.0 },
+            )
+        val softmax = SoftmaxWithLossD2(outputX = 1, outputY = 3, temperature = 1.0)
+        val result = softmax._train(input, label)
+
+        // 行0に対してsoftmax:
+        // max = 3
+        // exp(1-3) = exp(-2)
+        // exp(2-3) = exp(-1)
+        // exp(3-3) = exp(0) = 1
+        val exp0 = exp(1.0 - 3.0)
+        val exp1 = exp(2.0 - 3.0)
+        val exp2 = exp(3.0 - 3.0)
+        val sum = exp0 + exp1 + exp2
+
+        assertEquals(expected = 1, actual = result.size)
+        // [[exp0/sum - 0, exp1/sum - 0, exp2/sum - 1]]
+        val output = result[0] as IOType.D2
+        assertEquals(expected = 1, actual = output.shape[0])
+        assertEquals(expected = 3, actual = output.shape[1])
+        assertEquals(expected = exp0 / sum - 0.0, actual = output[0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp1 / sum - 0.0, actual = output[0, 1], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp2 / sum - 1.0, actual = output[0, 2], absoluteTolerance = 1e-4)
+    }
+
+    @Test
+    fun `SoftmaxWithLossD2の_train=複数行それぞれに独立してsoftmaxを適用`() {
+        // [[1, 2], [3, 4]]
+        val input =
+            listOf(
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+            )
+        // [[1, 0], [0, 1]] (行0はクラス0、行1はクラス1が正解)
+        val label =
+            listOf(
+                IOType.d2(2, 2) { x, y -> if (x == y) 1.0 else 0.0 },
+            )
+        val softmax = SoftmaxWithLossD2(outputX = 2, outputY = 2, temperature = 1.0)
+        val result = softmax._train(input, label)
+
+        // 行0: softmax([1, 2])
+        val max0 = 2.0
+        val exp0_0 = exp(1.0 - max0)
+        val exp0_1 = exp(2.0 - max0)
+        val sum0 = exp0_0 + exp0_1
+
+        // 行1: softmax([3, 4])
+        val max1 = 4.0
+        val exp1_0 = exp(3.0 - max1)
+        val exp1_1 = exp(4.0 - max1)
+        val sum1 = exp1_0 + exp1_1
+
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0] as IOType.D2
+
+        // 行0: [exp0_0/sum0 - 1, exp0_1/sum0 - 0]
+        assertEquals(expected = exp0_0 / sum0 - 1.0, actual = output[0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp0_1 / sum0 - 0.0, actual = output[0, 1], absoluteTolerance = 1e-4)
+
+        // 行1: [exp1_0/sum1 - 0, exp1_1/sum1 - 1]
+        assertEquals(expected = exp1_0 / sum1 - 0.0, actual = output[1, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp1_1 / sum1 - 1.0, actual = output[1, 1], absoluteTolerance = 1e-4)
+    }
+
+    @Test
+    fun `SoftmaxWithLossD2の_train=複数バッチでも正しく動作する`() {
+        // バッチ1: [[1, 2, 3]]
+        // バッチ2: [[4, 5, 6]]
+        val input =
+            listOf(
+                IOType.d2(1, 3) { _, y -> (y + 1).toDouble() },
+                IOType.d2(1, 3) { _, y -> (y + 4).toDouble() },
+            )
+        // バッチ1のラベル: [[1, 0, 0]] (クラス0が正解)
+        // バッチ2のラベル: [[0, 0, 1]] (クラス2が正解)
+        val label =
+            listOf(
+                IOType.d2(1, 3) { _, y -> if (y == 0) 1.0 else 0.0 },
+                IOType.d2(1, 3) { _, y -> if (y == 2) 1.0 else 0.0 },
+            )
+        val softmax = SoftmaxWithLossD2(outputX = 1, outputY = 3, temperature = 1.0)
+        val result = softmax._train(input, label)
+
+        // バッチ1: softmax([1, 2, 3])
+        val max1 = 3.0
+        val exp1_0 = exp(1.0 - max1)
+        val exp1_1 = exp(2.0 - max1)
+        val exp1_2 = exp(3.0 - max1)
+        val sum1 = exp1_0 + exp1_1 + exp1_2
+
+        // バッチ2: softmax([4, 5, 6])
+        val max2 = 6.0
+        val exp2_0 = exp(4.0 - max2)
+        val exp2_1 = exp(5.0 - max2)
+        val exp2_2 = exp(6.0 - max2)
+        val sum2 = exp2_0 + exp2_1 + exp2_2
+
+        assertEquals(expected = 2, actual = result.size)
+
+        // バッチ1の出力: [[exp1_0/sum1 - 1, exp1_1/sum1 - 0, exp1_2/sum1 - 0]]
+        val output1 = result[0] as IOType.D2
+        assertEquals(expected = exp1_0 / sum1 - 1.0, actual = output1[0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp1_1 / sum1 - 0.0, actual = output1[0, 1], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp1_2 / sum1 - 0.0, actual = output1[0, 2], absoluteTolerance = 1e-4)
+
+        // バッチ2の出力: [[exp2_0/sum2 - 0, exp2_1/sum2 - 0, exp2_2/sum2 - 1]]
+        val output2 = result[1] as IOType.D2
+        assertEquals(expected = exp2_0 / sum2 - 0.0, actual = output2[0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp2_1 / sum2 - 0.0, actual = output2[0, 1], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp2_2 / sum2 - 1.0, actual = output2[0, 2], absoluteTolerance = 1e-4)
+    }
+
+    @Test
+    fun `SoftmaxWithLossD2の_train=temperature適用後にsoftmaxを計算`() {
+        // [[1, 2, 3]]
+        val input =
+            listOf(
+                IOType.d2(1, 3) { _, y -> (y + 1).toDouble() },
+            )
+        // [[0, 0, 1]]
+        val label =
+            listOf(
+                IOType.d2(1, 3) { _, y -> if (y == 2) 1.0 else 0.0 },
+            )
+        // temperature = 2.0で分布を平滑化
+        val softmax = SoftmaxWithLossD2(outputX = 1, outputY = 3, temperature = 2.0)
+        val result = softmax._train(input, label)
+
+        // temperature適用: [1/2, 2/2, 3/2] = [0.5, 1.0, 1.5]
+        // max = 1.5
+        // exp(0.5-1.5) = exp(-1.0)
+        // exp(1.0-1.5) = exp(-0.5)
+        // exp(1.5-1.5) = exp(0) = 1
+        val exp0 = exp(0.5 - 1.5)
+        val exp1 = exp(1.0 - 1.5)
+        val exp2 = exp(1.5 - 1.5)
+        val sum = exp0 + exp1 + exp2
+
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0] as IOType.D2
+        assertEquals(expected = exp0 / sum - 0.0, actual = output[0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp1 / sum - 0.0, actual = output[0, 1], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp2 / sum - 1.0, actual = output[0, 2], absoluteTolerance = 1e-4)
+    }
+
+    @Test
+    fun `SoftmaxWithLossD2の_train=数値安定性の確認_大きな値でもオーバーフローしない`() {
+        // [[100, 200, 300]]
+        val input =
+            listOf(
+                IOType.d2(1, 3) { _, y -> ((y + 1) * 100).toDouble() },
+            )
+        // [[0, 0, 1]]
+        val label =
+            listOf(
+                IOType.d2(1, 3) { _, y -> if (y == 2) 1.0 else 0.0 },
+            )
+        val softmax = SoftmaxWithLossD2(outputX = 1, outputY = 3, temperature = 1.0)
+        val result = softmax._train(input, label)
+
+        // maxを引くことで数値安定性を確保
+        // max = 300
+        // exp(100-300) = exp(-200) ≈ 0
+        // exp(200-300) = exp(-100) ≈ 0
+        // exp(300-300) = exp(0) = 1
+        // softmax ≈ [0, 0, 1]
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0] as IOType.D2
+
+        // ほぼ[0-0, 0-0, 1-1] = [0, 0, 0]になる
+        assertEquals(expected = 0.0, actual = output[0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = 0.0, actual = output[0, 1], absoluteTolerance = 1e-4)
+        assertEquals(expected = 0.0, actual = output[0, 2], absoluteTolerance = 1e-4)
+    }
+}
