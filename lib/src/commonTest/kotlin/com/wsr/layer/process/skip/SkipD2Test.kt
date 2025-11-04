@@ -25,8 +25,8 @@ class SkipD2Test {
         val affine = AffineD2(
             channel = 1,
             outputSize = 2,
-            optimizer = Sgd(0.1).d3(1, 2, 2),
-            weight = IOType.d3(1, 2, 2) { ch, y, out -> if (y == out) 1.0 else 0.0 },
+            optimizer = Sgd(0.1).d2(2, 2),
+            weight = IOType.d2(2, 2) { y, out -> if (y == out) 1.0 else 0.0 },
         )
 
         val skip = SkipD2(
@@ -94,11 +94,11 @@ class SkipD2Test {
     @Test
     fun `SkipD2の_train=サブ層の重みが正しく更新される`() {
         // サブ層1: Affine (恒等変換: channel=1, outputSize=2)
-        val affineWeight = IOType.d3(1, 2, 2) { ch, y, out -> if (y == out) 1.0 else 0.0 }
+        val affineWeight = IOType.d2(2, 2) { y, out -> if (y == out) 1.0 else 0.0 }
         val affineLayer = AffineD2(
             channel = 1,
             outputSize = 2,
-            optimizer = Sgd(0.1).d3(1, 2, 2),
+            optimizer = Sgd(0.1).d2(2, 2),
             weight = affineWeight,
         )
 
@@ -136,14 +136,14 @@ class SkipD2Test {
 
         // train実行後の期待値
         // bias更新: [[1, 1]] - 0.1 * [[1, 2]] = [[0.9, 0.8]]
-        // affine更新: weight[0,y,out] - 0.1 * input[0,y] * delta[0,out]
-        //   weight[0,0,0] = 1.0 - 0.1 * 2.0 * 1.0 = 0.8
-        //   weight[0,0,1] = 0.0 - 0.1 * 2.0 * 2.0 = -0.4
-        //   weight[0,1,0] = 0.0 - 0.1 * 3.0 * 1.0 = -0.3
-        //   weight[0,1,1] = 1.0 - 0.1 * 3.0 * 2.0 = 0.4
+        // affine更新: weight[y,out] - 0.1 * input[0,y] * delta[0,out]
+        //   weight[0,0] = 1.0 - 0.1 * 2.0 * 1.0 = 0.8
+        //   weight[0,1] = 0.0 - 0.1 * 2.0 * 2.0 = -0.4
+        //   weight[1,0] = 0.0 - 0.1 * 3.0 * 1.0 = -0.3
+        //   weight[1,1] = 1.0 - 0.1 * 3.0 * 2.0 = 0.4
 
         // 更新後のexpect
-        // affine出力: weight^T dot input = [[0.8, -0.3], [-0.4, 0.4]] dot [[2], [3]] = [[0.7], [0.4]]
+        // affine出力: weight^T · input = [[0.8, -0.3], [-0.4, 0.4]] · [[2], [3]] = [[0.7], [0.4]]
         // bias出力: [[0.7, 0.4]] + [[0.9, 0.8]] = [[1.6, 1.2]]
         // skip出力: [[2, 3]] + [[1.6, 1.2]] = [[3.6, 4.2]]
         val afterOutput = skip._expect(input)[0] as IOType.D2
