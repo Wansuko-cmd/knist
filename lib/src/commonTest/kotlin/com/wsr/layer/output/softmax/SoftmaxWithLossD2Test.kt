@@ -73,26 +73,26 @@ class SoftmaxWithLossD2Test {
 
         // 行0: softmax([1, 2])
         val max0 = 2.0
-        val exp0_0 = exp(1.0 - max0)
-        val exp0_1 = exp(2.0 - max0)
-        val sum0 = exp0_0 + exp0_1
+        val exp00 = exp(1.0 - max0)
+        val exp01 = exp(2.0 - max0)
+        val sum0 = exp00 + exp01
 
         // 行1: softmax([3, 4])
         val max1 = 4.0
-        val exp1_0 = exp(3.0 - max1)
-        val exp1_1 = exp(4.0 - max1)
-        val sum1 = exp1_0 + exp1_1
+        val exp10 = exp(3.0 - max1)
+        val exp11 = exp(4.0 - max1)
+        val sum1 = exp10 + exp11
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
 
-        // 行0: [exp0_0/sum0 - 1, exp0_1/sum0 - 0]
-        assertEquals(expected = exp0_0 / sum0 - 1.0, actual = output[0, 0], absoluteTolerance = 1e-4)
-        assertEquals(expected = exp0_1 / sum0 - 0.0, actual = output[0, 1], absoluteTolerance = 1e-4)
+        // 行0: [exp00/sum0 - 1, exp01/sum0 - 0]
+        assertEquals(expected = exp00 / sum0 - 1.0, actual = output[0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp01 / sum0 - 0.0, actual = output[0, 1], absoluteTolerance = 1e-4)
 
-        // 行1: [exp1_0/sum1 - 0, exp1_1/sum1 - 1]
-        assertEquals(expected = exp1_0 / sum1 - 0.0, actual = output[1, 0], absoluteTolerance = 1e-4)
-        assertEquals(expected = exp1_1 / sum1 - 1.0, actual = output[1, 1], absoluteTolerance = 1e-4)
+        // 行1: [exp10/sum1 - 0, exp11/sum1 - 1]
+        assertEquals(expected = exp10 / sum1 - 0.0, actual = output[1, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp11 / sum1 - 1.0, actual = output[1, 1], absoluteTolerance = 1e-4)
     }
 
     @Test
@@ -116,31 +116,31 @@ class SoftmaxWithLossD2Test {
 
         // バッチ1: softmax([1, 2, 3])
         val max1 = 3.0
-        val exp1_0 = exp(1.0 - max1)
-        val exp1_1 = exp(2.0 - max1)
-        val exp1_2 = exp(3.0 - max1)
-        val sum1 = exp1_0 + exp1_1 + exp1_2
+        val exp10 = exp(1.0 - max1)
+        val exp11 = exp(2.0 - max1)
+        val exp12 = exp(3.0 - max1)
+        val sum1 = exp10 + exp11 + exp12
 
         // バッチ2: softmax([4, 5, 6])
         val max2 = 6.0
-        val exp2_0 = exp(4.0 - max2)
-        val exp2_1 = exp(5.0 - max2)
-        val exp2_2 = exp(6.0 - max2)
-        val sum2 = exp2_0 + exp2_1 + exp2_2
+        val exp20 = exp(4.0 - max2)
+        val exp21 = exp(5.0 - max2)
+        val exp22 = exp(6.0 - max2)
+        val sum2 = exp20 + exp21 + exp22
 
         assertEquals(expected = 2, actual = result.size)
 
-        // バッチ1の出力: [[exp1_0/sum1 - 1, exp1_1/sum1 - 0, exp1_2/sum1 - 0]]
+        // バッチ1の出力: [[exp10/sum1 - 1, exp11/sum1 - 0, exp12/sum1 - 0]]
         val output1 = result[0] as IOType.D2
-        assertEquals(expected = exp1_0 / sum1 - 1.0, actual = output1[0, 0], absoluteTolerance = 1e-4)
-        assertEquals(expected = exp1_1 / sum1 - 0.0, actual = output1[0, 1], absoluteTolerance = 1e-4)
-        assertEquals(expected = exp1_2 / sum1 - 0.0, actual = output1[0, 2], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp10 / sum1 - 1.0, actual = output1[0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp11 / sum1 - 0.0, actual = output1[0, 1], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp12 / sum1 - 0.0, actual = output1[0, 2], absoluteTolerance = 1e-4)
 
-        // バッチ2の出力: [[exp2_0/sum2 - 0, exp2_1/sum2 - 0, exp2_2/sum2 - 1]]
+        // バッチ2の出力: [[exp20/sum2 - 0, exp21/sum2 - 0, exp22/sum2 - 1]]
         val output2 = result[1] as IOType.D2
-        assertEquals(expected = exp2_0 / sum2 - 0.0, actual = output2[0, 0], absoluteTolerance = 1e-4)
-        assertEquals(expected = exp2_1 / sum2 - 0.0, actual = output2[0, 1], absoluteTolerance = 1e-4)
-        assertEquals(expected = exp2_2 / sum2 - 1.0, actual = output2[0, 2], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp20 / sum2 - 0.0, actual = output2[0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp21 / sum2 - 0.0, actual = output2[0, 1], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp22 / sum2 - 1.0, actual = output2[0, 2], absoluteTolerance = 1e-4)
     }
 
     @Test
@@ -271,28 +271,28 @@ class SoftmaxWithLossD2Test {
         val result = softmax._train(input, label)
 
         // 行0のsoftmax
-        val exp0_0 = exp(1.0 - 3.0)
-        val exp0_1 = exp(2.0 - 3.0)
-        val exp0_2 = exp(3.0 - 3.0)
-        val sum0 = exp0_0 + exp0_1 + exp0_2
+        val exp00 = exp(1.0 - 3.0)
+        val exp01 = exp(2.0 - 3.0)
+        val exp02 = exp(3.0 - 3.0)
+        val sum0 = exp00 + exp01 + exp02
 
         // 行1のsoftmax
-        val exp1_0 = exp(4.0 - 6.0)
-        val exp1_1 = exp(5.0 - 6.0)
-        val exp1_2 = exp(6.0 - 6.0)
-        val sum1 = exp1_0 + exp1_1 + exp1_2
+        val exp10 = exp(4.0 - 6.0)
+        val exp11 = exp(5.0 - 6.0)
+        val exp12 = exp(6.0 - 6.0)
+        val sum1 = exp10 + exp11 + exp12
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
 
         // 全要素が有効なので通常の勾配（-1.0もラベル値として扱われる）
-        assertEquals(expected = exp0_0 / sum0 - (-1.0), actual = output[0, 0], absoluteTolerance = 1e-4)
-        assertEquals(expected = exp0_1 / sum0 - (-1.0), actual = output[0, 1], absoluteTolerance = 1e-4)
-        assertEquals(expected = exp0_2 / sum0 - 1.0, actual = output[0, 2], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp00 / sum0 - (-1.0), actual = output[0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp01 / sum0 - (-1.0), actual = output[0, 1], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp02 / sum0 - 1.0, actual = output[0, 2], absoluteTolerance = 1e-4)
 
-        assertEquals(expected = exp1_0 / sum1 - 0.0, actual = output[1, 0], absoluteTolerance = 1e-4)
-        assertEquals(expected = exp1_1 / sum1 - 0.0, actual = output[1, 1], absoluteTolerance = 1e-4)
-        assertEquals(expected = exp1_2 / sum1 - 1.0, actual = output[1, 2], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp10 / sum1 - 0.0, actual = output[1, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp11 / sum1 - 0.0, actual = output[1, 1], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp12 / sum1 - 1.0, actual = output[1, 2], absoluteTolerance = 1e-4)
     }
 
     @Test

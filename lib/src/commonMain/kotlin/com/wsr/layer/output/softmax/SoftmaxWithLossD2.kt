@@ -8,8 +8,8 @@ import com.wsr.operator.div
 import com.wsr.operator.minus
 import com.wsr.operator.times
 import com.wsr.reshape.toD2
-import kotlinx.serialization.Serializable
 import kotlin.math.exp
+import kotlinx.serialization.Serializable
 
 @Serializable
 internal class SoftmaxWithLossD2 internal constructor(
@@ -46,10 +46,7 @@ internal class SoftmaxWithLossD2 internal constructor(
     }
 }
 
-fun <T> NetworkBuilder.D2<T>.softmaxWithLoss(
-    temperature: Double = 1.0,
-    maskValue: Int? = null,
-) = addOutput(
+fun <T> NetworkBuilder.D2<T>.softmaxWithLoss(temperature: Double = 1.0, maskValue: Int? = null) = addOutput(
     output = SoftmaxWithLossD2(
         outputX = inputX,
         outputY = inputY,
