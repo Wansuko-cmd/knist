@@ -53,4 +53,66 @@ class SoftmaxWithLossD1Test {
         assertEquals(expected = exp1 / sum - 0.0, actual = output[1], absoluteTolerance = 1e-4)
         assertEquals(expected = exp2 / sum - 1.0, actual = output[2], absoluteTolerance = 1e-4)
     }
+
+    @Test
+    fun `SoftmaxWithLossD1の_train=maskValueで指定した値の要素は勾配が0になる`() {
+        // [[1, 2, 3]]
+        val input =
+            listOf(
+                IOType.d1(listOf(1.0, 2.0, 3.0)),
+            )
+        // [[0, 0, -1]] ← 要素2はマスク対象
+        val label =
+            listOf(
+                IOType.d1(listOf(0.0, 0.0, -1.0)),
+            )
+        val softmax = SoftmaxWithLossD1(outputSize = 3, temperature = 1.0, maskValue = -1)
+        val result = softmax._train(input, label)
+
+        // softmax計算
+        val exp0 = exp(1.0 - 3.0)
+        val exp1 = exp(2.0 - 3.0)
+        val exp2 = exp(3.0 - 3.0)
+        val sum = exp0 + exp1 + exp2
+
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0] as IOType.D1
+
+        // 要素0, 1: 通常の勾配
+        assertEquals(expected = exp0 / sum - 0.0, actual = output[0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp1 / sum - 0.0, actual = output[1], absoluteTolerance = 1e-4)
+
+        // 要素2: maskValue=-1なので勾配は0
+        assertEquals(expected = 0.0, actual = output[2], absoluteTolerance = 1e-4)
+    }
+
+    @Test
+    fun `SoftmaxWithLossD1の_train=maskValue=nullの場合は全要素が有効`() {
+        // [[1, 2, 3]]
+        val input =
+            listOf(
+                IOType.d1(listOf(1.0, 2.0, 3.0)),
+            )
+        // [[-1, -1, 1]] ← -1を含むがmaskValue=nullなので無視されない
+        val label =
+            listOf(
+                IOType.d1(listOf(-1.0, -1.0, 1.0)),
+            )
+        val softmax = SoftmaxWithLossD1(outputSize = 3, temperature = 1.0, maskValue = null)
+        val result = softmax._train(input, label)
+
+        // softmax計算
+        val exp0 = exp(1.0 - 3.0)
+        val exp1 = exp(2.0 - 3.0)
+        val exp2 = exp(3.0 - 3.0)
+        val sum = exp0 + exp1 + exp2
+
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0] as IOType.D1
+
+        // 全要素が有効なので通常の勾配
+        assertEquals(expected = exp0 / sum - (-1.0), actual = output[0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp1 / sum - (-1.0), actual = output[1], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp2 / sum - 1.0, actual = output[2], absoluteTolerance = 1e-4)
+    }
 }
