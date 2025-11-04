@@ -16,8 +16,8 @@ import kotlinx.serialization.Serializable
 class AffineD2 internal constructor(
     private val channel: Int,
     private val outputSize: Int,
-    private val optimizer: Optimizer.D3,
-    private var weight: IOType.D3,
+    private val optimizer: Optimizer.D2,
+    private var weight: IOType.D2,
 ) : Process.D2() {
     override val outputX = channel
     override val outputY = outputSize
@@ -27,19 +27,21 @@ class AffineD2 internal constructor(
     override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
         val output = forward(input)
         val delta = calcDelta(output)
-        val dx = delta.map { delta -> (0 until channel).map { weight[it].matMul(delta[it]) }.toD2() }
+        val dx = delta.map { delta -> (0 until channel).map { weight.matMul(delta[it]) }.toD2() }
         val dwi = input.toD3().transpose(1, 2, 0)
         val dwd = delta.toD3().transpose(1, 0, 2)
-        val dw = (0 until channel).map { dwi[it].matMul(dwd[it]) }.toD3() / input.size.toDouble()
+        val dw = (0 until channel)
+            .map { dwi[it].matMul(dwd[it]) }
+            .reduce { acc, d2 -> acc + d2 } / input.size.toDouble()
         weight = optimizer.adapt(weight = weight, dw = dw)
         return dx
     }
 
     private fun forward(input: List<IOType.D2>): List<IOType.D2> {
-        val weight = (0 until channel).map { weight[it].transpose() }
+        val weight = weight.transpose()
         return input.map { input ->
             (0 until channel)
-                .map { weight[it].matMul(input[it]) }
+                .map { weight.matMul(input[it]) }
                 .toD2()
         }
     }
@@ -54,13 +56,12 @@ fun <T> NetworkBuilder.D2<T>.affine(
     AffineD2(
         channel = inputX,
         outputSize = neuron,
-        optimizer = optimizer.d3(inputX, inputY, neuron),
-        weight = initializer.d3(
+        optimizer = optimizer.d2(inputY, neuron),
+        weight = initializer.d2(
             input = listOf(inputY),
             output = listOf(neuron),
-            x = inputX,
-            y = inputY,
-            z = neuron,
+            x = inputY,
+            y = neuron,
         ),
     ),
 )
