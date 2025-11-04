@@ -8,10 +8,7 @@ import com.wsr.operator.minus
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class MeanSquareD2 internal constructor(
-    val outputX: Int,
-    val outputY: Int,
-) : Output.D2() {
+internal class MeanSquareD2 internal constructor(val outputX: Int, val outputY: Int) : Output.D2() {
     override fun expect(input: List<IOType.D2>): List<IOType.D2> = input
 
     override fun train(input: List<IOType.D2>, label: List<IOType.D2>): List<IOType.D2> = input - label
