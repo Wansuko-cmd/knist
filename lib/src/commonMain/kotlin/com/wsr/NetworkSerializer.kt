@@ -10,8 +10,11 @@ import com.wsr.converter.word.WordD1
 import com.wsr.converter.word.WordsD1
 import com.wsr.layer.Layer
 import com.wsr.layer.output.mean.MeanSquareD1
+import com.wsr.layer.output.mean.MeanSquareD2
 import com.wsr.layer.output.sigmoid.SigmoidWithLossD1
+import com.wsr.layer.output.sigmoid.SigmoidWithLossD2
 import com.wsr.layer.output.softmax.SoftmaxWithLossD1
+import com.wsr.layer.output.softmax.SoftmaxWithLossD2
 import com.wsr.layer.process.affine.AffineD1
 import com.wsr.layer.process.affine.AffineD2
 import com.wsr.layer.process.attention.AttentionD2
@@ -295,8 +298,13 @@ private val buildInSerializersModule = SerializersModule {
          * Output
          */
         subclass(MeanSquareD1::class)
+        subclass(MeanSquareD2::class)
+
         subclass(SigmoidWithLossD1::class)
+        subclass(SigmoidWithLossD2::class)
+
         subclass(SoftmaxWithLossD1::class)
+        subclass(SoftmaxWithLossD2::class)
     }
 
     /**
