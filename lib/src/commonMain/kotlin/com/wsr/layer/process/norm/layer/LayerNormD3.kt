@@ -14,9 +14,9 @@ import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
+import kotlinx.serialization.Serializable
 import kotlin.math.pow
 import kotlin.math.sqrt
-import kotlinx.serialization.Serializable
 
 @Serializable
 class LayerNormD3 internal constructor(
@@ -51,11 +51,7 @@ class LayerNormD3 internal constructor(
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = run {
-                val normalize = normalize.batchAverage()
-                val delta = delta.batchAverage()
-                normalize * delta
-            },
+            dw = (normalize * delta).batchAverage(),
         )
 
         // dy/[x-average(x)]
