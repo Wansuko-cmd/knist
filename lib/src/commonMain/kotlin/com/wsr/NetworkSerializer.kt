@@ -7,6 +7,7 @@ import com.wsr.converter.linear.LinearD1
 import com.wsr.converter.linear.LinearD2
 import com.wsr.converter.linear.LinearD3
 import com.wsr.converter.word.WordD1
+import com.wsr.converter.word.WordD2
 import com.wsr.converter.word.WordsD1
 import com.wsr.layer.Layer
 import com.wsr.layer.output.mean.MeanSquareD1
@@ -346,6 +347,7 @@ private val buildInSerializersModule = SerializersModule {
 
         // Word
         subclass(WordD1::class)
+        subclass(WordD2::class)
         subclass(WordsD1::class)
     }
 }
