@@ -7,8 +7,8 @@ import com.wsr.layer.output.Output
 import com.wsr.operator.div
 import com.wsr.operator.minus
 import com.wsr.operator.times
-import kotlin.math.exp
 import kotlinx.serialization.Serializable
+import kotlin.math.exp
 
 @Serializable
 internal class SoftmaxWithLossD1 internal constructor(
@@ -16,7 +16,15 @@ internal class SoftmaxWithLossD1 internal constructor(
     val temperature: Double,
     val maskValue: Int? = null,
 ) : Output.D1() {
-    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input
+    override fun expect(input: List<IOType.D1>): List<IOType.D1> {
+        val input = input / temperature
+        return input.map { (value) ->
+            val max = value.max()
+            val exp = value.map { exp(it - max) }
+            val sum = exp.sum()
+            IOType.d1(outputSize) { exp[it] / sum }
+        }
+    }
 
     override fun train(input: List<IOType.D1>, label: List<IOType.D1>): List<IOType.D1> {
         val input = input / temperature
