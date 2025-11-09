@@ -49,11 +49,7 @@ class LayerNormD1 internal constructor(
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = run {
-                val normalize = normalize.batchAverage()
-                val delta = delta.batchAverage()
-                normalize * delta
-            },
+            dw = (normalize * delta).batchAverage(),
         )
 
         // dy/[x-average(x)]
