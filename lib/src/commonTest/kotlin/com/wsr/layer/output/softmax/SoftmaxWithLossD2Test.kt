@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 
 class SoftmaxWithLossD2Test {
     @Test
-    fun `SoftmaxWithLossD2の_expect=入力をそのまま返す`() {
+    fun `SoftmaxWithLossD2の_expect=各行にsoftmaxを適用した値を返す`() {
         // [[1, 2, 3], [4, 5, 6]]
         val input =
             listOf(
@@ -18,7 +18,34 @@ class SoftmaxWithLossD2Test {
         val softmax = SoftmaxWithLossD2(outputX = 2, outputY = 3, temperature = 1.0)
         val result = softmax._expect(input)
 
-        assertEquals(expected = input, actual = result)
+        // 行0: [1, 2, 3]のsoftmax
+        // max = 3
+        val exp00 = exp(1.0 - 3.0)
+        val exp01 = exp(2.0 - 3.0)
+        val exp02 = exp(3.0 - 3.0)
+        val sum0 = exp00 + exp01 + exp02
+
+        // 行1: [4, 5, 6]のsoftmax
+        // max = 6
+        val exp10 = exp(4.0 - 6.0)
+        val exp11 = exp(5.0 - 6.0)
+        val exp12 = exp(6.0 - 6.0)
+        val sum1 = exp10 + exp11 + exp12
+
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0] as IOType.D2
+        assertEquals(expected = 2, actual = output.shape[0])
+        assertEquals(expected = 3, actual = output.shape[1])
+
+        // 行0の出力確認
+        assertEquals(expected = exp00 / sum0, actual = output[0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp01 / sum0, actual = output[0, 1], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp02 / sum0, actual = output[0, 2], absoluteTolerance = 1e-4)
+
+        // 行1の出力確認
+        assertEquals(expected = exp10 / sum1, actual = output[1, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp11 / sum1, actual = output[1, 1], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp12 / sum1, actual = output[1, 2], absoluteTolerance = 1e-4)
     }
 
     @Test

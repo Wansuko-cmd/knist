@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
 
 class SoftmaxWithLossD1Test {
     @Test
-    fun `SoftmaxWithLossD1の_expect=入力をそのまま返す`() {
+    fun `SoftmaxWithLossD1の_expect=softmaxを適用した値を返す`() {
         // [1, 2, 3]
         val input =
             listOf(
@@ -19,7 +19,20 @@ class SoftmaxWithLossD1Test {
         val softmax = SoftmaxWithLossD1(outputSize = 3, temperature = 1.0)
         val result = softmax._expect(input)
 
-        assertEquals(expected = input, actual = result)
+        // max = 3
+        // exp(1-3) = exp(-2)
+        // exp(2-3) = exp(-1)
+        // exp(3-3) = exp(0) = 1
+        val exp0 = exp(1.0 - 3.0)
+        val exp1 = exp(2.0 - 3.0)
+        val exp2 = exp(3.0 - 3.0)
+        val sum = exp0 + exp1 + exp2
+
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0] as IOType.D1
+        assertEquals(expected = exp0 / sum, actual = output[0], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp1 / sum, actual = output[1], absoluteTolerance = 1e-4)
+        assertEquals(expected = exp2 / sum, actual = output[2], absoluteTolerance = 1e-4)
     }
 
     @Test
