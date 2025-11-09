@@ -42,7 +42,7 @@ class AttentionD2 internal constructor(
             val mul = query.matMul(key.transpose())
             val scaled = mul / sqrt(dim.toDouble())
 
-            val mask = IOType.d2(outputX, outputX) { x, y -> if (x > y) -1e9 else 0.0 }
+            val mask = IOType.d2(outputX, outputX) { x, y -> if (x < y) -1e9 else 0.0 }
             val masked = scaled + mask
 
             val softmax = softmax(masked)
@@ -65,7 +65,7 @@ class AttentionD2 internal constructor(
             val mul = query[it].matMul(key[it].transpose())
             val scaled = mul / sqrt(dim.toDouble())
 
-            val mask = IOType.d2(outputX, outputX) { x, y -> if (x > y) -1e9 else 0.0 }
+            val mask = IOType.d2(outputX, outputX) { x, y -> if (x < y) -1e9 else 0.0 }
             val masked = scaled + mask
 
             softmax(masked)
