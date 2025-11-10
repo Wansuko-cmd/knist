@@ -2,14 +2,12 @@ package com.wsr.layer.process.affine
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.collection.batchAverage
 import com.wsr.dot.matmul.matMul
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
-import com.wsr.operator.plus
 import com.wsr.optimizer.Optimizer
-import com.wsr.reshape.toD2
-import com.wsr.reshape.toD3
 import com.wsr.reshape.transpose
 import kotlinx.serialization.Serializable
 
@@ -28,24 +26,17 @@ class AffineD2 internal constructor(
     override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
         val output = forward(input)
         val delta = calcDelta(output)
-        val dx = delta.map { delta -> (0 until channel).map { weight.matMul(delta[it]) }.toD2() }
-        val dwi = input.toD3().transpose(1, 2, 0)
-        val dwd = delta.toD3().transpose(1, 0, 2)
-        val dw = (0 until channel)
-            .map { dwi[it].matMul(dwd[it]) }
-            .reduce { acc, d2 -> acc + d2 } / input.size.toDouble()
-        weight = optimizer.adapt(weight = weight, dw = dw)
+
+        val dx = delta.matMul(weight.transpose())
+        val dw = input.transpose()
+            .matMul(delta)
+            .batchAverage()
+
+        weight = optimizer.adapt(weight = weight, dw = dw / channel.toDouble())
         return dx
     }
 
-    private fun forward(input: List<IOType.D2>): List<IOType.D2> {
-        val weight = weight.transpose()
-        return input.map { input ->
-            (0 until channel)
-                .map { weight.matMul(input[it]) }
-                .toD2()
-        }
-    }
+    private fun forward(input: List<IOType.D2>): List<IOType.D2> = input.matMul(weight)
 }
 
 fun <T> NetworkBuilder.D2<T>.affine(
@@ -54,15 +45,15 @@ fun <T> NetworkBuilder.D2<T>.affine(
     initializer: WeightInitializer = this.initializer,
 ) = addProcess(
     process =
-    AffineD2(
-        channel = inputX,
-        outputSize = neuron,
-        optimizer = optimizer.d2(inputY, neuron),
-        weight = initializer.d2(
-            input = listOf(inputY),
-            output = listOf(neuron),
-            x = inputY,
-            y = neuron,
+        AffineD2(
+            channel = inputX,
+            outputSize = neuron,
+            optimizer = optimizer.d2(inputY, neuron),
+            weight = initializer.d2(
+                input = listOf(inputY),
+                output = listOf(neuron),
+                x = inputY,
+                y = neuron,
+            ),
         ),
-    ),
 )
