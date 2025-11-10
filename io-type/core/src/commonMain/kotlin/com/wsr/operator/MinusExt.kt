@@ -45,6 +45,19 @@ operator fun IOType.D2.minus(other: IOType.D2): IOType.D2 {
     return IOType.d2(this.shape, result)
 }
 
+operator fun IOType.D2.minus(other: IOType.D1): IOType.D2 {
+    val result = this.value.copyOf()
+    val cols = shape[1]
+    for (row in 0 until shape[0]) {
+        val offset = row * cols
+        val subtrahend = other[row]
+        for (col in 0 until cols) {
+            result[offset + col] -= subtrahend
+        }
+    }
+    return IOType.d2(this.shape, result)
+}
+
 @JvmName("minusD2sToDoubles")
 operator fun List<IOType.D2>.minus(other: List<Double>) = List(size) { this[it] - other[it] }
 
@@ -53,6 +66,9 @@ operator fun List<IOType.D2>.minus(other: IOType.D2) = List(size) { this[it] - o
 
 @JvmName("minusD2sToD2s")
 operator fun List<IOType.D2>.minus(other: List<IOType.D2>) = List(size) { this[it] - other[it] }
+
+@JvmName("minusD2sToD1s")
+operator fun List<IOType.D2>.minus(other: List<IOType.D1>) = List(size) { this[it] - other[it] }
 
 /**
  * IOType.D3
