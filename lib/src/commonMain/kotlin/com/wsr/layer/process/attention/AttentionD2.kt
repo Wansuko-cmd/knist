@@ -2,6 +2,7 @@ package com.wsr.layer.process.attention
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.collection.batchAverage
 import com.wsr.collection.max
 import com.wsr.collection.sum
 import com.wsr.dot.matmul.matMul
@@ -11,8 +12,6 @@ import com.wsr.operator.div
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
-import com.wsr.reshape.toD2
-import com.wsr.reshape.toD3
 import com.wsr.reshape.transpose
 import kotlinx.serialization.Serializable
 import kotlin.math.exp
@@ -33,18 +32,16 @@ class AttentionD2 internal constructor(
     private val optimizerV: List<Optimizer.D2>,
     private val optimizerO: Optimizer.D2,
 ) : Process.D2() {
+    private val mask by lazy { IOType.d2(outputX, outputX) { x, y -> if (x < y) -1e9 else 0.0 } }
     override fun expect(input: List<IOType.D2>): List<IOType.D2> {
         val heads = List(numOfHeads) {
-            val query = affine(input, weightQ[it])
-            val key = affine(input, weightK[it])
-            val value = affine(input, weightV[it])
+            val query = input.matMul(weightQ[it])
+            val key = input.matMul(weightK[it])
+            val value = input.matMul(weightV[it])
 
             val mul = query.matMul(key.transpose())
             val scaled = mul / sqrt(dim.toDouble())
-
-            val mask = IOType.d2(outputX, outputX) { x, y -> if (x < y) -1e9 else 0.0 }
             val masked = scaled + mask
-
             val softmax = softmax(masked)
             softmax.matMul(value)
         }
@@ -53,21 +50,18 @@ class AttentionD2 internal constructor(
                 heads[y / dim][it][x, y % dim]
             }
         }
-        return affine(concat, weightO)
+        return concat.matMul(weightO)
     }
 
     override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
-        val query = List(numOfHeads) { affine(input, weightQ[it]) }
-        val key = List(numOfHeads) { affine(input, weightK[it]) }
-        val value = List(numOfHeads) { affine(input, weightV[it]) }
+        val query = List(numOfHeads) { input.matMul(weightQ[it]) }
+        val key = List(numOfHeads) { input.matMul(weightK[it]) }
+        val value = List(numOfHeads) { input.matMul(weightV[it]) }
 
         val softmax = List(numOfHeads) {
             val mul = query[it].matMul(key[it].transpose())
             val scaled = mul / sqrt(dim.toDouble())
-
-            val mask = IOType.d2(outputX, outputX) { x, y -> if (x < y) -1e9 else 0.0 }
             val masked = scaled + mask
-
             softmax(masked)
         }
 
@@ -78,17 +72,15 @@ class AttentionD2 internal constructor(
                 heads[y / dim][it][x, y % dim]
             }
         }
-        val output = affine(concat, weightO)
+        val output = concat.matMul(weightO)
 
         val delta = calcDelta(output)
 
         // 出力変換（weightO）の逆伝播
-        val dConcat = delta.map { d -> (0 until outputX).map { weightO.matMul(d[it]) }.toD2() }
-        val concatD3 = concat.toD3().transpose(1, 2, 0)
-        val deltaD3 = delta.toD3().transpose(1, 0, 2)
-        val dwo = (0 until outputX)
-            .map { concatD3[it].matMul(deltaD3[it]) }
-            .reduce { acc, d2 -> acc + d2 } / input.size.toDouble()
+        val dConcat = delta.matMul(weightO.transpose())
+        val dwo = concat.transpose()
+            .matMul(delta)
+            .batchAverage()
         weightO = optimizerO.adapt(weightO, dwo)
 
         // Concatの逆伝播（各ヘッドへの勾配に分割）
@@ -121,51 +113,26 @@ class AttentionD2 internal constructor(
         val dKey = List(numOfHeads) { dMul[it].transpose().matMul(query[it]) }
 
         // Affineの逆伝播（各ヘッドのQ, K, V）
-        val dwi = input.toD3().transpose(1, 2, 0)
-
-        val dxq = List(numOfHeads) { n ->
-            dQuery[n]
-                .map { delta ->
-                    (0 until outputX)
-                        .map { weightQ[n].matMul(delta[it]) }
-                        .toD2()
-                }
-        }
-        val dqw = List(numOfHeads) { dQuery[it].toD3().transpose(1, 0, 2) }
+        val inputT = input.transpose()
+        val dxq = List(numOfHeads) { n -> dQuery[n].matMul(weightQ[n].transpose()) }
         val dwq = List(numOfHeads) { n ->
-            (0 until outputX)
-                .map { dwi[it].matMul(dqw[n][it]) }
-                .reduce { acc, d2 -> acc + d2 } / input.size.toDouble()
+            inputT
+                .matMul(dQuery[n])
+                .batchAverage()
         }
 
-        val dxk = List(numOfHeads) { n ->
-            dKey[n]
-                .map { delta ->
-                    (0 until outputX)
-                        .map { weightK[n].matMul(delta[it]) }
-                        .toD2()
-                }
-        }
-        val dkw = List(numOfHeads) { dKey[it].toD3().transpose(1, 0, 2) }
+        val dxk = List(numOfHeads) { n -> dKey[n].matMul(weightK[n].transpose()) }
         val dwk = List(numOfHeads) { n ->
-            (0 until outputX)
-                .map { dwi[it].matMul(dkw[n][it]) }
-                .reduce { acc, d2 -> acc + d2 } / input.size.toDouble()
+            inputT
+                .matMul(dKey[n])
+                .batchAverage()
         }
 
-        val dxv = List(numOfHeads) { n ->
-            dValue[n]
-                .map { delta ->
-                    (0 until outputX)
-                        .map { weightV[n].matMul(delta[it]) }
-                        .toD2()
-                }
-        }
-        val dvw = List(numOfHeads) { dValue[it].toD3().transpose(1, 0, 2) }
+        val dxv = List(numOfHeads) { n -> dValue[n].matMul(weightV[n].transpose()) }
         val dwv = List(numOfHeads) { n ->
-            (0 until outputX)
-                .map { dwi[it].matMul(dvw[n][it]) }
-                .reduce { acc, d2 -> acc + d2 } / input.size.toDouble()
+            inputT
+                .matMul(dValue[n])
+                .batchAverage()
         }
 
         // 重みの更新
@@ -179,15 +146,6 @@ class AttentionD2 internal constructor(
                 .fold(IOType.d2(outputX, outputY) { _, _ -> 0.0 }) { acc, headIndex ->
                     acc + dxq[headIndex][batchIndex] + dxk[headIndex][batchIndex] + dxv[headIndex][batchIndex]
                 }
-        }
-    }
-
-    private fun affine(input: List<IOType.D2>, weight: IOType.D2): List<IOType.D2> {
-        val weight = weight.transpose()
-        return input.map { input ->
-            (0 until outputX)
-                .map { weight.matMul(input[it]) }
-                .toD2()
         }
     }
 
