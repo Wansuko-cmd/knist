@@ -30,9 +30,6 @@ import com.wsr.layer.process.dropout.DropoutD1
 import com.wsr.layer.process.dropout.DropoutD2
 import com.wsr.layer.process.dropout.DropoutD3
 import com.wsr.layer.process.encode.PositionEncodeD2
-import com.wsr.layer.process.function.linear.LinearD1 as ProcessLinearD1
-import com.wsr.layer.process.function.linear.LinearD2 as ProcessLinearD2
-import com.wsr.layer.process.function.linear.LinearD3 as ProcessLinearD3
 import com.wsr.layer.process.function.relu.LeakyReLUD1
 import com.wsr.layer.process.function.relu.LeakyReLUD2
 import com.wsr.layer.process.function.relu.LeakyReLUD3
@@ -49,7 +46,12 @@ import com.wsr.layer.process.function.softmax.SoftmaxD1
 import com.wsr.layer.process.function.softmax.SoftmaxD2
 import com.wsr.layer.process.function.softmax.SoftmaxD3
 import com.wsr.layer.process.norm.layer.d1.LayerNormD1
+import com.wsr.layer.process.norm.layer.d2.LayerNormAxis0D2
+import com.wsr.layer.process.norm.layer.d2.LayerNormAxis1D2
 import com.wsr.layer.process.norm.layer.d2.LayerNormD2
+import com.wsr.layer.process.norm.layer.d3.LayerNormAxis0D3
+import com.wsr.layer.process.norm.layer.d3.LayerNormAxis1D3
+import com.wsr.layer.process.norm.layer.d3.LayerNormAxis2D3
 import com.wsr.layer.process.norm.layer.d3.LayerNormD3
 import com.wsr.layer.process.norm.minmax.MinMaxNormD1
 import com.wsr.layer.process.norm.minmax.MinMaxNormD2
@@ -82,7 +84,6 @@ import com.wsr.optimizer.rms.RmsPropD3
 import com.wsr.optimizer.sgd.SgdD1
 import com.wsr.optimizer.sgd.SgdD2
 import com.wsr.optimizer.sgd.SgdD3
-import kotlin.reflect.KClass
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -99,6 +100,10 @@ import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.serializer
 import okio.BufferedSink
 import okio.BufferedSource
+import kotlin.reflect.KClass
+import com.wsr.layer.process.function.linear.LinearD1 as ProcessLinearD1
+import com.wsr.layer.process.function.linear.LinearD2 as ProcessLinearD2
+import com.wsr.layer.process.function.linear.LinearD3 as ProcessLinearD3
 
 class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
     private val converterSerializer = json.serializersModule.serializer<Converter>()
@@ -264,8 +269,16 @@ private val buildInSerializersModule = SerializersModule {
 
         // Norm
         subclass(LayerNormD1::class)
+
         subclass(LayerNormD2::class)
+        subclass(LayerNormAxis0D2::class)
+        subclass(LayerNormAxis1D2::class)
+
         subclass(LayerNormD3::class)
+        subclass(LayerNormAxis0D3::class)
+        subclass(LayerNormAxis1D3::class)
+        subclass(LayerNormAxis2D3::class)
+
         subclass(MinMaxNormD1::class)
         subclass(MinMaxNormD2::class)
         subclass(MinMaxNormD3::class)
