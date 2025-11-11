@@ -10,11 +10,8 @@ import com.wsr.reshape.toD2
 import kotlinx.serialization.Serializable
 
 @Serializable
-class WordD2(
-    private val words: List<String>,
-    private val length: Int,
-    private val unknownIndex: Int,
-) : Converter.D2<List<String>>() {
+class WordD2(private val words: List<String>, private val length: Int, private val unknownIndex: Int) :
+    Converter.D2<List<String>>() {
     override val outputX = length
     override val outputY = words.size
     private val wordToId = words.mapIndexed { index, word -> word to index }.toMap()

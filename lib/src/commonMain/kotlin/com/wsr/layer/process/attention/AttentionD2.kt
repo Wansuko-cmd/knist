@@ -13,9 +13,9 @@ import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.transpose
-import kotlinx.serialization.Serializable
 import kotlin.math.exp
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
 
 @Serializable
 class AttentionD2 internal constructor(
