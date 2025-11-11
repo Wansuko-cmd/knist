@@ -1,12 +1,9 @@
 package com.wsr.layer.process.norm.layer.d2
 
 import com.wsr.IOType
-import com.wsr.NetworkBuilder
 import com.wsr.collection.average
 import com.wsr.collection.batchAverage
 import com.wsr.collection.sum
-import com.wsr.initializer.Fixed
-import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
 import com.wsr.operator.minus
@@ -15,6 +12,7 @@ import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
 import com.wsr.power.sqrt
+import com.wsr.reshape.broadcastToD2
 import kotlinx.serialization.Serializable
 import kotlin.math.pow
 
@@ -48,7 +46,6 @@ class LayerNormAxis1D2 internal constructor(
         val output = weight * normalize
         val delta = calcDelta(output)
 
-        // 重みの更新
         weight = optimizer.adapt(
             weight = weight,
             dw = (normalize * delta).batchAverage(),
@@ -64,32 +61,27 @@ class LayerNormAxis1D2 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx - axis=1なので各行で平均
-        val dx2: List<IOType.D2> = List(input.size) { index ->
-            IOType.d2(outputX, outputY) { i, j ->
-                var sum = 0.0
-                for (jj in 0 until outputY) {
-                    sum += dNumerator[index][i, jj]
-                }
-                -sum / outputY
-            }
-        }
+        val dx2 = -1.0 * dNumerator.average(axis = 1).broadcastToD2(axis = 0, size = outputY)
 
         // dy/x <- variance(x)のx
         val dx3: List<IOType.D2> = List(input.size) { index ->
-            IOType.d2(outputX, outputY) { i, j ->
-                // dy/[sqrt(variance(x))]
+            // 各行ごとの勾配を事前計算
+            val dVariancePerRow = IOType.d1(outputX) { i ->
                 val dvn = -(dOutput[index][i] * normalize[index][i]).sum()
                 val dvd = 2.0 * denominator[index][i].pow(2) * outputY.toDouble()
-                val dVariance = dvn / dvd
-
-                // dy/[x-average(x)]
-                val dSquared = 2.0 * dVariance * numerator[index][i, j]
-
-                // dy/[-average(x)]
-                val dx2 = -2.0 * dVariance * numerator[index][i].average()
-
-                dSquared + dx2
+                dvn / dvd
             }
+
+            // dy/[x-average(x)]のx部分
+            val dSquared = IOType.d2(outputX, outputY) { i, j ->
+                2.0 * dVariancePerRow[i] * numerator[index][i, j]
+            }
+
+            // dy/[-average(x)]のx部分 (各行で同じ値なのでbroadcast)
+            val avgGradient = -2.0 * dVariancePerRow * numerator[index].average()
+            val dx2Broadcast = avgGradient.broadcastToD2(axis = 0, size = outputY)
+
+            dSquared + dx2Broadcast
         }
 
         // dy/dx

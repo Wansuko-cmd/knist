@@ -5,6 +5,7 @@ import com.wsr.NetworkBuilder
 import com.wsr.collection.average
 import com.wsr.collection.batchAverage
 import com.wsr.collection.sum
+import com.wsr.reshape.broadcastToD2
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
@@ -63,14 +64,13 @@ class LayerNormAxis0D2 internal constructor(
         val output = normalize.map { weight * it }
         val delta = calcDelta(output)
 
-        // 重みの更新
         weight = optimizer.adapt(
             weight = weight,
-            dw = (normalize.mapIndexed { index, n -> n * delta[index] }).batchAverage(),
+            dw = (normalize * delta).batchAverage(),
         )
 
         // dOutput
-        val dOutput = delta.map { it * weight }
+        val dOutput = delta * weight
 
         // dy/[x-average(x)] (分子に関する勾配)
         val dNumerator = dOutput.mapIndexed { index, dOut ->
@@ -83,36 +83,30 @@ class LayerNormAxis0D2 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx - axis=0なので各列で平均
-        val dx2: List<IOType.D2> = List(input.size) { index ->
-            IOType.d2(outputX, outputY) { i, j ->
-                var sum = 0.0
-                for (ii in 0 until outputX) {
-                    sum += dNumerator[index][ii, j]
-                }
-                -sum / outputX
-            }
-        }
+        val dx2 = (-1.0 * dNumerator.average(axis = 0)).broadcastToD2(axis = 1, size = outputX)
 
         // dy/x <- variance(x)のx
-        val dx3: List<IOType.D2> = List(input.size) { index ->
-            IOType.d2(outputX, outputY) { i, j ->
-                // dy/[sqrt(variance(x))]
+        val dx3 = List(input.size) { index ->
+            // 各列ごとの勾配を事前計算
+            val dVariancePerCol = IOType.d1(outputY) { j ->
                 var dvn = 0.0
-                for (ii in 0 until outputX) {
-                    dvn -= dOutput[index][ii, j] * normalize[index][ii, j]
+                for (i in 0 until outputX) {
+                    dvn -= dOutput[index][i, j] * normalize[index][i, j]
                 }
-
                 val dvd = 2.0 * denominator[index][j].pow(2) * outputX.toDouble()
-                val dVariance = dvn / dvd
-
-                // dy/[x-average(x)]
-                val dSquared = 2.0 * dVariance * numerator[index][i, j]
-
-                // dy/[-average(x)]
-                val dx2 = -2.0 * dVariance * numerator[index].average()
-
-                dSquared + dx2
+                dvn / dvd
             }
+
+            // dy/[x-average(x)]のx部分
+            val dSquared = IOType.d2(outputX, outputY) { i, j ->
+                2.0 * dVariancePerCol[j] * numerator[index][i, j]
+            }
+
+            // dy/[-average(x)]のx部分
+            val avgGradientScalar = -2.0 * numerator[index].average()
+            val dx2Broadcast = (dVariancePerCol * avgGradientScalar).broadcastToD2(axis = 1, size = outputX)
+
+            dSquared + dx2Broadcast
         }
 
         // dy/dx
