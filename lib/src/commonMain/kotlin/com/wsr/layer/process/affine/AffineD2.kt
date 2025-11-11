@@ -2,7 +2,6 @@ package com.wsr.layer.process.affine
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.batchAverage
 import com.wsr.dot.matmul.matMul
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
@@ -28,9 +27,7 @@ class AffineD2 internal constructor(
         val delta = calcDelta(output)
 
         val dx = delta.matMul(weight.transpose())
-        val dw = input.transpose()
-            .matMul(delta)
-            .batchAverage()
+        val dw = input.transpose().matMul(delta)
 
         weight = optimizer.adapt(weight = weight, dw = dw / channel.toDouble())
         return dx

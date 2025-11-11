@@ -2,7 +2,6 @@ package com.wsr.layer.process.bias
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.batchAverage
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
@@ -21,7 +20,7 @@ class BiasD1 internal constructor(
     override fun train(input: List<IOType.D1>, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
         val output = input + weight
         val delta = calcDelta(output)
-        weight = optimizer.adapt(weight = weight, dw = delta.batchAverage())
+        weight = optimizer.adapt(weight = weight, dw = delta)
         return delta
     }
 }

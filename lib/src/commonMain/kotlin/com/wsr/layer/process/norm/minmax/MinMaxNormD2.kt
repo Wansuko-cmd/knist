@@ -2,7 +2,6 @@ package com.wsr.layer.process.norm.minmax
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.batchAverage
 import com.wsr.collection.sum
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
@@ -46,11 +45,7 @@ class MinMaxNormD2 internal constructor(
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = run {
-                val mean = mean.batchAverage()
-                val delta = delta.batchAverage()
-                IOType.d2(weight.shape) { x, y -> mean[x, y] * delta[x, y] }
-            },
+            dw = mean * delta,
         )
 
         // 分母側(dy/d[max(x) - min(x)])
