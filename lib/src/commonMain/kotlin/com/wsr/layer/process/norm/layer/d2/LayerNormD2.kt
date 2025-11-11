@@ -1,4 +1,4 @@
-package com.wsr.layer.process.norm.layer
+package com.wsr.layer.process.norm.layer.d2
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
@@ -25,27 +25,27 @@ class LayerNormD2 internal constructor(
     private var weight: IOType.D2,
 ) : Process.D2() {
     override fun expect(input: List<IOType.D2>): List<IOType.D2> {
-        val average = input.average().average()
+        val average = input.average()
         val numerator = input - average
 
-        val variance = numerator.pow(n = 2).average().average()
+        val variance = numerator.pow(n = 2).average()
         val denominator = variance.map { sqrt(it + 1e-10) }
 
         return weight * (numerator / denominator)
     }
 
     override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
-        val average = input.average().average()
+        val average = input.average()
         val numerator = input - average
 
-        val variance = numerator.pow(n = 2).average().average()
+        val variance = numerator.pow(n = 2).average()
         val denominator = variance.map { sqrt(it + 1e-10) }
 
         val normalize = numerator / denominator
         val output = weight * normalize
         val delta = calcDelta(output)
 
-        val dOutput = delta.map { it * weight }
+        val dOutput = delta * weight
 
         weight = optimizer.adapt(
             weight = weight,
@@ -59,9 +59,7 @@ class LayerNormD2 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx
-        val dx2 = List(input.size) {
-            -dNumerator[it].sum() / (outputX * outputY).toDouble()
-        }
+        val dx2 = List(input.size) { -dNumerator[it].average() }
 
         // dy/x <- variance(x)のx
         val dx3: List<IOType.D2> = List(input.size) {
@@ -87,7 +85,7 @@ class LayerNormD2 internal constructor(
             val dx1 = dSquared
 
             // dy/[-average(x)]
-            val dx2 = -dSquared.sum() / (outputX * outputY).toDouble()
+            val dx2 = -dSquared.average()
 
             dx1 + dx2
         }
@@ -97,18 +95,59 @@ class LayerNormD2 internal constructor(
 }
 
 fun <T> NetworkBuilder.D2<T>.layerNorm(
+    axis: Int? = null,
     optimizer: Optimizer = this.optimizer,
     initializer: WeightInitializer = Fixed(1.0),
-) = addProcess(
-    process = LayerNormD2(
-        outputX = inputX,
-        outputY = inputY,
-        optimizer = optimizer.d2(inputX, inputY),
-        weight = initializer.d2(
-            input = listOf(inputX, inputY),
-            output = listOf(inputX, inputY),
-            x = inputX,
-            y = inputY,
-        ),
-    ),
-)
+): NetworkBuilder.D2<T> {
+    val process = when (axis) {
+        null -> LayerNormD2(
+            outputX = inputX,
+            outputY = inputY,
+            optimizer = optimizer.d2(inputX, inputY),
+            weight = initializer.d2(
+                input = listOf(inputX, inputY),
+                output = listOf(inputX, inputY),
+                x = inputX,
+                y = inputY,
+            ),
+        )
+
+        0 -> LayerNormAxis0D2(
+            outputX = inputX,
+            outputY = inputY,
+            optimizer = optimizer.d2(
+                inputX,
+                inputY,
+            ),
+            weight = initializer.d2(
+                input = listOf(inputX, inputY),
+                output = listOf(inputX, inputY),
+                x = inputX,
+                y = inputY,
+            ),
+        )
+
+        1 -> LayerNormAxis1D2(
+            outputX = inputX,
+            outputY = inputY,
+            optimizer = optimizer.d2(
+                inputX,
+                inputY,
+            ),
+            weight = initializer.d2(
+                input = listOf(inputX, inputY),
+                output = listOf(inputX, inputY),
+                x = inputX,
+                y = inputY,
+            ),
+        )
+
+        else -> throw IllegalStateException(
+            """
+            invalid parameter.
+            axis: $axis
+            """.trimIndent(),
+        )
+    }
+    return addProcess(process = process)
+}
