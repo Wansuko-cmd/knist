@@ -60,7 +60,7 @@ class DropoutD2Test {
         // seed=42でrandom.nextDouble(0.0, 1.0)を4回呼び出したときの値を事前計算
         // Inverted Dropoutでは、マスクは0または1/ratio (= 2.0)
         val testRandom = Random(42)
-        val q = 1.0 / 0.5  // 2.0
+        val q = 1.0 / 0.5 // 2.0
         val expectedMask = IOType.d2(2, 2) { _, _ ->
             if (testRandom.nextDouble(0.0, 1.0) <= 0.5) q else 0.0
         }
