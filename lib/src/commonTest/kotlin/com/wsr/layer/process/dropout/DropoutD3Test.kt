@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
 
 class DropoutD3Test {
     @Test
-    fun `DropoutD3の_expect=入力にratioを掛ける`() {
+    fun `DropoutD3の_expect=入力をそのまま返す`() {
         val dropout = DropoutD3(outputX = 2, outputY = 2, outputZ = 2, ratio = 0.5, seed = 42)
 
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
@@ -23,15 +23,15 @@ class DropoutD3Test {
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
-        // expectモードでは全ての値にratioを乗算
-        assertEquals(expected = 0.5, actual = output[0, 0, 0])
-        assertEquals(expected = 1.0, actual = output[0, 0, 1])
-        assertEquals(expected = 1.5, actual = output[0, 1, 0])
-        assertEquals(expected = 2.0, actual = output[0, 1, 1])
-        assertEquals(expected = 2.5, actual = output[1, 0, 0])
-        assertEquals(expected = 3.0, actual = output[1, 0, 1])
-        assertEquals(expected = 3.5, actual = output[1, 1, 0])
-        assertEquals(expected = 4.0, actual = output[1, 1, 1])
+        // Inverted Dropoutのexpect(推論時)では入力をそのまま返す
+        assertEquals(expected = 1.0, actual = output[0, 0, 0])
+        assertEquals(expected = 2.0, actual = output[0, 0, 1])
+        assertEquals(expected = 3.0, actual = output[0, 1, 0])
+        assertEquals(expected = 4.0, actual = output[0, 1, 1])
+        assertEquals(expected = 5.0, actual = output[1, 0, 0])
+        assertEquals(expected = 6.0, actual = output[1, 0, 1])
+        assertEquals(expected = 7.0, actual = output[1, 1, 0])
+        assertEquals(expected = 8.0, actual = output[1, 1, 1])
     }
 
     @Test
@@ -54,25 +54,26 @@ class DropoutD3Test {
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D3
 
-        // trainモードではランダムにマスク（0 or 1）が適用される
-        // ratio=0.5なので、約半分の要素が0、半分が1のはず
+        // trainモードではランダムにマスク（0 or 1/ratio）が適用される
+        // Inverted Dropoutでは、マスクは0または1/ratio (= 2.0)
+        val q = 1.0 / 0.5 // 2.0
         var zeroCount = 0
-        var oneCount = 0
+        var qCount = 0
         for (x in 0 until 2) {
             for (y in 0 until 2) {
                 for (z in 0 until 2) {
                     when (dx[x, y, z]) {
                         0.0 -> zeroCount++
-                        1.0 -> oneCount++
+                        q -> qCount++
                     }
                 }
             }
         }
 
-        // マスクは0か1のみ
-        assertEquals(expected = 8, actual = zeroCount + oneCount)
-        // ratio=0.5なので、少なくとも1つは0と1がある
+        // マスクは0かq(2.0)のみ
+        assertEquals(expected = 8, actual = zeroCount + qCount)
+        // ratio=0.5なので、少なくとも1つは0とqがある
         assertTrue(zeroCount > 0)
-        assertTrue(oneCount > 0)
+        assertTrue(qCount > 0)
     }
 }
