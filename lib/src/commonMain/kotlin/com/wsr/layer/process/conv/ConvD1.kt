@@ -2,7 +2,6 @@ package com.wsr.layer.process.conv
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.batchAverage
 import com.wsr.conv.convD1
 import com.wsr.conv.deConvD1
 import com.wsr.initializer.WeightInitializer
@@ -54,14 +53,14 @@ class ConvD1 internal constructor(
         val dx = delta.deConvD1(reversed, stride, padding)
 
         val dw = List(input.size) { index ->
-                (0 until filter)
-                    .map { f ->
-                        (0 until channel)
-                            .map { c ->
-                                input[index][c].convD1(delta[index][f], stride, padding)
-                            }.toD2()
-                    }.toD3()
-            }
+            (0 until filter)
+                .map { f ->
+                    (0 until channel)
+                        .map { c ->
+                            input[index][c].convD1(delta[index][f], stride, padding)
+                        }.toD2()
+                }.toD3()
+        }
         weight = optimizer.adapt(weight = weight, dw = dw)
 
         return dx

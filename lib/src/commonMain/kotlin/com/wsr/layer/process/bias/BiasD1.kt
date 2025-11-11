@@ -2,7 +2,6 @@ package com.wsr.layer.process.bias
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.batchAverage
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process

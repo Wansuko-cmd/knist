@@ -2,7 +2,6 @@ package com.wsr.layer.process.affine
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.batchAverage
 import com.wsr.dot.matmul.matMul
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process

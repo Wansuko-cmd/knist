@@ -2,7 +2,6 @@ package com.wsr.layer.process.norm.minmax
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.batchAverage
 import com.wsr.collection.max
 import com.wsr.collection.min
 import com.wsr.dot.inner.inner
