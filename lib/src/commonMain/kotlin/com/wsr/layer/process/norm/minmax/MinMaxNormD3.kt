@@ -2,7 +2,6 @@ package com.wsr.layer.process.norm.minmax
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.batchAverage
 import com.wsr.collection.sum
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer

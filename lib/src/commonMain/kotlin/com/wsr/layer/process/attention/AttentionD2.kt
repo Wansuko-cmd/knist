@@ -2,7 +2,6 @@ package com.wsr.layer.process.attention
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.batchAverage
 import com.wsr.collection.max
 import com.wsr.collection.sum
 import com.wsr.dot.matmul.matMul
