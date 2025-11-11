@@ -26,20 +26,20 @@ class LayerNormD3 internal constructor(
     private var weight: IOType.D3,
 ) : Process.D3() {
     override fun expect(input: List<IOType.D3>): List<IOType.D3> {
-        val average = input.average().average().average()
+        val average = input.average()
         val numerator = input - average
 
-        val variance = numerator.pow(n = 2).average().average().average()
+        val variance = numerator.pow(n = 2).average()
         val denominator = variance.map { sqrt(it + 1e-10) }
 
         return weight * (numerator / denominator)
     }
 
     override fun train(input: List<IOType.D3>, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
-        val average = input.average().average().average()
+        val average = input.average()
         val numerator = input - average
 
-        val variance = numerator.pow(n = 2).average().average().average()
+        val variance = numerator.pow(n = 2).average()
         val denominator = variance.map { sqrt(it + 1e-10) }
 
         val normalize = numerator / denominator

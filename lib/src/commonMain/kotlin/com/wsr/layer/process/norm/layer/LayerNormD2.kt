@@ -25,20 +25,20 @@ class LayerNormD2 internal constructor(
     private var weight: IOType.D2,
 ) : Process.D2() {
     override fun expect(input: List<IOType.D2>): List<IOType.D2> {
-        val average = input.average().average()
+        val average = input.average()
         val numerator = input - average
 
-        val variance = numerator.pow(n = 2).average().average()
+        val variance = numerator.pow(n = 2).average()
         val denominator = variance.map { sqrt(it + 1e-10) }
 
         return weight * (numerator / denominator)
     }
 
     override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
-        val average = input.average().average()
+        val average = input.average()
         val numerator = input - average
 
-        val variance = numerator.pow(n = 2).average().average()
+        val variance = numerator.pow(n = 2).average()
         val denominator = variance.map { sqrt(it + 1e-10) }
 
         val normalize = numerator / denominator
