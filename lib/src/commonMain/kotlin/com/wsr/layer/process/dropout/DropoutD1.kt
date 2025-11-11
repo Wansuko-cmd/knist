@@ -4,8 +4,8 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layer.process.Process
 import com.wsr.operator.times
-import kotlin.random.Random
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 @Serializable
 class DropoutD1 internal constructor(
@@ -14,14 +14,15 @@ class DropoutD1 internal constructor(
     private val seed: Int? = null,
 ) : Process.D1() {
     private val random by lazy { seed?.let { Random(it) } ?: Random }
+    private val q = 1 / ratio
 
-    override fun expect(input: List<IOType.D1>): List<IOType.D1> = ratio * input
+    override fun expect(input: List<IOType.D1>): List<IOType.D1> = input
 
     override fun train(input: List<IOType.D1>, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
-        val mask = IOType.d1(outputSize) { if (random.nextDouble(0.0, 1.0) <= ratio) 1.0 else 0.0 }
-        val output = input.map { input -> IOType.d1(outputSize) { input[it] * mask[it] } }
+        val mask = IOType.d1(outputSize) { if (random.nextDouble(0.0, 1.0) <= ratio) q else 0.0 }
+        val output = input * mask
         val delta = calcDelta(output)
-        return delta.map { delta -> IOType.d1(outputSize) { delta[it] * mask[it] } }
+        return delta * mask
     }
 }
 

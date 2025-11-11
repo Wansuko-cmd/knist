@@ -4,8 +4,8 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layer.process.Process
 import com.wsr.operator.times
-import kotlin.random.Random
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 @Serializable
 class DropoutD3 internal constructor(
@@ -16,30 +16,19 @@ class DropoutD3 internal constructor(
     private val seed: Int? = null,
 ) : Process.D3() {
     private val random by lazy { seed?.let { Random(it) } ?: Random }
+    private val q = 1 / ratio
 
-    override fun expect(input: List<IOType.D3>): List<IOType.D3> = ratio * input
+    override fun expect(input: List<IOType.D3>): List<IOType.D3> = input
 
     override fun train(input: List<IOType.D3>, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
         val mask = IOType.d3(
             i = outputX,
             j = outputY,
             k = outputZ,
-        ) { _, _, _ -> if (random.nextDouble(0.0, 1.0) <= ratio) 1.0 else 0.0 }
-        val output = input.map { input ->
-            IOType.d3(
-                i = outputX,
-                j = outputY,
-                k = outputZ,
-            ) { x, y, z -> input[x, y, z] * mask[x, y, z] }
-        }
+        ) { _, _, _ -> if (random.nextDouble(0.0, 1.0) <= ratio) q else 0.0 }
+        val output = input * mask
         val delta = calcDelta(output)
-        return delta.map { delta ->
-            IOType.d3(
-                i = outputX,
-                j = outputY,
-                k = outputZ,
-            ) { x, y, z -> delta[x, y, z] * mask[x, y, z] }
-        }
+        return delta * mask
     }
 }
 
