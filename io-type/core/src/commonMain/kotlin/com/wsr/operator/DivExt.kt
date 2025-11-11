@@ -43,6 +43,26 @@ operator fun IOType.D2.div(other: Double): IOType.D2 {
     return IOType.d2(shape, result)
 }
 
+/**
+ * Broadcasting: D2 [rows, cols] / D1 [rows]
+ * 各行を対応するD1の要素で割る（NumPyのbroadcasting互換）
+ */
+operator fun IOType.D2.div(other: IOType.D1): IOType.D2 {
+    require(shape[0] == other.shape[0]) {
+        "Broadcasting error: D2 shape[0]=${shape[0]} must equal D1 size=${other.shape[0]}"
+    }
+    val result = this.value.copyOf()
+    val cols = shape[1]
+    for (row in 0 until shape[0]) {
+        val offset = row * cols
+        val divisor = other[row]
+        for (col in 0 until cols) {
+            result[offset + col] /= divisor
+        }
+    }
+    return IOType.d2(this.shape, result)
+}
+
 @JvmName("divD2sToDouble")
 operator fun List<IOType.D2>.div(other: Double) = map { it / other }
 
@@ -55,6 +75,13 @@ operator fun List<IOType.D2>.div(other: IOType.D2) = List(size) {
         this[it][i, j] / other[i, j]
     }
 }
+
+/**
+ * Broadcasting: List<D2> / List<D1>
+ * 各D2を対応するD1でbroadcastして割る
+ */
+@JvmName("divD2sToD1s")
+operator fun List<IOType.D2>.div(other: List<IOType.D1>) = List(size) { this[it] / other[it] }
 
 /**
  * IOType.D3

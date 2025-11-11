@@ -48,9 +48,14 @@ import com.wsr.layer.process.function.sigmoid.SigmoidD3
 import com.wsr.layer.process.function.softmax.SoftmaxD1
 import com.wsr.layer.process.function.softmax.SoftmaxD2
 import com.wsr.layer.process.function.softmax.SoftmaxD3
-import com.wsr.layer.process.norm.layer.LayerNormD1
-import com.wsr.layer.process.norm.layer.LayerNormD2
-import com.wsr.layer.process.norm.layer.LayerNormD3
+import com.wsr.layer.process.norm.layer.d1.LayerNormD1
+import com.wsr.layer.process.norm.layer.d2.LayerNormAxis0D2
+import com.wsr.layer.process.norm.layer.d2.LayerNormAxis1D2
+import com.wsr.layer.process.norm.layer.d2.LayerNormD2
+import com.wsr.layer.process.norm.layer.d3.LayerNormAxis0D3
+import com.wsr.layer.process.norm.layer.d3.LayerNormAxis1D3
+import com.wsr.layer.process.norm.layer.d3.LayerNormAxis2D3
+import com.wsr.layer.process.norm.layer.d3.LayerNormD3
 import com.wsr.layer.process.norm.minmax.MinMaxNormD1
 import com.wsr.layer.process.norm.minmax.MinMaxNormD2
 import com.wsr.layer.process.norm.minmax.MinMaxNormD3
@@ -264,8 +269,16 @@ private val buildInSerializersModule = SerializersModule {
 
         // Norm
         subclass(LayerNormD1::class)
+
         subclass(LayerNormD2::class)
+        subclass(LayerNormAxis0D2::class)
+        subclass(LayerNormAxis1D2::class)
+
         subclass(LayerNormD3::class)
+        subclass(LayerNormAxis0D3::class)
+        subclass(LayerNormAxis1D3::class)
+        subclass(LayerNormAxis2D3::class)
+
         subclass(MinMaxNormD1::class)
         subclass(MinMaxNormD2::class)
         subclass(MinMaxNormD3::class)
