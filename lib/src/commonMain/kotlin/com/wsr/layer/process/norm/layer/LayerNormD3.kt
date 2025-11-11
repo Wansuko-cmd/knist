@@ -46,7 +46,7 @@ class LayerNormD3 internal constructor(
         val output = weight * normalize
         val delta = calcDelta(output)
 
-        val dOutput = delta.map { it * weight }
+        val dOutput = delta * weight
 
         weight = optimizer.adapt(
             weight = weight,
@@ -60,9 +60,7 @@ class LayerNormD3 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx
-        val dx2 = List(input.size) {
-            -dNumerator[it].sum() / (outputX * outputY).toDouble()
-        }
+        val dx2 = List(input.size) { -dNumerator[it].average() }
 
         // dy/x <- variance(x)のx
         val dx3: List<IOType.D3> = List(input.size) {
@@ -78,7 +76,7 @@ class LayerNormD3 internal constructor(
              *   = -sum(dOutput * normalize) / (denominator^2 * outputSize)
              */
             val dvn = -(dOutput[it] * normalize[it]).sum()
-            val dvd = 2.0 * denominator[it].pow(2) * (outputX * outputY).toDouble()
+            val dvd = 2.0 * denominator[it].pow(2) * (outputX * outputY * outputZ).toDouble()
             val dVariance = dvn / dvd
 
             // dy/[x-average(x)]
@@ -88,7 +86,7 @@ class LayerNormD3 internal constructor(
             val dx1 = dSquared
 
             // dy/[-average(x)]
-            val dx2 = -dSquared.sum() / (outputX * outputY).toDouble()
+            val dx2 = -dSquared.average()
 
             dx1 + dx2
         }

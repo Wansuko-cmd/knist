@@ -45,7 +45,7 @@ class LayerNormD2 internal constructor(
         val output = weight * normalize
         val delta = calcDelta(output)
 
-        val dOutput = delta.map { it * weight }
+        val dOutput = delta * weight
 
         weight = optimizer.adapt(
             weight = weight,
@@ -59,9 +59,7 @@ class LayerNormD2 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx
-        val dx2 = List(input.size) {
-            -dNumerator[it].sum() / (outputX * outputY).toDouble()
-        }
+        val dx2 = List(input.size) { -dNumerator[it].average() }
 
         // dy/x <- variance(x)のx
         val dx3: List<IOType.D2> = List(input.size) {
@@ -87,7 +85,7 @@ class LayerNormD2 internal constructor(
             val dx1 = dSquared
 
             // dy/[-average(x)]
-            val dx2 = -dSquared.sum() / (outputX * outputY).toDouble()
+            val dx2 = -dSquared.average()
 
             dx1 + dx2
         }
