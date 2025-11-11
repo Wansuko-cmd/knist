@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
 
 class DropoutD1Test {
     @Test
-    fun `DropoutD1の_expect=入力にratioを掛ける`() {
+    fun `DropoutD1の_expect=入力をそのまま返す`() {
         val dropout =
             DropoutD1(
                 outputSize = 3,
@@ -24,14 +24,14 @@ class DropoutD1Test {
                 IOType.d1(listOf(1.0, 2.0, 3.0)),
             )
 
-        // [1*0.5, 2*0.5, 3*0.5] = [0.5, 1.0, 1.5]
+        // Inverted Dropoutのexpect(推論時)では入力をそのまま返す
         val result = dropout._expect(input)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D1
-        assertEquals(expected = 0.5, actual = output[0])
-        assertEquals(expected = 1.0, actual = output[1])
-        assertEquals(expected = 1.5, actual = output[2])
+        assertEquals(expected = 1.0, actual = output[0])
+        assertEquals(expected = 2.0, actual = output[1])
+        assertEquals(expected = 3.0, actual = output[2])
     }
 
     @Test
@@ -55,8 +55,10 @@ class DropoutD1Test {
         }
 
         // seed=42でrandom.nextDouble(0.0, 1.0)を3回呼び出したときの値を事前計算
+        // Inverted Dropoutでは、マスクは0または1/ratio (= 2.0)
         val testRandom = Random(42)
-        val expectedMask = List(3) { if (testRandom.nextDouble(0.0, 1.0) <= 0.5) 1.0 else 0.0 }
+        val q = 1.0 / 0.5 // 2.0
+        val expectedMask = List(3) { if (testRandom.nextDouble(0.0, 1.0) <= 0.5) q else 0.0 }
 
         val result = dropout._train(input, calcDelta)
 
