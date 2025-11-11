@@ -22,7 +22,7 @@ class BiasD2(
     override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
         val output = input + weight
         val delta = calcDelta(output)
-        weight = optimizer.adapt(weight = weight, dw = delta.batchAverage())
+        weight = optimizer.adapt(weight = weight, dw = delta)
         return delta
     }
 }

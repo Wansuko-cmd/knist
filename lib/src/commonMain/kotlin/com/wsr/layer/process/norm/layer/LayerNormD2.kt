@@ -50,7 +50,7 @@ class LayerNormD2 internal constructor(
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = (normalize * delta).batchAverage(),
+            dw = normalize * delta,
         )
 
         // dy/[x-average(x)]
