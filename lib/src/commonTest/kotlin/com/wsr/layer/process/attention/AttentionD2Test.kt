@@ -23,19 +23,19 @@ class AttentionD2Test {
             numOfHeads = numOfHeads,
             dim = dim,
             weightQ = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 0.1 }
+                IOType.d2(inputY, dim) { _, _ -> 0.1 }
             },
             weightK = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 0.1 }
+                IOType.d2(inputY, dim) { _, _ -> 0.1 }
             },
             weightV = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 0.1 }
+                IOType.d2(inputY, dim) { _, _ -> 0.1 }
             },
-            weightO = IOType.d3(channel, inputY, inputY) { _, _, _ -> 0.1 },
-            optimizerQ = List(numOfHeads) { Sgd(0.01).d3(channel, inputY, dim) },
-            optimizerK = List(numOfHeads) { Sgd(0.01).d3(channel, inputY, dim) },
-            optimizerV = List(numOfHeads) { Sgd(0.01).d3(channel, inputY, dim) },
-            optimizerO = Sgd(0.01).d3(channel, inputY, inputY),
+            weightO = IOType.d2(numOfHeads * dim, inputY) { _, _ -> 0.1 },
+            optimizerQ = List(numOfHeads) { Sgd(0.01).d2(inputY, dim) },
+            optimizerK = List(numOfHeads) { Sgd(0.01).d2(inputY, dim) },
+            optimizerV = List(numOfHeads) { Sgd(0.01).d2(inputY, dim) },
+            optimizerO = Sgd(0.01).d2(numOfHeads * dim, inputY),
         )
 
         // 入力: [batch=2, channel=4, inputY=8]
@@ -67,19 +67,19 @@ class AttentionD2Test {
             numOfHeads = numOfHeads,
             dim = dim,
             weightQ = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 0.1 }
+                IOType.d2(inputY, dim) { _, _ -> 0.1 }
             },
             weightK = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 0.1 }
+                IOType.d2(inputY, dim) { _, _ -> 0.1 }
             },
             weightV = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 0.1 }
+                IOType.d2(inputY, dim) { _, _ -> 0.1 }
             },
-            weightO = IOType.d3(channel, inputY, inputY) { _, _, _ -> 0.1 },
-            optimizerQ = List(numOfHeads) { Sgd(0.01).d3(channel, inputY, dim) },
-            optimizerK = List(numOfHeads) { Sgd(0.01).d3(channel, inputY, dim) },
-            optimizerV = List(numOfHeads) { Sgd(0.01).d3(channel, inputY, dim) },
-            optimizerO = Sgd(0.01).d3(channel, inputY, inputY),
+            weightO = IOType.d2(numOfHeads * dim, inputY) { _, _ -> 0.1 },
+            optimizerQ = List(numOfHeads) { Sgd(0.01).d2(inputY, dim) },
+            optimizerK = List(numOfHeads) { Sgd(0.01).d2(inputY, dim) },
+            optimizerV = List(numOfHeads) { Sgd(0.01).d2(inputY, dim) },
+            optimizerO = Sgd(0.01).d2(numOfHeads * dim, inputY),
         )
 
         val input = listOf(
@@ -114,19 +114,19 @@ class AttentionD2Test {
             dim = dim,
             numOfHeads = numOfHeads,
             weightQ = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 1.0 }
+                IOType.d2(inputY, dim) { _, _ -> 1.0 }
             },
             weightK = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 1.0 }
+                IOType.d2(inputY, dim) { _, _ -> 1.0 }
             },
             weightV = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 1.0 }
+                IOType.d2(inputY, dim) { _, _ -> 1.0 }
             },
-            weightO = IOType.d3(channel, inputY, inputY) { _, _, _ -> 1.0 },
-            optimizerQ = List(numOfHeads) { Sgd(0.1).d3(channel, inputY, dim) },
-            optimizerK = List(numOfHeads) { Sgd(0.1).d3(channel, inputY, dim) },
-            optimizerV = List(numOfHeads) { Sgd(0.1).d3(channel, inputY, dim) },
-            optimizerO = Sgd(0.1).d3(channel, inputY, inputY),
+            weightO = IOType.d2(numOfHeads * dim, inputY) { _, _ -> 1.0 },
+            optimizerQ = List(numOfHeads) { Sgd(0.1).d2(inputY, dim) },
+            optimizerK = List(numOfHeads) { Sgd(0.1).d2(inputY, dim) },
+            optimizerV = List(numOfHeads) { Sgd(0.1).d2(inputY, dim) },
+            optimizerO = Sgd(0.1).d2(numOfHeads * dim, inputY),
         )
 
         val input = listOf(
@@ -170,19 +170,19 @@ class AttentionD2Test {
             numOfHeads = numOfHeads,
             dim = dim,
             weightQ = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 0.1 }
+                IOType.d2(inputY, dim) { _, _ -> 0.1 }
             },
             weightK = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 0.1 }
+                IOType.d2(inputY, dim) { _, _ -> 0.1 }
             },
             weightV = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 0.1 }
+                IOType.d2(inputY, dim) { _, _ -> 0.1 }
             },
-            weightO = IOType.d3(channel, inputY, inputY) { _, _, _ -> 0.1 },
-            optimizerQ = List(numOfHeads) { Sgd(0.01).d3(channel, inputY, dim) },
-            optimizerK = List(numOfHeads) { Sgd(0.01).d3(channel, inputY, dim) },
-            optimizerV = List(numOfHeads) { Sgd(0.01).d3(channel, inputY, dim) },
-            optimizerO = Sgd(0.01).d3(channel, inputY, inputY),
+            weightO = IOType.d2(numOfHeads * dim, inputY) { _, _ -> 0.1 },
+            optimizerQ = List(numOfHeads) { Sgd(0.01).d2(inputY, dim) },
+            optimizerK = List(numOfHeads) { Sgd(0.01).d2(inputY, dim) },
+            optimizerV = List(numOfHeads) { Sgd(0.01).d2(inputY, dim) },
+            optimizerO = Sgd(0.01).d2(numOfHeads * dim, inputY),
         )
 
         val input = listOf(
@@ -211,19 +211,19 @@ class AttentionD2Test {
             numOfHeads = numOfHeads,
             dim = dim,
             weightQ = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 0.1 }
+                IOType.d2(inputY, dim) { _, _ -> 0.1 }
             },
             weightK = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 0.1 }
+                IOType.d2(inputY, dim) { _, _ -> 0.1 }
             },
             weightV = List(numOfHeads) {
-                IOType.d3(channel, inputY, dim) { _, _, _ -> 0.1 }
+                IOType.d2(inputY, dim) { _, _ -> 0.1 }
             },
-            weightO = IOType.d3(channel, inputY, inputY) { _, _, _ -> 0.1 },
-            optimizerQ = List(numOfHeads) { Sgd(0.01).d3(channel, inputY, dim) },
-            optimizerK = List(numOfHeads) { Sgd(0.01).d3(channel, inputY, dim) },
-            optimizerV = List(numOfHeads) { Sgd(0.01).d3(channel, inputY, dim) },
-            optimizerO = Sgd(0.01).d3(channel, inputY, inputY),
+            weightO = IOType.d2(numOfHeads * dim, inputY) { _, _ -> 0.1 },
+            optimizerQ = List(numOfHeads) { Sgd(0.01).d2(inputY, dim) },
+            optimizerK = List(numOfHeads) { Sgd(0.01).d2(inputY, dim) },
+            optimizerV = List(numOfHeads) { Sgd(0.01).d2(inputY, dim) },
+            optimizerO = Sgd(0.01).d2(numOfHeads * dim, inputY),
         )
 
         val input = listOf(
