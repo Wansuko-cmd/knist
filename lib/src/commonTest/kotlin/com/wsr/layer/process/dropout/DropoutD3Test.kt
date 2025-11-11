@@ -56,7 +56,7 @@ class DropoutD3Test {
 
         // trainモードではランダムにマスク（0 or 1/ratio）が適用される
         // Inverted Dropoutでは、マスクは0または1/ratio (= 2.0)
-        val q = 1.0 / 0.5  // 2.0
+        val q = 1.0 / 0.5 // 2.0
         var zeroCount = 0
         var qCount = 0
         for (x in 0 until 2) {

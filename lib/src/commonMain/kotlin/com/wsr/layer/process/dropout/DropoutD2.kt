@@ -4,8 +4,8 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layer.process.Process
 import com.wsr.operator.times
-import kotlinx.serialization.Serializable
 import kotlin.random.Random
+import kotlinx.serialization.Serializable
 
 @Serializable
 class DropoutD2 internal constructor(
