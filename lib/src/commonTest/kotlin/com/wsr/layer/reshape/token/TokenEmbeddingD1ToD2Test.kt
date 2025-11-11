@@ -217,49 +217,6 @@ class TokenEmbeddingD1ToD2Test {
     }
 
     @Test
-    fun `TokenEmbeddingD1ToD2の_train=バッチ処理で勾配が平均化される`() {
-        val vocabSize = 2
-        val embeddingDim = 2
-        val seqLen = 1
-        val learningRate = 1.0
-
-        val weight = IOType.d2(vocabSize, embeddingDim) { tokenId, embIdx ->
-            1.0
-        }
-
-        val embedding = TokenEmbeddingD1ToD2(
-            outputX = seqLen,
-            outputY = embeddingDim,
-            vocabSize = vocabSize,
-            optimizer = Sgd(learningRate).d2(vocabSize, embeddingDim),
-            weight = weight,
-        )
-
-        // バッチサイズ=2
-        // バッチ0: token [0], 勾配 [2, 2]
-        // バッチ1: token [0], 勾配 [4, 4]
-        val input = listOf(
-            IOType.d1(doubleArrayOf(0.0)),
-            IOType.d1(doubleArrayOf(0.0)),
-        )
-
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(
-                IOType.d2(seqLen, embeddingDim) { _, _ -> 2.0 },
-                IOType.d2(seqLen, embeddingDim) { _, _ -> 4.0 },
-            )
-        }
-
-        embedding._train(input, calcDelta)
-        val weightAfter = embedding._expect(listOf(IOType.d1(doubleArrayOf(0.0))))[0] as IOType.D2
-
-        // 勾配平均: (2 + 4) / 2 = 3
-        // 更新: 1.0 - 1.0 * 3 = -2.0
-        assertEquals(expected = -2.0, actual = weightAfter[0, 0], absoluteTolerance = 0.01)
-        assertEquals(expected = -2.0, actual = weightAfter[0, 1], absoluteTolerance = 0.01)
-    }
-
-    @Test
     fun `TokenEmbeddingD1ToD2の_train=使われていないトークンの重みは更新されない`() {
         val vocabSize = 4
         val embeddingDim = 2

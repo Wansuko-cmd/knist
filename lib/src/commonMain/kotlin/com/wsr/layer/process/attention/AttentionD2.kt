@@ -2,7 +2,6 @@ package com.wsr.layer.process.attention
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.batchAverage
 import com.wsr.collection.max
 import com.wsr.collection.sum
 import com.wsr.dot.matmul.matMul
@@ -78,9 +77,7 @@ class AttentionD2 internal constructor(
 
         // 出力変換（weightO）の逆伝播
         val dConcat = delta.matMul(weightO.transpose())
-        val dwo = concat.transpose()
-            .matMul(delta)
-            .batchAverage()
+        val dwo = concat.transpose().matMul(delta)
         weightO = optimizerO.adapt(weightO, dwo)
 
         // Concatの逆伝播（各ヘッドへの勾配に分割）
@@ -115,25 +112,13 @@ class AttentionD2 internal constructor(
         // Affineの逆伝播（各ヘッドのQ, K, V）
         val inputT = input.transpose()
         val dxq = List(numOfHeads) { n -> dQuery[n].matMul(weightQ[n].transpose()) }
-        val dwq = List(numOfHeads) { n ->
-            inputT
-                .matMul(dQuery[n])
-                .batchAverage()
-        }
+        val dwq = List(numOfHeads) { n -> inputT.matMul(dQuery[n]) }
 
         val dxk = List(numOfHeads) { n -> dKey[n].matMul(weightK[n].transpose()) }
-        val dwk = List(numOfHeads) { n ->
-            inputT
-                .matMul(dKey[n])
-                .batchAverage()
-        }
+        val dwk = List(numOfHeads) { n -> inputT.matMul(dKey[n]) }
 
         val dxv = List(numOfHeads) { n -> dValue[n].matMul(weightV[n].transpose()) }
-        val dwv = List(numOfHeads) { n ->
-            inputT
-                .matMul(dValue[n])
-                .batchAverage()
-        }
+        val dwv = List(numOfHeads) { n -> inputT.matMul(dValue[n]) }
 
         // 重みの更新
         weightQ = List(numOfHeads) { optimizerQ[it].adapt(weightQ[it], dwq[it]) }

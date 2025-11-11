@@ -3,7 +3,6 @@ package com.wsr.layer.process.norm.layer
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.collection.average
-import com.wsr.collection.batchAverage
 import com.wsr.collection.sum
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
@@ -49,7 +48,7 @@ class LayerNormD1 internal constructor(
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = (normalize * delta).batchAverage(),
+            dw = normalize * delta,
         )
 
         // dy/[x-average(x)]
