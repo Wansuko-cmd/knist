@@ -7,8 +7,8 @@ import com.wsr.layer.output.Output
 import com.wsr.operator.div
 import com.wsr.operator.minus
 import com.wsr.operator.times
-import kotlinx.serialization.Serializable
 import kotlin.math.exp
+import kotlinx.serialization.Serializable
 
 @Serializable
 internal class SoftmaxWithLossD1 internal constructor(
