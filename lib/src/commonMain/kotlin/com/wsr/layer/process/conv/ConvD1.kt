@@ -53,8 +53,7 @@ class ConvD1 internal constructor(
                 .transpose(1, 0, 2)
         val dx = delta.deConvD1(reversed, stride, padding)
 
-        val dw =
-            List(input.size) { index ->
+        val dw = List(input.size) { index ->
                 (0 until filter)
                     .map { f ->
                         (0 until channel)
@@ -63,7 +62,6 @@ class ConvD1 internal constructor(
                             }.toD2()
                     }.toD3()
             }
-                .batchAverage()
         weight = optimizer.adapt(weight = weight, dw = dw)
 
         return dx

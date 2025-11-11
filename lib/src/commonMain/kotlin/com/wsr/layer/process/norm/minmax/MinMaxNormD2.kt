@@ -46,11 +46,7 @@ class MinMaxNormD2 internal constructor(
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = run {
-                val mean = mean.batchAverage()
-                val delta = delta.batchAverage()
-                IOType.d2(weight.shape) { x, y -> mean[x, y] * delta[x, y] }
-            },
+            dw = mean * delta,
         )
 
         // 分母側(dy/d[max(x) - min(x)])
