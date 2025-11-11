@@ -1,6 +1,5 @@
 package com.wsr.collection
 
-import com.wsr.BLAS
 import com.wsr.IOType
 import com.wsr.reshape.transpose
 

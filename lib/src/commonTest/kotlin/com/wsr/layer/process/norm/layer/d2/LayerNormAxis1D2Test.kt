@@ -44,24 +44,24 @@ class LayerNormAxis1D2Test {
         assertEquals(
             expected = -1.0 / expectedStd,
             actual = output[0, 0],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
         assertEquals(
             expected = 1.0 / expectedStd,
             actual = output[0, 1],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
 
         // 行1の正規化: [-1, 1] / sqrt(1+1e-10)
         assertEquals(
             expected = -1.0 / expectedStd,
             actual = output[1, 0],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
         assertEquals(
             expected = 1.0 / expectedStd,
             actual = output[1, 1],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
     }
 

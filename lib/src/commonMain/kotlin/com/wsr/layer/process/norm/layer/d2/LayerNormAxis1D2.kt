@@ -13,8 +13,8 @@ import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
 import com.wsr.power.sqrt
 import com.wsr.reshape.broadcastToD2
-import kotlinx.serialization.Serializable
 import kotlin.math.pow
+import kotlinx.serialization.Serializable
 
 @Serializable
 class LayerNormAxis1D2 internal constructor(
