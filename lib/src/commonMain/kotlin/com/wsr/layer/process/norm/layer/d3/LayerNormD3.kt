@@ -101,19 +101,19 @@ fun <T> NetworkBuilder.D3<T>.layerNorm(
     initializer: WeightInitializer = Fixed(1.0),
 ): NetworkBuilder.D3<T> {
     val process = when (axis) {
-       null -> LayerNormD3(
-           outputX = inputX,
-           outputY = inputY,
-           outputZ = inputZ,
-           optimizer = optimizer.d3(inputX, inputY, inputZ),
-           weight = initializer.d3(
-               input = listOf(inputX, inputY, inputZ),
-               output = listOf(inputX, inputY, inputZ),
-               x = inputX,
-               y = inputY,
-               z = inputZ,
-           ),
-       )
+        null -> LayerNormD3(
+            outputX = inputX,
+            outputY = inputY,
+            outputZ = inputZ,
+            optimizer = optimizer.d3(inputX, inputY, inputZ),
+            weight = initializer.d3(
+                input = listOf(inputX, inputY, inputZ),
+                output = listOf(inputX, inputY, inputZ),
+                x = inputX,
+                y = inputY,
+                z = inputZ,
+            ),
+        )
 
         0 -> LayerNormAxis0D3(
             outputX = inputX,
@@ -161,7 +161,7 @@ fun <T> NetworkBuilder.D3<T>.layerNorm(
             """
             invalid parameter.
             axis: $axis
-        """.trimIndent(),
+            """.trimIndent(),
         )
     }
     return addProcess(process = process)

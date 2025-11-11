@@ -1,20 +1,12 @@
 package com.wsr.layer.process.norm.layer.d3
 
 import com.wsr.IOType
-import com.wsr.NetworkBuilder
-import com.wsr.collection.average
-import com.wsr.collection.sum
-import com.wsr.initializer.Fixed
-import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
 import com.wsr.operator.minus
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
-import com.wsr.power.pow
-import kotlin.math.pow
-import kotlin.math.sqrt
 import kotlinx.serialization.Serializable
 
 @Serializable

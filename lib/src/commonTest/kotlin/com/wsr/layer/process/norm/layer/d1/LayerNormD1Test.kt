@@ -89,12 +89,12 @@ class LayerNormD1Test {
         assertEquals(
             expected = 2.1 * (-1.0 / expectedStd),
             actual = afterOutput[0],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
         assertEquals(
             expected = 1.9 * (1.0 / expectedStd),
             actual = afterOutput[1],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
     }
 

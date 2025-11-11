@@ -36,22 +36,22 @@ class LayerNormD2Test {
         assertEquals(
             expected = -2.0 / expectedStd1,
             actual = output1[0, 0],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
         assertEquals(
             expected = 0.0 / expectedStd1,
             actual = output1[0, 1],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
         assertEquals(
             expected = 0.0 / expectedStd1,
             actual = output1[1, 0],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
         assertEquals(
             expected = 2.0 / expectedStd1,
             actual = output1[1, 1],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
 
         // バッチ2: [[2, 4], [4, 6]], mean=4, numerator=[[-2, 0], [0, 2]], variance=2, std=sqrt(2+1e-10)
@@ -61,22 +61,22 @@ class LayerNormD2Test {
         assertEquals(
             expected = -2.0 / expectedStd2,
             actual = output2[0, 0],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
         assertEquals(
             expected = 0.0 / expectedStd2,
             actual = output2[0, 1],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
         assertEquals(
             expected = 0.0 / expectedStd2,
             actual = output2[1, 0],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
         assertEquals(
             expected = 2.0 / expectedStd2,
             actual = output2[1, 1],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
     }
 
@@ -134,12 +134,12 @@ class LayerNormD2Test {
         assertEquals(
             expected = 2.0 * (0.0 / expectedStd),
             actual = afterOutput[0, 1],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
         assertEquals(
             expected = 2.0 * (0.0 / expectedStd),
             actual = afterOutput[1, 0],
-            absoluteTolerance = 1e-4
+            absoluteTolerance = 1e-4,
         )
         assertEquals(
             expected = (2.0 - 0.1 * 2.0 / expectedStd) * (2.0 / expectedStd),
