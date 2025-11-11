@@ -1,4 +1,4 @@
-package com.wsr.layer.process.norm.layer
+package com.wsr.layer.process.norm.layer.d3
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
@@ -96,20 +96,73 @@ class LayerNormD3 internal constructor(
 }
 
 fun <T> NetworkBuilder.D3<T>.layerNorm(
+    axis: Int? = null,
     optimizer: Optimizer = this.optimizer,
     initializer: WeightInitializer = Fixed(1.0),
-) = addProcess(
-    process = LayerNormD3(
-        outputX = inputX,
-        outputY = inputY,
-        outputZ = inputZ,
-        optimizer = optimizer.d3(inputX, inputY, inputZ),
-        weight = initializer.d3(
-            input = listOf(inputX, inputY, inputZ),
-            output = listOf(inputX, inputY, inputZ),
-            x = inputX,
-            y = inputY,
-            z = inputZ,
-        ),
-    ),
-)
+): NetworkBuilder.D3<T> {
+    val process = when (axis) {
+       null -> LayerNormD3(
+           outputX = inputX,
+           outputY = inputY,
+           outputZ = inputZ,
+           optimizer = optimizer.d3(inputX, inputY, inputZ),
+           weight = initializer.d3(
+               input = listOf(inputX, inputY, inputZ),
+               output = listOf(inputX, inputY, inputZ),
+               x = inputX,
+               y = inputY,
+               z = inputZ,
+           ),
+       )
+
+        0 -> LayerNormAxis0D3(
+            outputX = inputX,
+            outputY = inputY,
+            outputZ = inputZ,
+            optimizer = optimizer.d3(inputX, inputY, inputZ),
+            weight = initializer.d3(
+                input = listOf(inputX, inputY, inputZ),
+                output = listOf(inputX, inputY, inputZ),
+                x = inputX,
+                y = inputY,
+                z = inputZ,
+            ),
+        )
+
+        1 -> LayerNormAxis1D3(
+            outputX = inputX,
+            outputY = inputY,
+            outputZ = inputZ,
+            optimizer = optimizer.d3(inputX, inputY, inputZ),
+            weight = initializer.d3(
+                input = listOf(inputX, inputY, inputZ),
+                output = listOf(inputX, inputY, inputZ),
+                x = inputX,
+                y = inputY,
+                z = inputZ,
+            ),
+        )
+
+        2 -> LayerNormAxis2D3(
+            outputX = inputX,
+            outputY = inputY,
+            outputZ = inputZ,
+            optimizer = optimizer.d3(inputX, inputY, inputZ),
+            weight = initializer.d3(
+                input = listOf(inputX, inputY, inputZ),
+                output = listOf(inputX, inputY, inputZ),
+                x = inputX,
+                y = inputY,
+                z = inputZ,
+            ),
+        )
+
+        else -> throw IllegalStateException(
+            """
+            invalid parameter.
+            axis: $axis
+        """.trimIndent(),
+        )
+    }
+    return addProcess(process = process)
+}

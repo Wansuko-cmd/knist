@@ -1,4 +1,4 @@
-package com.wsr.layer.process.norm.layer
+package com.wsr.layer.process.norm.layer.d1
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder

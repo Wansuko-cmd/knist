@@ -1,4 +1,4 @@
-package com.wsr.layer.process.norm.layer
+package com.wsr.layer.process.norm.layer.d2
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
@@ -13,9 +13,9 @@ import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
+import kotlinx.serialization.Serializable
 import kotlin.math.pow
 import kotlin.math.sqrt
-import kotlinx.serialization.Serializable
 
 @Serializable
 class LayerNormD2 internal constructor(
@@ -95,18 +95,60 @@ class LayerNormD2 internal constructor(
 }
 
 fun <T> NetworkBuilder.D2<T>.layerNorm(
+    axis: Int? = null,
     optimizer: Optimizer = this.optimizer,
     initializer: WeightInitializer = Fixed(1.0),
-) = addProcess(
-    process = LayerNormD2(
-        outputX = inputX,
-        outputY = inputY,
-        optimizer = optimizer.d2(inputX, inputY),
-        weight = initializer.d2(
-            input = listOf(inputX, inputY),
-            output = listOf(inputX, inputY),
-            x = inputX,
-            y = inputY,
-        ),
-    ),
-)
+): NetworkBuilder.D2<T> {
+    val process = when (axis) {
+        null -> LayerNormD2(
+            outputX = inputX,
+            outputY = inputY,
+            optimizer = optimizer.d2(inputX, inputY),
+            weight = initializer.d2(
+                input = listOf(inputX, inputY),
+                output = listOf(inputX, inputY),
+                x = inputX,
+                y = inputY,
+            ),
+        )
+
+        0 -> LayerNormAxis0D2(
+            outputX = inputX,
+            outputY = inputY,
+            optimizer = optimizer.d2(
+                inputX,
+                inputY,
+            ),
+            weight = initializer.d2(
+                input = listOf(inputX, inputY),
+                output = listOf(inputX, inputY),
+                x = inputX,
+                y = inputY,
+            ),
+        )
+
+        1 -> LayerNormAxis1D2(
+            outputX = inputX,
+            outputY = inputY,
+            optimizer = optimizer.d2(
+                inputX,
+                inputY,
+            ),
+            weight = initializer.d2(
+                input = listOf(inputX, inputY),
+                output = listOf(inputX, inputY),
+                x = inputX,
+                y = inputY,
+            ),
+        )
+
+        else -> throw IllegalStateException(
+            """
+            invalid parameter.
+            axis: $axis
+        """.trimIndent(),
+        )
+    }
+    return addProcess(process = process)
+}
+

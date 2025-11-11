@@ -48,9 +48,9 @@ import com.wsr.layer.process.function.sigmoid.SigmoidD3
 import com.wsr.layer.process.function.softmax.SoftmaxD1
 import com.wsr.layer.process.function.softmax.SoftmaxD2
 import com.wsr.layer.process.function.softmax.SoftmaxD3
-import com.wsr.layer.process.norm.layer.LayerNormD1
-import com.wsr.layer.process.norm.layer.LayerNormD2
-import com.wsr.layer.process.norm.layer.LayerNormD3
+import com.wsr.layer.process.norm.layer.d1.LayerNormD1
+import com.wsr.layer.process.norm.layer.d2.LayerNormD2
+import com.wsr.layer.process.norm.layer.d3.LayerNormD3
 import com.wsr.layer.process.norm.minmax.MinMaxNormD1
 import com.wsr.layer.process.norm.minmax.MinMaxNormD2
 import com.wsr.layer.process.norm.minmax.MinMaxNormD3
