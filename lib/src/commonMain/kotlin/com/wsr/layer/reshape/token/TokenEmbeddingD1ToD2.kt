@@ -40,7 +40,7 @@ class TokenEmbeddingD1ToD2 internal constructor(
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = dw,
+            dw = dw / input.size.toDouble(),
         )
 
         // Embedding層は離散的なので、入力への勾配は意味を持たない
