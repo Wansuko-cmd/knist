@@ -60,7 +60,7 @@ class LayerNormAxis0D2 internal constructor(
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = (normalize * delta).batchAverage(),
+            dw = normalize * delta,
         )
 
         // dOutput
