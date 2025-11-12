@@ -29,7 +29,7 @@ class AffineD2 internal constructor(
         val dx = delta.matMul(weight.transpose())
         val dw = input.transpose().matMul(delta)
 
-        weight = optimizer.adapt(weight = weight, dw = dw / channel.toDouble())
+        weight = optimizer.adapt(weight = weight, dw = dw)
         return dx
     }
 
