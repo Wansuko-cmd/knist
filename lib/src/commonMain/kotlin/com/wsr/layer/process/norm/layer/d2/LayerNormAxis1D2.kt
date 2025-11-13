@@ -2,7 +2,6 @@ package com.wsr.layer.process.norm.layer.d2
 
 import com.wsr.IOType
 import com.wsr.collection.average
-import com.wsr.collection.batchAverage
 import com.wsr.collection.sum
 import com.wsr.layer.process.Process
 import com.wsr.operator.div

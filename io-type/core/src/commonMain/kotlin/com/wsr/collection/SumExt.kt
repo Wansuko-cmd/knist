@@ -1,5 +1,6 @@
 package com.wsr.collection
 
+import com.wsr.BLAS
 import com.wsr.IOType
 
 fun IOType.D1.sum() = value.sum()
@@ -9,23 +10,45 @@ fun List<IOType.D1>.sum(): List<Double> = map { it.sum() }
 fun IOType.D2.sum() = value.sum()
 
 fun IOType.D2.sum(axis: Int): IOType.D1 = when (axis) {
-    0 ->
-        IOType.d1(shape[1]) {
-            var sum = 0.0
-            for (i in 0 until shape[0]) {
-                sum += this[i, it]
-            }
-            sum
-        }
+    0 -> {
+        // 列方向の合計: 各列の要素を合計
+        val ones = DoubleArray(shape[0]) { 1.0 }
+        val result = DoubleArray(shape[1])
+        BLAS.dgemv(
+            trans = true,
+            m = shape[0],
+            n = shape[1],
+            alpha = 1.0,
+            a = value,
+            lda = shape[1],
+            x = ones,
+            incX = 1,
+            beta = 0.0,
+            y = result,
+            incY = 1,
+        )
+        IOType.d1(result)
+    }
 
-    1 ->
-        IOType.d1(shape[0]) {
-            var sum = 0.0
-            for (i in 0 until shape[1]) {
-                sum += this[it, i]
-            }
-            sum
-        }
+    1 -> {
+        // 行方向の合計: 各行の要素を合計
+        val ones = DoubleArray(shape[1]) { 1.0 }
+        val result = DoubleArray(shape[0])
+        BLAS.dgemv(
+            trans = false,
+            m = shape[0],
+            n = shape[1],
+            alpha = 1.0,
+            a = value,
+            lda = shape[1],
+            x = ones,
+            incX = 1,
+            beta = 0.0,
+            y = result,
+            incY = 1,
+        )
+        IOType.d1(result)
+    }
 
     else -> throw IllegalArgumentException("IOType.D2.sum axis is $axis not 0 or 1.")
 }
