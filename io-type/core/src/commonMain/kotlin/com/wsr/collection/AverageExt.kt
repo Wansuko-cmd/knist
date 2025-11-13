@@ -1,5 +1,6 @@
 package com.wsr.collection
 
+import com.wsr.BLAS
 import com.wsr.IOType
 import com.wsr.reshape.transpose
 
@@ -15,11 +16,49 @@ fun List<IOType.D2>.average(): List<Double> = map { it.average() }
 
 fun IOType.D2.average(axis: Int) = when (axis) {
     0 -> {
-        val transpose = transpose()
-        IOType.d1(shape[1]) { transpose[it].average() }
+        // 列方向の平均: 各列の要素を合計して要素数で割る
+        val ones = DoubleArray(shape[0]) { 1.0 }
+        val result = DoubleArray(shape[1])
+        BLAS.dgemv(
+            trans = true,
+            m = shape[0],
+            n = shape[1],
+            alpha = 1.0,
+            a = value,
+            lda = shape[1],
+            x = ones,
+            incX = 1,
+            beta = 0.0,
+            y = result,
+            incY = 1,
+        )
+        // 行数で割って平均を計算
+        BLAS.dscal(n = result.size, alpha = 1.0 / shape[0], x = result, incX = 1)
+        IOType.d1(result)
     }
 
-    1 -> IOType.d1(shape[0]) { this[it].average() }
+    1 -> {
+        // 行方向の平均: 各行の要素を合計して要素数で割る
+        val ones = DoubleArray(shape[1]) { 1.0 }
+        val result = DoubleArray(shape[0])
+        BLAS.dgemv(
+            trans = false,
+            m = shape[0],
+            n = shape[1],
+            alpha = 1.0,
+            a = value,
+            lda = shape[1],
+            x = ones,
+            incX = 1,
+            beta = 0.0,
+            y = result,
+            incY = 1,
+        )
+        // 列数で割って平均を計算
+        BLAS.dscal(n = result.size, alpha = 1.0 / shape[1], x = result, incX = 1)
+        IOType.d1(result)
+    }
+
     else -> throw IllegalArgumentException("IOType.D2.max axis is $axis not 0 or 1.")
 }
 
