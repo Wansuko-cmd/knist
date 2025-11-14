@@ -7,9 +7,10 @@ import com.wsr.layer.output.Output
 import com.wsr.operator.div
 import com.wsr.operator.minus
 import com.wsr.operator.times
+import com.wsr.reshape.broadcastToD2
 import com.wsr.reshape.toD2
-import kotlin.math.exp
 import kotlinx.serialization.Serializable
+import kotlin.math.exp
 
 @Serializable
 internal class SoftmaxWithLossD2 internal constructor(
@@ -50,12 +51,19 @@ internal class SoftmaxWithLossD2 internal constructor(
         return (output - label) * label.generateMask()
     }
 
-    private fun List<IOType.D2>.generateMask() = map { label ->
-        val value = label.value
-        IOType.d2(
-            shape = label.shape,
-            value = DoubleArray(value.size) { if (value[it] == maskValue?.toDouble()) 0.0 else 1.0 },
-        )
+    private fun List<IOType.D2>.generateMask(): List<IOType.D2> = when {
+        maskValue == null -> List(size) {
+            IOType.d2(shape = this[it].shape, value = DoubleArray(this[it].value.size) { 1.0 })
+        }
+
+        else -> map { label ->
+            IOType
+                .d1(outputX) { seqId ->
+                    val isPadding = label[seqId, maskValue] == 1.0
+                    if (isPadding) 0.0 else 1.0
+                }
+                .broadcastToD2(0, outputY)
+        }
     }
 }
 
