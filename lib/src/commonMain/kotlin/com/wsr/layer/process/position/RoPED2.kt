@@ -3,10 +3,10 @@ package com.wsr.layer.process.position
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layer.process.Process
-import kotlinx.serialization.Serializable
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
+import kotlinx.serialization.Serializable
 
 @Serializable
 class RoPED2 internal constructor(
