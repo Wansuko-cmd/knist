@@ -90,7 +90,7 @@ sealed interface NetworkBuilder<I, O> {
         )
 
         fun repeat(times: Int, builder: D2<I>.(index: Int) -> D2<I>): D2<I> =
-            (0 until times).fold(this) { acc, i -> this.builder(i) }
+            (0 until times).fold(this) { acc, i -> acc.builder(i) }
     }
 
     @ConsistentCopyVisibility
