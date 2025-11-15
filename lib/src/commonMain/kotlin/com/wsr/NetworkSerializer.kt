@@ -29,7 +29,6 @@ import com.wsr.layer.process.debug.DebugD3
 import com.wsr.layer.process.dropout.DropoutD1
 import com.wsr.layer.process.dropout.DropoutD2
 import com.wsr.layer.process.dropout.DropoutD3
-import com.wsr.layer.process.position.PositionEncodeD2
 import com.wsr.layer.process.function.linear.LinearD1 as ProcessLinearD1
 import com.wsr.layer.process.function.linear.LinearD2 as ProcessLinearD2
 import com.wsr.layer.process.function.linear.LinearD3 as ProcessLinearD3
@@ -61,6 +60,7 @@ import com.wsr.layer.process.norm.minmax.MinMaxNormD2
 import com.wsr.layer.process.norm.minmax.MinMaxNormD3
 import com.wsr.layer.process.pool.MaxPoolD2
 import com.wsr.layer.process.pool.MaxPoolD3
+import com.wsr.layer.process.position.PositionEncodeD2
 import com.wsr.layer.process.skip.SkipD1
 import com.wsr.layer.process.skip.SkipD2
 import com.wsr.layer.process.skip.SkipD3
