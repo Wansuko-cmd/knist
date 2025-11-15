@@ -2,7 +2,6 @@ package com.wsr.layer.process.position
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
@@ -28,7 +27,7 @@ class PositionEmbeddingD2 internal constructor(
 
 fun <T> NetworkBuilder.D2<T>.positionEmbedding(
     optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = Fixed(0.0),
+    initializer: WeightInitializer = this.initializer,
 ) = addProcess(
     process = PositionEmbeddingD2(
         outputX = inputX,
