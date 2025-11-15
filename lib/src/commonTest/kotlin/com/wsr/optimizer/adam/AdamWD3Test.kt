@@ -27,8 +27,11 @@ class AdamWD3Test {
         val result = adamWD3.adapt(weight, dw)
 
         // AdamWはWeight Decayにより、通常のAdamよりもさらに重みが減少する
-        assertEquals(expected = 9.899, actual = result[0, 0, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 19.799, actual = result[0, 0, 1], absoluteTolerance = 1e-10)
+        // (1 - 0.001*0.01) * [10, 20] - 0.001 * [1, 2] / sqrt([1, 4])
+        // = 0.99999 * [10, 20] - 0.001 * [1, 1]
+        // = [9.9989, 19.9988]
+        assertEquals(expected = 9.9989, actual = result[0, 0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = 19.9988, actual = result[0, 0, 1], absoluteTolerance = 1e-4)
     }
 
     @Test
@@ -48,8 +51,11 @@ class AdamWD3Test {
         val dw1 = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toDouble() }
         val result1 = adamWD3.adapt(weight, dw1)
 
-        assertEquals(expected = 9.899, actual = result1[0, 0, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 9.899, actual = result1[0, 0, 1], absoluteTolerance = 1e-10)
+        // dw1 = [[[1, 2]]]
+        // [0,0,0]: dw=1: (1-0.00001)*10 - 0.001*1/sqrt(1) = 9.9989
+        // [0,0,1]: dw=2: (1-0.00001)*10 - 0.001*2/sqrt(4) = 9.9989
+        assertEquals(expected = 9.9989, actual = result1[0, 0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = 9.9989, actual = result1[0, 0, 1], absoluteTolerance = 1e-4)
 
         // 2回目
         weight = result1
@@ -57,8 +63,8 @@ class AdamWD3Test {
         val result2 = adamWD3.adapt(weight, dw2)
 
         // モーメントが蓄積され、バイアス補正も変化し、Weight Decayも適用される
-        // result1から減少していることを確認
-        assertEquals(expected = 9.799, actual = result2[0, 0, 0], absoluteTolerance = 1e-4)
-        assertEquals(expected = 9.799, actual = result2[0, 0, 1], absoluteTolerance = 1e-4)
+        // 各要素でさらに減少
+        assertEquals(expected = 9.9978, actual = result2[0, 0, 0], absoluteTolerance = 1e-4)
+        assertEquals(expected = 9.9978, actual = result2[0, 0, 1], absoluteTolerance = 1e-4)
     }
 }

@@ -1,6 +1,6 @@
 @file:Suppress("NonAsciiCharacters")
 
-package com.wsr.layer.process.encode
+package com.wsr.layer.process.position
 
 import com.wsr.IOType
 import kotlin.math.cos
