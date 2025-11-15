@@ -29,7 +29,7 @@ import com.wsr.layer.process.debug.DebugD3
 import com.wsr.layer.process.dropout.DropoutD1
 import com.wsr.layer.process.dropout.DropoutD2
 import com.wsr.layer.process.dropout.DropoutD3
-import com.wsr.layer.process.encode.PositionEncodeD2
+import com.wsr.layer.process.position.PositionEncodeD2
 import com.wsr.layer.process.function.linear.LinearD1 as ProcessLinearD1
 import com.wsr.layer.process.function.linear.LinearD2 as ProcessLinearD2
 import com.wsr.layer.process.function.linear.LinearD3 as ProcessLinearD3
