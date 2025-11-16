@@ -60,7 +60,6 @@ internal data class AdamWD1(
 ) : Optimizer.D1(maxNorm) {
     private var m: IOType.D1 = IOType.d1(shape)
     private var v: IOType.D1 = IOType.d1(shape)
-    private val e = IOType.d1(shape) { E }
     private var t: Int = 0
 
     override fun adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1 {
@@ -72,7 +71,7 @@ internal data class AdamWD1(
         val mHat = m / (1.0 - momentum.pow(t.toDouble()))
         val vHat = v / (1.0 - rms.pow(t.toDouble()))
 
-        return (1 - rate * decay) * weight - rate / (vHat.sqrt() + e) * mHat
+        return (1 - rate * decay) * weight - rate * mHat / vHat.sqrt(e = E)
     }
 }
 
@@ -87,7 +86,6 @@ internal data class AdamWD2(
 ) : Optimizer.D2(maxNorm) {
     private var m: IOType.D2 = IOType.d2(shape)
     private var v: IOType.D2 = IOType.d2(shape)
-    private val e = IOType.d2(shape) { _, _ -> E }
     private var t: Int = 0
 
     override fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2 {
@@ -99,7 +97,7 @@ internal data class AdamWD2(
         val mHat = m / (1.0 - momentum.pow(t.toDouble()))
         val vHat = v / (1.0 - rms.pow(t.toDouble()))
 
-        return (1 - rate * decay) * weight - rate / (vHat.sqrt() + e) * mHat
+        return (1 - rate * decay) * weight - rate * mHat / vHat.sqrt(e = E)
     }
 }
 
@@ -114,7 +112,6 @@ internal data class AdamWD3(
 ) : Optimizer.D3(maxNorm) {
     private var m: IOType.D3 = IOType.d3(shape)
     private var v: IOType.D3 = IOType.d3(shape)
-    private val e: IOType.D3 = IOType.d3(shape) { _, _, _ -> E }
     private var t: Int = 0
 
     override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 {
@@ -126,6 +123,6 @@ internal data class AdamWD3(
         val mHat = m / (1.0 - momentum.pow(t.toDouble()))
         val vHat = v / (1.0 - rms.pow(t.toDouble()))
 
-        return (1 - rate * decay) * weight - rate / (vHat.sqrt() + e) * mHat
+        return (1 - rate * decay) * weight - rate * mHat / vHat.sqrt(e = E)
     }
 }

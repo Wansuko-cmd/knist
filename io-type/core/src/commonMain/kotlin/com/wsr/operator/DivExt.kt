@@ -21,6 +21,10 @@ operator fun IOType.D1.div(other: Double): IOType.D1 {
     return IOType.d1(result)
 }
 
+operator fun IOType.D1.div(other: IOType.D1): IOType.D1 = IOType.d1(this.shape) { i ->
+    this[i] / other[i]
+}
+
 @JvmName("divD1sToDouble")
 operator fun List<IOType.D1>.div(other: Double) = map { it / other }
 
@@ -63,6 +67,10 @@ operator fun IOType.D2.div(other: IOType.D1): IOType.D2 {
     return IOType.d2(this.shape, result)
 }
 
+operator fun IOType.D2.div(other: IOType.D2): IOType.D2 = IOType.d2(this.shape) { i, j ->
+    this[i, j] / other[i, j]
+}
+
 @JvmName("divD2sToDouble")
 operator fun List<IOType.D2>.div(other: Double) = map { it / other }
 
@@ -90,6 +98,10 @@ operator fun IOType.D3.div(other: Double): IOType.D3 {
     val result = this.value.copyOf()
     BLAS.dscal(n = result.size, alpha = 1.0 / other, x = result, incX = 1)
     return IOType.d3(shape, result)
+}
+
+operator fun IOType.D3.div(other: IOType.D3): IOType.D3 = IOType.d3(this.shape) { i, j, k ->
+    this[i, j, k] / other[i, j, k]
 }
 
 @JvmName("divD3sToDouble")
