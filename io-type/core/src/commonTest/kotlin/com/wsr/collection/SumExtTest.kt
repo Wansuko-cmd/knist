@@ -9,10 +9,10 @@ import kotlin.test.assertEquals
 class SumExtTest {
     @Test
     fun `D1のsum=全要素の合計`() {
-        val a = IOType.Companion.d1(listOf(1.0, 2.0, 3.0, 4.0))
+        val a = IOType.Companion.d1(listOf(1.0f, 2.0f, 3.0f, 4.0f))
         val result = a.sum()
         assertEquals(
-            expected = 10.0,
+            expected = 10.0f,
             actual = result,
         )
     }
@@ -21,13 +21,13 @@ class SumExtTest {
     fun `List_D1のsum=各インデックスごとの合計を持つD1`() {
         val list =
             listOf(
-                IOType.Companion.d1(listOf(1.0, 2.0, 3.0)),
-                IOType.Companion.d1(listOf(4.0, 5.0, 6.0)),
-                IOType.Companion.d1(listOf(7.0, 8.0, 9.0)),
+                IOType.Companion.d1(listOf(1.0f, 2.0f, 3.0f)),
+                IOType.Companion.d1(listOf(4.0f, 5.0f, 6.0f)),
+                IOType.Companion.d1(listOf(7.0f, 8.0f, 9.0f)),
             )
         val result = list.sum()
         assertEquals(
-            expected = listOf(6.0, 15.0, 24.0),
+            expected = listOf(6.0f, 15.0f, 24.0f),
             actual = result,
         )
     }
@@ -37,7 +37,7 @@ class SumExtTest {
         val a = IOType.Companion.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
         val result = a.sum()
         assertEquals(
-            expected = 21.0,
+            expected = 21.0f,
             actual = result,
         )
     }
@@ -50,7 +50,7 @@ class SumExtTest {
         val a = IOType.Companion.d2(3, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val result = a.sum(axis = 0)
         assertEquals(
-            expected = IOType.Companion.d1(listOf(9.0, 12.0)),
+            expected = IOType.Companion.d1(listOf(9.0f, 12.0f)),
             actual = result,
         )
     }
@@ -63,7 +63,7 @@ class SumExtTest {
         val a = IOType.Companion.d2(3, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val result = a.sum(axis = 1)
         assertEquals(
-            expected = IOType.Companion.d1(listOf(3.0, 7.0, 11.0)),
+            expected = IOType.Companion.d1(listOf(3.0f, 7.0f, 11.0f)),
             actual = result,
         )
     }

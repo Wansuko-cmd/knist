@@ -9,10 +9,10 @@ import kotlin.test.assertEquals
 class MaxExtTest {
     @Test
     fun `D1のmax=全要素の最大値`() {
-        val a = IOType.d1(listOf(3.0, 1.0, 4.0, 2.0))
+        val a = IOType.d1(listOf(3.0f, 1.0f, 4.0f, 2.0f))
         val result = a.max()
         assertEquals(
-            expected = 4.0,
+            expected = 4.0f,
             actual = result,
         )
     }
@@ -21,13 +21,13 @@ class MaxExtTest {
     fun `List_D1のmax=各D1の最大値のリスト`() {
         val list =
             listOf(
-                IOType.d1(listOf(5.0, 2.0, 8.0)),
-                IOType.d1(listOf(3.0, 7.0, 1.0)),
-                IOType.d1(listOf(9.0, 4.0, 6.0)),
+                IOType.d1(listOf(5.0f, 2.0f, 8.0f)),
+                IOType.d1(listOf(3.0f, 7.0f, 1.0f)),
+                IOType.d1(listOf(9.0f, 4.0f, 6.0f)),
             )
         val result = list.max()
         assertEquals(
-            expected = listOf(8.0, 7.0, 9.0),
+            expected = listOf(8.0f, 7.0f, 9.0f),
             actual = result,
         )
     }
@@ -39,7 +39,7 @@ class MaxExtTest {
         val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
         val result = a.max()
         assertEquals(
-            expected = 6.0,
+            expected = 6.0f,
             actual = result,
         )
     }
@@ -53,7 +53,7 @@ class MaxExtTest {
             )
         val result = list.max()
         assertEquals(
-            expected = listOf(4.0, 8.0),
+            expected = listOf(4.0f, 8.0f),
             actual = result,
         )
     }
@@ -66,7 +66,7 @@ class MaxExtTest {
         val a = IOType.d2(3, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val result = a.max(axis = 0)
         assertEquals(
-            expected = IOType.d1(listOf(5.0, 6.0)),
+            expected = IOType.d1(listOf(5.0f, 6.0f)),
             actual = result,
         )
     }
@@ -79,7 +79,7 @@ class MaxExtTest {
         val a = IOType.d2(3, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val result = a.max(axis = 1)
         assertEquals(
-            expected = IOType.d1(listOf(2.0, 4.0, 6.0)),
+            expected = IOType.d1(listOf(2.0f, 4.0f, 6.0f)),
             actual = result,
         )
     }
@@ -93,8 +93,8 @@ class MaxExtTest {
             )
         val result = list.max(axis = 0)
         assertEquals(expected = 2, actual = result.size)
-        assertEquals(expected = IOType.d1(listOf(3.0, 4.0)), actual = result[0])
-        assertEquals(expected = IOType.d1(listOf(7.0, 8.0)), actual = result[1])
+        assertEquals(expected = IOType.d1(listOf(3.0f, 4.0f)), actual = result[0])
+        assertEquals(expected = IOType.d1(listOf(7.0f, 8.0f)), actual = result[1])
     }
 
     @Test
@@ -106,8 +106,8 @@ class MaxExtTest {
             )
         val result = list.max(axis = 1)
         assertEquals(expected = 2, actual = result.size)
-        assertEquals(expected = IOType.d1(listOf(2.0, 4.0)), actual = result[0])
-        assertEquals(expected = IOType.d1(listOf(6.0, 8.0)), actual = result[1])
+        assertEquals(expected = IOType.d1(listOf(2.0f, 4.0f)), actual = result[0])
+        assertEquals(expected = IOType.d1(listOf(6.0f, 8.0f)), actual = result[1])
     }
 
     @Test
@@ -116,7 +116,7 @@ class MaxExtTest {
         val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         val result = a.max()
         assertEquals(
-            expected = 8.0,
+            expected = 8.0f,
             actual = result,
         )
     }
@@ -130,7 +130,7 @@ class MaxExtTest {
             )
         val result = list.max()
         assertEquals(
-            expected = listOf(8.0, 17.0),
+            expected = listOf(8.0f, 17.0f),
             actual = result,
         )
     }
@@ -152,10 +152,10 @@ class MaxExtTest {
         // Expected: [[3, 4], [7, 8]]
         assertEquals(expected = 2, actual = result.shape[0])
         assertEquals(expected = 2, actual = result.shape[1])
-        assertEquals(expected = 3.0, actual = result[0, 0])
-        assertEquals(expected = 4.0, actual = result[0, 1])
-        assertEquals(expected = 7.0, actual = result[1, 0])
-        assertEquals(expected = 8.0, actual = result[1, 1])
+        assertEquals(expected = 3.0f, actual = result[0, 0])
+        assertEquals(expected = 4.0f, actual = result[0, 1])
+        assertEquals(expected = 7.0f, actual = result[1, 0])
+        assertEquals(expected = 8.0f, actual = result[1, 1])
     }
 
     @Test
@@ -166,10 +166,10 @@ class MaxExtTest {
         // Expected: [[2, 4], [6, 8]]
         assertEquals(expected = 2, actual = result.shape[0])
         assertEquals(expected = 2, actual = result.shape[1])
-        assertEquals(expected = 2.0, actual = result[0, 0])
-        assertEquals(expected = 4.0, actual = result[0, 1])
-        assertEquals(expected = 6.0, actual = result[1, 0])
-        assertEquals(expected = 8.0, actual = result[1, 1])
+        assertEquals(expected = 2.0f, actual = result[0, 0])
+        assertEquals(expected = 4.0f, actual = result[0, 1])
+        assertEquals(expected = 6.0f, actual = result[1, 0])
+        assertEquals(expected = 8.0f, actual = result[1, 1])
     }
 
     @Test
@@ -182,11 +182,11 @@ class MaxExtTest {
         val result = list.max(axis = 0)
         assertEquals(expected = 2, actual = result.size)
         val first = result[0]
-        assertEquals(expected = 5.0, actual = first[0, 0])
-        assertEquals(expected = 6.0, actual = first[0, 1])
+        assertEquals(expected = 5.0f, actual = first[0, 0])
+        assertEquals(expected = 6.0f, actual = first[0, 1])
         val second = result[1]
-        assertEquals(expected = 14.0, actual = second[0, 0])
-        assertEquals(expected = 15.0, actual = second[0, 1])
+        assertEquals(expected = 14.0f, actual = second[0, 0])
+        assertEquals(expected = 15.0f, actual = second[0, 1])
     }
 
     @Test
@@ -199,11 +199,11 @@ class MaxExtTest {
         val result = list.max(axis = 1)
         assertEquals(expected = 2, actual = result.size)
         val first = result[0]
-        assertEquals(expected = 3.0, actual = first[0, 0])
-        assertEquals(expected = 4.0, actual = first[0, 1])
+        assertEquals(expected = 3.0f, actual = first[0, 0])
+        assertEquals(expected = 4.0f, actual = first[0, 1])
         val second = result[1]
-        assertEquals(expected = 12.0, actual = second[0, 0])
-        assertEquals(expected = 13.0, actual = second[0, 1])
+        assertEquals(expected = 12.0f, actual = second[0, 0])
+        assertEquals(expected = 13.0f, actual = second[0, 1])
     }
 
     @Test
@@ -216,10 +216,10 @@ class MaxExtTest {
         val result = list.max(axis = 2)
         assertEquals(expected = 2, actual = result.size)
         val first = result[0]
-        assertEquals(expected = 2.0, actual = first[0, 0])
-        assertEquals(expected = 4.0, actual = first[0, 1])
+        assertEquals(expected = 2.0f, actual = first[0, 0])
+        assertEquals(expected = 4.0f, actual = first[0, 1])
         val second = result[1]
-        assertEquals(expected = 11.0, actual = second[0, 0])
-        assertEquals(expected = 13.0, actual = second[0, 1])
+        assertEquals(expected = 11.0f, actual = second[0, 0])
+        assertEquals(expected = 13.0f, actual = second[0, 1])
     }
 }

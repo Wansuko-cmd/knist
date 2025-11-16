@@ -20,7 +20,7 @@ class DebugD1Test {
         // [1, 2, 3]
         val input =
             listOf(
-                IOType.d1(listOf(1.0, 2.0, 3.0)),
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
 
         val result = debug._expect(input)
@@ -44,12 +44,12 @@ class DebugD1Test {
         // [1, 2, 3]
         val input =
             listOf(
-                IOType.d1(listOf(1.0, 2.0, 3.0)),
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
 
         // deltaは[2, 4, 6]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d1(listOf(2.0, 4.0, 6.0)))
+            listOf(IOType.d1(listOf(2.0f, 4.0f, 6.0f)))
         }
 
         val result = debug._train(input, calcDelta)
@@ -57,15 +57,15 @@ class DebugD1Test {
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D1
         // deltaは[2, 4, 6]
-        assertEquals(expected = 2.0, actual = dx[0])
-        assertEquals(expected = 4.0, actual = dx[1])
-        assertEquals(expected = 6.0, actual = dx[2])
+        assertEquals(expected = 2.0f, actual = dx[0])
+        assertEquals(expected = 4.0f, actual = dx[1])
+        assertEquals(expected = 6.0f, actual = dx[2])
 
         // onInputが呼び出される
         assertEquals(expected = input, actual = capturedInput)
         // onDeltaが呼び出される
-        assertEquals(expected = 2.0, actual = (capturedDelta!![0] as IOType.D1)[0])
-        assertEquals(expected = 4.0, actual = (capturedDelta!![0] as IOType.D1)[1])
-        assertEquals(expected = 6.0, actual = (capturedDelta!![0] as IOType.D1)[2])
+        assertEquals(expected = 2.0f, actual = (capturedDelta!![0] as IOType.D1)[0])
+        assertEquals(expected = 4.0f, actual = (capturedDelta!![0] as IOType.D1)[1])
+        assertEquals(expected = 6.0f, actual = (capturedDelta!![0] as IOType.D1)[2])
     }
 }

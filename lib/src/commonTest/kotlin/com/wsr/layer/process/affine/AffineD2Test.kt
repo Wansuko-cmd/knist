@@ -18,7 +18,7 @@ class AffineD2Test {
             AffineD2(
                 channel = 2,
                 outputSize = 2,
-                optimizer = Sgd(0.1).d2(
+                optimizer = Sgd(0.1f).d2(
                     x = weight.shape[0],
                     y = weight.shape[1],
                 ),
@@ -41,10 +41,10 @@ class AffineD2Test {
         // weight.transpose() = [[1, 3], [2, 4]]
         // output[0] = [[1, 3], [2, 4]] · [[1], [2]] = [[7], [10]]
         // output[1] = [[1, 3], [2, 4]] · [[3], [4]] = [[15], [22]]
-        assertEquals(expected = 7.0, actual = output[0, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 10.0, actual = output[0, 1], absoluteTolerance = 1e-10)
-        assertEquals(expected = 15.0, actual = output[1, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 22.0, actual = output[1, 1], absoluteTolerance = 1e-10)
+        assertEquals(expected = 7.0f, actual = output[0, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 10.0f, actual = output[0, 1], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 15.0f, actual = output[1, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 22.0f, actual = output[1, 1], absoluteTolerance = 1e-6f)
     }
 
     @Test
@@ -56,7 +56,7 @@ class AffineD2Test {
             AffineD2(
                 channel = 1,
                 outputSize = 2,
-                optimizer = Sgd(0.1).d2(
+                optimizer = Sgd(0.1f).d2(
                     x = weight.shape[0],
                     y = weight.shape[1],
                 ),
@@ -71,7 +71,7 @@ class AffineD2Test {
 
         // deltaは[[1, 1]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(1, 2) { _, _ -> 1.0 })
+            listOf(IOType.d2(1, 2) { _, _ -> 1.0f })
         }
 
         val result = affine._train(input, calcDelta)
@@ -82,8 +82,8 @@ class AffineD2Test {
         assertEquals(expected = 2, actual = dx.shape[1])
 
         // dx[0] = weight · delta[0] = [[1, 2], [3, 4]] · [[1], [1]] = [[3], [7]]
-        assertEquals(expected = 3.0, actual = dx[0, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 7.0, actual = dx[0, 1], absoluteTolerance = 1e-10)
+        assertEquals(expected = 3.0f, actual = dx[0, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 7.0f, actual = dx[0, 1], absoluteTolerance = 1e-6f)
     }
 
     @Test
@@ -94,7 +94,7 @@ class AffineD2Test {
             AffineD2(
                 channel = 1,
                 outputSize = 2,
-                optimizer = Sgd(0.1).d2(
+                optimizer = Sgd(0.1f).d2(
                     x = weight.shape[0],
                     y = weight.shape[1],
                 ),
@@ -109,22 +109,22 @@ class AffineD2Test {
 
         // deltaは[[1, 1]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(1, 2) { _, _ -> 1.0 })
+            listOf(IOType.d2(1, 2) { _, _ -> 1.0f })
         }
 
         // trainで重みを更新
         // dw = input[0].transpose() · delta[0] = [[1], [2]] · [[1, 1]] = [[1, 1], [2, 2]]
-        // weight -= 0.1 * dw = [[1, 2], [3, 4]] - [[0.1, 0.1], [0.2, 0.2]]
-        //                    = [[0.9, 1.9], [2.8, 3.8]]
+        // weight -= 0.1f * dw = [[1, 2], [3, 4]] - [[0.1f, 0.1f], [0.2f, 0.2f]]
+        //                    = [[0.9f, 1.9f], [2.8f, 3.8f]]
         affine._train(input, calcDelta)
 
         // 更新後のexpect結果
         // output[0] = weight.transpose() · input[0]
-        //           = [[0.9, 2.8], [1.9, 3.8]] · [[1], [2]]
-        //           = [[6.5], [9.5]]
+        //           = [[0.9f, 2.8f], [1.9f, 3.8f]] · [[1], [2]]
+        //           = [[6.5f], [9.5f]]
         val afterOutput = affine._expect(input)[0] as IOType.D2
 
-        assertEquals(expected = 6.5, actual = afterOutput[0, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 9.5, actual = afterOutput[0, 1], absoluteTolerance = 1e-10)
+        assertEquals(expected = 6.5f, actual = afterOutput[0, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 9.5f, actual = afterOutput[0, 1], absoluteTolerance = 1e-6f)
     }
 }

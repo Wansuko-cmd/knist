@@ -18,8 +18,8 @@ class HeTest {
             size = 20,
         )
 
-        // limit = sqrt(6 / 512) ≈ 0.1083
-        val expectedLimit = sqrt(6.0 / 512)
+        // limit = sqrt(6 / 512) ≈ 0.1083f
+        val expectedLimit = sqrt(6.0f / 512)
 
         // 全ての要素が範囲内にあることを確認
         for (i in 0 until 20) {
@@ -40,8 +40,8 @@ class HeTest {
             y = 10,
         )
 
-        // limit = sqrt(6 / 100) ≈ 0.2449
-        val expectedLimit = sqrt(6.0 / 100)
+        // limit = sqrt(6 / 100) ≈ 0.2449f
+        val expectedLimit = sqrt(6.0f / 100)
 
         // 全ての要素が範囲内にあることを確認
         for (i in 0 until 10) {
@@ -65,8 +65,8 @@ class HeTest {
             z = 5,
         )
 
-        // limit = sqrt(6 / 75) ≈ 0.2828
-        val expectedLimit = sqrt(6.0 / 75)
+        // limit = sqrt(6 / 75) ≈ 0.2828f
+        val expectedLimit = sqrt(6.0f / 75)
 
         // いくつかの要素を確認
         assertTrue(result[0, 0, 0] >= -expectedLimit)
@@ -89,8 +89,8 @@ class HeTest {
             n = 2,
         )
 
-        // limit = sqrt(6 / 10) ≈ 0.7746
-        val expectedLimit = sqrt(6.0 / 10)
+        // limit = sqrt(6 / 10) ≈ 0.7746f
+        val expectedLimit = sqrt(6.0f / 10)
 
         // いくつかの要素を確認
         assertTrue(result[0, 0, 0, 0] >= -expectedLimit)

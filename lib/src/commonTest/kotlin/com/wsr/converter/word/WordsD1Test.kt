@@ -29,21 +29,21 @@ class WordsD1Test {
 
         assertEquals(expected = 2, actual = result.size)
 
-        // 1つ目: ["hello", "world"] -> [2.0, 3.0, 0.0, 0.0, 0.0]
+        // 1つ目: ["hello", "world"] -> [2.0f, 3.0f, 0.0f, 0.0f, 0.0f]
         val output0 = result[0]
-        assertEquals(expected = 2.0, actual = output0[0])
-        assertEquals(expected = 3.0, actual = output0[1])
-        assertEquals(expected = 0.0, actual = output0[2]) // padding
-        assertEquals(expected = 0.0, actual = output0[3]) // padding
-        assertEquals(expected = 0.0, actual = output0[4]) // padding
+        assertEquals(expected = 2.0f, actual = output0[0])
+        assertEquals(expected = 3.0f, actual = output0[1])
+        assertEquals(expected = 0.0f, actual = output0[2]) // padding
+        assertEquals(expected = 0.0f, actual = output0[3]) // padding
+        assertEquals(expected = 0.0f, actual = output0[4]) // padding
 
-        // 2つ目: ["test"] -> [4.0, 0.0, 0.0, 0.0, 0.0]
+        // 2つ目: ["test"] -> [4.0f, 0.0f, 0.0f, 0.0f, 0.0f]
         val output1 = result[1]
-        assertEquals(expected = 4.0, actual = output1[0])
-        assertEquals(expected = 0.0, actual = output1[1]) // padding
-        assertEquals(expected = 0.0, actual = output1[2]) // padding
-        assertEquals(expected = 0.0, actual = output1[3]) // padding
-        assertEquals(expected = 0.0, actual = output1[4]) // padding
+        assertEquals(expected = 4.0f, actual = output1[0])
+        assertEquals(expected = 0.0f, actual = output1[1]) // padding
+        assertEquals(expected = 0.0f, actual = output1[2]) // padding
+        assertEquals(expected = 0.0f, actual = output1[3]) // padding
+        assertEquals(expected = 0.0f, actual = output1[4]) // padding
     }
 
     @Test
@@ -63,13 +63,13 @@ class WordsD1Test {
 
         assertEquals(expected = 1, actual = result.size)
 
-        // ["hello", "unknown", "world"] -> [2.0, 1.0, 3.0, 0.0, 0.0]
+        // ["hello", "unknown", "world"] -> [2.0f, 1.0f, 3.0f, 0.0f, 0.0f]
         val output = result[0]
-        assertEquals(expected = 2.0, actual = output[0]) // hello
-        assertEquals(expected = 1.0, actual = output[1]) // unknown -> <UNK>
-        assertEquals(expected = 3.0, actual = output[2]) // world
-        assertEquals(expected = 0.0, actual = output[3]) // padding
-        assertEquals(expected = 0.0, actual = output[4]) // padding
+        assertEquals(expected = 2.0f, actual = output[0]) // hello
+        assertEquals(expected = 1.0f, actual = output[1]) // unknown -> <UNK>
+        assertEquals(expected = 3.0f, actual = output[2]) // world
+        assertEquals(expected = 0.0f, actual = output[3]) // padding
+        assertEquals(expected = 0.0f, actual = output[4]) // padding
     }
 
     @Test
@@ -89,12 +89,12 @@ class WordsD1Test {
 
         assertEquals(expected = 1, actual = result.size)
 
-        // ["hello", "world", "test", "hello", "world"] -> [2.0, 3.0, 4.0]
+        // ["hello", "world", "test", "hello", "world"] -> [2.0f, 3.0f, 4.0f]
         val output = result[0]
         assertEquals(expected = 3, actual = output.shape[0])
-        assertEquals(expected = 2.0, actual = output[0])
-        assertEquals(expected = 3.0, actual = output[1])
-        assertEquals(expected = 4.0, actual = output[2])
+        assertEquals(expected = 2.0f, actual = output[0])
+        assertEquals(expected = 3.0f, actual = output[1])
+        assertEquals(expected = 4.0f, actual = output[2])
     }
 
     @Test
@@ -107,18 +107,18 @@ class WordsD1Test {
         )
 
         val input = listOf(
-            IOType.d1(listOf(2.0, 3.0, 0.0, 0.0, 0.0)),
-            IOType.d1(listOf(4.0, 0.0, 0.0, 0.0, 0.0)),
+            IOType.d1(listOf(2.0f, 3.0f, 0.0f, 0.0f, 0.0f)),
+            IOType.d1(listOf(4.0f, 0.0f, 0.0f, 0.0f, 0.0f)),
         )
 
         val result = converter.decode(input)
 
         assertEquals(expected = 2, actual = result.size)
 
-        // [2.0, 3.0, 0.0, 0.0, 0.0] -> ["hello", "world"] (paddingは削除)
+        // [2.0f, 3.0f, 0.0f, 0.0f, 0.0f] -> ["hello", "world"] (paddingは削除)
         assertEquals(expected = listOf("hello", "world"), actual = result[0])
 
-        // [4.0, 0.0, 0.0, 0.0, 0.0] -> ["test"] (paddingは削除)
+        // [4.0f, 0.0f, 0.0f, 0.0f, 0.0f] -> ["test"] (paddingは削除)
         assertEquals(expected = listOf("test"), actual = result[1])
     }
 
@@ -132,14 +132,14 @@ class WordsD1Test {
         )
 
         val input = listOf(
-            IOType.d1(listOf(2.0, 99.0, 3.0, 0.0, 0.0)),
+            IOType.d1(listOf(2.0f, 99.0f, 3.0f, 0.0f, 0.0f)),
         )
 
         val result = converter.decode(input)
 
         assertEquals(expected = 1, actual = result.size)
 
-        // [2.0, 99.0, 3.0, 0.0, 0.0] -> ["hello", "world"] (99は範囲外なので無視)
+        // [2.0f, 99.0f, 3.0f, 0.0f, 0.0f] -> ["hello", "world"] (99は範囲外なので無視)
         assertEquals(expected = listOf("hello", "world"), actual = result[0])
     }
 
@@ -153,14 +153,14 @@ class WordsD1Test {
         )
 
         val input = listOf(
-            IOType.d1(listOf(2.0, 1.0, 3.0, 0.0, 0.0)),
+            IOType.d1(listOf(2.0f, 1.0f, 3.0f, 0.0f, 0.0f)),
         )
 
         val result = converter.decode(input)
 
         assertEquals(expected = 1, actual = result.size)
 
-        // [2.0, 1.0, 3.0, 0.0, 0.0] -> ["hello", "<UNK>", "world"]
+        // [2.0f, 1.0f, 3.0f, 0.0f, 0.0f] -> ["hello", "<UNK>", "world"]
         assertEquals(expected = listOf("hello", "<UNK>", "world"), actual = result[0])
     }
 
@@ -195,7 +195,7 @@ class WordsD1Test {
         )
 
         val input = listOf(
-            IOType.d1(listOf(2.0, 3.0, 0.0, 0.0, 0.0)),
+            IOType.d1(listOf(2.0f, 3.0f, 0.0f, 0.0f, 0.0f)),
         )
 
         // decode -> encode

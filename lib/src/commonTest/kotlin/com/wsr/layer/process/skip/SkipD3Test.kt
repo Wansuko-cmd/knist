@@ -18,7 +18,7 @@ class SkipD3Test {
             outputX = 1,
             outputY = 2,
             outputZ = 3,
-            optimizer = Sgd(0.1).d3(1, 2, 3),
+            optimizer = Sgd(0.1f).d3(1, 2, 3),
             weight = IOType.d3(1, 2, 3) { x, y, z -> (y * 3 + z + 1).toFloat() },
         )
 
@@ -51,23 +51,23 @@ class SkipD3Test {
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
-        assertEquals(expected = 21.0, actual = output[0, 0, 0])
-        assertEquals(expected = 42.0, actual = output[0, 0, 1])
-        assertEquals(expected = 63.0, actual = output[0, 0, 2])
-        assertEquals(expected = 84.0, actual = output[0, 1, 0])
-        assertEquals(expected = 105.0, actual = output[0, 1, 1])
-        assertEquals(expected = 126.0, actual = output[0, 1, 2])
+        assertEquals(expected = 21.0f, actual = output[0, 0, 0])
+        assertEquals(expected = 42.0f, actual = output[0, 0, 1])
+        assertEquals(expected = 63.0f, actual = output[0, 0, 2])
+        assertEquals(expected = 84.0f, actual = output[0, 1, 0])
+        assertEquals(expected = 105.0f, actual = output[0, 1, 1])
+        assertEquals(expected = 126.0f, actual = output[0, 1, 2])
     }
 
     @Test
     fun `SkipD3の_train=skip pathとmain pathの勾配を足して返す`() {
         // サブ層: Bias([[[0, 0], [0, 0]]]) - 恒等変換
-        val biasWeight = IOType.d3(1, 2, 2) { _, _, _ -> 0.0 }
+        val biasWeight = IOType.d3(1, 2, 2) { _, _, _ -> 0.0f }
         val biasLayer = BiasD3(
             outputX = 1,
             outputY = 2,
             outputZ = 2,
-            optimizer = Sgd(0.1).d3(1, 2, 2),
+            optimizer = Sgd(0.1f).d3(1, 2, 2),
             weight = biasWeight,
         )
 
@@ -97,10 +97,10 @@ class SkipD3Test {
         // skip pathの勾配: [[[10, 20], [30, 40]]] (deltaがそのまま流れる)
         // main pathの勾配: [[[10, 20], [30, 40]]] (biasは勾配をそのまま返す)
         // 合計: [[[20, 40], [60, 80]]]
-        assertEquals(expected = 20.0, actual = dx[0, 0, 0])
-        assertEquals(expected = 40.0, actual = dx[0, 0, 1])
-        assertEquals(expected = 60.0, actual = dx[0, 1, 0])
-        assertEquals(expected = 80.0, actual = dx[0, 1, 1])
+        assertEquals(expected = 20.0f, actual = dx[0, 0, 0])
+        assertEquals(expected = 40.0f, actual = dx[0, 0, 1])
+        assertEquals(expected = 60.0f, actual = dx[0, 1, 0])
+        assertEquals(expected = 80.0f, actual = dx[0, 1, 1])
     }
 
     @Test
@@ -113,12 +113,12 @@ class SkipD3Test {
         )
 
         // サブ層2: Bias([[[1], [1]], [[1], [1]]])
-        val biasWeight = IOType.d3(2, 2, 1) { _, _, _ -> 1.0 }
+        val biasWeight = IOType.d3(2, 2, 1) { _, _, _ -> 1.0f }
         val biasLayer = BiasD3(
             outputX = 2,
             outputY = 2,
             outputZ = 1,
-            optimizer = Sgd(0.1).d3(2, 2, 1),
+            optimizer = Sgd(0.1f).d3(2, 2, 1),
             weight = biasWeight,
         )
 
@@ -150,21 +150,21 @@ class SkipD3Test {
         skip._train(input, calcDelta)
 
         // train実行後の期待値
-        // bias更新: [[[1], [1]], [[1], [1]]] - 0.1 * [[[1], [2]], [[3], [4]]]
-        //        = [[[0.9], [0.8]], [[0.7], [0.6]]]
+        // bias更新: [[[1], [1]], [[1], [1]]] - 0.1f * [[[1], [2]], [[3], [4]]]
+        //        = [[[0.9f], [0.8f]], [[0.7f], [0.6f]]]
 
         // 更新後のexpect
         // linear出力: [[[2], [3]], [[4], [5]]]
-        // bias出力: [[[2], [3]], [[4], [5]]] + [[[0.9], [0.8]], [[0.7], [0.6]]]
-        //         = [[[2.9], [3.8]], [[4.7], [5.6]]]
-        // skip出力: [[[2], [3]], [[4], [5]]] + [[[2.9], [3.8]], [[4.7], [5.6]]]
-        //         = [[[4.9], [6.8]], [[8.7], [10.6]]]
+        // bias出力: [[[2], [3]], [[4], [5]]] + [[[0.9f], [0.8f]], [[0.7f], [0.6f]]]
+        //         = [[[2.9f], [3.8f]], [[4.7f], [5.6f]]]
+        // skip出力: [[[2], [3]], [[4], [5]]] + [[[2.9f], [3.8f]], [[4.7f], [5.6f]]]
+        //         = [[[4.9f], [6.8f]], [[8.7f], [10.6f]]]
         val afterOutput = skip._expect(input)[0] as IOType.D3
 
-        assertEquals(expected = 4.9, actual = afterOutput[0, 0, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 6.8, actual = afterOutput[0, 1, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 8.7, actual = afterOutput[1, 0, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 10.6, actual = afterOutput[1, 1, 0], absoluteTolerance = 1e-10)
+        assertEquals(expected = 4.9f, actual = afterOutput[0, 0, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 6.8f, actual = afterOutput[0, 1, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 8.7f, actual = afterOutput[1, 0, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 10.6f, actual = afterOutput[1, 1, 0], absoluteTolerance = 1e-6f)
     }
 
     @Test
@@ -174,8 +174,8 @@ class SkipD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 2,
-            optimizer = Sgd(0.1).d3(2, 2, 2),
-            weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0 },
+            optimizer = Sgd(0.1f).d3(2, 2, 2),
+            weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0f },
         )
 
         val skip = SkipD3(
@@ -202,14 +202,14 @@ class SkipD3Test {
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
-        assertEquals(expected = 2.0, actual = output[0, 0, 0])
-        assertEquals(expected = 4.0, actual = output[0, 0, 1])
-        assertEquals(expected = 6.0, actual = output[0, 1, 0])
-        assertEquals(expected = 8.0, actual = output[0, 1, 1])
-        assertEquals(expected = 10.0, actual = output[1, 0, 0])
-        assertEquals(expected = 12.0, actual = output[1, 0, 1])
-        assertEquals(expected = 14.0, actual = output[1, 1, 0])
-        assertEquals(expected = 16.0, actual = output[1, 1, 1])
+        assertEquals(expected = 2.0f, actual = output[0, 0, 0])
+        assertEquals(expected = 4.0f, actual = output[0, 0, 1])
+        assertEquals(expected = 6.0f, actual = output[0, 1, 0])
+        assertEquals(expected = 8.0f, actual = output[0, 1, 1])
+        assertEquals(expected = 10.0f, actual = output[1, 0, 0])
+        assertEquals(expected = 12.0f, actual = output[1, 0, 1])
+        assertEquals(expected = 14.0f, actual = output[1, 1, 0])
+        assertEquals(expected = 16.0f, actual = output[1, 1, 1])
     }
 
     @Test
@@ -219,8 +219,8 @@ class SkipD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 2,
-            optimizer = Sgd(0.1).d3(2, 2, 2),
-            weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0 },
+            optimizer = Sgd(0.1f).d3(2, 2, 2),
+            weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0f },
         )
 
         val skip = SkipD3(
@@ -257,14 +257,14 @@ class SkipD3Test {
         // skip pathの勾配: [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
         // main pathの勾配: [[[10, 20], [30, 40]], [[50, 60], [70, 80]]] (biasは勾配をそのまま返す)
         // 合計: [[[20, 40], [60, 80]], [[100, 120], [140, 160]]]
-        assertEquals(expected = 20.0, actual = dx[0, 0, 0])
-        assertEquals(expected = 40.0, actual = dx[0, 0, 1])
-        assertEquals(expected = 60.0, actual = dx[0, 1, 0])
-        assertEquals(expected = 80.0, actual = dx[0, 1, 1])
-        assertEquals(expected = 100.0, actual = dx[1, 0, 0])
-        assertEquals(expected = 120.0, actual = dx[1, 0, 1])
-        assertEquals(expected = 140.0, actual = dx[1, 1, 0])
-        assertEquals(expected = 160.0, actual = dx[1, 1, 1])
+        assertEquals(expected = 20.0f, actual = dx[0, 0, 0])
+        assertEquals(expected = 40.0f, actual = dx[0, 0, 1])
+        assertEquals(expected = 60.0f, actual = dx[0, 1, 0])
+        assertEquals(expected = 80.0f, actual = dx[0, 1, 1])
+        assertEquals(expected = 100.0f, actual = dx[1, 0, 0])
+        assertEquals(expected = 120.0f, actual = dx[1, 0, 1])
+        assertEquals(expected = 140.0f, actual = dx[1, 1, 0])
+        assertEquals(expected = 160.0f, actual = dx[1, 1, 1])
     }
 
     @Test
@@ -274,8 +274,8 @@ class SkipD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 2,
-            optimizer = Sgd(0.1).d3(2, 2, 2),
-            weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0 },
+            optimizer = Sgd(0.1f).d3(2, 2, 2),
+            weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0f },
         )
 
         val skip = SkipD3(
@@ -302,14 +302,14 @@ class SkipD3Test {
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
-        assertEquals(expected = 2.0, actual = output[0, 0, 0])
-        assertEquals(expected = 4.0, actual = output[0, 0, 1])
-        assertEquals(expected = 6.0, actual = output[0, 1, 0])
-        assertEquals(expected = 8.0, actual = output[0, 1, 1])
-        assertEquals(expected = 10.0, actual = output[1, 0, 0])
-        assertEquals(expected = 12.0, actual = output[1, 0, 1])
-        assertEquals(expected = 14.0, actual = output[1, 1, 0])
-        assertEquals(expected = 16.0, actual = output[1, 1, 1])
+        assertEquals(expected = 2.0f, actual = output[0, 0, 0])
+        assertEquals(expected = 4.0f, actual = output[0, 0, 1])
+        assertEquals(expected = 6.0f, actual = output[0, 1, 0])
+        assertEquals(expected = 8.0f, actual = output[0, 1, 1])
+        assertEquals(expected = 10.0f, actual = output[1, 0, 0])
+        assertEquals(expected = 12.0f, actual = output[1, 0, 1])
+        assertEquals(expected = 14.0f, actual = output[1, 1, 0])
+        assertEquals(expected = 16.0f, actual = output[1, 1, 1])
     }
 
     @Test
@@ -319,8 +319,8 @@ class SkipD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 2,
-            optimizer = Sgd(0.1).d3(2, 2, 2),
-            weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0 },
+            optimizer = Sgd(0.1f).d3(2, 2, 2),
+            weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0f },
         )
 
         val skip = SkipD3(
@@ -357,13 +357,13 @@ class SkipD3Test {
         // skip pathの勾配: [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
         // main pathの勾配: [[[10, 20], [30, 40]], [[50, 60], [70, 80]]] (biasは勾配をそのまま返す)
         // 合計: [[[20, 40], [60, 80]], [[100, 120], [140, 160]]]
-        assertEquals(expected = 20.0, actual = dx[0, 0, 0])
-        assertEquals(expected = 40.0, actual = dx[0, 0, 1])
-        assertEquals(expected = 60.0, actual = dx[0, 1, 0])
-        assertEquals(expected = 80.0, actual = dx[0, 1, 1])
-        assertEquals(expected = 100.0, actual = dx[1, 0, 0])
-        assertEquals(expected = 120.0, actual = dx[1, 0, 1])
-        assertEquals(expected = 140.0, actual = dx[1, 1, 0])
-        assertEquals(expected = 160.0, actual = dx[1, 1, 1])
+        assertEquals(expected = 20.0f, actual = dx[0, 0, 0])
+        assertEquals(expected = 40.0f, actual = dx[0, 0, 1])
+        assertEquals(expected = 60.0f, actual = dx[0, 1, 0])
+        assertEquals(expected = 80.0f, actual = dx[0, 1, 1])
+        assertEquals(expected = 100.0f, actual = dx[1, 0, 0])
+        assertEquals(expected = 120.0f, actual = dx[1, 0, 1])
+        assertEquals(expected = 140.0f, actual = dx[1, 1, 0])
+        assertEquals(expected = 160.0f, actual = dx[1, 1, 1])
     }
 }

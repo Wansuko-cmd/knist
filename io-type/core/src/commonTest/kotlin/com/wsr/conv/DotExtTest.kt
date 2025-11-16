@@ -8,11 +8,11 @@ import kotlin.test.assertEquals
 class DotExtTest {
     @Test
     fun `FloatArray·FloatArray=内積`() {
-        val a = FloatArrayOf(1.0, 2.0, 3.0)
-        val b = FloatArrayOf(4.0, 5.0, 6.0)
+        val a = floatArrayOf(1.0f, 2.0f, 3.0f)
+        val b = floatArrayOf(4.0f, 5.0f, 6.0f)
         val result = a dot b
         assertEquals(
-            expected = 32.0,
+            expected = 32.0f,
             actual = result,
         )
     }
@@ -23,15 +23,15 @@ class DotExtTest {
         //  [3, 4]]
         val a =
             arrayOf(
-                FloatArrayOf(1.0, 2.0),
-                FloatArrayOf(3.0, 4.0),
+                floatArrayOf(1.0f, 2.0f),
+                floatArrayOf(3.0f, 4.0f),
             )
         // [[1, 2],
         //  [3, 4]]
         val b =
             arrayOf(
-                FloatArrayOf(1.0, 2.0),
-                FloatArrayOf(3.0, 4.0),
+                floatArrayOf(1.0f, 2.0f),
+                floatArrayOf(3.0f, 4.0f),
             )
         val result = a dot b
 
@@ -41,7 +41,7 @@ class DotExtTest {
         // result[1][0] = a[0] dot b[1] = 1*3 + 2*4 = 11
         // result[1][1] = a[1] dot b[1] = 3*3 + 4*4 = 25
         assertEquals(expected = 2, actual = result.size)
-        assertEquals(expected = listOf(5.0, 11.0), actual = result[0].toList())
-        assertEquals(expected = listOf(11.0, 25.0), actual = result[1].toList())
+        assertEquals(expected = listOf(5.0f, 11.0f), actual = result[0].toList())
+        assertEquals(expected = listOf(11.0f, 25.0f), actual = result[1].toList())
     }
 }

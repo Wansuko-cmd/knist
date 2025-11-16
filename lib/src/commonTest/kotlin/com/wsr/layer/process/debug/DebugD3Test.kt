@@ -53,7 +53,7 @@ class DebugD3Test {
         )
 
         val expectedDelta = listOf(
-            IOType.d3(2, 2, 2) { _, _, _ -> 1.0 },
+            IOType.d3(2, 2, 2) { _, _, _ -> 1.0f },
         )
 
         val calcDelta: (List<IOType>) -> List<IOType> = { expectedDelta }

@@ -15,18 +15,18 @@ class LeakyReLUD1Test {
         // [[-2, -1, 0, 1]]
         val input =
             listOf(
-                IOType.d1(listOf(-2.0, -1.0, 0.0, 1.0)),
+                IOType.d1(listOf(-2.0f, -1.0f, 0.0f, 1.0f)),
             )
 
-        // [[0.01, 0.01, 0, 1]]
+        // [[0.01f, 0.01f, 0, 1]]
         val result = leakyRelu._expect(input)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D1
-        assertEquals(expected = 0.01, actual = output[0])
-        assertEquals(expected = 0.01, actual = output[1])
-        assertEquals(expected = 0.0, actual = output[2])
-        assertEquals(expected = 1.0, actual = output[3])
+        assertEquals(expected = 0.01f, actual = output[0])
+        assertEquals(expected = 0.01f, actual = output[1])
+        assertEquals(expected = 0.0f, actual = output[2])
+        assertEquals(expected = 1.0f, actual = output[3])
     }
 
     @Test
@@ -36,12 +36,12 @@ class LeakyReLUD1Test {
         // [[-1, 0, 1]]
         val input =
             listOf(
-                IOType.d1(listOf(-1.0, 0.0, 1.0)),
+                IOType.d1(listOf(-1.0f, 0.0f, 1.0f)),
             )
 
         // deltaは[2, 3, 4]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d1(listOf(2.0, 3.0, 4.0)))
+            listOf(IOType.d1(listOf(2.0f, 3.0f, 4.0f)))
         }
 
         val result = leakyRelu._train(input, calcDelta)
@@ -49,8 +49,8 @@ class LeakyReLUD1Test {
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D1
         // input[-1, 0, 1]なので、[-1]の位置は0.01倍、[0, 1]の位置はdeltaをそのまま返す
-        assertEquals(expected = 0.02, actual = dx[0])
-        assertEquals(expected = 3.0, actual = dx[1])
-        assertEquals(expected = 4.0, actual = dx[2])
+        assertEquals(expected = 0.02f, actual = dx[0])
+        assertEquals(expected = 3.0f, actual = dx[1])
+        assertEquals(expected = 4.0f, actual = dx[2])
     }
 }

@@ -17,23 +17,23 @@ class LeakyReLUD2Test {
             listOf(
                 IOType.d2(2, 2) { x, y ->
                     when {
-                        x == 0 && y == 0 -> -2.0
-                        x == 0 && y == 1 -> -1.0
-                        x == 1 && y == 0 -> 0.0
-                        else -> 1.0
+                        x == 0 && y == 0 -> -2.0f
+                        x == 0 && y == 1 -> -1.0f
+                        x == 1 && y == 0 -> 0.0f
+                        else -> 1.0f
                     }
                 },
             )
 
-        // [[0.01, 0.01], [0, 1]]
+        // [[0.01f, 0.01f], [0, 1]]
         val result = leakyRelu._expect(input)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
-        assertEquals(expected = 0.01, actual = output[0, 0])
-        assertEquals(expected = 0.01, actual = output[0, 1])
-        assertEquals(expected = 0.0, actual = output[1, 0])
-        assertEquals(expected = 1.0, actual = output[1, 1])
+        assertEquals(expected = 0.01f, actual = output[0, 0])
+        assertEquals(expected = 0.01f, actual = output[0, 1])
+        assertEquals(expected = 0.0f, actual = output[1, 0])
+        assertEquals(expected = 1.0f, actual = output[1, 1])
     }
 
     @Test
@@ -56,9 +56,9 @@ class LeakyReLUD2Test {
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2
         // input[[-1, 0], [1, 2]]なので、[-1]の位置は0.01倍、[0, 1, 2]の位置はdeltaをそのまま返す
-        assertEquals(expected = 0.02, actual = dx[0, 0])
-        assertEquals(expected = 3.0, actual = dx[0, 1])
-        assertEquals(expected = 4.0, actual = dx[1, 0])
-        assertEquals(expected = 5.0, actual = dx[1, 1])
+        assertEquals(expected = 0.02f, actual = dx[0, 0])
+        assertEquals(expected = 3.0f, actual = dx[0, 1])
+        assertEquals(expected = 4.0f, actual = dx[1, 0])
+        assertEquals(expected = 5.0f, actual = dx[1, 1])
     }
 }
