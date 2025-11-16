@@ -18,8 +18,8 @@ interface IBLAS {
      * @param incY ベクトルyのストライド (通常は1、配列の何要素ごとにアクセスするか)
      * @return 内積の結果 sum(x[i] * y[i])
      */
-    fun ddot(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): Double {
-        var result = 0.0
+    fun ddot(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): Float {
+        var result = 0f
         var xi = 0
         var yi = 0
 
@@ -44,7 +44,7 @@ interface IBLAS {
      * @param x ベクトルx (入出力: この配列が直接変更される)
      * @param incX ベクトルxのストライド (通常は1、配列の何要素ごとにアクセスするか)
      */
-    fun dscal(n: Int, alpha: Double, x: DoubleArray, incX: Int) {
+    fun dscal(n: Int, alpha: Float, x: FloatArray, incX: Int) {
         var xi = 0
         repeat(n) {
             x[xi] *= alpha
@@ -66,7 +66,7 @@ interface IBLAS {
      * @param y ベクトルy (入出力: この配列が直接変更される)
      * @param incY ベクトルyのストライド (通常は1、配列の何要素ごとにアクセスするか)
      */
-    fun daxpy(n: Int, alpha: Double, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int) {
+    fun daxpy(n: Int, alpha: Float, x: FloatArray, incX: Int, y: FloatArray, incY: Int) {
         var xi = 0
         var yi = 0
         repeat(n) {
@@ -99,13 +99,13 @@ interface IBLAS {
         trans: Boolean,
         m: Int,
         n: Int,
-        alpha: Double,
-        a: DoubleArray,
+        alpha: Float,
+        a: FloatArray,
         lda: Int,
-        x: DoubleArray,
+        x: FloatArray,
         incX: Int,
-        beta: Double,
-        y: DoubleArray,
+        beta: Float,
+        y: FloatArray,
         incY: Int,
     ) {
         val rows = if (trans) n else m
@@ -113,7 +113,7 @@ interface IBLAS {
 
         var yi = 0
         for (i in 0 until rows) {
-            var sum = 0.0
+            var sum = 0f
             var xi = 0
             for (j in 0 until cols) {
                 val aVal = if (trans) a[j * lda + i] else a[i * lda + j]
@@ -152,19 +152,19 @@ interface IBLAS {
         m: Int,
         n: Int,
         k: Int,
-        alpha: Double,
-        a: DoubleArray,
+        alpha: Float,
+        a: FloatArray,
         lda: Int,
-        b: DoubleArray,
+        b: FloatArray,
         ldb: Int,
-        beta: Double,
-        c: DoubleArray,
+        beta: Float,
+        c: FloatArray,
         ldc: Int,
     ) {
         // Default implementation: naive matrix multiplication
         for (i in 0 until m) {
             for (j in 0 until n) {
-                var sum = 0.0
+                var sum = 0f
                 for (p in 0 until k) {
                     val aVal = if (transA) a[p * lda + i] else a[i * lda + p]
                     val bVal = if (transB) b[j * ldb + p] else b[p * ldb + j]

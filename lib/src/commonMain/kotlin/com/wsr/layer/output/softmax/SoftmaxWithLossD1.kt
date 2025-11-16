@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal class SoftmaxWithLossD1 internal constructor(
     val outputSize: Int,
-    val temperature: Double,
+    val temperature: Float,
     val maskValue: Int? = null,
 ) : Output.D1() {
     override fun expect(input: List<IOType.D1>): List<IOType.D1> {
@@ -40,12 +40,12 @@ internal class SoftmaxWithLossD1 internal constructor(
     private fun List<IOType.D1>.generateMask() = map { label ->
         val value = label.value
         IOType.d1(
-            value = DoubleArray(value.size) { if (value[it] == maskValue?.toDouble()) 0.0 else 1.0 },
+            value = FloatArray(value.size) { if (value[it] == maskValue?.toFloat()) 0f else 1f },
         )
     }
 }
 
-fun <T> NetworkBuilder.D1<T>.softmaxWithLoss(temperature: Double = 1.0, maskValue: Int? = null) = addOutput(
+fun <T> NetworkBuilder.D1<T>.softmaxWithLoss(temperature: Float = 1f, maskValue: Int? = null) = addOutput(
     output = SoftmaxWithLossD1(
         outputSize = inputSize,
         temperature = temperature,
@@ -55,7 +55,7 @@ fun <T> NetworkBuilder.D1<T>.softmaxWithLoss(temperature: Double = 1.0, maskValu
 
 fun <I, O> NetworkBuilder.D1<I>.softmaxWithLoss(
     converter: NetworkBuilder.D1<I>.() -> Converter.D1<O>,
-    temperature: Double = 1.0,
+    temperature: Float = 1f,
     maskValue: Int? = null,
 ) = addOutput(
     output = SoftmaxWithLossD1(

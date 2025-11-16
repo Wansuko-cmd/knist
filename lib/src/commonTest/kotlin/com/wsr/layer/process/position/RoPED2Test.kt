@@ -17,7 +17,7 @@ class RoPED2Test {
         // 入力は[[1, 2, 3, 4], [5, 6, 7, 8]]
         val input =
             listOf(
-                IOType.d2(2, 4) { x, y -> (x * 4 + y + 1).toDouble() },
+                IOType.d2(2, 4) { x, y -> (x * 4 + y + 1).toFloat() },
             )
 
         val result = rope._expect(input)
@@ -72,7 +72,7 @@ class RoPED2Test {
         // 入力は[[1, 2, 3, 4], [5, 6, 7, 8]]
         val input =
             listOf(
-                IOType.d2(2, 4) { x, y -> (x * 4 + y + 1).toDouble() },
+                IOType.d2(2, 4) { x, y -> (x * 4 + y + 1).toFloat() },
             )
 
         // deltaは[[0.1, 0.2, 0.3, 0.4], [0.5, 0.6, 0.7, 0.8]]を返す

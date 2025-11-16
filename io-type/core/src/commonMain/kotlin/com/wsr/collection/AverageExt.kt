@@ -4,58 +4,58 @@ import com.wsr.BLAS
 import com.wsr.IOType
 import com.wsr.reshape.transpose
 
-fun IOType.D1.average(): Double = value.average()
+fun IOType.D1.average(): Float = value.average().toFloat()
 
 @JvmName("averageToD1s")
-fun List<IOType.D1>.average(): List<Double> = map { it.average() }
+fun List<IOType.D1>.average(): List<Float> = map { it.average() }
 
-fun IOType.D2.average(): Double = value.average()
+fun IOType.D2.average(): Float = value.average().toFloat()
 
 @JvmName("averageToD2s")
-fun List<IOType.D2>.average(): List<Double> = map { it.average() }
+fun List<IOType.D2>.average(): List<Float> = map { it.average() }
 
 fun IOType.D2.average(axis: Int) = when (axis) {
     0 -> {
         // 列方向の平均: 各列の要素を合計して要素数で割る
-        val ones = DoubleArray(shape[0]) { 1.0 }
-        val result = DoubleArray(shape[1])
+        val ones = FloatArray(shape[0]) { 1f }
+        val result = FloatArray(shape[1])
         BLAS.dgemv(
             trans = true,
             m = shape[0],
             n = shape[1],
-            alpha = 1.0,
+            alpha = 1f,
             a = value,
             lda = shape[1],
             x = ones,
             incX = 1,
-            beta = 0.0,
+            beta = 0f,
             y = result,
             incY = 1,
         )
         // 行数で割って平均を計算
-        BLAS.dscal(n = result.size, alpha = 1.0 / shape[0], x = result, incX = 1)
+        BLAS.dscal(n = result.size, alpha = 1f / shape[0], x = result, incX = 1)
         IOType.d1(result)
     }
 
     1 -> {
         // 行方向の平均: 各行の要素を合計して要素数で割る
-        val ones = DoubleArray(shape[1]) { 1.0 }
-        val result = DoubleArray(shape[0])
+        val ones = FloatArray(shape[1]) { 1f }
+        val result = FloatArray(shape[0])
         BLAS.dgemv(
             trans = false,
             m = shape[0],
             n = shape[1],
-            alpha = 1.0,
+            alpha = 1f,
             a = value,
             lda = shape[1],
             x = ones,
             incX = 1,
-            beta = 0.0,
+            beta = 0f,
             y = result,
             incY = 1,
         )
         // 列数で割って平均を計算
-        BLAS.dscal(n = result.size, alpha = 1.0 / shape[1], x = result, incX = 1)
+        BLAS.dscal(n = result.size, alpha = 1f / shape[1], x = result, incX = 1)
         IOType.d1(result)
     }
 
@@ -65,10 +65,10 @@ fun IOType.D2.average(axis: Int) = when (axis) {
 @JvmName("averageAxisToD2s")
 fun List<IOType.D2>.average(axis: Int) = map { it.average(axis) }
 
-fun IOType.D3.average(): Double = value.average()
+fun IOType.D3.average(): Float = value.average().toFloat()
 
 @JvmName("averageToD3s")
-fun List<IOType.D3>.average(): List<Double> = map { it.average() }
+fun List<IOType.D3>.average(): List<Float> = map { it.average() }
 
 fun IOType.D3.average(axis: Int) = when (axis) {
     0 -> {

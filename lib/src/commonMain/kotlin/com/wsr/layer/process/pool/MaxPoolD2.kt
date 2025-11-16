@@ -16,7 +16,7 @@ class MaxPoolD2 internal constructor(val poolSize: Int, val channel: Int, val in
             invalid parameter.
             inputSize: $inputSize
             poolSize: $poolSize
-            output: ${inputSize / poolSize.toDouble()}
+            output: ${inputSize / poolSize.toFloat()}
             """.trimIndent()
         }
     }
@@ -29,7 +29,7 @@ class MaxPoolD2 internal constructor(val poolSize: Int, val channel: Int, val in
         return List(input.size) { index ->
             IOType.d2(channel, inputSize) { c, i ->
                 val o = i / poolSize
-                if (input[index][c, i] == output[index][c, o]) delta[index][c, o] else 0.0
+                if (input[index][c, i] == output[index][c, o]) delta[index][c, o] else 0f
             }
         }
     }

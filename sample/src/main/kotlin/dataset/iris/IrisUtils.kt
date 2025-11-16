@@ -15,7 +15,7 @@ fun createIrisModel(epoc: Int) {
     val (train, test) = irisDatasets.shuffled() to irisDatasets.shuffled()
     val network =
         NetworkBuilder
-            .inputD1(inputSize = 4, optimizer = Sgd(0.01), initializer = He())
+            .inputD1(inputSize = 4, optimizer = Sgd(0.01f), initializer = He())
             .affine(neuron = 50)
             .bias()
             .reLU()
@@ -34,7 +34,7 @@ fun createIrisModel(epoc: Int) {
                         data.sepalWidth,
                     ),
                 ),
-                label = IOType.d1(3) { if (data.label == it) 1.0 else 0.0 },
+                label = IOType.d1(3) { if (data.label == it) 1f else 0f },
             )
         }
     }
@@ -54,5 +54,5 @@ fun createIrisModel(epoc: Int) {
                 ).value
                 .toTypedArray()
                 .maxIndex() == data.label
-        }.let { println(it.toDouble() / test.size.toDouble()) }
+        }.let { println(it.toFloat() / test.size.toFloat()) }
 }

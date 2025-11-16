@@ -13,8 +13,8 @@ class DDotTest {
         // x = [1.0, 2.0, 3.0]
         // y = [4.0, 5.0, 6.0]
         // result = 1*4 + 2*5 + 3*6 = 4 + 10 + 18 = 32
-        val x = doubleArrayOf(1.0, 2.0, 3.0)
-        val y = doubleArrayOf(4.0, 5.0, 6.0)
+        val x = FloatArrayOf(1.0, 2.0, 3.0)
+        val y = FloatArrayOf(4.0, 5.0, 6.0)
 
         val result = blas.ddot(
             n = 3,
@@ -32,8 +32,8 @@ class DDotTest {
         // x = [1.0, 99.0, 2.0, 99.0, 3.0]  (incX=2でアクセス: [1.0, 2.0, 3.0])
         // y = [4.0, 99.0, 5.0, 99.0, 6.0]  (incY=2でアクセス: [4.0, 5.0, 6.0])
         // result = 1*4 + 2*5 + 3*6 = 32
-        val x = doubleArrayOf(1.0, 99.0, 2.0, 99.0, 3.0)
-        val y = doubleArrayOf(4.0, 99.0, 5.0, 99.0, 6.0)
+        val x = FloatArrayOf(1.0, 99.0, 2.0, 99.0, 3.0)
+        val y = FloatArrayOf(4.0, 99.0, 5.0, 99.0, 6.0)
 
         val result = blas.ddot(
             n = 3,
@@ -48,8 +48,8 @@ class DDotTest {
 
     @Test
     fun `ddot_ゼロベクトル=0を返す`() {
-        val x = doubleArrayOf(1.0, 2.0, 3.0)
-        val y = doubleArrayOf(0.0, 0.0, 0.0)
+        val x = FloatArrayOf(1.0, 2.0, 3.0)
+        val y = FloatArrayOf(0.0, 0.0, 0.0)
 
         val result = blas.ddot(
             n = 3,

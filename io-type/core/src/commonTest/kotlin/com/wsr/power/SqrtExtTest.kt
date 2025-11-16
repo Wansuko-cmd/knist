@@ -42,7 +42,7 @@ class SqrtExtTest {
         // [[[1, 4], [9, 16]], [[25, 36], [49, 64]]]
         val a = IOType.d3(2, 2, 2) { x, y, z ->
             val idx = x * 4 + y * 2 + z + 1
-            (idx * idx).toDouble()
+            (idx * idx).toFloat()
         }
         val result = a.sqrt(e = 0.0)
 

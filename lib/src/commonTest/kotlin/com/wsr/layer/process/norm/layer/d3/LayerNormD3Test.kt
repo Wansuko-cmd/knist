@@ -23,8 +23,8 @@ class LayerNormD3Test {
         // 2つのバッチ: [[[0, 2], [2, 4]], [[4, 6], [6, 8]]], [[[2, 4], [4, 6]], [[6, 8], [8, 10]]]
         val input =
             listOf(
-                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2).toDouble() },
-                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2 + 2).toDouble() },
+                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2).toFloat() },
+                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2 + 2).toFloat() },
             )
 
         val result = norm._expect(input)
@@ -137,8 +137,8 @@ class LayerNormD3Test {
         // 2つのバッチ: [[[0, 2], [2, 4]], [[4, 6], [6, 8]]], [[[2, 4], [4, 6]], [[6, 8], [8, 10]]]
         val input =
             listOf(
-                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2).toDouble() },
-                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2 + 2).toDouble() },
+                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2).toFloat() },
+                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2 + 2).toFloat() },
             )
 
         // deltaは全て[[[1, 1], [1, 1]], [[1, 1], [1, 1]]]を返す
@@ -206,7 +206,7 @@ class LayerNormD3Test {
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
             listOf(
-                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
+                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
 
         // deltaは[[[1, 0.5], [-1, 0.8]], [[0.7, -0.5], [0.9, 1.2]]]を返す（任意の勾配）
@@ -229,12 +229,12 @@ class LayerNormD3Test {
 
         // 数値微分でdxを計算
         val epsilon = 1e-5
-        val numericalGradients = mutableListOf<List<List<Double>>>()
+        val numericalGradients = mutableListOf<List<List<Float>>>()
 
         for (i in 0 until 2) {
-            val plane = mutableListOf<List<Double>>()
+            val plane = mutableListOf<List<Float>>()
             for (j in 0 until 2) {
-                val row = mutableListOf<Double>()
+                val row = mutableListOf<Float>()
                 for (k in 0 until 2) {
                     // input[i, j, k]を少し増やす
                     val inputPlus = input[0].value.copyOf()
@@ -279,7 +279,7 @@ class LayerNormD3Test {
      * 損失関数（テスト用）
      * loss = Σ(output_ijk * delta_ijk)
      */
-    private fun calcLoss(output: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): Double {
+    private fun calcLoss(output: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): Float {
         val delta = calcDelta(output)[0] as IOType.D3
         val out = output[0] as IOType.D3
         var loss = 0.0

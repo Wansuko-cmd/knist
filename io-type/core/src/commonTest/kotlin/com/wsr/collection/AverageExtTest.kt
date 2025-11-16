@@ -20,7 +20,7 @@ class AverageExtTest {
     fun `D2のaverage=全体の平均`() {
         // [[1, 2, 3],
         //  [4, 5, 6]]
-        val input = IOType.Companion.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() }
+        val input = IOType.Companion.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
         // (1+2+3+4+5+6)/6 = 21/6 = 3.5
         val result = input.average()
         assertEquals(expected = 3.5, actual = result)
@@ -30,7 +30,7 @@ class AverageExtTest {
     fun `D3のaverage=全体の平均`() {
         // [[[1, 2], [3, 4]],
         //  [[5, 6], [7, 8]]]
-        val input = IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val input = IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         // (1+2+3+4+5+6+7+8)/8 = 36/8 = 4.5
         val result = input.average()
         assertEquals(expected = 4.5, actual = result)
@@ -40,7 +40,7 @@ class AverageExtTest {
     fun `D2のaverage_axis0=列方向の平均`() {
         // [[1, 2, 3],
         //  [4, 5, 6]]
-        val input = IOType.Companion.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() }
+        val input = IOType.Companion.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
         // axis=0: 各列の平均 = [(1+4)/2, (2+5)/2, (3+6)/2] = [2.5, 3.5, 4.5]
         val result = input.average(axis = 0)
         assertEquals(expected = IOType.Companion.d1(listOf(2.5, 3.5, 4.5)), actual = result)
@@ -50,7 +50,7 @@ class AverageExtTest {
     fun `D2のaverage_axis1=行方向の平均`() {
         // [[1, 2, 3],
         //  [4, 5, 6]]
-        val input = IOType.Companion.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() }
+        val input = IOType.Companion.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
         // axis=1: 各行の平均 = [(1+2+3)/3, (4+5+6)/3] = [2.0, 5.0]
         val result = input.average(axis = 1)
         assertEquals(expected = IOType.Companion.d1(listOf(2.0, 5.0)), actual = result)
@@ -60,7 +60,7 @@ class AverageExtTest {
     fun `D3のaverage_axis0=第0軸方向の平均`() {
         // [[[1, 2], [3, 4]],
         //  [[5, 6], [7, 8]]]
-        val input = IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val input = IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         // axis=0: [[(1+5)/2, (2+6)/2], [(3+7)/2, (4+8)/2]] = [[3.0, 4.0], [5.0, 6.0]]
         val result = input.average(axis = 0)
         assertEquals(
@@ -73,7 +73,7 @@ class AverageExtTest {
     fun `D3のaverage_axis1=第1軸方向の平均`() {
         // [[[1, 2], [3, 4]],
         //  [[5, 6], [7, 8]]]
-        val input = IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val input = IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         // axis=1: [[(1+3)/2, (2+4)/2], [(5+7)/2, (6+8)/2]] = [[2.0, 3.0], [6.0, 7.0]]
         val result = input.average(axis = 1)
         assertEquals(
@@ -86,7 +86,7 @@ class AverageExtTest {
     fun `D3のaverage_axis2=第2軸方向の平均`() {
         // [[[1, 2], [3, 4]],
         //  [[5, 6], [7, 8]]]
-        val input = IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val input = IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         // axis=2: [[(1+2)/2, (3+4)/2], [(5+6)/2, (7+8)/2]] = [[1.5, 3.5], [5.5, 7.5]]
         val result = input.average(axis = 2)
         assertEquals(

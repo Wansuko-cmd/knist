@@ -54,11 +54,11 @@ class DropoutD1Test {
             listOf(IOType.d1(listOf(2.0, 4.0, 6.0)))
         }
 
-        // seed=42でrandom.nextDouble(0.0, 1.0)を3回呼び出したときの値を事前計算
+        // seed=42でrandom.nextFloat(0.0, 1.0)を3回呼び出したときの値を事前計算
         // Inverted Dropoutでは、マスクは0または1/ratio (= 2.0)
         val testRandom = Random(42)
         val q = 1.0 / 0.5 // 2.0
-        val expectedMask = List(3) { if (testRandom.nextDouble(0.0, 1.0) <= 0.5) q else 0.0 }
+        val expectedMask = List(3) { if (testRandom.nextFloat(0.0, 1.0) <= 0.5) q else 0.0 }
 
         val result = dropout._train(input, calcDelta)
 

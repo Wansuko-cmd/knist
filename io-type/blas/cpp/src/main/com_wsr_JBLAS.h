@@ -12,8 +12,8 @@ extern "C" {
  * Method:    ddot
  * Signature: (I[DI[DI)D
  */
-JNIEXPORT jdouble JNICALL Java_com_wsr_JBLAS_ddot
-  (JNIEnv *, jobject, jint, jdoubleArray, jint, jdoubleArray, jint);
+JNIEXPORT jFloat JNICALL Java_com_wsr_JBLAS_ddot
+  (JNIEnv *, jobject, jint, jFloatArray, jint, jFloatArray, jint);
 
 /*
  * Class:     com_wsr_JBLAS
@@ -21,7 +21,7 @@ JNIEXPORT jdouble JNICALL Java_com_wsr_JBLAS_ddot
  * Signature: (ID[DI)V
  */
 JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dscal
-  (JNIEnv *, jobject, jint, jdouble, jdoubleArray, jint);
+  (JNIEnv *, jobject, jint, jFloat, jFloatArray, jint);
 
 /*
  * Class:     com_wsr_JBLAS
@@ -29,7 +29,7 @@ JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dscal
  * Signature: (ID[DI[DI)V
  */
 JNIEXPORT void JNICALL Java_com_wsr_JBLAS_daxpy
-  (JNIEnv *, jobject, jint, jdouble, jdoubleArray, jint, jdoubleArray, jint);
+  (JNIEnv *, jobject, jint, jFloat, jFloatArray, jint, jFloatArray, jint);
 
 /*
  * Class:     com_wsr_JBLAS
@@ -37,7 +37,7 @@ JNIEXPORT void JNICALL Java_com_wsr_JBLAS_daxpy
  * Signature: (ZZIIID[DI[DID[DI)V
  */
 JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dgemm
-  (JNIEnv *, jobject, jboolean, jboolean, jint, jint, jint, jdouble, jdoubleArray, jint, jdoubleArray, jint, jdouble, jdoubleArray, jint);
+  (JNIEnv *, jobject, jboolean, jboolean, jint, jint, jint, jFloat, jFloatArray, jint, jFloatArray, jint, jFloat, jFloatArray, jint);
 
 /*
  * Class:     com_wsr_JBLAS
@@ -45,7 +45,7 @@ JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dgemm
  * Signature: (ZIID[DI[DID[DI)V
  */
 JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dgemv
-  (JNIEnv *, jobject, jboolean, jint, jint, jdouble, jdoubleArray, jint, jdoubleArray, jint, jdouble, jdoubleArray, jint);
+  (JNIEnv *, jobject, jboolean, jint, jint, jFloat, jFloatArray, jint, jFloatArray, jint, jFloat, jFloatArray, jint);
 
 #ifdef __cplusplus
 }

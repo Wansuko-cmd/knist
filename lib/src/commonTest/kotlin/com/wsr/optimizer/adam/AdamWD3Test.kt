@@ -15,14 +15,14 @@ class AdamWD3Test {
                 momentum = 0.9,
                 rms = 0.999,
                 decay = 0.01,
-                maxNorm = Double.MAX_VALUE,
+                maxNorm = Float.MAX_VALUE,
                 shape = listOf(1, 1, 2),
             )
 
         // weight = [[[10, 20]]]
         val weight = IOType.d3(1, 1, 2) { _, _, z -> (z + 1) * 10.0 }
         // dw = [[[1, 2]]]
-        val dw = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toDouble() }
+        val dw = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() }
 
         val result = adamWD3.adapt(weight, dw)
 
@@ -42,13 +42,13 @@ class AdamWD3Test {
                 momentum = 0.9,
                 rms = 0.999,
                 decay = 0.01,
-                maxNorm = Double.MAX_VALUE,
+                maxNorm = Float.MAX_VALUE,
                 shape = listOf(1, 1, 2),
             )
 
         // 1回目
         var weight = IOType.d3(1, 1, 2) { _, _, _ -> 10.0 }
-        val dw1 = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toDouble() }
+        val dw1 = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() }
         val result1 = adamWD3.adapt(weight, dw1)
 
         // dw1 = [[[1, 2]]]
@@ -59,7 +59,7 @@ class AdamWD3Test {
 
         // 2回目
         weight = result1
-        val dw2 = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toDouble() }
+        val dw2 = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() }
         val result2 = adamWD3.adapt(weight, dw2)
 
         // モーメントが蓄積され、バイアス補正も変化し、Weight Decayも適用される

@@ -20,7 +20,7 @@ class PowExtTest {
     @Test
     fun `D2のpow=各要素をn乗する`() {
         // [[2, 3], [4, 5]]
-        val a = IOType.d2(2, 2) { x, y -> (x * 2 + y + 2).toDouble() }
+        val a = IOType.d2(2, 2) { x, y -> (x * 2 + y + 2).toFloat() }
         val result = a.pow(2)
 
         // [[4, 9], [16, 25]]
@@ -33,7 +33,7 @@ class PowExtTest {
     @Test
     fun `D3のpow=各要素をn乗する`() {
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         val result = a.pow(2)
 
         // [[[1, 4], [9, 16]], [[25, 36], [49, 64]]]

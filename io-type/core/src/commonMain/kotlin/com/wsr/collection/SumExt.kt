@@ -5,25 +5,25 @@ import com.wsr.IOType
 
 fun IOType.D1.sum() = value.sum()
 
-fun List<IOType.D1>.sum(): List<Double> = map { it.sum() }
+fun List<IOType.D1>.sum(): List<Float> = map { it.sum() }
 
 fun IOType.D2.sum() = value.sum()
 
 fun IOType.D2.sum(axis: Int): IOType.D1 = when (axis) {
     0 -> {
         // 列方向の合計: 各列の要素を合計
-        val ones = DoubleArray(shape[0]) { 1.0 }
-        val result = DoubleArray(shape[1])
+        val ones = FloatArray(shape[0]) { 1f }
+        val result = FloatArray(shape[1])
         BLAS.dgemv(
             trans = true,
             m = shape[0],
             n = shape[1],
-            alpha = 1.0,
+            alpha = 1f,
             a = value,
             lda = shape[1],
             x = ones,
             incX = 1,
-            beta = 0.0,
+            beta = 0f,
             y = result,
             incY = 1,
         )
@@ -32,18 +32,18 @@ fun IOType.D2.sum(axis: Int): IOType.D1 = when (axis) {
 
     1 -> {
         // 行方向の合計: 各行の要素を合計
-        val ones = DoubleArray(shape[1]) { 1.0 }
-        val result = DoubleArray(shape[0])
+        val ones = FloatArray(shape[1]) { 1f }
+        val result = FloatArray(shape[0])
         BLAS.dgemv(
             trans = false,
             m = shape[0],
             n = shape[1],
-            alpha = 1.0,
+            alpha = 1f,
             a = value,
             lda = shape[1],
             x = ones,
             incX = 1,
-            beta = 0.0,
+            beta = 0f,
             y = result,
             incY = 1,
         )

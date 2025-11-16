@@ -25,7 +25,7 @@ class MinMaxNormD3Test {
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
             listOf(
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
 
         val result = norm._expect(input)
@@ -60,7 +60,7 @@ class MinMaxNormD3Test {
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
             listOf(
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
 
         // deltaは[[[1, 1], [1, 1]], [[1, 1], [1, 1]]]を返す
@@ -94,7 +94,7 @@ class MinMaxNormD3Test {
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]] - min=1, max=8
         val input =
             listOf(
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
 
         // deltaは[[[1, 1], [1, 1]], [[1, 1], [1, 1]]]を返す

@@ -10,13 +10,13 @@ import com.wsr.power.pow
 import com.wsr.power.sqrt
 import kotlinx.serialization.Serializable
 
-private const val E = 1e-8
+private const val E = 1e-8f
 
 @Serializable
 data class RmsProp(
-    private val rate: Double,
-    private val rms: Double = 0.9,
-    private val maxNorm: Double = Double.MAX_VALUE,
+    private val rate: Float,
+    private val rms: Float = 0.9f,
+    private val maxNorm: Float = Float.MAX_VALUE,
 ) : Optimizer {
     override fun d1(size: Int): Optimizer.D1 = RmsPropD1(
         rate = rate,
@@ -42,9 +42,9 @@ data class RmsProp(
 
 @Serializable
 internal data class RmsPropD1(
-    private val rate: Double,
-    private val rms: Double,
-    private val maxNorm: Double,
+    private val rate: Float,
+    private val rms: Float,
+    private val maxNorm: Float,
     private val shape: List<Int>,
 ) : Optimizer.D1(maxNorm) {
     private var velocity: IOType.D1 = IOType.d1(shape)
@@ -58,9 +58,9 @@ internal data class RmsPropD1(
 
 @Serializable
 internal data class RmsPropD2(
-    private val rate: Double,
-    private val rms: Double,
-    private val maxNorm: Double,
+    private val rate: Float,
+    private val rms: Float,
+    private val maxNorm: Float,
     private val shape: List<Int>,
 ) : Optimizer.D2(maxNorm) {
     private var velocity: IOType.D2 = IOType.d2(shape)
@@ -74,9 +74,9 @@ internal data class RmsPropD2(
 
 @Serializable
 internal data class RmsPropD3(
-    private val rate: Double,
-    private val rms: Double,
-    private val maxNorm: Double,
+    private val rate: Float,
+    private val rms: Float,
+    private val maxNorm: Float,
     private val shape: List<Int>,
 ) : Optimizer.D3(maxNorm) {
     private var velocity: IOType.D3 = IOType.d3(shape)

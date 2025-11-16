@@ -9,12 +9,12 @@ import kotlin.test.assertEquals
 class SgdD3Test {
     @Test
     fun `SgdD3の_adapt=勾配に学習率を乗算した値を返す`() {
-        val sgdD3 = SgdD3(rate = 0.1, maxNorm = Double.MAX_VALUE)
+        val sgdD3 = SgdD3(rate = 0.1, maxNorm = Float.MAX_VALUE)
 
         // weight = [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
-        val weight = IOType.d3(2, 2, 2) { x, y, z -> (x * 40 + y * 20 + z * 10 + 10).toDouble() }
+        val weight = IOType.d3(2, 2, 2) { x, y, z -> (x * 40 + y * 20 + z * 10 + 10).toFloat() }
         // dw = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val dw = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val dw = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
 
         // adapt = weight - 0.1 * dw
         val result = sgdD3.adapt(weight = weight, dw = dw)

@@ -22,7 +22,7 @@ class BiasD3Test {
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
             listOf(
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
 
         val result = bias._expect(input)
@@ -54,7 +54,7 @@ class BiasD3Test {
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
             listOf(
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
 
         // 全て1のdelta
@@ -89,7 +89,7 @@ class BiasD3Test {
     @Test
     fun `BiasD3の_train=バイアスが更新され、期待通りの出力になる`() {
         // weight = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val weight = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val weight = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         val bias = BiasD3(
             outputX = 2,
             outputY = 2,
@@ -101,7 +101,7 @@ class BiasD3Test {
         // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
             listOf(
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
 
         // deltaは[[[2, 4], [6, 8]], [[10, 12], [14, 16]]]を返す

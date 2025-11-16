@@ -19,7 +19,7 @@ class MaxPoolD3Test {
         //   [13, 14, 15, 16]]]
         val input =
             listOf(
-                IOType.d3(1, 4, 4) { _, y, z -> (y * 4 + z + 1).toDouble() },
+                IOType.d3(1, 4, 4) { _, y, z -> (y * 4 + z + 1).toFloat() },
             )
 
         val result = maxPool._expect(input)
@@ -51,7 +51,7 @@ class MaxPoolD3Test {
         // 1チャネル、4x4の入力
         val input =
             listOf(
-                IOType.d3(1, 4, 4) { _, y, z -> (y * 4 + z + 1).toDouble() },
+                IOType.d3(1, 4, 4) { _, y, z -> (y * 4 + z + 1).toFloat() },
             )
 
         // 全て1のdelta (2x2)

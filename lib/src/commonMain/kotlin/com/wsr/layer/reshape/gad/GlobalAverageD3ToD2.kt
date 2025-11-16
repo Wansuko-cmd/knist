@@ -19,7 +19,7 @@ internal class GlobalAverageD3ToD2(private val inputX: Int, private val inputY: 
         val output = forward(input)
         val delta = calcDelta(output)
         return List(input.size) {
-            val delta = delta[it] / inputX.toDouble()
+            val delta = delta[it] / inputX.toFloat()
             IOType.d3(inputX, inputY, inputZ) { _, y, z -> delta[y, z] }
         }
     }
@@ -27,7 +27,7 @@ internal class GlobalAverageD3ToD2(private val inputX: Int, private val inputY: 
     private fun forward(input: List<IOType.D3>) = input.map { input ->
         val input = input.transpose(axisI = 2, axisJ = 0, axisK = 1)
         IOType.d2(outputX, outputY) { x, y ->
-            input[x, y].value.average()
+            input[x, y].value.average().toFloat()
         }
     }
 }

@@ -15,7 +15,7 @@ class AdamWD1Test {
                 momentum = 0.9,
                 rms = 0.999,
                 decay = 0.01,
-                maxNorm = Double.MAX_VALUE,
+                maxNorm = Float.MAX_VALUE,
                 shape = listOf(2),
             )
 
@@ -49,7 +49,7 @@ class AdamWD1Test {
                 momentum = 0.9,
                 rms = 0.999,
                 decay = 0.01,
-                maxNorm = Double.MAX_VALUE,
+                maxNorm = Float.MAX_VALUE,
                 shape = listOf(2),
             )
 

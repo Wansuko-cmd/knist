@@ -14,7 +14,7 @@ class AffineD1Test {
         // 入力2次元、出力3次元
         // weight = [[1, 2, 3],
         //           [4, 5, 6]]
-        val weight = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
         val affine =
             AffineD1(
                 outputSize = 3,
@@ -48,7 +48,7 @@ class AffineD1Test {
     fun `AffineD1の_train=逆伝播を計算して重みを更新`() {
         // weight = [[1, 2],
         //           [3, 4]]
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val affine =
             AffineD1(
                 outputSize = 2,
@@ -83,7 +83,7 @@ class AffineD1Test {
     fun `AffineD1の_train=重みが更新され、期待通りの出力になる`() {
         // weight = [[1, 2],
         //           [3, 4]]
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val affine =
             AffineD1(
                 outputSize = 2,

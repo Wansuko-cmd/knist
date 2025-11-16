@@ -9,12 +9,12 @@ import kotlin.test.assertEquals
 class MomentumD3Test {
     @Test
     fun `MomentumD3の_adapt=初回呼び出し時はSGDと同じ`() {
-        val momentumD3 = MomentumD3(rate = 0.1, momentum = 0.9, maxNorm = Double.MAX_VALUE, shape = listOf(1, 1, 2))
+        val momentumD3 = MomentumD3(rate = 0.1, momentum = 0.9, maxNorm = Float.MAX_VALUE, shape = listOf(1, 1, 2))
 
         // weight = [[[10, 20]]]
         val weight = IOType.d3(1, 1, 2) { _, _, z -> (z + 1) * 10.0 }
         // dw = [[[1, 2]]]
-        val dw = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toDouble() }
+        val dw = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() }
 
         // 初回: v_0 = 0, adapt = weight - 0.1 * dw
         val result = momentumD3.adapt(weight, dw)
@@ -25,17 +25,17 @@ class MomentumD3Test {
 
     @Test
     fun `MomentumD3の_adapt=2回目以降はvelocityが蓄積される`() {
-        val momentumD3 = MomentumD3(rate = 0.1, momentum = 0.9, maxNorm = Double.MAX_VALUE, shape = listOf(1, 1, 2))
+        val momentumD3 = MomentumD3(rate = 0.1, momentum = 0.9, maxNorm = Float.MAX_VALUE, shape = listOf(1, 1, 2))
 
         // 1回目
         var weight = IOType.d3(1, 1, 2) { _, _, z -> (z + 1) * 10.0 }
-        val dw1 = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toDouble() }
+        val dw1 = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() }
         weight = momentumD3.adapt(weight, dw1)
         // v_1 = [[[1, 2]]]
         // weight = [[[10, 20]]] - [[[0.1, 0.2]]] = [[[9.9, 19.8]]]
 
         // 2回目
-        val dw2 = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toDouble() }
+        val dw2 = IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() }
 
         // v_2 = 0.9 * [[[1, 2]]] + [[[1, 2]]]
         //     = [[[0.9, 1.8]]] + [[[1, 2]]]

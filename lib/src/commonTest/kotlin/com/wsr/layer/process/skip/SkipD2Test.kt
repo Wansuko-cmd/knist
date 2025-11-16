@@ -71,11 +71,11 @@ class SkipD2Test {
         )
 
         // input = [[1, 2, 3]]
-        val input = listOf(IOType.d2(1, 3) { x, y -> (y + 1).toDouble() })
+        val input = listOf(IOType.d2(1, 3) { x, y -> (y + 1).toFloat() })
 
         // 次の層からのdelta = [[10, 20, 30]]
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(1, 3) { x, y -> ((y + 1) * 10).toDouble() })
+            listOf(IOType.d2(1, 3) { x, y -> ((y + 1) * 10).toFloat() })
         }
 
         val result = skip._train(input, calcDelta)
@@ -237,7 +237,7 @@ class SkipD2Test {
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(
                 IOType.d2(3, 3) { x, y ->
-                    ((x * 3 + y + 1) * 10).toDouble()
+                    ((x * 3 + y + 1) * 10).toFloat()
                 },
             )
         }
@@ -282,7 +282,7 @@ class SkipD2Test {
         // input = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]]
         val input = listOf(
             IOType.d2(4, 4) { x, y ->
-                (x * 4 + y + 1).toDouble()
+                (x * 4 + y + 1).toFloat()
             },
         )
 
@@ -369,7 +369,7 @@ class SkipD2Test {
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(
                 IOType.d2(2, 2) { x, y ->
-                    ((x * 2 + y + 1) * 40).toDouble()
+                    ((x * 2 + y + 1) * 40).toFloat()
                 },
             )
         }

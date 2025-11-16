@@ -1,28 +1,29 @@
 package dataset.signal
 
+import com.wsr.nextFloat
 import kotlin.math.sign
 import kotlin.math.sin
 import kotlin.random.Random
 
-fun signal0(t: Double) = (sign(3 * t))
+fun signal0(t: Float) = (sign(3 * t))
 
-fun signal1(t: Double) = (sin(t))
+fun signal1(t: Float) = (sin(t))
 
-data class SignalDataset(val signal: List<Double>, val label: Int)
+data class SignalDataset(val signal: List<Float>, val label: Int)
 
 private val signal0Datasets =
     (1..1000000)
-        .map { it.toDouble() / 2.0 }
+        .map { it.toFloat() / 2f }
         .map { signal0(it) }
-        .map { it + Random.nextDouble(-0.01, 0.01) }
+        .map { it + Random.nextFloat(-0.01f, 0.01f) }
         .chunked(64)
         .dropLast(1)
 
 private val signal1Datasets =
     (1..1000000)
-        .map { it.toDouble() / 2.0 }
+        .map { it.toFloat() / 2f }
         .map { signal1(it) }
-        .map { it + Random.nextDouble(-0.01, 0.01) }
+        .map { it + Random.nextFloat(-0.01f, 0.01f) }
         .chunked(64)
         .dropLast(1)
 

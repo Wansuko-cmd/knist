@@ -12,7 +12,7 @@ class BiasD2Test {
     @Test
     fun `BiasD2の_expect=入力にバイアスを足した値を返す`() {
         // weight = [[1, 2], [3, 4]]
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val bias =
             BiasD2(
                 outputX = 2,
@@ -27,7 +27,7 @@ class BiasD2Test {
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         // [[1+1, 2+2], [3+3, 4+4]] = [[2, 4], [6, 8]]
@@ -44,7 +44,7 @@ class BiasD2Test {
     @Test
     fun `BiasD2の_train=deltaをそのまま返し、バイアスを更新`() {
         // weight = [[1, 2], [3, 4]]
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val bias =
             BiasD2(
                 outputX = 2,
@@ -59,7 +59,7 @@ class BiasD2Test {
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         // deltaは[[2, 4], [6, 8]]を返す
@@ -81,7 +81,7 @@ class BiasD2Test {
     @Test
     fun `BiasD2の_train=バイアスが更新され、期待通りの出力になる`() {
         // weight = [[1, 2], [3, 4]]
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val bias =
             BiasD2(
                 outputX = 2,
@@ -96,7 +96,7 @@ class BiasD2Test {
         // input = [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         // deltaは[[2, 4], [6, 8]]を返す

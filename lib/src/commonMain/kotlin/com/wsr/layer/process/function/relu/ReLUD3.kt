@@ -18,7 +18,7 @@ class ReLUD3 internal constructor(override val outputX: Int, override val output
                 i = outputX,
                 j = outputY,
                 k = outputZ,
-            ) { x, y, z -> if (input[i][x, y, z] >= 0.0) delta[i][x, y, z] else 0.0 }
+            ) { x, y, z -> if (input[i][x, y, z] >= 0f) delta[i][x, y, z] else 0f }
         }
     }
 
@@ -26,7 +26,7 @@ class ReLUD3 internal constructor(override val outputX: Int, override val output
         i = outputX,
         j = outputY,
         k = outputZ,
-    ) { x, y, z -> if (input[x, y, z] >= 0.0) input[x, y, z] else 0.0 }
+    ) { x, y, z -> if (input[x, y, z] >= 0f) input[x, y, z] else 0f }
 }
 
 fun <T> NetworkBuilder.D3<T>.reLU() = addProcess(

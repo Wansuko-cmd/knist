@@ -17,7 +17,7 @@ class D1ExtTest {
             )
         val result = list.toD2()
         assertEquals(
-            expected = IOType.d2(3, 3) { x, y -> (x * 3 + y + 1).toDouble() },
+            expected = IOType.d2(3, 3) { x, y -> (x * 3 + y + 1).toFloat() },
             actual = result,
         )
     }

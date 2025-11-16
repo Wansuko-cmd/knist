@@ -38,11 +38,11 @@ class PlusExtTest {
 
     @Test
     fun `D2+D2=対応するindexの値を足したD2`() {
-        val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() }
-        val b = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() }
+        val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
+        val b = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
         val result = a + b
         assertEquals(
-            expected = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() * 2 },
+            expected = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() * 2 },
             actual = result,
         )
     }
@@ -51,28 +51,28 @@ class PlusExtTest {
     fun `List_D2_+D2=各要素にD2を足したList_D2_`() {
         val list =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val b = IOType.d2(2, 2) { _, _ -> 1.0 }
         val result = list + b
         assertEquals(
-            expected = IOType.d2(2, 2) { x, y -> (x * 2 + y + 2).toDouble() },
+            expected = IOType.d2(2, 2) { x, y -> (x * 2 + y + 2).toFloat() },
             actual = result[0],
         )
         assertEquals(
-            expected = IOType.d2(2, 2) { x, y -> (x * 2 + y + 6).toDouble() },
+            expected = IOType.d2(2, 2) { x, y -> (x * 2 + y + 6).toFloat() },
             actual = result[1],
         )
     }
 
     @Test
     fun `D3+D3=対応するindexの値を足したD3`() {
-        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
-        val b = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
+        val b = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         val result = a + b
         assertEquals(
-            expected = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() * 2 },
+            expected = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() * 2 },
             actual = result,
         )
     }
@@ -81,17 +81,17 @@ class PlusExtTest {
     fun `List_D3_+D3=各要素にD3を足したList_D3_`() {
         val list =
             listOf(
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 10).toDouble() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 10).toFloat() },
             )
         val b = IOType.d3(2, 2, 2) { _, _, _ -> 1.0 }
         val result = list + b
         assertEquals(
-            expected = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 2).toDouble() },
+            expected = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 2).toFloat() },
             actual = result[0],
         )
         assertEquals(
-            expected = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 11).toDouble() },
+            expected = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 11).toFloat() },
             actual = result[1],
         )
     }

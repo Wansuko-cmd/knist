@@ -15,15 +15,15 @@ class WordsD1(
     private val paddingIndex: Int,
 ) : Converter.D1<List<String>>() {
     val vocabSize = words.size
-    private val wordToId = words.mapIndexed { index, word -> word to index.toDouble() }.toMap()
+    private val wordToId = words.mapIndexed { index, word -> word to index.toFloat() }.toMap()
 
     override fun encode(input: List<List<String>>): List<IOType.D1> = input.map { sentence ->
         val tokenIds = sentence
             .take(outputSize)
-            .map { wordToId[it] ?: unknownIndex.toDouble() }
+            .map { wordToId[it] ?: unknownIndex.toFloat() }
 
-        IOType.d1(outputSize) { paddingIndex.toDouble() }.also {
-            tokenIds.toDoubleArray().copyInto(it.value)
+        IOType.d1(outputSize) { paddingIndex.toFloat() }.also {
+            tokenIds.toFloatArray().copyInto(it.value)
         }
     }
 

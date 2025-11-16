@@ -2,7 +2,7 @@ package com.wsr.initializer
 
 import com.wsr.IOType
 
-class Fixed(private val value: Double) : WeightInitializer {
+class Fixed(private val value: Float) : WeightInitializer {
     override fun d1(input: List<Int>, output: List<Int>, size: Int): IOType.D1 = IOType.d1(size) { value }
 
     override fun d2(input: List<Int>, output: List<Int>, x: Int, y: Int): IOType.D2 =

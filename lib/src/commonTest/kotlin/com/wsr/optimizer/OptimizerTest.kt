@@ -52,7 +52,7 @@ class OptimizerTest {
             override fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2 = dw
         }
 
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         // dw = [[6, 0], [0, 8]] -> norm = 10.0
         val dw = IOType.d2(2, 2) { x, y ->
             when {
@@ -77,8 +77,8 @@ class OptimizerTest {
             override fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2 = dw
         }
 
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
-        val dw = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
+        val dw = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
 
         val result = optimizer.adapt(weight, dw)
 
@@ -96,7 +96,7 @@ class OptimizerTest {
             override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 = dw
         }
 
-        val weight = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val weight = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         // dw = [[[12, 0], [0, 0]], [[0, 0], [0, 0]]] -> norm = 12.0
         val dw = IOType.d3(2, 2, 2) { x, y, z ->
             if (x == 0 && y == 0 && z == 0) 12.0 else 0.0
@@ -121,8 +121,8 @@ class OptimizerTest {
             override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 = dw
         }
 
-        val weight = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
-        val dw = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val weight = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
+        val dw = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
 
         val result = optimizer.adapt(weight, dw)
 

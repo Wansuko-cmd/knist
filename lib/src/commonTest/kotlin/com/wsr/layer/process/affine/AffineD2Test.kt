@@ -13,7 +13,7 @@ class AffineD2Test {
     fun `AffineD2の_expect=チャネルごとに重み行列との積を計算`() {
         // channel=2, inputSize=2, outputSize=2
         // weight = [[1, 2], [3, 4]] (全チャンネルで共有)
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val affine =
             AffineD2(
                 channel = 2,
@@ -28,7 +28,7 @@ class AffineD2Test {
         // input = [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         val result = affine._expect(input)
@@ -51,7 +51,7 @@ class AffineD2Test {
     fun `AffineD2の_train=逆伝播を計算`() {
         // channel=1, inputSize=2, outputSize=2
         // weight = [[1, 2], [3, 4]] (全チャンネルで共有)
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val affine =
             AffineD2(
                 channel = 1,
@@ -66,7 +66,7 @@ class AffineD2Test {
         // input = [[1, 2]]
         val input =
             listOf(
-                IOType.d2(1, 2) { _, y -> (y + 1).toDouble() },
+                IOType.d2(1, 2) { _, y -> (y + 1).toFloat() },
             )
 
         // deltaは[[1, 1]]を返す
@@ -89,7 +89,7 @@ class AffineD2Test {
     @Test
     fun `AffineD2の_train=重みが更新され、期待通りの出力になる`() {
         // channel=1, weight = [[1, 2], [3, 4]] (全チャンネルで共有)
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val affine =
             AffineD2(
                 channel = 1,
@@ -104,7 +104,7 @@ class AffineD2Test {
         // input = [[1, 2]]
         val input =
             listOf(
-                IOType.d2(1, 2) { _, y -> (y + 1).toDouble() },
+                IOType.d2(1, 2) { _, y -> (y + 1).toFloat() },
             )
 
         // deltaは[[1, 1]]を返す

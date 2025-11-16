@@ -11,10 +11,10 @@ import kotlinx.serialization.Serializable
 class CharsD1(override val outputSize: Int) : Converter.D1<String>() {
     override fun encode(input: List<String>): List<IOType.D1> = input.map { text ->
         IOType.D1(
-            value = DoubleArray(outputSize) { index ->
+            value = FloatArray(outputSize) { index ->
                 text.getOrNull(index)
                     ?.let { charToId[it] }
-                    ?: 0.0
+                    ?: 0f
             },
         )
     }
@@ -28,7 +28,7 @@ class CharsD1(override val outputSize: Int) : Converter.D1<String>() {
 
     companion object Companion {
         private val chars = " abcdefghijklmnopqrstuvwxyz.,!?".toList()
-        private val charToId = chars.mapIndexed { index, char -> char to index.toDouble() }.toMap()
+        private val charToId = chars.mapIndexed { index, char -> char to index.toFloat() }.toMap()
         val vocabSize = chars.size
     }
 }

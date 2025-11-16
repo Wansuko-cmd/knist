@@ -16,7 +16,7 @@ class SwishD3Test {
         // [[[0, 1, 2]]]
         val input =
             listOf(
-                IOType.d3(1, 1, 3) { _, _, z -> z.toDouble() },
+                IOType.d3(1, 1, 3) { _, _, z -> z.toFloat() },
             )
 
         val result = swish._expect(input)
@@ -39,7 +39,7 @@ class SwishD3Test {
         // [[[1, 2]]]
         val input =
             listOf(
-                IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toDouble() },
+                IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() },
             )
 
         // 全て1のdelta

@@ -16,7 +16,7 @@ class ReLUD3Test {
         val input =
             listOf(
                 IOType.d3(2, 2, 2) { x, y, z ->
-                    val value = (x * 4 + y * 2 + z + 1).toDouble()
+                    val value = (x * 4 + y * 2 + z + 1).toFloat()
                     if (z % 2 == 1) -value else value
                 },
             )
@@ -44,7 +44,7 @@ class ReLUD3Test {
         val input =
             listOf(
                 IOType.d3(2, 2, 2) { x, y, z ->
-                    val value = (x * 4 + y * 2 + z + 1).toDouble()
+                    val value = (x * 4 + y * 2 + z + 1).toFloat()
                     if (z % 2 == 1) -value else value
                 },
             )

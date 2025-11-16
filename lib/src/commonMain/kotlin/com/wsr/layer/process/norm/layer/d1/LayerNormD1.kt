@@ -28,7 +28,7 @@ class LayerNormD1 internal constructor(
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.map { sqrt(it + 1e-10) }
+        val denominator = variance.map { sqrt(it + 1e-10f) }
 
         return weight * (numerator / denominator)
     }
@@ -38,7 +38,7 @@ class LayerNormD1 internal constructor(
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.map { sqrt(it + 1e-10) }
+        val denominator = variance.map { sqrt(it + 1e-10f) }
 
         val normalize = numerator / denominator
         val output = weight * normalize
@@ -58,14 +58,14 @@ class LayerNormD1 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx
-        val dx2 = List(input.size) { -dNumerator[it].sum() / outputSize.toDouble() }
+        val dx2 = List(input.size) { -dNumerator[it].sum() / outputSize.toFloat() }
 
         // dy/x <- variance(x)のx
         val dx3: List<IOType.D1> = List(input.size) {
             /**
              * dy/[sqrt(variance(x)]
-             *   = (sum(dOutput * numerator) / denominator) * (-1 / (2.0 * denominator^2))
-             *   = -sum(dOutput * numerator / denominator) / 2.0 * denominator^2
+             *   = (sum(dOutput * numerator) / denominator) * (-1 / (2f * denominator^2))
+             *   = -sum(dOutput * numerator / denominator) / 2f * denominator^2
              *   = -sum(dOutput * normalize) / denominator^2
              *
              * d[sqrt(variance(x)]/[variance(x)] = 1 / outputSize
@@ -74,17 +74,17 @@ class LayerNormD1 internal constructor(
              *   = -sum(dOutput * normalize) / (denominator^2 * outputSize)
              */
             val dvn = -(dOutput[it] * normalize[it]).sum()
-            val dvd = (2.0 * denominator[it].pow(2) * outputSize.toDouble())
+            val dvd = (2f * denominator[it].pow(2) * outputSize.toFloat())
             val dVariance = dvn / dvd
 
             // dy/[x-average(x)]
-            val dSquared = 2.0 * dVariance * numerator[it]
+            val dSquared = 2f * dVariance * numerator[it]
 
             // dy/[x]
             val dx1 = dSquared
 
             // dy/[-average(x)]
-            val dx2 = -dSquared.sum() / outputSize.toDouble()
+            val dx2 = -dSquared.sum() / outputSize.toFloat()
 
             dx1 + dx2
         }
@@ -95,7 +95,7 @@ class LayerNormD1 internal constructor(
 
 fun <T> NetworkBuilder.D1<T>.layerNorm(
     optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = Fixed(1.0),
+    initializer: WeightInitializer = Fixed(1f),
 ) = addProcess(
     process = LayerNormD1(
         outputSize = inputSize,

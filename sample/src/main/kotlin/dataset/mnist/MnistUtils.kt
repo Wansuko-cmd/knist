@@ -24,7 +24,7 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
 
     // ニューラルネットワークを構築
     val network = NetworkBuilder
-        .inputPx(x = 28, y = 28, optimizer = AdamW(0.001), initializer = He(seed = seed))
+        .inputPx(x = 28, y = 28, optimizer = AdamW(0.001f), initializer = He(seed = seed))
         .repeat(5) {
             skip {
                 this
@@ -69,5 +69,5 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
     // 予測
     test
         .count { data -> network.expect(input = data.pixels) == data.label }
-        .let { println(it.toDouble() / test.size.toDouble()) }
+        .let { println(it.toFloat() / test.size.toFloat()) }
 }
