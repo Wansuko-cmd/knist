@@ -7,7 +7,9 @@ import com.wsr.layer.output.softmax.softmaxWithLoss
 import com.wsr.layer.process.affine.affine
 import com.wsr.layer.process.bias.bias
 import com.wsr.layer.process.function.relu.reLU
+import com.wsr.layer.process.function.relu.swish
 import com.wsr.layer.process.norm.layer.d1.layerNorm
+import com.wsr.layer.process.norm.layer.d2.layerNorm
 import com.wsr.layer.process.skip.skip
 import com.wsr.layer.reshape.reshape.reshapeToD1
 import com.wsr.optimizer.adam.AdamW
@@ -23,13 +25,20 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
     // ニューラルネットワークを構築
     val network = NetworkBuilder
         .inputPx(x = 28, y = 28, optimizer = AdamW(0.001), initializer = He(seed = seed))
+        .repeat(5) {
+            skip {
+                this
+                    .layerNorm(axis = 1).affine(neuron = 56).swish()
+                    .layerNorm(axis = 1).affine(neuron = 28).swish()
+            }
+        }
         .reshapeToD1()
         .affine(neuron = 512).bias().reLU()
         .repeat(5) {
             skip {
                 this
-                    .layerNorm().affine(neuron = 512).bias().reLU()
-                    .layerNorm().affine(neuron = 512).bias().reLU()
+                    .layerNorm().affine(neuron = 512).bias().swish()
+                    .layerNorm().affine(neuron = 512).bias().swish()
             }
         }
         .skip {
