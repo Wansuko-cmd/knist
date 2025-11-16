@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 class FixedTest {
     @Test
     fun `Fixedのd1=指定した値で全要素を初期化する`() {
-        val initializer = Fixed(value = 0.5)
+        val initializer = Fixed(value = 0.5f)
 
         val result = initializer.d1(
             input = listOf(10),
@@ -16,14 +16,14 @@ class FixedTest {
             size = 3,
         )
 
-        assertEquals(expected = 0.5, actual = result[0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 0.5, actual = result[1], absoluteTolerance = 1e-10)
-        assertEquals(expected = 0.5, actual = result[2], absoluteTolerance = 1e-10)
+        assertEquals(expected = 0.5f, actual = result[0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 0.5f, actual = result[1], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 0.5f, actual = result[2], absoluteTolerance = 1e-6f)
     }
 
     @Test
     fun `Fixedのd2=指定した値で全要素を初期化する`() {
-        val initializer = Fixed(value = 1.0)
+        val initializer = Fixed(value = 1.0f)
 
         val result = initializer.d2(
             input = listOf(5),
@@ -32,17 +32,17 @@ class FixedTest {
             y = 3,
         )
 
-        assertEquals(expected = 1.0, actual = result[0, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 1.0, actual = result[0, 1], absoluteTolerance = 1e-10)
-        assertEquals(expected = 1.0, actual = result[0, 2], absoluteTolerance = 1e-10)
-        assertEquals(expected = 1.0, actual = result[1, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 1.0, actual = result[1, 1], absoluteTolerance = 1e-10)
-        assertEquals(expected = 1.0, actual = result[1, 2], absoluteTolerance = 1e-10)
+        assertEquals(expected = 1.0f, actual = result[0, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 1.0f, actual = result[0, 1], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 1.0f, actual = result[0, 2], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 1.0f, actual = result[1, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 1.0f, actual = result[1, 1], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 1.0f, actual = result[1, 2], absoluteTolerance = 1e-6f)
     }
 
     @Test
     fun `Fixedのd3=指定した値で全要素を初期化する`() {
-        val initializer = Fixed(value = 0.0)
+        val initializer = Fixed(value = 0.0f)
 
         val result = initializer.d3(
             input = listOf(4, 3),
@@ -56,7 +56,7 @@ class FixedTest {
         for (i in 0 until 2) {
             for (j in 0 until 2) {
                 for (k in 0 until 2) {
-                    assertEquals(expected = 0.0, actual = result[i, j, k], absoluteTolerance = 1e-10)
+                    assertEquals(expected = 0.0f, actual = result[i, j, k], absoluteTolerance = 1e-6f)
                 }
             }
         }
@@ -64,7 +64,7 @@ class FixedTest {
 
     @Test
     fun `Fixedのd4=指定した値で全要素を初期化する`() {
-        val initializer = Fixed(value = -1.5)
+        val initializer = Fixed(value = -1.5f)
 
         val result = initializer.d4(
             input = listOf(3, 3, 3),
@@ -76,9 +76,9 @@ class FixedTest {
         )
 
         // いくつかの要素を確認
-        assertEquals(expected = -1.5, actual = result[0, 0, 0, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = -1.5, actual = result[0, 1, 1, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = -1.5, actual = result[1, 0, 1, 1], absoluteTolerance = 1e-10)
-        assertEquals(expected = -1.5, actual = result[1, 1, 1, 1], absoluteTolerance = 1e-10)
+        assertEquals(expected = -1.5f, actual = result[0, 0, 0, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = -1.5f, actual = result[0, 1, 1, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = -1.5f, actual = result[1, 0, 1, 1], absoluteTolerance = 1e-6f)
+        assertEquals(expected = -1.5f, actual = result[1, 1, 1, 1], absoluteTolerance = 1e-6f)
     }
 }

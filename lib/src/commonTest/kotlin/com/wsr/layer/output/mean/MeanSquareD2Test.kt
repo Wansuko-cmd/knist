@@ -40,10 +40,10 @@ class MeanSquareD2Test {
         val output = result[0] as IOType.D2
         assertEquals(expected = 2, actual = output.shape[0])
         assertEquals(expected = 2, actual = output.shape[1])
-        assertEquals(expected = 1.0, actual = output[0, 0])
-        assertEquals(expected = 1.0, actual = output[0, 1])
-        assertEquals(expected = 1.0, actual = output[1, 0])
-        assertEquals(expected = 1.0, actual = output[1, 1])
+        assertEquals(expected = 1.0f, actual = output[0, 0])
+        assertEquals(expected = 1.0f, actual = output[0, 1])
+        assertEquals(expected = 1.0f, actual = output[1, 0])
+        assertEquals(expected = 1.0f, actual = output[1, 1])
     }
 
     @Test
@@ -73,7 +73,7 @@ class MeanSquareD2Test {
         assertEquals(expected = 3, actual = output1.shape[1])
         for (x in 0 until 2) {
             for (y in 0 until 3) {
-                assertEquals(expected = 1.0, actual = output1[x, y], message = "output1[$x,$y]")
+                assertEquals(expected = 1.0f, actual = output1[x, y], message = "output1[$x,$y]")
             }
         }
 
@@ -83,7 +83,7 @@ class MeanSquareD2Test {
         assertEquals(expected = 3, actual = output2.shape[1])
         for (x in 0 until 2) {
             for (y in 0 until 3) {
-                assertEquals(expected = 1.0, actual = output2[x, y], message = "output2[$x,$y]")
+                assertEquals(expected = 1.0f, actual = output2[x, y], message = "output2[$x,$y]")
             }
         }
     }
@@ -106,7 +106,7 @@ class MeanSquareD2Test {
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
-        assertEquals(expected = -2.0, actual = output[0, 0])
-        assertEquals(expected = 2.0, actual = output[0, 1])
+        assertEquals(expected = -2.0f, actual = output[0, 0])
+        assertEquals(expected = 2.0f, actual = output[0, 1])
     }
 }

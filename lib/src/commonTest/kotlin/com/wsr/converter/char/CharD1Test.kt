@@ -20,23 +20,23 @@ class CharD1Test {
         // 'a' -> index 1
         val output0 = result[0]
         assertEquals(expected = CharD1.vocabSize, actual = output0.shape[0])
-        assertEquals(expected = 0.0, actual = output0[0])
-        assertEquals(expected = 1.0, actual = output0[1])
-        assertEquals(expected = 0.0, actual = output0[2])
+        assertEquals(expected = 0.0f, actual = output0[0])
+        assertEquals(expected = 1.0f, actual = output0[1])
+        assertEquals(expected = 0.0f, actual = output0[2])
 
         // 'b' -> index 2
         val output1 = result[1]
-        assertEquals(expected = 0.0, actual = output1[0])
-        assertEquals(expected = 0.0, actual = output1[1])
-        assertEquals(expected = 1.0, actual = output1[2])
-        assertEquals(expected = 0.0, actual = output1[3])
+        assertEquals(expected = 0.0f, actual = output1[0])
+        assertEquals(expected = 0.0f, actual = output1[1])
+        assertEquals(expected = 1.0f, actual = output1[2])
+        assertEquals(expected = 0.0f, actual = output1[3])
 
         // 'c' -> index 3
         val output2 = result[2]
-        assertEquals(expected = 0.0, actual = output2[0])
-        assertEquals(expected = 0.0, actual = output2[1])
-        assertEquals(expected = 0.0, actual = output2[2])
-        assertEquals(expected = 1.0, actual = output2[3])
+        assertEquals(expected = 0.0f, actual = output2[0])
+        assertEquals(expected = 0.0f, actual = output2[1])
+        assertEquals(expected = 0.0f, actual = output2[2])
+        assertEquals(expected = 1.0f, actual = output2[3])
     }
 
     @Test
@@ -51,8 +51,8 @@ class CharD1Test {
 
         // 未知文字 -> index 0
         result.forEach { output ->
-            assertEquals(expected = 1.0, actual = output[0])
-            assertEquals(expected = 0.0, actual = output[1])
+            assertEquals(expected = 1.0f, actual = output[0])
+            assertEquals(expected = 0.0f, actual = output[1])
         }
     }
 
@@ -61,9 +61,9 @@ class CharD1Test {
         val converter = CharD1()
 
         val input = listOf(
-            IOType.d1(CharD1.vocabSize).also { it[1] = 1.0 }, // 'a'
-            IOType.d1(CharD1.vocabSize).also { it[2] = 1.0 }, // 'b'
-            IOType.d1(CharD1.vocabSize).also { it[3] = 1.0 }, // 'c'
+            IOType.d1(CharD1.vocabSize).also { it[1] = 1.0f }, // 'a'
+            IOType.d1(CharD1.vocabSize).also { it[2] = 1.0f }, // 'b'
+            IOType.d1(CharD1.vocabSize).also { it[3] = 1.0f }, // 'c'
         )
 
         val result = converter.decode(input)
@@ -82,17 +82,17 @@ class CharD1Test {
         val input = listOf(
             // index 1 ('a') が最大
             IOType.d1(CharD1.vocabSize).also {
-                it[0] = 0.1
-                it[1] = 0.6
-                it[2] = 0.2
-                it[3] = 0.1
+                it[0] = 0.1f
+                it[1] = 0.6f
+                it[2] = 0.2f
+                it[3] = 0.1f
             },
             // index 27 ('.') が最大
             IOType.d1(CharD1.vocabSize).also {
-                it[26] = 0.1
-                it[27] = 0.8
-                it[28] = 0.05
-                it[29] = 0.05
+                it[26] = 0.1f
+                it[27] = 0.8f
+                it[28] = 0.05f
+                it[29] = 0.05f
             },
         )
 
@@ -123,10 +123,10 @@ class CharD1Test {
         // 確率分布からdecode -> encode
         val input = listOf(
             IOType.d1(CharD1.vocabSize).also {
-                it[0] = 0.1
-                it[1] = 0.6 // 'a' が最大
-                it[2] = 0.2
-                it[3] = 0.1
+                it[0] = 0.1f
+                it[1] = 0.6f // 'a' が最大
+                it[2] = 0.2f
+                it[3] = 0.1f
             },
         )
 
@@ -137,9 +137,9 @@ class CharD1Test {
 
         // One-hotベクトルになる
         val output = encoded[0]
-        assertEquals(expected = 0.0, actual = output[0])
-        assertEquals(expected = 1.0, actual = output[1]) // 'a'
-        assertEquals(expected = 0.0, actual = output[2])
-        assertEquals(expected = 0.0, actual = output[3])
+        assertEquals(expected = 0.0f, actual = output[0])
+        assertEquals(expected = 1.0f, actual = output[1]) // 'a'
+        assertEquals(expected = 0.0f, actual = output[2])
+        assertEquals(expected = 0.0f, actual = output[3])
     }
 }

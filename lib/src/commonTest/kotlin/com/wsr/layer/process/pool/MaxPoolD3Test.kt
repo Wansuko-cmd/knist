@@ -38,10 +38,10 @@ class MaxPoolD3Test {
         // output[0, 0, 1] = max(input[0, 0+i, 1+j]) = max(2, 3, 6, 7) = 7
         // output[0, 1, 0] = max(input[0, 1+i, 0+j]) = max(5, 6, 9, 10) = 10
         // output[0, 1, 1] = max(input[0, 1+i, 1+j]) = max(6, 7, 10, 11) = 11
-        assertEquals(expected = 6.0, actual = output[0, 0, 0])
-        assertEquals(expected = 7.0, actual = output[0, 0, 1])
-        assertEquals(expected = 10.0, actual = output[0, 1, 0])
-        assertEquals(expected = 11.0, actual = output[0, 1, 1])
+        assertEquals(expected = 6.0f, actual = output[0, 0, 0])
+        assertEquals(expected = 7.0f, actual = output[0, 0, 1])
+        assertEquals(expected = 10.0f, actual = output[0, 1, 0])
+        assertEquals(expected = 11.0f, actual = output[0, 1, 1])
     }
 
     @Test
@@ -56,7 +56,7 @@ class MaxPoolD3Test {
 
         // 全て1のdelta (2x2)
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d3(1, 2, 2) { _, _, _ -> 1.0 })
+            listOf(IOType.d3(1, 2, 2) { _, _, _ -> 1.0f })
         }
 
         val result = maxPool._train(input, calcDelta)
@@ -77,27 +77,27 @@ class MaxPoolD3Test {
         // output[0, 1, 1] = max(6, 7, 10, 11) → 位置(2,2)の値11
 
         // 行0
-        assertEquals(expected = 0.0, actual = dx[0, 0, 0]) // 1
-        assertEquals(expected = 0.0, actual = dx[0, 0, 1]) // 2
-        assertEquals(expected = 0.0, actual = dx[0, 0, 2]) // 3
-        assertEquals(expected = 0.0, actual = dx[0, 0, 3]) // 4
+        assertEquals(expected = 0.0f, actual = dx[0, 0, 0]) // 1
+        assertEquals(expected = 0.0f, actual = dx[0, 0, 1]) // 2
+        assertEquals(expected = 0.0f, actual = dx[0, 0, 2]) // 3
+        assertEquals(expected = 0.0f, actual = dx[0, 0, 3]) // 4
 
         // 行1
-        assertEquals(expected = 0.0, actual = dx[0, 1, 0]) // 5
-        assertEquals(expected = 1.0, actual = dx[0, 1, 1]) // 6 (max for output[0,0,0])
-        assertEquals(expected = 1.0, actual = dx[0, 1, 2]) // 7 (max for output[0,0,1])
-        assertEquals(expected = 0.0, actual = dx[0, 1, 3]) // 8
+        assertEquals(expected = 0.0f, actual = dx[0, 1, 0]) // 5
+        assertEquals(expected = 1.0f, actual = dx[0, 1, 1]) // 6 (max for output[0,0,0])
+        assertEquals(expected = 1.0f, actual = dx[0, 1, 2]) // 7 (max for output[0,0,1])
+        assertEquals(expected = 0.0f, actual = dx[0, 1, 3]) // 8
 
         // 行2
-        assertEquals(expected = 0.0, actual = dx[0, 2, 0]) // 9
-        assertEquals(expected = 1.0, actual = dx[0, 2, 1]) // 10 (max for output[0,1,0])
-        assertEquals(expected = 1.0, actual = dx[0, 2, 2]) // 11 (max for output[0,1,1])
-        assertEquals(expected = 0.0, actual = dx[0, 2, 3]) // 12
+        assertEquals(expected = 0.0f, actual = dx[0, 2, 0]) // 9
+        assertEquals(expected = 1.0f, actual = dx[0, 2, 1]) // 10 (max for output[0,1,0])
+        assertEquals(expected = 1.0f, actual = dx[0, 2, 2]) // 11 (max for output[0,1,1])
+        assertEquals(expected = 0.0f, actual = dx[0, 2, 3]) // 12
 
         // 行3
-        assertEquals(expected = 0.0, actual = dx[0, 3, 0]) // 13
-        assertEquals(expected = 0.0, actual = dx[0, 3, 1]) // 14
-        assertEquals(expected = 0.0, actual = dx[0, 3, 2]) // 15
-        assertEquals(expected = 0.0, actual = dx[0, 3, 3]) // 16
+        assertEquals(expected = 0.0f, actual = dx[0, 3, 0]) // 13
+        assertEquals(expected = 0.0f, actual = dx[0, 3, 1]) // 14
+        assertEquals(expected = 0.0f, actual = dx[0, 3, 2]) // 15
+        assertEquals(expected = 0.0f, actual = dx[0, 3, 3]) // 16
     }
 }

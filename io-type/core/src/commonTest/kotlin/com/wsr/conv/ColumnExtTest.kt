@@ -20,11 +20,11 @@ class ColumnExtTest {
 
         assertEquals(expected = 3, actual = result.size)
         // 位置0: [1, 2, 3]
-        assertEquals(expected = listOf(1.0, 2.0, 3.0), actual = result[0].toList())
+        assertEquals(expected = listOf(1.0f, 2.0f, 3.0f), actual = result[0].toList())
         // 位置1: [2, 3, 4]
-        assertEquals(expected = listOf(2.0, 3.0, 4.0), actual = result[1].toList())
+        assertEquals(expected = listOf(2.0f, 3.0f, 4.0f), actual = result[1].toList())
         // 位置2: [3, 4, 5]
-        assertEquals(expected = listOf(3.0, 4.0, 5.0), actual = result[2].toList())
+        assertEquals(expected = listOf(3.0f, 4.0f, 5.0f), actual = result[2].toList())
     }
 
     @Test
@@ -40,9 +40,9 @@ class ColumnExtTest {
 
         assertEquals(expected = 2, actual = result.size)
         // 位置0: [1, 2, 3]
-        assertEquals(expected = listOf(1.0, 2.0, 3.0), actual = result[0].toList())
+        assertEquals(expected = listOf(1.0f, 2.0f, 3.0f), actual = result[0].toList())
         // 位置1: [3, 4, 5]
-        assertEquals(expected = listOf(3.0, 4.0, 5.0), actual = result[1].toList())
+        assertEquals(expected = listOf(3.0f, 4.0f, 5.0f), actual = result[1].toList())
     }
 
     @Test
@@ -58,10 +58,10 @@ class ColumnExtTest {
 
         assertEquals(expected = 3, actual = result.size)
         // 位置0: [0, 1, 2] (左にpadding)
-        assertEquals(expected = listOf(0.0, 1.0, 2.0), actual = result[0].toList())
+        assertEquals(expected = listOf(0.0f, 1.0f, 2.0f), actual = result[0].toList())
         // 位置1: [1, 2, 3]
-        assertEquals(expected = listOf(1.0, 2.0, 3.0), actual = result[1].toList())
+        assertEquals(expected = listOf(1.0f, 2.0f, 3.0f), actual = result[1].toList())
         // 位置2: [2, 3, 0] (右にpadding)
-        assertEquals(expected = listOf(2.0, 3.0, 0.0), actual = result[2].toList())
+        assertEquals(expected = listOf(2.0f, 3.0f, 0.0f), actual = result[2].toList())
     }
 }

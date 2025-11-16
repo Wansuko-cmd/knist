@@ -12,13 +12,13 @@ class BatchAverageExtTest {
         val input =
             listOf(
                 // [1, 2, 3]
-                IOType.Companion.d1(listOf(1.0, 2.0, 3.0)),
+                IOType.Companion.d1(listOf(1.0f, 2.0f, 3.0f)),
                 // [4, 5, 6]
-                IOType.Companion.d1(listOf(4.0, 5.0, 6.0)),
+                IOType.Companion.d1(listOf(4.0f, 5.0f, 6.0f)),
             )
-        // [(1+4)/2, (2+5)/2, (3+6)/2] = [2.5, 3.5, 4.5]
+        // [(1+4)/2, (2+5)/2, (3+6)/2] = [2.5f, 3.5f, 4.5f]
         val result = input.batchAverage()
-        assertEquals(expected = IOType.Companion.d1(listOf(2.5, 3.5, 4.5)), actual = result)
+        assertEquals(expected = IOType.Companion.d1(listOf(2.5f, 3.5f, 4.5f)), actual = result)
     }
 
     @Test
@@ -33,13 +33,13 @@ class BatchAverageExtTest {
                 IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         // [[(1+5)/2, (2+6)/2],
-        //  [(3+7)/2, (4+8)/2]] = [[3.0, 4.0], [5.0, 6.0]]
+        //  [(3+7)/2, (4+8)/2]] = [[3.0f, 4.0f], [5.0f, 6.0f]]
         val result = input.batchAverage()
         assertEquals(
             expected = IOType.Companion.d2(
                 2,
                 2,
-            ) { x, y -> ((x * 2 + y + 1) + (x * 2 + y + 5)) / 2.0 },
+            ) { x, y -> ((x * 2 + y + 1) + (x * 2 + y + 5)) / 2.0f },
             actual = result,
         )
     }
@@ -58,13 +58,13 @@ class BatchAverageExtTest {
         // [[(1+9)/2, (2+10)/2], [(3+11)/2, (4+12)/2]],
         //  [[(5+13)/2, (6+14)/2], [(7+15)/2, (8+16)/2]]]
         val result = input.batchAverage()
-        assertEquals(expected = 5.0, actual = result[0, 0, 0])
-        assertEquals(expected = 6.0, actual = result[0, 0, 1])
-        assertEquals(expected = 7.0, actual = result[0, 1, 0])
-        assertEquals(expected = 8.0, actual = result[0, 1, 1])
-        assertEquals(expected = 9.0, actual = result[1, 0, 0])
-        assertEquals(expected = 10.0, actual = result[1, 0, 1])
-        assertEquals(expected = 11.0, actual = result[1, 1, 0])
-        assertEquals(expected = 12.0, actual = result[1, 1, 1])
+        assertEquals(expected = 5.0f, actual = result[0, 0, 0])
+        assertEquals(expected = 6.0f, actual = result[0, 0, 1])
+        assertEquals(expected = 7.0f, actual = result[0, 1, 0])
+        assertEquals(expected = 8.0f, actual = result[0, 1, 1])
+        assertEquals(expected = 9.0f, actual = result[1, 0, 0])
+        assertEquals(expected = 10.0f, actual = result[1, 0, 1])
+        assertEquals(expected = 11.0f, actual = result[1, 1, 0])
+        assertEquals(expected = 12.0f, actual = result[1, 1, 1])
     }
 }

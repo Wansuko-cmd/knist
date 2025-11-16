@@ -9,10 +9,10 @@ import kotlin.test.assertEquals
 class TimeExtTest {
     @Test
     fun `Float×D1=各要素にFloatをかけたD1`() {
-        val a = IOType.d1(listOf(1.0, 2.0, 3.0))
-        val result = 2.0 * a
+        val a = IOType.d1(listOf(1.0f, 2.0f, 3.0f))
+        val result = 2.0f * a
         assertEquals(
-            expected = IOType.d1(listOf(2.0, 4.0, 6.0)),
+            expected = IOType.d1(listOf(2.0f, 4.0f, 6.0f)),
             actual = result,
         )
     }
@@ -21,16 +21,16 @@ class TimeExtTest {
     fun `Float×List_D1=各要素にFloatをかけたList_D1`() {
         val list =
             listOf(
-                IOType.d1(listOf(1.0, 2.0, 3.0)),
-                IOType.d1(listOf(4.0, 5.0, 6.0)),
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+                IOType.d1(listOf(4.0f, 5.0f, 6.0f)),
             )
-        val result = 2.0 * list
+        val result = 2.0f * list
         assertEquals(
-            expected = IOType.d1(listOf(2.0, 4.0, 6.0)),
+            expected = IOType.d1(listOf(2.0f, 4.0f, 6.0f)),
             actual = result[0],
         )
         assertEquals(
-            expected = IOType.d1(listOf(8.0, 10.0, 12.0)),
+            expected = IOType.d1(listOf(8.0f, 10.0f, 12.0f)),
             actual = result[1],
         )
     }
@@ -38,7 +38,7 @@ class TimeExtTest {
     @Test
     fun `Float×D2=各要素にFloatをかけたD2`() {
         val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
-        val result = 2.0 * a
+        val result = 2.0f * a
         assertEquals(
             expected = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() * 2 },
             actual = result,
@@ -52,7 +52,7 @@ class TimeExtTest {
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
-        val result = 3.0 * list
+        val result = 3.0f * list
         assertEquals(
             expected = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() * 3 },
             actual = result[0],
@@ -66,7 +66,7 @@ class TimeExtTest {
     @Test
     fun `Float×D3=各要素にFloatをかけたD3`() {
         val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
-        val result = 2.0 * a
+        val result = 2.0f * a
         assertEquals(
             expected = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() * 2 },
             actual = result,

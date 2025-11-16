@@ -16,21 +16,21 @@ class SigmoidD1Test {
         // [[0, 1, 2]]
         val input =
             listOf(
-                IOType.d1(listOf(0.0, 1.0, 2.0)),
+                IOType.d1(listOf(0.0f, 1.0f, 2.0f)),
             )
 
         val result = sigmoid._expect(input)
 
         // sigmoid(x) = 1 / (1 + e^-x)
-        val sig0 = 1 / (1 + exp(-0.0))
-        val sig1 = 1 / (1 + exp(-1.0))
-        val sig2 = 1 / (1 + exp(-2.0))
+        val sig0 = 1 / (1 + exp(-0.0f))
+        val sig1 = 1 / (1 + exp(-1.0f))
+        val sig2 = 1 / (1 + exp(-2.0f))
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D1
-        assertEquals(expected = sig0, actual = output[0], absoluteTolerance = 1e-4)
-        assertEquals(expected = sig1, actual = output[1], absoluteTolerance = 1e-4)
-        assertEquals(expected = sig2, actual = output[2], absoluteTolerance = 1e-4)
+        assertEquals(expected = sig0, actual = output[0], absoluteTolerance = 1e-4f)
+        assertEquals(expected = sig1, actual = output[1], absoluteTolerance = 1e-4f)
+        assertEquals(expected = sig2, actual = output[2], absoluteTolerance = 1e-4f)
     }
 
     @Test
@@ -40,27 +40,35 @@ class SigmoidD1Test {
         // [[0, 1]]
         val input =
             listOf(
-                IOType.d1(listOf(0.0, 1.0)),
+                IOType.d1(listOf(0.0f, 1.0f)),
             )
 
         // deltaは[1, 1]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d1(listOf(1.0, 1.0)))
+            listOf(IOType.d1(listOf(1.0f, 1.0f)))
         }
 
         val result = sigmoid._train(input, calcDelta)
 
         // output = sigmoid(input)
-        val sig0 = 1 / (1 + exp(-0.0))
-        val sig1 = 1 / (1 + exp(-1.0))
+        val sig0 = 1 / (1 + exp(-0.0f))
+        val sig1 = 1 / (1 + exp(-1.0f))
 
         // delta * output * (1 - output)
-        val expected0 = 1.0 * sig0 * (1 - sig0)
-        val expected1 = 1.0 * sig1 * (1 - sig1)
+        val expected0 = 1.0f * sig0 * (1 - sig0)
+        val expected1 = 1.0f * sig1 * (1 - sig1)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D1
-        assertEquals(expected = expected0, actual = dx[0], absoluteTolerance = 1e-4)
-        assertEquals(expected = expected1, actual = dx[1], absoluteTolerance = 1e-4)
+        assertEquals(
+            expected = expected0,
+            actual = dx[0],
+            absoluteTolerance = 1e-4f,
+        )
+        assertEquals(
+            expected = expected1,
+            actual = dx[1],
+            absoluteTolerance = 1e-4f,
+        )
     }
 }

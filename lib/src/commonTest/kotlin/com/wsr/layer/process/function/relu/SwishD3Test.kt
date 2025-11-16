@@ -25,11 +25,11 @@ class SwishD3Test {
         val output = result[0] as IOType.D3
         // swish(x) = x * sigmoid(x) = x / (1 + exp(-x))
         // swish(0) = 0
-        // swish(1) = 1 / (1 + exp(-1)) ≈ 0.731
-        // swish(2) = 2 / (1 + exp(-2)) ≈ 1.762
-        assertEquals(expected = 0.0, actual = output[0, 0, 0], absoluteTolerance = 1e-3)
-        assertEquals(expected = 0.731, actual = output[0, 0, 1], absoluteTolerance = 1e-3)
-        assertEquals(expected = 1.762, actual = output[0, 0, 2], absoluteTolerance = 1e-3)
+        // swish(1) = 1 / (1 + exp(-1)) ≈ 0.731f
+        // swish(2) = 2 / (1 + exp(-2)) ≈ 1.762f
+        assertEquals(expected = 0.0f, actual = output[0, 0, 0], absoluteTolerance = 1e-3f)
+        assertEquals(expected = 0.731f, actual = output[0, 0, 1], absoluteTolerance = 1e-3f)
+        assertEquals(expected = 1.762f, actual = output[0, 0, 2], absoluteTolerance = 1e-3f)
     }
 
     @Test
@@ -44,7 +44,7 @@ class SwishD3Test {
 
         // 全て1のdelta
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d3(1, 1, 2) { _, _, _ -> 1.0 })
+            listOf(IOType.d3(1, 1, 2) { _, _, _ -> 1.0f })
         }
 
         val result = swish._train(input, calcDelta)
@@ -53,15 +53,15 @@ class SwishD3Test {
         val dx = result[0] as IOType.D3
         // swish'(x) = sigmoid(x) + x * sigmoid(x) * (1 - sigmoid(x))
         // = swish(x) + sigmoid(x) * (1 - swish(x))
-        val sigmoid1 = 1.0 / (1.0 + exp(-1.0))
-        val swish1 = 1.0 * sigmoid1
-        val expected1 = swish1 + sigmoid1 * (1.0 - swish1)
+        val sigmoid1 = 1.0f / (1.0f + exp(-1.0f))
+        val swish1 = 1.0f * sigmoid1
+        val expected1 = swish1 + sigmoid1 * (1.0f - swish1)
 
-        val sigmoid2 = 1.0 / (1.0 + exp(-2.0))
-        val swish2 = 2.0 * sigmoid2
-        val expected2 = swish2 + sigmoid2 * (1.0 - swish2)
+        val sigmoid2 = 1.0f / (1.0f + exp(-2.0f))
+        val swish2 = 2.0f * sigmoid2
+        val expected2 = swish2 + sigmoid2 * (1.0f - swish2)
 
-        assertEquals(expected = expected1, actual = dx[0, 0, 0], absoluteTolerance = 1e-6)
-        assertEquals(expected = expected2, actual = dx[0, 0, 1], absoluteTolerance = 1e-6)
+        assertEquals(expected = expected1, actual = dx[0, 0, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = expected2, actual = dx[0, 0, 1], absoluteTolerance = 1e-6f)
     }
 }

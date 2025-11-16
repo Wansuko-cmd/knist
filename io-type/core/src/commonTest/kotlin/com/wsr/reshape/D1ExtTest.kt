@@ -11,9 +11,9 @@ class D1ExtTest {
     fun `List_D1のtoD2=D1をまとめたD2`() {
         val list =
             listOf(
-                IOType.d1(listOf(1.0, 2.0, 3.0)),
-                IOType.d1(listOf(4.0, 5.0, 6.0)),
-                IOType.d1(listOf(7.0, 8.0, 9.0)),
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+                IOType.d1(listOf(4.0f, 5.0f, 6.0f)),
+                IOType.d1(listOf(7.0f, 8.0f, 9.0f)),
             )
         val result = list.toD2()
         assertEquals(

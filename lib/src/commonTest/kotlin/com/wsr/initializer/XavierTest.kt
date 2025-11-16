@@ -18,8 +18,8 @@ class XavierTest {
             size = 20,
         )
 
-        // limit = sqrt(6 / (512 + 256)) = sqrt(6 / 768) ≈ 0.0884
-        val expectedLimit = sqrt(6.0 / 768)
+        // limit = sqrt(6 / (512 + 256)) = sqrt(6 / 768) ≈ 0.0884f
+        val expectedLimit = sqrt(6.0f / 768)
 
         // 全ての要素が範囲内にあることを確認
         for (i in 0 until 20) {
@@ -40,8 +40,8 @@ class XavierTest {
             y = 10,
         )
 
-        // limit = sqrt(6 / (100 + 50)) = sqrt(6 / 150) ≈ 0.2
-        val expectedLimit = sqrt(6.0 / 150)
+        // limit = sqrt(6 / (100 + 50)) = sqrt(6 / 150) ≈ 0.2f
+        val expectedLimit = sqrt(6.0f / 150)
 
         // 全ての要素が範囲内にあることを確認
         for (i in 0 until 10) {
@@ -65,8 +65,8 @@ class XavierTest {
             z = 5,
         )
 
-        // limit = sqrt(6 / (75 + 1600)) = sqrt(6 / 1675) ≈ 0.0599
-        val expectedLimit = sqrt(6.0 / 1675)
+        // limit = sqrt(6 / (75 + 1600)) = sqrt(6 / 1675) ≈ 0.0599f
+        val expectedLimit = sqrt(6.0f / 1675)
 
         // いくつかの要素を確認
         assertTrue(result[0, 0, 0] >= -expectedLimit)
@@ -89,8 +89,8 @@ class XavierTest {
             n = 2,
         )
 
-        // limit = sqrt(6 / (10 + 20)) = sqrt(6 / 30) ≈ 0.4472
-        val expectedLimit = sqrt(6.0 / 30)
+        // limit = sqrt(6 / (10 + 20)) = sqrt(6 / 30) ≈ 0.4472f
+        val expectedLimit = sqrt(6.0f / 30)
 
         // いくつかの要素を確認
         assertTrue(result[0, 0, 0, 0] >= -expectedLimit)

@@ -4,6 +4,7 @@ package com.wsr.layer.process.dropout
 
 import com.wsr.IOType
 import com.wsr.layer.process.dropout.DropoutD1
+import com.wsr.nextFloat
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -14,14 +15,14 @@ class DropoutD1Test {
         val dropout =
             DropoutD1(
                 outputSize = 3,
-                ratio = 0.5,
+                ratio = 0.5f,
                 seed = 42,
             )
 
         // [[1, 2, 3]]
         val input =
             listOf(
-                IOType.d1(listOf(1.0, 2.0, 3.0)),
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
 
         // Inverted Dropoutのexpect(推論時)では入力をそのまま返す
@@ -29,9 +30,9 @@ class DropoutD1Test {
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D1
-        assertEquals(expected = 1.0, actual = output[0])
-        assertEquals(expected = 2.0, actual = output[1])
-        assertEquals(expected = 3.0, actual = output[2])
+        assertEquals(expected = 1.0f, actual = output[0])
+        assertEquals(expected = 2.0f, actual = output[1])
+        assertEquals(expected = 3.0f, actual = output[2])
     }
 
     @Test
@@ -39,34 +40,34 @@ class DropoutD1Test {
         val dropout =
             DropoutD1(
                 outputSize = 3,
-                ratio = 0.5,
+                ratio = 0.5f,
                 seed = 42,
             )
 
         // [[1, 2, 3]]
         val input =
             listOf(
-                IOType.d1(listOf(1.0, 2.0, 3.0)),
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
 
         // deltaは[2, 4, 6]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d1(listOf(2.0, 4.0, 6.0)))
+            listOf(IOType.d1(listOf(2.0f, 4.0f, 6.0f)))
         }
 
-        // seed=42でrandom.nextFloat(0.0, 1.0)を3回呼び出したときの値を事前計算
-        // Inverted Dropoutでは、マスクは0または1/ratio (= 2.0)
+        // seed=42でrandom.nextFloat(0f, 1f)を3回呼び出したときの値を事前計算
+        // Inverted Dropoutでは、マスクは0または1/ratio (= 2.0f)
         val testRandom = Random(42)
-        val q = 1.0 / 0.5 // 2.0
-        val expectedMask = List(3) { if (testRandom.nextFloat(0.0, 1.0) <= 0.5) q else 0.0 }
+        val q = 1.0f / 0.5f // 2.0f
+        val expectedMask = List(3) { if (testRandom.nextFloat(0f, 1f) <= 0.5f) q else 0.0f }
 
         val result = dropout._train(input, calcDelta)
 
         // maskに基づいてdeltaが乗算される
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D1
-        assertEquals(expected = 2.0 * expectedMask[0], actual = dx[0])
-        assertEquals(expected = 4.0 * expectedMask[1], actual = dx[1])
-        assertEquals(expected = 6.0 * expectedMask[2], actual = dx[2])
+        assertEquals(expected = 2.0f * expectedMask[0], actual = dx[0])
+        assertEquals(expected = 4.0f * expectedMask[1], actual = dx[1])
+        assertEquals(expected = 6.0f * expectedMask[2], actual = dx[2])
     }
 }

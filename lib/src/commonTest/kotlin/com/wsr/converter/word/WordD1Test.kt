@@ -23,30 +23,30 @@ class WordD1Test {
 
         assertEquals(expected = 3, actual = result.size)
 
-        // "hello" -> [0.0, 0.0, 1.0, 0.0, 0.0] (index 2)
+        // "hello" -> [0.0f, 0.0f, 1.0f, 0.0f, 0.0f] (index 2)
         val output0 = result[0]
         assertEquals(expected = 5, actual = output0.shape[0])
-        assertEquals(expected = 0.0, actual = output0[0])
-        assertEquals(expected = 0.0, actual = output0[1])
-        assertEquals(expected = 1.0, actual = output0[2])
-        assertEquals(expected = 0.0, actual = output0[3])
-        assertEquals(expected = 0.0, actual = output0[4])
+        assertEquals(expected = 0.0f, actual = output0[0])
+        assertEquals(expected = 0.0f, actual = output0[1])
+        assertEquals(expected = 1.0f, actual = output0[2])
+        assertEquals(expected = 0.0f, actual = output0[3])
+        assertEquals(expected = 0.0f, actual = output0[4])
 
-        // "world" -> [0.0, 0.0, 0.0, 1.0, 0.0] (index 3)
+        // "world" -> [0.0f, 0.0f, 0.0f, 1.0f, 0.0f] (index 3)
         val output1 = result[1]
-        assertEquals(expected = 0.0, actual = output1[0])
-        assertEquals(expected = 0.0, actual = output1[1])
-        assertEquals(expected = 0.0, actual = output1[2])
-        assertEquals(expected = 1.0, actual = output1[3])
-        assertEquals(expected = 0.0, actual = output1[4])
+        assertEquals(expected = 0.0f, actual = output1[0])
+        assertEquals(expected = 0.0f, actual = output1[1])
+        assertEquals(expected = 0.0f, actual = output1[2])
+        assertEquals(expected = 1.0f, actual = output1[3])
+        assertEquals(expected = 0.0f, actual = output1[4])
 
-        // "test" -> [0.0, 0.0, 0.0, 0.0, 1.0] (index 4)
+        // "test" -> [0.0f, 0.0f, 0.0f, 0.0f, 1.0f] (index 4)
         val output2 = result[2]
-        assertEquals(expected = 0.0, actual = output2[0])
-        assertEquals(expected = 0.0, actual = output2[1])
-        assertEquals(expected = 0.0, actual = output2[2])
-        assertEquals(expected = 0.0, actual = output2[3])
-        assertEquals(expected = 1.0, actual = output2[4])
+        assertEquals(expected = 0.0f, actual = output2[0])
+        assertEquals(expected = 0.0f, actual = output2[1])
+        assertEquals(expected = 0.0f, actual = output2[2])
+        assertEquals(expected = 0.0f, actual = output2[3])
+        assertEquals(expected = 1.0f, actual = output2[4])
     }
 
     @Test
@@ -62,21 +62,21 @@ class WordD1Test {
 
         assertEquals(expected = 2, actual = result.size)
 
-        // "unknown" -> [0.0, 1.0, 0.0, 0.0, 0.0] (unknownIndex=1)
+        // "unknown" -> [0.0f, 1.0f, 0.0f, 0.0f, 0.0f] (unknownIndex=1)
         val output0 = result[0]
-        assertEquals(expected = 0.0, actual = output0[0])
-        assertEquals(expected = 1.0, actual = output0[1])
-        assertEquals(expected = 0.0, actual = output0[2])
-        assertEquals(expected = 0.0, actual = output0[3])
-        assertEquals(expected = 0.0, actual = output0[4])
+        assertEquals(expected = 0.0f, actual = output0[0])
+        assertEquals(expected = 1.0f, actual = output0[1])
+        assertEquals(expected = 0.0f, actual = output0[2])
+        assertEquals(expected = 0.0f, actual = output0[3])
+        assertEquals(expected = 0.0f, actual = output0[4])
 
-        // "hello" -> [0.0, 0.0, 1.0, 0.0, 0.0] (index 2)
+        // "hello" -> [0.0f, 0.0f, 1.0f, 0.0f, 0.0f] (index 2)
         val output1 = result[1]
-        assertEquals(expected = 0.0, actual = output1[0])
-        assertEquals(expected = 0.0, actual = output1[1])
-        assertEquals(expected = 1.0, actual = output1[2])
-        assertEquals(expected = 0.0, actual = output1[3])
-        assertEquals(expected = 0.0, actual = output1[4])
+        assertEquals(expected = 0.0f, actual = output1[0])
+        assertEquals(expected = 0.0f, actual = output1[1])
+        assertEquals(expected = 1.0f, actual = output1[2])
+        assertEquals(expected = 0.0f, actual = output1[3])
+        assertEquals(expected = 0.0f, actual = output1[4])
     }
 
     @Test
@@ -87,9 +87,9 @@ class WordD1Test {
         )
 
         val input = listOf(
-            IOType.d1(listOf(0.0, 0.0, 1.0, 0.0, 0.0)), // hello
-            IOType.d1(listOf(0.0, 0.0, 0.0, 1.0, 0.0)), // world
-            IOType.d1(listOf(0.0, 0.0, 0.0, 0.0, 1.0)), // test
+            IOType.d1(listOf(0.0f, 0.0f, 1.0f, 0.0f, 0.0f)), // hello
+            IOType.d1(listOf(0.0f, 0.0f, 0.0f, 1.0f, 0.0f)), // world
+            IOType.d1(listOf(0.0f, 0.0f, 0.0f, 0.0f, 1.0f)), // test
         )
 
         val result = converter.decode(input)
@@ -109,8 +109,8 @@ class WordD1Test {
 
         // Softmax出力のような確率分布を想定
         val input = listOf(
-            IOType.d1(listOf(0.1, 0.2, 0.5, 0.15, 0.05)), // index 2 (hello) が最大
-            IOType.d1(listOf(0.05, 0.1, 0.15, 0.6, 0.1)), // index 3 (world) が最大
+            IOType.d1(listOf(0.1f, 0.2f, 0.5f, 0.15f, 0.05f)), // index 2 (hello) が最大
+            IOType.d1(listOf(0.05f, 0.1f, 0.15f, 0.6f, 0.1f)), // index 3 (world) が最大
         )
 
         val result = converter.decode(input)
@@ -145,7 +145,7 @@ class WordD1Test {
 
         // 確率分布からdecode -> encode
         val input = listOf(
-            IOType.d1(listOf(0.1, 0.2, 0.5, 0.15, 0.05)), // hello
+            IOType.d1(listOf(0.1f, 0.2f, 0.5f, 0.15f, 0.05f)), // hello
         )
 
         val decoded = converter.decode(input)
@@ -155,10 +155,10 @@ class WordD1Test {
 
         // One-hotベクトルになる
         val output = encoded[0]
-        assertEquals(expected = 0.0, actual = output[0])
-        assertEquals(expected = 0.0, actual = output[1])
-        assertEquals(expected = 1.0, actual = output[2]) // hello
-        assertEquals(expected = 0.0, actual = output[3])
-        assertEquals(expected = 0.0, actual = output[4])
+        assertEquals(expected = 0.0f, actual = output[0])
+        assertEquals(expected = 0.0f, actual = output[1])
+        assertEquals(expected = 1.0f, actual = output[2]) // hello
+        assertEquals(expected = 0.0f, actual = output[3])
+        assertEquals(expected = 0.0f, actual = output[4])
     }
 }

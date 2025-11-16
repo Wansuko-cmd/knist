@@ -10,13 +10,13 @@ class LayerNormD3Test {
     @Test
     fun `LayerNormD3の_expect=Layer正規化を適用`() {
         // weight = [[[1, 1], [1, 1]], [[1, 1], [1, 1]]]
-        val weight = IOType.Companion.d3(2, 2, 2) { _, _, _ -> 1.0 }
+        val weight = IOType.Companion.d3(2, 2, 2) { _, _, _ -> 1.0f }
         val norm =
             LayerNormD3(
                 outputX = 2,
                 outputY = 2,
                 outputZ = 2,
-                optimizer = Sgd(0.1).d3(x = 2, y = 2, z = 2),
+                optimizer = Sgd(0.1f).d3(x = 2, y = 2, z = 2),
                 weight = weight,
             )
 
@@ -33,104 +33,104 @@ class LayerNormD3Test {
         // variance = (16 + 4 + 4 + 0 + 0 + 4 + 4 + 16) / 8 = 48 / 8 = 6, std=sqrt(6+1e-10)
         assertEquals(expected = 2, actual = result.size)
         val output1 = result[0] as IOType.D3
-        val expectedStd1 = sqrt(6.0 + 1e-10)
+        val expectedStd1 = sqrt(6.0f + 1e-10f)
         assertEquals(
-            expected = -4.0 / expectedStd1,
+            expected = (-4.0f / expectedStd1),
             actual = output1[0, 0, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = -2.0 / expectedStd1,
+            expected = (-2.0f / expectedStd1),
             actual = output1[0, 0, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = -2.0 / expectedStd1,
+            expected = (-2.0f / expectedStd1),
             actual = output1[0, 1, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 0.0 / expectedStd1,
+            expected = (0.0f / expectedStd1),
             actual = output1[0, 1, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 0.0 / expectedStd1,
+            expected = (0.0f / expectedStd1),
             actual = output1[1, 0, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 2.0 / expectedStd1,
+            expected = (2.0f / expectedStd1),
             actual = output1[1, 0, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 2.0 / expectedStd1,
+            expected = (2.0f / expectedStd1),
             actual = output1[1, 1, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 4.0 / expectedStd1,
+            expected = (4.0f / expectedStd1),
             actual = output1[1, 1, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
 
         // バッチ2: [[[2, 4], [4, 6]], [[6, 8], [8, 10]]], mean=6, numerator=[[[-4, -2], [-2, 0]], [[0, 2], [2, 4]]]
         // variance = (16 + 4 + 4 + 0 + 0 + 4 + 4 + 16) / 8 = 48 / 8 = 6, std=sqrt(6+1e-10)
         val output2 = result[1] as IOType.D3
-        val expectedStd2 = sqrt(6.0 + 1e-10)
+        val expectedStd2 = sqrt(6.0f + 1e-10f)
         assertEquals(
-            expected = -4.0 / expectedStd2,
+            expected = (-4.0f / expectedStd2),
             actual = output2[0, 0, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = -2.0 / expectedStd2,
+            expected = (-2.0f / expectedStd2),
             actual = output2[0, 0, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = -2.0 / expectedStd2,
+            expected = (-2.0f / expectedStd2),
             actual = output2[0, 1, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 0.0 / expectedStd2,
+            expected = (0.0f / expectedStd2),
             actual = output2[0, 1, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 0.0 / expectedStd2,
+            expected = (0.0f / expectedStd2),
             actual = output2[1, 0, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 2.0 / expectedStd2,
+            expected = (2.0f / expectedStd2),
             actual = output2[1, 0, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 2.0 / expectedStd2,
+            expected = (2.0f / expectedStd2),
             actual = output2[1, 1, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 4.0 / expectedStd2,
+            expected = (4.0f / expectedStd2),
             actual = output2[1, 1, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
     }
 
     @Test
     fun `LayerNormD3の_train=weightが更新される`() {
         // weight = [[[2, 2], [2, 2]], [[2, 2], [2, 2]]]
-        val weight = IOType.Companion.d3(2, 2, 2) { _, _, _ -> 2.0 }
+        val weight = IOType.Companion.d3(2, 2, 2) { _, _, _ -> 2.0f }
         val norm =
             LayerNormD3(
                 outputX = 2,
                 outputY = 2,
                 outputZ = 2,
-                optimizer = Sgd(0.1).d3(x = 2, y = 2, z = 2),
+                optimizer = Sgd(0.1f).d3(x = 2, y = 2, z = 2),
                 weight = weight,
             )
 
@@ -143,14 +143,14 @@ class LayerNormD3Test {
 
         // deltaは全て[[[1, 1], [1, 1]], [[1, 1], [1, 1]]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = { outputs ->
-            outputs.map { IOType.Companion.d3(2, 2, 2) { _, _, _ -> 1.0 } }
+            outputs.map { IOType.Companion.d3(2, 2, 2) { _, _, _ -> 1.0f } }
         }
 
-        val expectedStd = sqrt(6.0 + 1e-10)
-        // normalized_avg ≈ [[[-1.633, -0.816], [-0.816, 0]], [[0, 0.816], [0.816, 1.633]]]
+        val expectedStd = sqrt(6.0f + 1e-10f)
+        // normalized_avg ≈ [[[-1.633f, -0.816f], [-0.816f, 0]], [[0, 0.816f], [0.816f, 1.633f]]]
         // delta_avg = [[[1, 1], [1, 1]], [[1, 1], [1, 1]]]
         // dw = normalized_avg * delta_avg
-        // weight -= 0.1 * dw
+        // weight -= 0.1f * dw
 
         // trainを実行
         norm._train(input, calcDelta)
@@ -159,39 +159,39 @@ class LayerNormD3Test {
         val afterOutput = norm._expect(listOf(input[0]))[0] as IOType.D3
 
         // output = updated_weight * normalized
-        // normalized[0, 0, 0] = -4.0 / expectedStd
-        // updated_weight[0, 0, 0] = 2.0 - 0.1 * (-4.0 / expectedStd) = 2.0 + 0.4 / expectedStd
+        // normalized[0, 0, 0] = -4.0f / expectedStd
+        // updated_weight[0, 0, 0] = 2.0f - 0.1f * (-4.0f / expectedStd) = 2.0f + 0.4f / expectedStd
         assertEquals(
-            expected = (2.0 + 0.1 * 4.0 / expectedStd) * (-4.0 / expectedStd),
+            expected = (2.0f + 0.1f * 4.0f / expectedStd) * (-4.0f / expectedStd),
             actual = afterOutput[0, 0, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = (2.0 + 0.1 * 2.0 / expectedStd) * (-2.0 / expectedStd),
+            expected = (2.0f + 0.1f * 2.0f / expectedStd) * (-2.0f / expectedStd),
             actual = afterOutput[0, 0, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = (2.0 - 0.1 * 4.0 / expectedStd) * (4.0 / expectedStd),
+            expected = (2.0f - 0.1f * 4.0f / expectedStd) * (4.0f / expectedStd),
             actual = afterOutput[1, 1, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
     }
 
     @Test
     fun `LayerNormD3の数値微分テスト=dxが計算されて返される`() {
-        // weight = [[[1.5, 2.0], [1.0, 0.8]], [[1.2, 0.9], [1.1, 1.3]]]
+        // weight = [[[1.5f, 2.0f], [1.0f, 0.8f]], [[1.2f, 0.9f], [1.1f, 1.3f]]]
         val weight =
             IOType.Companion.d3(2, 2, 2) { x, y, z ->
                 when {
-                    x == 0 && y == 0 && z == 0 -> 1.5
-                    x == 0 && y == 0 && z == 1 -> 2.0
-                    x == 0 && y == 1 && z == 0 -> 1.0
-                    x == 0 && y == 1 && z == 1 -> 0.8
-                    x == 1 && y == 0 && z == 0 -> 1.2
-                    x == 1 && y == 0 && z == 1 -> 0.9
-                    x == 1 && y == 1 && z == 0 -> 1.1
-                    else -> 1.3
+                    x == 0 && y == 0 && z == 0 -> 1.5f
+                    x == 0 && y == 0 && z == 1 -> 2.0f
+                    x == 0 && y == 1 && z == 0 -> 1.0f
+                    x == 0 && y == 1 && z == 1 -> 0.8f
+                    x == 1 && y == 0 && z == 0 -> 1.2f
+                    x == 1 && y == 0 && z == 1 -> 0.9f
+                    x == 1 && y == 1 && z == 0 -> 1.1f
+                    else -> 1.3f
                 }
             }
         val norm =
@@ -199,7 +199,7 @@ class LayerNormD3Test {
                 outputX = 2,
                 outputY = 2,
                 outputZ = 2,
-                optimizer = Sgd(0.01).d3(x = 2, y = 2, z = 2),
+                optimizer = Sgd(0.01f).d3(x = 2, y = 2, z = 2),
                 weight = weight,
             )
 
@@ -209,26 +209,26 @@ class LayerNormD3Test {
                 IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
 
-        // deltaは[[[1, 0.5], [-1, 0.8]], [[0.7, -0.5], [0.9, 1.2]]]を返す（任意の勾配）
+        // deltaは[[[1, 0.5f], [-1, 0.8f]], [[0.7f, -0.5f], [0.9f, 1.2f]]]を返す（任意の勾配）
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(
                 IOType.Companion.d3(2, 2, 2) { x, y, z ->
                     when {
-                        x == 0 && y == 0 && z == 0 -> 1.0
-                        x == 0 && y == 0 && z == 1 -> 0.5
-                        x == 0 && y == 1 && z == 0 -> -1.0
-                        x == 0 && y == 1 && z == 1 -> 0.8
-                        x == 1 && y == 0 && z == 0 -> 0.7
-                        x == 1 && y == 0 && z == 1 -> -0.5
-                        x == 1 && y == 1 && z == 0 -> 0.9
-                        else -> 1.2
+                        x == 0 && y == 0 && z == 0 -> 1.0f
+                        x == 0 && y == 0 && z == 1 -> 0.5f
+                        x == 0 && y == 1 && z == 0 -> -1.0f
+                        x == 0 && y == 1 && z == 1 -> 0.8f
+                        x == 1 && y == 0 && z == 0 -> 0.7f
+                        x == 1 && y == 0 && z == 1 -> -0.5f
+                        x == 1 && y == 1 && z == 0 -> 0.9f
+                        else -> 1.2f
                     }
                 },
             )
         }
 
         // 数値微分でdxを計算
-        val epsilon = 1e-5
+        val epsilon = 1e-5f
         val numericalGradients = mutableListOf<List<List<Float>>>()
 
         for (i in 0 until 2) {
@@ -249,7 +249,7 @@ class LayerNormD3Test {
                     val lossMinus = calcLoss(outputMinus, calcDelta)
 
                     // 数値微分
-                    val gradient = (lossPlus - lossMinus) / (2 * epsilon)
+                    val gradient = ((lossPlus - lossMinus) / (2 * epsilon))
                     row.add(gradient)
                 }
                 plane.add(row)
@@ -267,7 +267,7 @@ class LayerNormD3Test {
                     assertEquals(
                         expected = numericalGradients[i][j][k],
                         actual = dx[i, j, k],
-                        absoluteTolerance = 1e-3,
+                        absoluteTolerance = 8e-2f,
                         message = "要素[$i, $j, $k]の勾配が数値微分と一致しません",
                     )
                 }
@@ -282,7 +282,7 @@ class LayerNormD3Test {
     private fun calcLoss(output: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): Float {
         val delta = calcDelta(output)[0] as IOType.D3
         val out = output[0] as IOType.D3
-        var loss = 0.0
+        var loss = 0.0f
         for (i in 0 until out.shape[0]) {
             for (j in 0 until out.shape[1]) {
                 for (k in 0 until out.shape[2]) {

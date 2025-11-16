@@ -29,7 +29,7 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                optimizer = Sgd(0.1).d3(
+                optimizer = Sgd(0.1f).d3(
                     x = weight.shape[0],
                     y = weight.shape[1],
                     z = weight.shape[2],
@@ -66,7 +66,7 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                optimizer = Sgd(0.1).d3(
+                optimizer = Sgd(0.1f).d3(
                     x = weight.shape[0],
                     y = weight.shape[1],
                     z = weight.shape[2],
@@ -107,7 +107,7 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                optimizer = Sgd(0.1).d3(
+                optimizer = Sgd(0.1f).d3(
                     x = weight.shape[0],
                     y = weight.shape[1],
                     z = weight.shape[2],
@@ -129,12 +129,12 @@ class ConvD1Test {
         conv._train(input, calcDelta)
 
         // 更新後のexpect結果
-        // afterOutput = D2(value=[20.8, 26.4, 48.0, 64.0], shape=[2, 2])
+        // afterOutput = D2(value=[20.8f, 26.4f, 48.0f, 64.0f], shape=[2, 2])
         val afterOutput = conv._expect(input)[0] as IOType.D2
 
-        assertEquals(expected = 20.8, actual = afterOutput[0, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 26.4, actual = afterOutput[0, 1], absoluteTolerance = 1e-10)
-        assertEquals(expected = 48.0, actual = afterOutput[1, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 64.0, actual = afterOutput[1, 1], absoluteTolerance = 1e-10)
+        assertEquals(expected = 20.8f, actual = afterOutput[0, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 26.4f, actual = afterOutput[0, 1], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 48.0f, actual = afterOutput[1, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 64.0f, actual = afterOutput[1, 1], absoluteTolerance = 1e-5f)
     }
 }

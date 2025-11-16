@@ -10,12 +10,12 @@ class LayerNormD2Test {
     @Test
     fun `LayerNormD2の_expect=Layer正規化を適用`() {
         // weight = [[1, 1], [1, 1]]
-        val weight = IOType.Companion.d2(2, 2) { _, _ -> 1.0 }
+        val weight = IOType.Companion.d2(2, 2) { _, _ -> 1.0f }
         val norm =
             LayerNormD2(
                 outputX = 2,
                 outputY = 2,
-                optimizer = Sgd(0.1).d2(x = 2, y = 2),
+                optimizer = Sgd(0.1f).d2(x = 2, y = 2),
                 weight = weight,
             )
 
@@ -32,63 +32,63 @@ class LayerNormD2Test {
         // output = [[-2, 0], [0, 2]] / sqrt(2+1e-10)
         assertEquals(expected = 2, actual = result.size)
         val output1 = result[0] as IOType.D2
-        val expectedStd1 = sqrt(2.0 + 1e-10)
+        val expectedStd1 = sqrt(2.0f + 1e-10f)
         assertEquals(
-            expected = -2.0 / expectedStd1,
+            expected = (-2.0f / expectedStd1),
             actual = output1[0, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 0.0 / expectedStd1,
+            expected = (0.0f / expectedStd1),
             actual = output1[0, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 0.0 / expectedStd1,
+            expected = (0.0f / expectedStd1),
             actual = output1[1, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 2.0 / expectedStd1,
+            expected = (2.0f / expectedStd1),
             actual = output1[1, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
 
         // バッチ2: [[2, 4], [4, 6]], mean=4, numerator=[[-2, 0], [0, 2]], variance=2, std=sqrt(2+1e-10)
         // output = [[-2, 0], [0, 2]] / sqrt(2+1e-10)
         val output2 = result[1] as IOType.D2
-        val expectedStd2 = sqrt(2.0 + 1e-10)
+        val expectedStd2 = sqrt(2.0f + 1e-10f)
         assertEquals(
-            expected = -2.0 / expectedStd2,
+            expected = (-2.0f / expectedStd2),
             actual = output2[0, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 0.0 / expectedStd2,
+            expected = (0.0f / expectedStd2),
             actual = output2[0, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 0.0 / expectedStd2,
+            expected = (0.0f / expectedStd2),
             actual = output2[1, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 2.0 / expectedStd2,
+            expected = (2.0f / expectedStd2),
             actual = output2[1, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
     }
 
     @Test
     fun `LayerNormD2の_train=weightが更新される`() {
         // weight = [[2, 2], [2, 2]]
-        val weight = IOType.Companion.d2(2, 2) { _, _ -> 2.0 }
+        val weight = IOType.Companion.d2(2, 2) { _, _ -> 2.0f }
         val norm =
             LayerNormD2(
                 outputX = 2,
                 outputY = 2,
-                optimizer = Sgd(0.1).d2(x = 2, y = 2),
+                optimizer = Sgd(0.1f).d2(x = 2, y = 2),
                 weight = weight,
             )
 
@@ -101,19 +101,19 @@ class LayerNormD2Test {
 
         // deltaは全て[[1, 1], [1, 1]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = { outputs ->
-            outputs.map { IOType.Companion.d2(2, 2) { _, _ -> 1.0 } }
+            outputs.map { IOType.Companion.d2(2, 2) { _, _ -> 1.0f } }
         }
 
         // バッチ1: mean=2, numerator=[[-2, 0], [0, 2]], variance=2, std=sqrt(2+1e-10)
-        // normalized1 = [[-2, 0], [0, 2]] / sqrt(2+1e-10) ≈ [[-1.414, 0], [0, 1.414]]
+        // normalized1 = [[-2, 0], [0, 2]] / sqrt(2+1e-10) ≈ [[-1.414f, 0], [0, 1.414f]]
         // バッチ2: mean=4, numerator=[[-2, 0], [0, 2]], variance=2, std=sqrt(2+1e-10)
-        // normalized2 = [[-2, 0], [0, 2]] / sqrt(2+1e-10) ≈ [[-1.414, 0], [0, 1.414]]
-        // normalized_avg = (normalized1 + normalized2) / 2 = [[-1.414, 0], [0, 1.414]]
+        // normalized2 = [[-2, 0], [0, 2]] / sqrt(2+1e-10) ≈ [[-1.414f, 0], [0, 1.414f]]
+        // normalized_avg = (normalized1 + normalized2) / 2 = [[-1.414f, 0], [0, 1.414f]]
         // delta_avg = [[1, 1], [1, 1]]
-        // dw = normalized_avg * delta_avg = [[-1.414, 0], [0, 1.414]]
-        // weight -= 0.1 * dw = [[2, 2], [2, 2]] - 0.1 * [[-1.414, 0], [0, 1.414]]
-        //        = [[2, 2], [2, 2]] - [[-0.1414, 0], [0, 0.1414]]
-        //        = [[2.1414, 2], [2, 1.8586]]
+        // dw = normalized_avg * delta_avg = [[-1.414f, 0], [0, 1.414f]]
+        // weight -= 0.1f * dw = [[2, 2], [2, 2]] - 0.1f * [[-1.414f, 0], [0, 1.414f]]
+        //        = [[2, 2], [2, 2]] - [[-0.1414f, 0], [0, 0.1414f]]
+        //        = [[2.1414f, 2], [2, 1.8586f]]
 
         // trainを実行
         try {
@@ -124,47 +124,47 @@ class LayerNormD2Test {
 
         // 更新後のexpect結果を確認（バッチ1で）
         val afterOutput = norm._expect(listOf(input[0]))[0] as IOType.D2
-        val expectedStd = sqrt(2.0 + 1e-10)
-        // output = [[2.1414, 2], [2, 1.8586]] * [[-2, 0], [0, 2]] / std
+        val expectedStd = sqrt(2.0f + 1e-10f)
+        // output = [[2.1414f, 2], [2, 1.8586f]] * [[-2, 0], [0, 2]] / std
         assertEquals(
-            expected = (2.0 + 0.1 * 2.0 / expectedStd) * (-2.0 / expectedStd),
+            expected = ((2.0f + 0.1f * 2.0f / expectedStd) * (-2.0f / expectedStd)),
             actual = afterOutput[0, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 2.0 * (0.0 / expectedStd),
+            expected = (2.0f * (0.0f / expectedStd)),
             actual = afterOutput[0, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = 2.0 * (0.0 / expectedStd),
+            expected = (2.0f * (0.0f / expectedStd)),
             actual = afterOutput[1, 0],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = (2.0 - 0.1 * 2.0 / expectedStd) * (2.0 / expectedStd),
+            expected = ((2.0f - 0.1f * 2.0f / expectedStd) * (2.0f / expectedStd)),
             actual = afterOutput[1, 1],
-            absoluteTolerance = 1e-4,
+            absoluteTolerance = 1e-4f,
         )
     }
 
     @Test
     fun `LayerNormD2の数値微分テスト=dxが計算されて返される`() {
-        // weight = [[1.5, 2.0], [1.0, 0.8]]
+        // weight = [[1.5f, 2.0f], [1.0f, 0.8f]]
         val weight =
             IOType.Companion.d2(2, 2) { x, y ->
                 when {
-                    x == 0 && y == 0 -> 1.5
-                    x == 0 && y == 1 -> 2.0
-                    x == 1 && y == 0 -> 1.0
-                    else -> 0.8
+                    x == 0 && y == 0 -> 1.5f
+                    x == 0 && y == 1 -> 2.0f
+                    x == 1 && y == 0 -> 1.0f
+                    else -> 0.8f
                 }
             }
         val norm =
             LayerNormD2(
                 outputX = 2,
                 outputY = 2,
-                optimizer = Sgd(0.01).d2(x = 2, y = 2),
+                optimizer = Sgd(0.01f).d2(x = 2, y = 2),
                 weight = weight,
             )
 
@@ -174,22 +174,22 @@ class LayerNormD2Test {
                 IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
-        // deltaは[[1, 0.5], [-1, 0.8]]を返す（任意の勾配）
+        // deltaは[[1, 0.5f], [-1, 0.8f]]を返す（任意の勾配）
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(
                 IOType.Companion.d2(2, 2) { x, y ->
                     when {
-                        x == 0 && y == 0 -> 1.0
-                        x == 0 && y == 1 -> 0.5
-                        x == 1 && y == 0 -> -1.0
-                        else -> 0.8
+                        x == 0 && y == 0 -> 1.0f
+                        x == 0 && y == 1 -> 0.5f
+                        x == 1 && y == 0 -> -1.0f
+                        else -> 0.8f
                     }
                 },
             )
         }
 
         // 数値微分でdxを計算
-        val epsilon = 1e-5
+        val epsilon = 1e-5f
         val numericalGradients = mutableListOf<List<Float>>()
 
         for (i in 0 until 2) {
@@ -208,7 +208,7 @@ class LayerNormD2Test {
                 val lossMinus = calcLoss(outputMinus, calcDelta)
 
                 // 数値微分
-                val gradient = (lossPlus - lossMinus) / (2 * epsilon)
+                val gradient = ((lossPlus - lossMinus) / (2 * epsilon))
                 row.add(gradient)
             }
             numericalGradients.add(row)
@@ -223,7 +223,7 @@ class LayerNormD2Test {
                 assertEquals(
                     expected = numericalGradients[i][j],
                     actual = dx[i, j],
-                    absoluteTolerance = 1e-3,
+                    absoluteTolerance = 3e-2f,
                     message = "要素[$i, $j]の勾配が数値微分と一致しません",
                 )
             }
@@ -237,7 +237,7 @@ class LayerNormD2Test {
     private fun calcLoss(output: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): Float {
         val delta = calcDelta(output)[0] as IOType.D2
         val out = output[0] as IOType.D2
-        var loss = 0.0
+        var loss = 0.0f
         for (i in 0 until out.shape[0]) {
             for (j in 0 until out.shape[1]) {
                 loss += out[i, j] * delta[i, j]
