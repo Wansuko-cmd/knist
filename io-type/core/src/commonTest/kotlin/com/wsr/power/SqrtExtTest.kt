@@ -10,7 +10,7 @@ class SqrtExtTest {
     @Test
     fun `D1のsqrt=各要素の平方根を計算する`() {
         val a = IOType.d1(listOf(4.0, 9.0, 16.0))
-        val result = a.sqrt()
+        val result = a.sqrt(e = 0.0)
 
         assertEquals(expected = 2.0, actual = result[0], absoluteTolerance = 1e-10)
         assertEquals(expected = 3.0, actual = result[1], absoluteTolerance = 1e-10)
@@ -28,7 +28,7 @@ class SqrtExtTest {
                 else -> 25.0
             }
         }
-        val result = a.sqrt()
+        val result = a.sqrt(e = 0.0)
 
         // [[2, 3], [4, 5]]
         assertEquals(expected = 2.0, actual = result[0, 0], absoluteTolerance = 1e-10)
@@ -44,7 +44,7 @@ class SqrtExtTest {
             val idx = x * 4 + y * 2 + z + 1
             (idx * idx).toDouble()
         }
-        val result = a.sqrt()
+        val result = a.sqrt(e = 0.0)
 
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         assertEquals(expected = 1.0, actual = result[0, 0, 0], absoluteTolerance = 1e-10)
