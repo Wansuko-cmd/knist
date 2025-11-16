@@ -19,7 +19,7 @@ fun IOType.D2.average(axis: Int) = when (axis) {
         // 列方向の平均: 各列の要素を合計して要素数で割る
         val ones = FloatArray(shape[0]) { 1f }
         val result = FloatArray(shape[1])
-        BLAS.dgemv(
+        BLAS.sgemv(
             trans = true,
             m = shape[0],
             n = shape[1],
@@ -33,7 +33,7 @@ fun IOType.D2.average(axis: Int) = when (axis) {
             incY = 1,
         )
         // 行数で割って平均を計算
-        BLAS.dscal(n = result.size, alpha = 1f / shape[0], x = result, incX = 1)
+        BLAS.sscal(n = result.size, alpha = 1f / shape[0], x = result, incX = 1)
         IOType.d1(result)
     }
 
@@ -41,7 +41,7 @@ fun IOType.D2.average(axis: Int) = when (axis) {
         // 行方向の平均: 各行の要素を合計して要素数で割る
         val ones = FloatArray(shape[1]) { 1f }
         val result = FloatArray(shape[0])
-        BLAS.dgemv(
+        BLAS.sgemv(
             trans = false,
             m = shape[0],
             n = shape[1],
@@ -55,7 +55,7 @@ fun IOType.D2.average(axis: Int) = when (axis) {
             incY = 1,
         )
         // 列数で割って平均を計算
-        BLAS.dscal(n = result.size, alpha = 1f / shape[1], x = result, incX = 1)
+        BLAS.sscal(n = result.size, alpha = 1f / shape[1], x = result, incX = 1)
         IOType.d1(result)
     }
 

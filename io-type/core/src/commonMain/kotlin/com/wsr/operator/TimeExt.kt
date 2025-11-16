@@ -8,7 +8,7 @@ import com.wsr.IOType
  */
 operator fun Float.times(other: IOType.D1): IOType.D1 {
     val result = other.value.copyOf()
-    BLAS.dscal(n = result.size, alpha = this, x = result, incX = 1)
+    BLAS.sscal(n = result.size, alpha = this, x = result, incX = 1)
     return IOType.d1(result)
 }
 
@@ -17,7 +17,7 @@ operator fun Float.times(other: List<IOType.D1>) = other.map { this * it }
 
 operator fun Float.times(other: IOType.D2): IOType.D2 {
     val result = other.value.copyOf()
-    BLAS.dscal(n = result.size, alpha = this, x = result, incX = 1)
+    BLAS.sscal(n = result.size, alpha = this, x = result, incX = 1)
     return IOType.d2(other.shape, result)
 }
 
@@ -26,7 +26,7 @@ operator fun Float.times(other: List<IOType.D2>) = other.map { this * it }
 
 operator fun Float.times(other: IOType.D3): IOType.D3 {
     val result = other.value.copyOf()
-    BLAS.dscal(n = result.size, alpha = this, x = result, incX = 1)
+    BLAS.sscal(n = result.size, alpha = this, x = result, incX = 1)
     return IOType.d3(other.shape, result)
 }
 
@@ -38,7 +38,7 @@ operator fun Float.times(other: List<IOType.D3>) = other.map { this * it }
  */
 operator fun IOType.D1.times(other: Float): IOType.D1 {
     val result = value.copyOf()
-    BLAS.dscal(n = result.size, alpha = other, x = result, incX = 1)
+    BLAS.sscal(n = result.size, alpha = other, x = result, incX = 1)
     return IOType.d1(result)
 }
 
@@ -67,7 +67,7 @@ operator fun List<IOType.D1>.times(other: List<IOType.D1>) = List(size) { this[i
  */
 operator fun IOType.D2.times(other: Float): IOType.D2 {
     val result = value.copyOf()
-    BLAS.dscal(n = result.size, alpha = other, x = result, incX = 1)
+    BLAS.sscal(n = result.size, alpha = other, x = result, incX = 1)
     return IOType.d2(shape, result)
 }
 
@@ -94,7 +94,7 @@ operator fun List<IOType.D2>.times(other: List<IOType.D2>) = List(size) { this[i
  */
 operator fun IOType.D3.times(other: Float): IOType.D3 {
     val result = value.copyOf()
-    BLAS.dscal(n = result.size, alpha = other, x = result, incX = 1)
+    BLAS.sscal(n = result.size, alpha = other, x = result, incX = 1)
     return IOType.d3(shape, result)
 }
 

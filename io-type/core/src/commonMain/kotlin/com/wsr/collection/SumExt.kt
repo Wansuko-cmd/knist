@@ -14,7 +14,7 @@ fun IOType.D2.sum(axis: Int): IOType.D1 = when (axis) {
         // 列方向の合計: 各列の要素を合計
         val ones = FloatArray(shape[0]) { 1f }
         val result = FloatArray(shape[1])
-        BLAS.dgemv(
+        BLAS.sgemv(
             trans = true,
             m = shape[0],
             n = shape[1],
@@ -34,7 +34,7 @@ fun IOType.D2.sum(axis: Int): IOType.D1 = when (axis) {
         // 行方向の合計: 各行の要素を合計
         val ones = FloatArray(shape[1]) { 1f }
         val result = FloatArray(shape[0])
-        BLAS.dgemv(
+        BLAS.sgemv(
             trans = false,
             m = shape[0],
             n = shape[1],
