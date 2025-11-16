@@ -19,16 +19,14 @@ fun IOType.D1.convD1(filter: IOType.D1, stride: Int = 1, padding: Int = 0): IOTy
 
 fun IOType.D1.deConvD1(filter: IOType.D1, stride: Int = 1, padding: Int = 0): IOType.D1 {
     val filterSize = filter.shape[0]
-    val input =
-        this
-            .addStridePadding(stride)
-            .addPadding(filterSize - padding - 1)
+    val input = this
+        .addStridePadding(stride)
+        .addPadding(filterSize - padding - 1)
     return input.convD1(filter, stride = 1, padding = 0)
 }
 
 private fun IOType.D1.addStridePadding(stride: Int) = IOType.d1(
-    value =
-    ArrayList<Float>().apply {
+    value = ArrayList<Float>().apply {
         for (i in 0 until shape[0] - 1) {
             add(value[i])
             addAll(Array(stride - 1) { 0f })
@@ -38,8 +36,7 @@ private fun IOType.D1.addStridePadding(stride: Int) = IOType.d1(
 )
 
 private fun IOType.D1.addPadding(padding: Int) = IOType.d1(
-    value =
-    ArrayList<Float>().apply {
+    value = ArrayList<Float>().apply {
         addAll(Array(padding) { 0f })
         addAll(value.toTypedArray())
         addAll(Array(padding) { 0f })
@@ -64,10 +61,9 @@ fun List<IOType.D2>.convD1(weight: IOType.D3, stride: Int = 1, padding: Int = 0)
 
 fun List<IOType.D2>.deConvD1(weight: IOType.D3, stride: Int = 1, padding: Int = 0): List<IOType.D2> {
     val filterSize = weight.shape[2]
-    val input =
-        this
-            .addStridePadding(stride)
-            .addPadding(filterSize - padding - 1)
+    val input = this
+        .addStridePadding(stride)
+        .addPadding(filterSize - padding - 1)
     return input.convD1(weight = weight, stride = 1, padding = 0)
 }
 
