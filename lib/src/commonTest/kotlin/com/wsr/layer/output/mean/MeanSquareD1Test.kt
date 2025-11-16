@@ -13,7 +13,7 @@ class MeanSquareD1Test {
         // [1, 2, 3]
         val input =
             listOf(
-                IOType.d1(listOf(1.0, 2.0, 3.0)),
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val meanSquare = MeanSquareD1(outputSize = 3)
         val result = meanSquare._expect(input)
@@ -26,21 +26,21 @@ class MeanSquareD1Test {
         // [[1, 2, 3], [4, 5, 6]]
         val input =
             listOf(
-                IOType.d1(listOf(1.0, 2.0, 3.0)),
-                IOType.d1(listOf(4.0, 5.0, 6.0)),
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+                IOType.d1(listOf(4.0f, 5.0f, 6.0f)),
             )
         // [[0, 1, 2], [3, 4, 5]]
         val label =
             listOf(
-                IOType.d1(listOf(0.0, 1.0, 2.0)),
-                IOType.d1(listOf(3.0, 4.0, 5.0)),
+                IOType.d1(listOf(0.0f, 1.0f, 2.0f)),
+                IOType.d1(listOf(3.0f, 4.0f, 5.0f)),
             )
         val meanSquare = MeanSquareD1(outputSize = 3)
         // [[1-0, 2-1, 3-2], [4-3, 5-4, 6-5]] = [[1, 1, 1], [1, 1, 1]]
         val result = meanSquare._train(input, label)
 
         assertEquals(expected = 2, actual = result.size)
-        assertEquals(expected = IOType.d1(listOf(1.0, 1.0, 1.0)), actual = result[0])
-        assertEquals(expected = IOType.d1(listOf(1.0, 1.0, 1.0)), actual = result[1])
+        assertEquals(expected = IOType.d1(listOf(1.0f, 1.0f, 1.0f)), actual = result[0])
+        assertEquals(expected = IOType.d1(listOf(1.0f, 1.0f, 1.0f)), actual = result[1])
     }
 }

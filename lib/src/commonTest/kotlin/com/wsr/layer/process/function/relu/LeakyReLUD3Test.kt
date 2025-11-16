@@ -15,7 +15,7 @@ class LeakyReLUD3Test {
         // [[[1, 2]], [[3, 4]]] (全て正の値でテスト)
         val input =
             listOf(
-                IOType.d3(2, 1, 2) { x, _, z -> (x * 2 + z + 1).toDouble() },
+                IOType.d3(2, 1, 2) { x, _, z -> (x * 2 + z + 1).toFloat() },
             )
 
         val result = leakyRelu._expect(input)
@@ -23,10 +23,10 @@ class LeakyReLUD3Test {
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
         // 正の値はそのまま（実装バグがあるため、これで確認）
-        assertEquals(expected = 1.0, actual = output[0, 0, 0])
-        assertEquals(expected = 2.0, actual = output[0, 0, 1])
-        assertEquals(expected = 3.0, actual = output[1, 0, 0])
-        assertEquals(expected = 4.0, actual = output[1, 0, 1])
+        assertEquals(expected = 1.0f, actual = output[0, 0, 0])
+        assertEquals(expected = 2.0f, actual = output[0, 0, 1])
+        assertEquals(expected = 3.0f, actual = output[1, 0, 0])
+        assertEquals(expected = 4.0f, actual = output[1, 0, 1])
     }
 
     @Test
@@ -37,14 +37,14 @@ class LeakyReLUD3Test {
         val input =
             listOf(
                 IOType.d3(2, 1, 2) { x, _, z ->
-                    val value = (x * 2 + z + 1).toDouble()
+                    val value = (x * 2 + z + 1).toFloat()
                     if (z % 2 == 1) -value else value
                 },
             )
 
         // 全て1のdelta
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d3(2, 1, 2) { _, _, _ -> 1.0 })
+            listOf(IOType.d3(2, 1, 2) { _, _, _ -> 1.0f })
         }
 
         val result = leakyRelu._train(input, calcDelta)
@@ -52,9 +52,9 @@ class LeakyReLUD3Test {
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D3
         // 入力が負の位置は0.01倍、正の位置はdeltaをそのまま伝播
-        assertEquals(expected = 1.0, actual = dx[0, 0, 0]) // 入力1 -> 1
-        assertEquals(expected = 0.01, actual = dx[0, 0, 1]) // 入力-2 -> 0.01
-        assertEquals(expected = 1.0, actual = dx[1, 0, 0]) // 入力3 -> 1
-        assertEquals(expected = 0.01, actual = dx[1, 0, 1]) // 入力-4 -> 0.01
+        assertEquals(expected = 1.0f, actual = dx[0, 0, 0]) // 入力1 -> 1
+        assertEquals(expected = 0.01f, actual = dx[0, 0, 1]) // 入力-2 -> 0.01f
+        assertEquals(expected = 1.0f, actual = dx[1, 0, 0]) // 入力3 -> 1
+        assertEquals(expected = 0.01f, actual = dx[1, 0, 1]) // 入力-4 -> 0.01f
     }
 }

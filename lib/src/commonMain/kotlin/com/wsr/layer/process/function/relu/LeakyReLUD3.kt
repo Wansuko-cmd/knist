@@ -22,7 +22,7 @@ class LeakyReLUD3 internal constructor(
                 j = outputY,
                 k = outputZ,
             ) { x, y, z ->
-                if (input[i][x, y, z] >= 0.0) delta[i][x, y, z] else 0.01 * delta[i][x, y, z]
+                if (input[i][x, y, z] >= 0f) delta[i][x, y, z] else 0.01f * delta[i][x, y, z]
             }
         }
     }
@@ -32,7 +32,7 @@ class LeakyReLUD3 internal constructor(
         j = outputY,
         k = outputZ,
     ) { x, y, z ->
-        if (input[x, y, z] >= 0.0) input[x, y, z] else 0.01
+        if (input[x, y, z] >= 0f) input[x, y, z] else 0.01f
     }
 }
 

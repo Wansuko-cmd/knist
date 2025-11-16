@@ -9,9 +9,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Momentum(
-    private val rate: Double,
-    private val momentum: Double = 0.9,
-    private val maxNorm: Double = Double.MAX_VALUE,
+    private val rate: Float,
+    private val momentum: Float = 0.9f,
+    private val maxNorm: Float = Float.MAX_VALUE,
 ) : Optimizer {
     override fun d1(size: Int): Optimizer.D1 = MomentumD1(
         rate = rate,
@@ -37,9 +37,9 @@ data class Momentum(
 
 @Serializable
 internal data class MomentumD1(
-    private val rate: Double,
-    private val momentum: Double,
-    private val maxNorm: Double,
+    private val rate: Float,
+    private val momentum: Float,
+    private val maxNorm: Float,
     private val shape: List<Int>,
 ) : Optimizer.D1(maxNorm) {
     private var velocity: IOType.D1 = IOType.d1(shape)
@@ -51,9 +51,9 @@ internal data class MomentumD1(
 
 @Serializable
 internal data class MomentumD2(
-    private val rate: Double,
-    private val momentum: Double,
-    private val maxNorm: Double,
+    private val rate: Float,
+    private val momentum: Float,
+    private val maxNorm: Float,
     private val shape: List<Int>,
 ) : Optimizer.D2(maxNorm) {
     private var velocity: IOType.D2 = IOType.d2(shape)
@@ -65,9 +65,9 @@ internal data class MomentumD2(
 
 @Serializable
 internal data class MomentumD3(
-    private val rate: Double,
-    private val momentum: Double,
-    private val maxNorm: Double,
+    private val rate: Float,
+    private val momentum: Float,
+    private val maxNorm: Float,
     private val shape: List<Int>,
 ) : Optimizer.D3(maxNorm) {
     private var velocity: IOType.D3 = IOType.d3(shape)

@@ -12,8 +12,8 @@ class LinearD3Test {
         val converter = LinearD3(outputX = 2, outputY = 3, outputZ = 4)
 
         val input = listOf(
-            IOType.d3(2, 3, 4) { x, y, z -> (x * 12 + y * 4 + z).toDouble() },
-            IOType.d3(2, 3, 4) { x, y, z -> (x * 12 + y * 4 + z + 100).toDouble() },
+            IOType.d3(2, 3, 4) { x, y, z -> (x * 12 + y * 4 + z).toFloat() },
+            IOType.d3(2, 3, 4) { x, y, z -> (x * 12 + y * 4 + z + 100).toFloat() },
         )
 
         val result = converter.encode(input)
@@ -30,8 +30,8 @@ class LinearD3Test {
         val converter = LinearD3(outputX = 2, outputY = 3, outputZ = 4)
 
         val input = listOf(
-            IOType.d3(2, 3, 4) { x, y, z -> (x * 12 + y * 4 + z).toDouble() },
-            IOType.d3(2, 3, 4) { x, y, z -> (x * 12 + y * 4 + z + 100).toDouble() },
+            IOType.d3(2, 3, 4) { x, y, z -> (x * 12 + y * 4 + z).toFloat() },
+            IOType.d3(2, 3, 4) { x, y, z -> (x * 12 + y * 4 + z + 100).toFloat() },
         )
 
         val result = converter.decode(input)
@@ -48,7 +48,7 @@ class LinearD3Test {
         val converter = LinearD3(outputX = 2, outputY = 3, outputZ = 4)
 
         val input = listOf(
-            IOType.d3(2, 3, 4) { x, y, z -> (x + y + z).toDouble() },
+            IOType.d3(2, 3, 4) { x, y, z -> (x + y + z).toFloat() },
         )
 
         // encode -> decode
@@ -72,7 +72,7 @@ class LinearD3Test {
         val converter = LinearD3(outputX = 2, outputY = 3, outputZ = 4)
 
         val input = listOf(
-            IOType.d3(2, 3, 4) { x, y, z -> (x * y * z).toDouble() },
+            IOType.d3(2, 3, 4) { x, y, z -> (x * y * z).toFloat() },
         )
 
         // decode -> encode

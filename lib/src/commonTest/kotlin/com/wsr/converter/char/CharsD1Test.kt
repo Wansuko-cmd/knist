@@ -17,25 +17,25 @@ class CharsD1Test {
 
         assertEquals(expected = 2, actual = result.size)
 
-        // "hello" -> [8.0, 5.0, 12.0, 12.0, 15.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        // "hello" -> [8.0f, 5.0f, 12.0f, 12.0f, 15.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f]
         val output0 = result[0]
-        assertEquals(expected = 8.0, actual = output0[0]) // h
-        assertEquals(expected = 5.0, actual = output0[1]) // e
-        assertEquals(expected = 12.0, actual = output0[2]) // l
-        assertEquals(expected = 12.0, actual = output0[3]) // l
-        assertEquals(expected = 15.0, actual = output0[4]) // o
-        assertEquals(expected = 0.0, actual = output0[5]) // padding (space)
-        assertEquals(expected = 0.0, actual = output0[6]) // padding (space)
-        assertEquals(expected = 0.0, actual = output0[7]) // padding (space)
-        assertEquals(expected = 0.0, actual = output0[8]) // padding (space)
-        assertEquals(expected = 0.0, actual = output0[9]) // padding (space)
+        assertEquals(expected = 8.0f, actual = output0[0]) // h
+        assertEquals(expected = 5.0f, actual = output0[1]) // e
+        assertEquals(expected = 12.0f, actual = output0[2]) // l
+        assertEquals(expected = 12.0f, actual = output0[3]) // l
+        assertEquals(expected = 15.0f, actual = output0[4]) // o
+        assertEquals(expected = 0.0f, actual = output0[5]) // padding (space)
+        assertEquals(expected = 0.0f, actual = output0[6]) // padding (space)
+        assertEquals(expected = 0.0f, actual = output0[7]) // padding (space)
+        assertEquals(expected = 0.0f, actual = output0[8]) // padding (space)
+        assertEquals(expected = 0.0f, actual = output0[9]) // padding (space)
 
-        // "abc" -> [1.0, 2.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        // "abc" -> [1.0f, 2.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f]
         val output1 = result[1]
-        assertEquals(expected = 1.0, actual = output1[0]) // a
-        assertEquals(expected = 2.0, actual = output1[1]) // b
-        assertEquals(expected = 3.0, actual = output1[2]) // c
-        assertEquals(expected = 0.0, actual = output1[3]) // padding (space)
+        assertEquals(expected = 1.0f, actual = output1[0]) // a
+        assertEquals(expected = 2.0f, actual = output1[1]) // b
+        assertEquals(expected = 3.0f, actual = output1[2]) // c
+        assertEquals(expected = 0.0f, actual = output1[3]) // padding (space)
     }
 
     @Test
@@ -48,12 +48,12 @@ class CharsD1Test {
 
         assertEquals(expected = 1, actual = result.size)
 
-        // "hello" -> [8.0, 5.0, 12.0] (最初の3文字のみ)
+        // "hello" -> [8.0f, 5.0f, 12.0f] (最初の3文字のみ)
         val output = result[0]
         assertEquals(expected = 3, actual = output.shape[0])
-        assertEquals(expected = 8.0, actual = output[0]) // h
-        assertEquals(expected = 5.0, actual = output[1]) // e
-        assertEquals(expected = 12.0, actual = output[2]) // l
+        assertEquals(expected = 8.0f, actual = output[0]) // h
+        assertEquals(expected = 5.0f, actual = output[1]) // e
+        assertEquals(expected = 12.0f, actual = output[2]) // l
     }
 
     @Test
@@ -67,13 +67,13 @@ class CharsD1Test {
 
         assertEquals(expected = 1, actual = result.size)
 
-        // "a漢b" -> [1.0, 0.0, 2.0, 0.0, 0.0]
+        // "a漢b" -> [1.0f, 0.0f, 2.0f, 0.0f, 0.0f]
         val output = result[0]
-        assertEquals(expected = 1.0, actual = output[0]) // a
-        assertEquals(expected = 0.0, actual = output[1]) // 漢 (unknown)
-        assertEquals(expected = 2.0, actual = output[2]) // b
-        assertEquals(expected = 0.0, actual = output[3]) // padding (space)
-        assertEquals(expected = 0.0, actual = output[4]) // padding (space)
+        assertEquals(expected = 1.0f, actual = output[0]) // a
+        assertEquals(expected = 0.0f, actual = output[1]) // 漢 (unknown)
+        assertEquals(expected = 2.0f, actual = output[2]) // b
+        assertEquals(expected = 0.0f, actual = output[3]) // padding (space)
+        assertEquals(expected = 0.0f, actual = output[4]) // padding (space)
     }
 
     @Test
@@ -87,16 +87,16 @@ class CharsD1Test {
         assertEquals(expected = 1, actual = result.size)
 
         val output = result[0]
-        assertEquals(expected = 8.0, actual = output[0]) // h
-        assertEquals(expected = 5.0, actual = output[1]) // e
-        assertEquals(expected = 12.0, actual = output[2]) // l
-        assertEquals(expected = 12.0, actual = output[3]) // l
-        assertEquals(expected = 15.0, actual = output[4]) // o
-        assertEquals(expected = 28.0, actual = output[5]) // ,
-        assertEquals(expected = 0.0, actual = output[6]) // (space)
-        assertEquals(expected = 23.0, actual = output[7]) // w
-        assertEquals(expected = 15.0, actual = output[8]) // o
-        assertEquals(expected = 18.0, actual = output[9]) // r
+        assertEquals(expected = 8.0f, actual = output[0]) // h
+        assertEquals(expected = 5.0f, actual = output[1]) // e
+        assertEquals(expected = 12.0f, actual = output[2]) // l
+        assertEquals(expected = 12.0f, actual = output[3]) // l
+        assertEquals(expected = 15.0f, actual = output[4]) // o
+        assertEquals(expected = 28.0f, actual = output[5]) // ,
+        assertEquals(expected = 0.0f, actual = output[6]) // (space)
+        assertEquals(expected = 23.0f, actual = output[7]) // w
+        assertEquals(expected = 15.0f, actual = output[8]) // o
+        assertEquals(expected = 18.0f, actual = output[9]) // r
     }
 
     @Test
@@ -104,18 +104,18 @@ class CharsD1Test {
         val converter = CharsD1(outputSize = 10)
 
         val input = listOf(
-            IOType.d1(listOf(8.0, 5.0, 12.0, 12.0, 15.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
-            IOType.d1(listOf(1.0, 2.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
+            IOType.d1(listOf(8.0f, 5.0f, 12.0f, 12.0f, 15.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)),
+            IOType.d1(listOf(1.0f, 2.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)),
         )
 
         val result = converter.decode(input)
 
         assertEquals(expected = 2, actual = result.size)
 
-        // [8.0, 5.0, 12.0, 12.0, 15.0, 0.0, ...] -> "hello     " (0.0はspace)
+        // [8.0f, 5.0f, 12.0f, 12.0f, 15.0f, 0.0f, ...] -> "hello     " (0.0はspace)
         assertEquals(expected = "hello     ", actual = result[0])
 
-        // [1.0, 2.0, 3.0, 0.0, ...] -> "abc       " (0.0はspace)
+        // [1.0f, 2.0f, 3.0f, 0.0f, ...] -> "abc       " (0.0はspace)
         assertEquals(expected = "abc       ", actual = result[1])
     }
 
@@ -124,14 +124,14 @@ class CharsD1Test {
         val converter = CharsD1(outputSize = 5)
 
         val input = listOf(
-            IOType.d1(listOf(1.0, 99.0, 2.0, 0.0, 0.0)),
+            IOType.d1(listOf(1.0f, 99.0f, 2.0f, 0.0f, 0.0f)),
         )
 
         val result = converter.decode(input)
 
         assertEquals(expected = 1, actual = result.size)
 
-        // [1.0, 99.0, 2.0, 0.0, 0.0] -> "ab  " (99は範囲外なので無視、0.0はspace)
+        // [1.0f, 99.0f, 2.0f, 0.0f, 0.0f] -> "ab  " (99は範囲外なので無視、0.0はspace)
         assertEquals(expected = "ab  ", actual = result[0])
     }
 
@@ -157,7 +157,7 @@ class CharsD1Test {
         val converter = CharsD1(outputSize = 10)
 
         val input = listOf(
-            IOType.d1(listOf(8.0, 5.0, 12.0, 12.0, 15.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
+            IOType.d1(listOf(8.0f, 5.0f, 12.0f, 12.0f, 15.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)),
         )
 
         // decode -> encode
@@ -189,10 +189,10 @@ class CharsD1Test {
 
         assertEquals(expected = 1, actual = result.size)
 
-        // "" -> [0.0, 0.0, 0.0, 0.0, 0.0]
+        // "" -> [0.0f, 0.0f, 0.0f, 0.0f, 0.0f]
         val output = result[0]
         for (i in 0 until 5) {
-            assertEquals(expected = 0.0, actual = output[i])
+            assertEquals(expected = 0.0f, actual = output[i])
         }
     }
 }

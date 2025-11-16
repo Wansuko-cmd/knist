@@ -12,8 +12,8 @@ class LinearD2Test {
         val converter = LinearD2(outputX = 2, outputY = 3)
 
         val input = listOf(
-            IOType.d2(2, 3) { x, y -> (x * 3 + y).toDouble() },
-            IOType.d2(2, 3) { x, y -> (x * 3 + y + 10).toDouble() },
+            IOType.d2(2, 3) { x, y -> (x * 3 + y).toFloat() },
+            IOType.d2(2, 3) { x, y -> (x * 3 + y + 10).toFloat() },
         )
 
         val result = converter.encode(input)
@@ -30,8 +30,8 @@ class LinearD2Test {
         val converter = LinearD2(outputX = 2, outputY = 3)
 
         val input = listOf(
-            IOType.d2(2, 3) { x, y -> (x * 3 + y).toDouble() },
-            IOType.d2(2, 3) { x, y -> (x * 3 + y + 10).toDouble() },
+            IOType.d2(2, 3) { x, y -> (x * 3 + y).toFloat() },
+            IOType.d2(2, 3) { x, y -> (x * 3 + y + 10).toFloat() },
         )
 
         val result = converter.decode(input)
@@ -48,7 +48,7 @@ class LinearD2Test {
         val converter = LinearD2(outputX = 3, outputY = 4)
 
         val input = listOf(
-            IOType.d2(3, 4) { x, y -> (x + y).toDouble() },
+            IOType.d2(3, 4) { x, y -> (x + y).toFloat() },
         )
 
         // encode -> decode
@@ -70,7 +70,7 @@ class LinearD2Test {
         val converter = LinearD2(outputX = 3, outputY = 4)
 
         val input = listOf(
-            IOType.d2(3, 4) { x, y -> (x * y).toDouble() },
+            IOType.d2(3, 4) { x, y -> (x * y).toFloat() },
         )
 
         // decode -> encode

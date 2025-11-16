@@ -14,18 +14,18 @@ class LeakyReLUD2 internal constructor(override val outputX: Int, override val o
         val delta = calcDelta(output)
         return List(input.size) { i ->
             IOType.d2(outputX, outputY) { x, y ->
-                if (input[i][x, y] >= 0.0) delta[i][x, y] else 0.01 * delta[i][x, y]
+                if (input[i][x, y] >= 0f) delta[i][x, y] else 0.01f * delta[i][x, y]
             }
         }
     }
 
     private fun forward(input: IOType.D2): IOType.D2 = IOType.d2(outputX, outputY) { x, y ->
         if (input[x, y] >=
-            0.0
+            0f
         ) {
             input[x, y]
         } else {
-            0.01
+            0.01f
         }
     }
 }

@@ -60,24 +60,24 @@ class LayerNormAxis1D2 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx - axis=1なので各行で平均
-        val dx2 = -1.0 * dNumerator.average(axis = 1).broadcastToD2(axis = 0, size = outputY)
+        val dx2 = -1f * dNumerator.average(axis = 1).broadcastToD2(axis = 0, size = outputY)
 
         // dy/x <- variance(x)のx
         val dx3: List<IOType.D2> = List(input.size) { index ->
             // 各行ごとの勾配を事前計算
             val dVariancePerRow = IOType.d1(outputX) { i ->
                 val dvn = -(dOutput[index][i] * normalize[index][i]).sum()
-                val dvd = 2.0 * denominator[index][i].pow(2) * outputY.toDouble()
+                val dvd = 2f * denominator[index][i].pow(2) * outputY.toFloat()
                 dvn / dvd
             }
 
             // dy/[x-average(x)]のx部分
             val dSquared = IOType.d2(outputX, outputY) { i, j ->
-                2.0 * dVariancePerRow[i] * numerator[index][i, j]
+                2f * dVariancePerRow[i] * numerator[index][i, j]
             }
 
             // dy/[-average(x)]のx部分 (各行で同じ値なのでbroadcast)
-            val avgGradient = -2.0 * dVariancePerRow * numerator[index].average()
+            val avgGradient = -2f * dVariancePerRow * numerator[index].average()
             val dx2Broadcast = avgGradient.broadcastToD2(axis = 0, size = outputY)
 
             dSquared + dx2Broadcast

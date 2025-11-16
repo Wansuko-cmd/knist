@@ -9,18 +9,18 @@ import kotlin.test.assertEquals
 class SgdD1Test {
     @Test
     fun `SgdD1の_adapt=勾配に学習率を乗算した値を返す`() {
-        val sgdD1 = SgdD1(rate = 0.1, maxNorm = Double.MAX_VALUE)
+        val sgdD1 = SgdD1(rate = 0.1f, maxNorm = Float.MAX_VALUE)
 
         // weight = [10, 20, 30]
-        val weight = IOType.d1(listOf(10.0, 20.0, 30.0))
+        val weight = IOType.d1(listOf(10.0f, 20.0f, 30.0f))
         // dw = [1, 2, 3]
-        val dw = IOType.d1(listOf(1.0, 2.0, 3.0))
+        val dw = IOType.d1(listOf(1.0f, 2.0f, 3.0f))
 
-        // adapt = weight - 0.1 * [1, 2, 3] = [10, 20, 30] - [0.1, 0.2, 0.3] = [9.9, 19.8, 29.7]
+        // adapt = weight - 0.1f * [1, 2, 3] = [10, 20, 30] - [0.1f, 0.2f, 0.3f] = [9.9f, 19.8f, 29.7f]
         val result = sgdD1.adapt(weight, dw)
 
-        assertEquals(expected = 9.9, actual = result[0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 19.8, actual = result[1], absoluteTolerance = 1e-10)
-        assertEquals(expected = 29.7, actual = result[2], absoluteTolerance = 1e-10)
+        assertEquals(expected = 9.9f, actual = result[0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 19.8f, actual = result[1], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 29.7f, actual = result[2], absoluteTolerance = 1e-6f)
     }
 }

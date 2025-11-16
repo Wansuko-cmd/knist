@@ -26,7 +26,7 @@ class BiasD2(
     }
 }
 
-fun <T> NetworkBuilder.D2<T>.bias(optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = Fixed(0.0)) =
+fun <T> NetworkBuilder.D2<T>.bias(optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = Fixed(0f)) =
     addProcess(
         process = BiasD2(
             outputX = inputX,

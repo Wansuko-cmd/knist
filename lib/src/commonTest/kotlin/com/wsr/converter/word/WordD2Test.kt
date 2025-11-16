@@ -32,17 +32,17 @@ class WordD2Test {
         val output0 = result[0] as IOType.D2
         assertEquals(expected = 3, actual = output0.shape[0])
         assertEquals(expected = 5, actual = output0.shape[1])
-        assertEquals(expected = 1.0, actual = output0[0, 2]) // hello
-        assertEquals(expected = 1.0, actual = output0[1, 3]) // world
-        assertEquals(expected = 1.0, actual = output0[2, 4]) // test
+        assertEquals(expected = 1.0f, actual = output0[0, 2]) // hello
+        assertEquals(expected = 1.0f, actual = output0[1, 3]) // world
+        assertEquals(expected = 1.0f, actual = output0[2, 4]) // test
 
         // バッチ2
         val output1 = result[1] as IOType.D2
         assertEquals(expected = 3, actual = output1.shape[0])
         assertEquals(expected = 5, actual = output1.shape[1])
-        assertEquals(expected = 1.0, actual = output1[0, 4]) // test
-        assertEquals(expected = 1.0, actual = output1[1, 2]) // hello
-        assertEquals(expected = 1.0, actual = output1[2, 3]) // world
+        assertEquals(expected = 1.0f, actual = output1[0, 4]) // test
+        assertEquals(expected = 1.0f, actual = output1[1, 2]) // hello
+        assertEquals(expected = 1.0f, actual = output1[2, 3]) // world
     }
 
     @Test
@@ -56,10 +56,10 @@ class WordD2Test {
         val input = listOf(
             IOType.d2(3, 5) { x, y ->
                 when {
-                    x == 0 && y == 2 -> 1.0 // hello
-                    x == 1 && y == 3 -> 1.0 // world
-                    x == 2 && y == 4 -> 1.0 // test
-                    else -> 0.0
+                    x == 0 && y == 2 -> 1.0f // hello
+                    x == 1 && y == 3 -> 1.0f // world
+                    x == 2 && y == 4 -> 1.0f // test
+                    else -> 0.0f
                 }
             },
         )
@@ -85,19 +85,19 @@ class WordD2Test {
             // バッチ1: hello, world, test
             IOType.d2(3, 5) { x, y ->
                 when {
-                    x == 0 && y == 2 -> 1.0
-                    x == 1 && y == 3 -> 1.0
-                    x == 2 && y == 4 -> 1.0
-                    else -> 0.0
+                    x == 0 && y == 2 -> 1.0f
+                    x == 1 && y == 3 -> 1.0f
+                    x == 2 && y == 4 -> 1.0f
+                    else -> 0.0f
                 }
             },
             // バッチ2: test, hello, world
             IOType.d2(3, 5) { x, y ->
                 when {
-                    x == 0 && y == 4 -> 1.0
-                    x == 1 && y == 2 -> 1.0
-                    x == 2 && y == 3 -> 1.0
-                    else -> 0.0
+                    x == 0 && y == 4 -> 1.0f
+                    x == 1 && y == 2 -> 1.0f
+                    x == 2 && y == 3 -> 1.0f
+                    else -> 0.0f
                 }
             },
         )
@@ -151,10 +151,10 @@ class WordD2Test {
         val input = listOf(
             IOType.d2(3, 5) { x, y ->
                 when (x) {
-                    0 -> listOf(0.1, 0.2, 0.5, 0.15, 0.05)[y] // hello
-                    1 -> listOf(0.05, 0.1, 0.15, 0.6, 0.1)[y] // world
-                    2 -> listOf(0.05, 0.05, 0.1, 0.2, 0.6)[y] // test
-                    else -> 0.0
+                    0 -> listOf(0.1f, 0.2f, 0.5f, 0.15f, 0.05f)[y] // hello
+                    1 -> listOf(0.05f, 0.1f, 0.15f, 0.6f, 0.1f)[y] // world
+                    2 -> listOf(0.05f, 0.05f, 0.1f, 0.2f, 0.6f)[y] // test
+                    else -> 0.0f
                 }
             },
         )
@@ -170,16 +170,16 @@ class WordD2Test {
         assertEquals(expected = 5, actual = output.shape[1])
 
         // hello (index 2)
-        assertEquals(expected = 1.0, actual = output[0, 2])
-        assertEquals(expected = 0.0, actual = output[0, 0])
-        assertEquals(expected = 0.0, actual = output[0, 1])
-        assertEquals(expected = 0.0, actual = output[0, 3])
-        assertEquals(expected = 0.0, actual = output[0, 4])
+        assertEquals(expected = 1.0f, actual = output[0, 2])
+        assertEquals(expected = 0.0f, actual = output[0, 0])
+        assertEquals(expected = 0.0f, actual = output[0, 1])
+        assertEquals(expected = 0.0f, actual = output[0, 3])
+        assertEquals(expected = 0.0f, actual = output[0, 4])
 
         // world (index 3)
-        assertEquals(expected = 1.0, actual = output[1, 3])
+        assertEquals(expected = 1.0f, actual = output[1, 3])
 
         // test (index 4)
-        assertEquals(expected = 1.0, actual = output[2, 4])
+        assertEquals(expected = 1.0f, actual = output[2, 4])
     }
 }

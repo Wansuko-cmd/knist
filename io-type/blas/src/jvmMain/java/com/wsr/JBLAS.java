@@ -7,61 +7,61 @@ public class JBLAS implements IBLAS {
     }
 
     @Override
-    public native double ddot(
+    public native float sdot(
             int n,
-            double[] x,
+            float[] x,
             int incX,
-            double[] y,
+            float[] y,
             int incY
     );
 
     @Override
-    public native void dscal(
+    public native void sscal(
             int n,
-            double alpha,
-            double[] x,
+            float alpha,
+            float[] x,
             int incX
     );
 
     @Override
-    public native void daxpy(
+    public native void saxpy(
             int n,
-            double alpha,
-            double[] x,
+            float alpha,
+            float[] x,
             int incX,
-            double[] y,
+            float[] y,
             int incY
     );
 
     @Override
-    public native void dgemm(
+    public native void sgemm(
             boolean transA,
             boolean transB,
             int m,
             int n,
             int k,
-            double alpha,
-            double[] a,
+            float alpha,
+            float[] a,
             int lda,
-            double[] b,
+            float[] b,
             int ldb,
-            double beta,
-            double[] c,
+            float beta,
+            float[] c,
             int ldc
     );
 
     @Override
-    public native void dgemv(
+    public native void sgemv(
             boolean trans,
             int m,
             int n,
-            double alpha,
-            double[] a,
+            float alpha,
+            float[] a,
             int lda,
-            double[] x,
+            float[] x,
             int incX,
-            double beta,
-            double[] y,
+            float beta,
+            float[] y,
             int incY
     );
 }

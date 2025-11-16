@@ -45,7 +45,7 @@ class SkipD3 internal constructor(
                     val startX = x * strideX
                     val startY = y * strideY
                     val startZ = z * strideZ
-                    var sum = 0.0
+                    var sum = 0f
                     for (dx in 0 until strideX) {
                         for (dy in 0 until strideY) {
                             for (dz in 0 until strideZ) {

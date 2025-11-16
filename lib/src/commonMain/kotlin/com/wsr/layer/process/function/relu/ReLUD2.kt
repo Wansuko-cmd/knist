@@ -16,17 +16,17 @@ class ReLUD2 internal constructor(override val outputX: Int, override val output
             IOType.d2(
                 outputX,
                 outputY,
-            ) { x, y -> if (input[i][x, y] >= 0.0) delta[i][x, y] else 0.0 }
+            ) { x, y -> if (input[i][x, y] >= 0f) delta[i][x, y] else 0f }
         }
     }
 
     private fun forward(input: IOType.D2): IOType.D2 = IOType.d2(outputX, outputY) { x, y ->
         if (input[x, y] >=
-            0.0
+            0f
         ) {
             input[x, y]
         } else {
-            0.0
+            0f
         }
     }
 }

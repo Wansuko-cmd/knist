@@ -12,7 +12,7 @@ class MeanSquareD2Test {
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val meanSquare = MeanSquareD2(outputX = 2, outputY = 2)
         val result = meanSquare._expect(input)
@@ -25,12 +25,12 @@ class MeanSquareD2Test {
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         // [[0, 1], [2, 3]]
         val label =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y).toFloat() },
             )
         val meanSquare = MeanSquareD2(outputX = 2, outputY = 2)
         // [[1-0, 2-1], [3-2, 4-3]] = [[1, 1], [1, 1]]
@@ -40,10 +40,10 @@ class MeanSquareD2Test {
         val output = result[0] as IOType.D2
         assertEquals(expected = 2, actual = output.shape[0])
         assertEquals(expected = 2, actual = output.shape[1])
-        assertEquals(expected = 1.0, actual = output[0, 0])
-        assertEquals(expected = 1.0, actual = output[0, 1])
-        assertEquals(expected = 1.0, actual = output[1, 0])
-        assertEquals(expected = 1.0, actual = output[1, 1])
+        assertEquals(expected = 1.0f, actual = output[0, 0])
+        assertEquals(expected = 1.0f, actual = output[0, 1])
+        assertEquals(expected = 1.0f, actual = output[1, 0])
+        assertEquals(expected = 1.0f, actual = output[1, 1])
     }
 
     @Test
@@ -52,15 +52,15 @@ class MeanSquareD2Test {
         // バッチ2: [[7, 8, 9], [10, 11, 12]]
         val input =
             listOf(
-                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() },
-                IOType.d2(2, 3) { x, y -> (x * 3 + y + 7).toDouble() },
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() },
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 7).toFloat() },
             )
         // バッチ1のラベル: [[0, 1, 2], [3, 4, 5]]
         // バッチ2のラベル: [[6, 7, 8], [9, 10, 11]]
         val label =
             listOf(
-                IOType.d2(2, 3) { x, y -> (x * 3 + y).toDouble() },
-                IOType.d2(2, 3) { x, y -> (x * 3 + y + 6).toDouble() },
+                IOType.d2(2, 3) { x, y -> (x * 3 + y).toFloat() },
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 6).toFloat() },
             )
         val meanSquare = MeanSquareD2(outputX = 2, outputY = 3)
         val result = meanSquare._train(input, label)
@@ -73,7 +73,7 @@ class MeanSquareD2Test {
         assertEquals(expected = 3, actual = output1.shape[1])
         for (x in 0 until 2) {
             for (y in 0 until 3) {
-                assertEquals(expected = 1.0, actual = output1[x, y], message = "output1[$x,$y]")
+                assertEquals(expected = 1.0f, actual = output1[x, y], message = "output1[$x,$y]")
             }
         }
 
@@ -83,7 +83,7 @@ class MeanSquareD2Test {
         assertEquals(expected = 3, actual = output2.shape[1])
         for (x in 0 until 2) {
             for (y in 0 until 3) {
-                assertEquals(expected = 1.0, actual = output2[x, y], message = "output2[$x,$y]")
+                assertEquals(expected = 1.0f, actual = output2[x, y], message = "output2[$x,$y]")
             }
         }
     }
@@ -93,12 +93,12 @@ class MeanSquareD2Test {
         // [[5, 10]]
         val input =
             listOf(
-                IOType.d2(1, 2) { _, y -> ((y + 1) * 5).toDouble() },
+                IOType.d2(1, 2) { _, y -> ((y + 1) * 5).toFloat() },
             )
         // [[7, 8]]
         val label =
             listOf(
-                IOType.d2(1, 2) { _, y -> (y + 7).toDouble() },
+                IOType.d2(1, 2) { _, y -> (y + 7).toFloat() },
             )
         val meanSquare = MeanSquareD2(outputX = 1, outputY = 2)
         // [[5-7, 10-8]] = [[-2, 2]]
@@ -106,7 +106,7 @@ class MeanSquareD2Test {
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
-        assertEquals(expected = -2.0, actual = output[0, 0])
-        assertEquals(expected = 2.0, actual = output[0, 1])
+        assertEquals(expected = -2.0f, actual = output[0, 0])
+        assertEquals(expected = 2.0f, actual = output[0, 1])
     }
 }
