@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
 internal class SoftmaxWithLossD2 internal constructor(
     val outputX: Int,
     val outputY: Int,
-    val temperature: Double,
+    val temperature: Float,
     val maskValue: Int? = null,
 ) : Output.D2() {
     override fun expect(input: List<IOType.D2>): List<IOType.D2> {
@@ -53,21 +53,21 @@ internal class SoftmaxWithLossD2 internal constructor(
 
     private fun List<IOType.D2>.generateMask(): List<IOType.D2> = when {
         maskValue == null -> List(size) {
-            IOType.d2(shape = this[it].shape, value = DoubleArray(this[it].value.size) { 1.0 })
+            IOType.d2(shape = this[it].shape, value = FloatArray(this[it].value.size) { 1f })
         }
 
         else -> map { label ->
             IOType
                 .d1(outputX) { seqId ->
-                    val isPadding = label[seqId, maskValue] == 1.0
-                    if (isPadding) 0.0 else 1.0
+                    val isPadding = label[seqId, maskValue] == 1f
+                    if (isPadding) 0f else 1f
                 }
                 .broadcastToD2(0, outputY)
         }
     }
 }
 
-fun <T> NetworkBuilder.D2<T>.softmaxWithLoss(temperature: Double = 1.0, maskValue: Int? = null) = addOutput(
+fun <T> NetworkBuilder.D2<T>.softmaxWithLoss(temperature: Float = 1f, maskValue: Int? = null) = addOutput(
     output = SoftmaxWithLossD2(
         outputX = inputX,
         outputY = inputY,
@@ -78,7 +78,7 @@ fun <T> NetworkBuilder.D2<T>.softmaxWithLoss(temperature: Double = 1.0, maskValu
 
 fun <I, O> NetworkBuilder.D2<I>.softmaxWithLoss(
     converter: NetworkBuilder.D2<I>.() -> Converter.D2<O>,
-    temperature: Double = 1.0,
+    temperature: Float = 1f,
     maskValue: Int? = null,
 ) = addOutput(
     output = SoftmaxWithLossD2(

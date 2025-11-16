@@ -60,7 +60,7 @@ class PositionEncodeD2Test {
         // 入力は[[1, 2, 3], [4, 5, 6]]
         val input =
             listOf(
-                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() },
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() },
             )
 
         // deltaは[[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]]を返す

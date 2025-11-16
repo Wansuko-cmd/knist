@@ -152,7 +152,7 @@ class LayerNormAxis1D2Test {
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         // deltaは[[1, 0.5], [-1, 0.8]]を返す（任意の勾配）
@@ -171,10 +171,10 @@ class LayerNormAxis1D2Test {
 
         // 数値微分でdxを計算
         val epsilon = 1e-5
-        val numericalGradients = mutableListOf<List<Double>>()
+        val numericalGradients = mutableListOf<List<Float>>()
 
         for (i in 0 until 2) {
-            val row = mutableListOf<Double>()
+            val row = mutableListOf<Float>()
             for (j in 0 until 2) {
                 // input[i, j]を少し増やす
                 val inputPlus = input[0].value.copyOf()
@@ -215,7 +215,7 @@ class LayerNormAxis1D2Test {
      * 損失関数（テスト用）
      * loss = Σ(output_ij * delta_ij)
      */
-    private fun calcLoss(output: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): Double {
+    private fun calcLoss(output: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): Float {
         val delta = calcDelta(output)[0] as IOType.D2
         val out = output[0] as IOType.D2
         var loss = 0.0

@@ -16,9 +16,9 @@ class DGemvTest {
         // y = alpha * A * x + beta * y = 1.0 * A * x + 0.0 * y
         // y[0] = 1*1 + 2*2 + 3*3 = 14
         // y[1] = 4*1 + 5*2 + 6*3 = 32
-        val a = doubleArrayOf(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)
-        val x = doubleArrayOf(1.0, 2.0, 3.0)
-        val y = doubleArrayOf(0.0, 0.0)
+        val a = FloatArrayOf(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)
+        val x = FloatArrayOf(1.0, 2.0, 3.0)
+        val y = FloatArrayOf(0.0, 0.0)
 
         blas.dgemv(
             trans = false,
@@ -50,9 +50,9 @@ class DGemvTest {
         // y[0] = 1*1 + 4*2 = 9
         // y[1] = 2*1 + 5*2 = 12
         // y[2] = 3*1 + 6*2 = 15
-        val a = doubleArrayOf(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)
-        val x = doubleArrayOf(1.0, 2.0)
-        val y = doubleArrayOf(0.0, 0.0, 0.0)
+        val a = FloatArrayOf(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)
+        val x = FloatArrayOf(1.0, 2.0)
+        val y = FloatArrayOf(0.0, 0.0, 0.0)
 
         blas.dgemv(
             trans = true,
@@ -82,9 +82,9 @@ class DGemvTest {
         // result = 2.0 * A * x + 0.5 * y
         // y[0] = 2.0 * (1+2) + 0.5 * 10 = 6 + 5 = 11
         // y[1] = 2.0 * (3+4) + 0.5 * 20 = 14 + 10 = 24
-        val a = doubleArrayOf(1.0, 2.0, 3.0, 4.0)
-        val x = doubleArrayOf(1.0, 1.0)
-        val y = doubleArrayOf(10.0, 20.0)
+        val a = FloatArrayOf(1.0, 2.0, 3.0, 4.0)
+        val x = FloatArrayOf(1.0, 1.0)
+        val y = FloatArrayOf(10.0, 20.0)
 
         blas.dgemv(
             trans = false,

@@ -11,7 +11,7 @@ class PositionEmbeddingD2Test {
     @Test
     fun `PositionEmbeddingD2の_expect=入力に位置埋め込みを加算`() {
         // weight = [[1, 2], [3, 4]]
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val positionEmbedding =
             PositionEmbeddingD2(
                 outputX = 2,
@@ -26,7 +26,7 @@ class PositionEmbeddingD2Test {
         // 入力は[[5, 6], [7, 8]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
 
         // 出力 = 入力 + 位置埋め込み
@@ -44,7 +44,7 @@ class PositionEmbeddingD2Test {
     @Test
     fun `PositionEmbeddingD2の_train=deltaをそのまま返し、位置埋め込みを更新`() {
         // weight = [[1, 2], [3, 4]]
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val positionEmbedding =
             PositionEmbeddingD2(
                 outputX = 2,
@@ -59,7 +59,7 @@ class PositionEmbeddingD2Test {
         // input = [[5, 6], [7, 8]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
 
         // deltaは[[0.1, 0.2], [0.3, 0.4]]を返す
@@ -81,7 +81,7 @@ class PositionEmbeddingD2Test {
     @Test
     fun `PositionEmbeddingD2の_train=位置埋め込みが学習で更新される`() {
         // weight = [[1, 2], [3, 4]]
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val positionEmbedding =
             PositionEmbeddingD2(
                 outputX = 2,
@@ -96,7 +96,7 @@ class PositionEmbeddingD2Test {
         // input = [[5, 6], [7, 8]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
 
         // deltaは[[2, 4], [6, 8]]を返す

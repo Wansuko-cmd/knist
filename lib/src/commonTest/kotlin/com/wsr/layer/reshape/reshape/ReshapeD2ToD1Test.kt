@@ -15,7 +15,7 @@ class ReshapeD2ToD1Test {
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         val result = reshape._expect(input)
@@ -36,7 +36,7 @@ class ReshapeD2ToD1Test {
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         // deltaは[2, 4, 6, 8]を返す

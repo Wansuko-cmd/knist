@@ -13,7 +13,7 @@ class SigmoidWithLossD2Test {
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val sigmoid = SigmoidWithLossD2(outputX = 2, outputY = 2)
         val result = sigmoid._expect(input)
@@ -26,7 +26,7 @@ class SigmoidWithLossD2Test {
         // [[0, 1], [2, 3]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y).toFloat() },
             )
         // [[1, 0], [0, 1]]
         val label =
@@ -65,8 +65,8 @@ class SigmoidWithLossD2Test {
         // バッチ2: [[2, 3]]
         val input =
             listOf(
-                IOType.d2(1, 2) { _, y -> y.toDouble() },
-                IOType.d2(1, 2) { _, y -> (y + 2).toDouble() },
+                IOType.d2(1, 2) { _, y -> y.toFloat() },
+                IOType.d2(1, 2) { _, y -> (y + 2).toFloat() },
             )
         // バッチ1のラベル: [[1, 0]]
         // バッチ2のラベル: [[0, 1]]

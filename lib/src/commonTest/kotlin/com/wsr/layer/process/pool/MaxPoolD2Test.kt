@@ -20,7 +20,7 @@ class MaxPoolD2Test {
         // [[1, 2, 3, 4]]
         val input =
             listOf(
-                IOType.d2(1, 4) { _, y -> (y + 1).toDouble() },
+                IOType.d2(1, 4) { _, y -> (y + 1).toFloat() },
             )
 
         // forward実装: IOType.d2(outputX, outputY) { x, y -> ... input[x, y] ... }

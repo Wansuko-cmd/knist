@@ -19,9 +19,9 @@ class DGemmTest {
         // C[0,1] = 1*6 + 2*8 = 22
         // C[1,0] = 3*5 + 4*7 = 43
         // C[1,1] = 3*6 + 4*8 = 50
-        val a = doubleArrayOf(1.0, 2.0, 3.0, 4.0)
-        val b = doubleArrayOf(5.0, 6.0, 7.0, 8.0)
-        val c = doubleArrayOf(0.0, 0.0, 0.0, 0.0)
+        val a = FloatArrayOf(1.0, 2.0, 3.0, 4.0)
+        val b = FloatArrayOf(5.0, 6.0, 7.0, 8.0)
+        val c = FloatArrayOf(0.0, 0.0, 0.0, 0.0)
 
         blas.dgemm(
             transA = false,
@@ -58,9 +58,9 @@ class DGemmTest {
         // C[0,1] = 1*6 + 3*8 = 30
         // C[1,0] = 2*5 + 4*7 = 38
         // C[1,1] = 2*6 + 4*8 = 44
-        val a = doubleArrayOf(1.0, 2.0, 3.0, 4.0)
-        val b = doubleArrayOf(5.0, 6.0, 7.0, 8.0)
-        val c = doubleArrayOf(0.0, 0.0, 0.0, 0.0)
+        val a = FloatArrayOf(1.0, 2.0, 3.0, 4.0)
+        val b = FloatArrayOf(5.0, 6.0, 7.0, 8.0)
+        val c = FloatArrayOf(0.0, 0.0, 0.0, 0.0)
 
         blas.dgemm(
             transA = true,
@@ -97,9 +97,9 @@ class DGemmTest {
         // C[0,1] = 1*7 + 2*8 = 23
         // C[1,0] = 3*5 + 4*6 = 39
         // C[1,1] = 3*7 + 4*8 = 53
-        val a = doubleArrayOf(1.0, 2.0, 3.0, 4.0)
-        val b = doubleArrayOf(5.0, 6.0, 7.0, 8.0)
-        val c = doubleArrayOf(0.0, 0.0, 0.0, 0.0)
+        val a = FloatArrayOf(1.0, 2.0, 3.0, 4.0)
+        val b = FloatArrayOf(5.0, 6.0, 7.0, 8.0)
+        val c = FloatArrayOf(0.0, 0.0, 0.0, 0.0)
 
         blas.dgemm(
             transA = false,
@@ -136,9 +136,9 @@ class DGemmTest {
         // C[0,1] = 2.0 * 2 + 0.5 * 20 = 14
         // C[1,0] = 2.0 * 3 + 0.5 * 30 = 21
         // C[1,1] = 2.0 * 4 + 0.5 * 40 = 28
-        val a = doubleArrayOf(1.0, 2.0, 3.0, 4.0)
-        val b = doubleArrayOf(1.0, 0.0, 0.0, 1.0)
-        val c = doubleArrayOf(10.0, 20.0, 30.0, 40.0)
+        val a = FloatArrayOf(1.0, 2.0, 3.0, 4.0)
+        val b = FloatArrayOf(1.0, 0.0, 0.0, 1.0)
+        val c = FloatArrayOf(10.0, 20.0, 30.0, 40.0)
 
         blas.dgemm(
             transA = false,
@@ -174,9 +174,9 @@ class DGemmTest {
         // C[0,1] = 1*2 + 2*4 + 3*6 = 28
         // C[1,0] = 4*1 + 5*3 + 6*5 = 49
         // C[1,1] = 4*2 + 5*4 + 6*6 = 64
-        val a = doubleArrayOf(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)
-        val b = doubleArrayOf(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)
-        val c = doubleArrayOf(0.0, 0.0, 0.0, 0.0)
+        val a = FloatArrayOf(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)
+        val b = FloatArrayOf(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)
+        val c = FloatArrayOf(0.0, 0.0, 0.0, 0.0)
 
         blas.dgemm(
             transA = false,

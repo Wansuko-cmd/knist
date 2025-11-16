@@ -19,8 +19,8 @@ class MaxPoolD3 internal constructor(val poolSize: Int, val channel: Int, val in
             inputX: $inputX
             inputY: $inputY
             poolSize: $poolSize
-            outputX: ${inputX / poolSize.toDouble()}
-            outputY: ${inputY / poolSize.toDouble()}
+            outputX: ${inputX / poolSize.toFloat()}
+            outputY: ${inputY / poolSize.toFloat()}
             """.trimIndent()
         }
     }
@@ -34,7 +34,7 @@ class MaxPoolD3 internal constructor(val poolSize: Int, val channel: Int, val in
             IOType.d3(i = channel, j = inputX, k = inputY) { c, x, y ->
                 val xo = x / poolSize
                 val yo = y / poolSize
-                if (input[index][c, x, y] == output[index][c, xo, yo]) delta[index][c, xo, yo] else 0.0
+                if (input[index][c, x, y] == output[index][c, xo, yo]) delta[index][c, xo, yo] else 0f
             }
         }
     }

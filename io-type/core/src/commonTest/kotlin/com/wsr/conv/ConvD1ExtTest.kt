@@ -91,8 +91,8 @@ class ConvD1ExtTest {
         //          [4, 5, 6, 7, 8, 9, 10, 11]]
         val input =
             listOf(
-                IOType.d2(2, 8) { c, y -> (c + y + 1).toDouble() },
-                IOType.d2(2, 8) { c, y -> (c + y + 3).toDouble() },
+                IOType.d2(2, 8) { c, y -> (c + y + 1).toFloat() },
+                IOType.d2(2, 8) { c, y -> (c + y + 3).toFloat() },
             )
         // フィルタ数2, チャネル2, カーネル3
         // filter0: [[1, 0, -1], [1, 0, -1]]
@@ -130,8 +130,8 @@ class ConvD1ExtTest {
         //          [4, 5, 6]]
         val input =
             listOf(
-                IOType.d2(2, 3) { c, y -> (c + y + 1).toDouble() },
-                IOType.d2(2, 3) { c, y -> (c + y + 3).toDouble() },
+                IOType.d2(2, 3) { c, y -> (c + y + 1).toFloat() },
+                IOType.d2(2, 3) { c, y -> (c + y + 3).toFloat() },
             )
         // フィルタ数2, チャネル2, カーネル3
         // filter0: [[1, 1, 1], [1, 1, 1]]

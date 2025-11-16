@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 
 class TimeExtTest {
     @Test
-    fun `Double×D1=各要素にDoubleをかけたD1`() {
+    fun `Float×D1=各要素にFloatをかけたD1`() {
         val a = IOType.d1(listOf(1.0, 2.0, 3.0))
         val result = 2.0 * a
         assertEquals(
@@ -18,7 +18,7 @@ class TimeExtTest {
     }
 
     @Test
-    fun `Double×List_D1=各要素にDoubleをかけたList_D1`() {
+    fun `Float×List_D1=各要素にFloatをかけたList_D1`() {
         val list =
             listOf(
                 IOType.d1(listOf(1.0, 2.0, 3.0)),
@@ -36,39 +36,39 @@ class TimeExtTest {
     }
 
     @Test
-    fun `Double×D2=各要素にDoubleをかけたD2`() {
-        val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() }
+    fun `Float×D2=各要素にFloatをかけたD2`() {
+        val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
         val result = 2.0 * a
         assertEquals(
-            expected = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() * 2 },
+            expected = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() * 2 },
             actual = result,
         )
     }
 
     @Test
-    fun `Double×List_D2=各要素にDoubleをかけたList_D2`() {
+    fun `Float×List_D2=各要素にFloatをかけたList_D2`() {
         val list =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val result = 3.0 * list
         assertEquals(
-            expected = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() * 3 },
+            expected = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() * 3 },
             actual = result[0],
         )
         assertEquals(
-            expected = IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() * 3 },
+            expected = IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() * 3 },
             actual = result[1],
         )
     }
 
     @Test
-    fun `Double×D3=各要素にDoubleをかけたD3`() {
-        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+    fun `Float×D3=各要素にFloatをかけたD3`() {
+        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         val result = 2.0 * a
         assertEquals(
-            expected = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() * 2 },
+            expected = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() * 2 },
             actual = result,
         )
     }

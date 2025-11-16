@@ -122,7 +122,7 @@ class LayerNormD1Test {
 
         // 数値微分でdxを計算
         val epsilon = 1e-5
-        val numericalGradients = mutableListOf<Double>()
+        val numericalGradients = mutableListOf<Float>()
 
         for (i in 0 until 3) {
             // input[i]を少し増やす
@@ -160,7 +160,7 @@ class LayerNormD1Test {
      * 損失関数（テスト用）
      * loss = Σ(output_i * delta_i)
      */
-    private fun calcLoss(output: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): Double {
+    private fun calcLoss(output: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): Float {
         val delta = calcDelta(output)[0] as IOType.D1
         val out = output[0] as IOType.D1
         var loss = 0.0

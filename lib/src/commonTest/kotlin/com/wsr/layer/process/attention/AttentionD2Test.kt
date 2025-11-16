@@ -40,8 +40,8 @@ class AttentionD2Test {
 
         // 入力: [batch=2, channel=4, inputY=8]
         val input = listOf(
-            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toDouble() },
-            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 2).toDouble() },
+            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() },
+            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 2).toFloat() },
         )
 
         val result = attention._expect(input)
@@ -83,7 +83,7 @@ class AttentionD2Test {
         )
 
         val input = listOf(
-            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toDouble() * 0.1 },
+            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1 },
         )
 
         // deltaは全て1.0を返す
@@ -130,7 +130,7 @@ class AttentionD2Test {
         )
 
         val input = listOf(
-            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toDouble() * 0.01 },
+            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.01 },
         )
 
         // 更新前の出力を保存
@@ -186,7 +186,7 @@ class AttentionD2Test {
         )
 
         val input = listOf(
-            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toDouble() * 0.1 },
+            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1 },
         )
 
         val result = attention._expect(input)
@@ -227,7 +227,7 @@ class AttentionD2Test {
         )
 
         val input = listOf(
-            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toDouble() * 0.1 },
+            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1 },
         )
 
         val result = attention._expect(input)

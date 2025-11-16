@@ -34,7 +34,7 @@ class SumExtTest {
 
     @Test
     fun `D2のsum=全要素の合計`() {
-        val a = IOType.Companion.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() }
+        val a = IOType.Companion.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
         val result = a.sum()
         assertEquals(
             expected = 21.0,
@@ -47,7 +47,7 @@ class SumExtTest {
         // [[1, 2],
         //  [3, 4],
         //  [5, 6]]
-        val a = IOType.Companion.d2(3, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val a = IOType.Companion.d2(3, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val result = a.sum(axis = 0)
         assertEquals(
             expected = IOType.Companion.d1(listOf(9.0, 12.0)),
@@ -60,7 +60,7 @@ class SumExtTest {
         // [[1, 2],
         //  [3, 4],
         //  [5, 6]]
-        val a = IOType.Companion.d2(3, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val a = IOType.Companion.d2(3, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val result = a.sum(axis = 1)
         assertEquals(
             expected = IOType.Companion.d1(listOf(3.0, 7.0, 11.0)),

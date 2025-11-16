@@ -10,7 +10,7 @@ class FilterExtTest {
     @Test
     fun `D3のtoFilter=フィルタ形式の配列に変換`() {
         // shape: [2, 2, 3] (filterCount=2, channels=2, kernel=3)
-        val weight = IOType.d3(2, 2, 3) { f, c, k -> (f * 6 + c * 3 + k + 1).toDouble() }
+        val weight = IOType.d3(2, 2, 3) { f, c, k -> (f * 6 + c * 3 + k + 1).toFloat() }
         val result = weight.toFilter()
 
         // フィルタ0: channel0=[1,2,3], channel1=[4,5,6] -> [1,2,3,4,5,6]

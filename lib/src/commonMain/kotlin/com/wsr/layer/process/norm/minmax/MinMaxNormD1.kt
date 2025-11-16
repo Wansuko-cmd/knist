@@ -62,8 +62,8 @@ class MinMaxNormD1 internal constructor(
                 /**
                  * dy/input + dy/min(x) + dy/max(x)
                  * dy/dx = dNumerator
-                 * dy/min(x) = if(x == min(x)) -dNumerator + dDenominator else 0.0
-                 * dy/max(x) = if(x == max(x)) -dDenominator else 0.0
+                 * dy/min(x) = if(x == min(x)) -dNumerator + dDenominator else 0f
+                 * dy/max(x) = if(x == max(x)) -dDenominator else 0f
                  */
                 val input = input[it][x]
                 when (input) {
@@ -78,7 +78,7 @@ class MinMaxNormD1 internal constructor(
 
 fun <T> NetworkBuilder.D1<T>.minMaxNorm(
     optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = Fixed(1.0),
+    initializer: WeightInitializer = Fixed(1f),
 ) = addProcess(
     process = MinMaxNormD1(
         outputSize = inputSize,

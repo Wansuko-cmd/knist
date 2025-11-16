@@ -13,7 +13,7 @@ class SoftmaxWithLossD2Test {
         // [[1, 2, 3], [4, 5, 6]]
         val input =
             listOf(
-                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() },
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() },
             )
         val softmax = SoftmaxWithLossD2(outputX = 2, outputY = 3, temperature = 1.0)
         val result = softmax._expect(input)
@@ -53,7 +53,7 @@ class SoftmaxWithLossD2Test {
         // [[1, 2, 3]]
         val input =
             listOf(
-                IOType.d2(1, 3) { _, y -> (y + 1).toDouble() },
+                IOType.d2(1, 3) { _, y -> (y + 1).toFloat() },
             )
         // [[0, 0, 1]] (one-hot: クラス2が正解)
         val label =
@@ -88,7 +88,7 @@ class SoftmaxWithLossD2Test {
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         // [[1, 0], [0, 1]] (行0はクラス0、行1はクラス1が正解)
         val label =
@@ -128,8 +128,8 @@ class SoftmaxWithLossD2Test {
         // バッチ2: [[4, 5, 6]]
         val input =
             listOf(
-                IOType.d2(1, 3) { _, y -> (y + 1).toDouble() },
-                IOType.d2(1, 3) { _, y -> (y + 4).toDouble() },
+                IOType.d2(1, 3) { _, y -> (y + 1).toFloat() },
+                IOType.d2(1, 3) { _, y -> (y + 4).toFloat() },
             )
         // バッチ1のラベル: [[1, 0, 0]] (クラス0が正解)
         // バッチ2のラベル: [[0, 0, 1]] (クラス2が正解)
@@ -175,7 +175,7 @@ class SoftmaxWithLossD2Test {
         // [[1, 2, 3]]
         val input =
             listOf(
-                IOType.d2(1, 3) { _, y -> (y + 1).toDouble() },
+                IOType.d2(1, 3) { _, y -> (y + 1).toFloat() },
             )
         // [[0, 0, 1]]
         val label =
@@ -208,7 +208,7 @@ class SoftmaxWithLossD2Test {
         // [[100, 200, 300]]
         val input =
             listOf(
-                IOType.d2(1, 3) { _, y -> ((y + 1) * 100).toDouble() },
+                IOType.d2(1, 3) { _, y -> ((y + 1) * 100).toFloat() },
             )
         // [[0, 0, 1]]
         val label =
@@ -240,7 +240,7 @@ class SoftmaxWithLossD2Test {
             listOf(
                 IOType.d2(2, 4) { x, y ->
                     // クラス数は3、インデックス3はパディングフラグ
-                    if (y < 3) (x * 3 + y + 1).toDouble() else 0.0
+                    if (y < 3) (x * 3 + y + 1).toFloat() else 0.0
                 },
             )
         // [[0, 0, 1, 0], [0, 0, 0, 1]]  ← 行0はクラス2、行1はパディング(index=3が1.0)
@@ -286,7 +286,7 @@ class SoftmaxWithLossD2Test {
         // [[1, 2, 3], [4, 5, 6]]
         val input =
             listOf(
-                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() },
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() },
             )
         // [[-1, -1, 1], [0, 0, 1]]  ← -1を含むがmaskValue=nullなので無視されない
         val label =
@@ -334,10 +334,10 @@ class SoftmaxWithLossD2Test {
         val input =
             listOf(
                 IOType.d2(2, 4) { x, y ->
-                    if (y < 3) (x * 3 + y + 1).toDouble() else 0.0
+                    if (y < 3) (x * 3 + y + 1).toFloat() else 0.0
                 },
                 IOType.d2(2, 4) { x, y ->
-                    if (y < 3) (x * 3 + y + 7).toDouble() else 0.0
+                    if (y < 3) (x * 3 + y + 7).toFloat() else 0.0
                 },
             )
         // バッチ1: [[0, 0, 1, 0], [0, 0, 0, 1]]  ← 行1はパディング(index=3が1.0)

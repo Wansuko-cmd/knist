@@ -12,7 +12,7 @@ class ColumnExtTest {
         // [[1, 2, 3, 4, 5]]
         val input =
             listOf(
-                IOType.d2(1, 5) { _, y -> (y + 1).toDouble() },
+                IOType.d2(1, 5) { _, y -> (y + 1).toFloat() },
             )
         // kernel=3, stride=1, padding=0
         // output size = (5 - 3 + 0) / 1 + 1 = 3
@@ -32,7 +32,7 @@ class ColumnExtTest {
         // [[1, 2, 3, 4, 5]]
         val input =
             listOf(
-                IOType.d2(1, 5) { _, y -> (y + 1).toDouble() },
+                IOType.d2(1, 5) { _, y -> (y + 1).toFloat() },
             )
         // kernel=3, stride=2, padding=0
         // output size = (5 - 3 + 0) / 2 + 1 = 2
@@ -50,7 +50,7 @@ class ColumnExtTest {
         // [[1, 2, 3]]
         val input =
             listOf(
-                IOType.d2(1, 3) { _, y -> (y + 1).toDouble() },
+                IOType.d2(1, 3) { _, y -> (y + 1).toFloat() },
             )
         // kernel=3, stride=1, padding=1
         // output size = (3 - 3 + 2) / 1 + 1 = 3

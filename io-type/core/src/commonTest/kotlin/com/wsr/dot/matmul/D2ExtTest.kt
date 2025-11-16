@@ -11,7 +11,7 @@ class D2ExtTest {
     fun `D2·D1=行列とベクトルの積`() {
         // [[1, 2, 3],
         //  [4, 5, 6]]
-        val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() }
+        val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
         val b = IOType.d1(listOf(1.0, 2.0, 3.0))
         // 1*1 + 2*2 + 3*3 = 14
         // 4*1 + 5*2 + 6*3 = 32
@@ -26,11 +26,11 @@ class D2ExtTest {
     fun `D2·D2=行列と行列の積`() {
         // [[1, 2, 3],
         //  [4, 5, 6]]
-        val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() }
+        val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
         // [[1, 2],
         //  [3, 4],
         //  [5, 6]]
-        val b = IOType.d2(3, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val b = IOType.d2(3, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         // [[1*1+2*3+3*5, 1*2+2*4+3*6], [4*1+5*3+6*5, 4*2+5*4+6*6]]
         // [[22, 28], [49, 64]]
         val result = a matMul b
@@ -50,7 +50,7 @@ class D2ExtTest {
 
     @Test
     fun `D2·List_D1=各D1との積のリスト`() {
-        val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() }
+        val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
         val list =
             listOf(
                 IOType.d1(listOf(1.0, 0.0, 0.0)),
@@ -69,11 +69,11 @@ class D2ExtTest {
 
     @Test
     fun `D2·List_D2=各D2との積のリスト`() {
-        val a = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val a = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val list =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         // [[1,2],[3,4]] dot [[1,2],[3,4]] = [[7,10],[15,22]]
         val result = a matMul list
@@ -108,8 +108,8 @@ class D2ExtTest {
     fun `List_D2·List_D1=各要素同士の積のリスト`() {
         val list1 =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val list2 =
             listOf(
@@ -133,13 +133,13 @@ class D2ExtTest {
     fun `List_D2·List_D2=各要素同士の積のリスト`() {
         val list1 =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val list2 =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val result = list1 matMul list2
         assertEquals(

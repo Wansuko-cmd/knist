@@ -27,7 +27,7 @@ class BiasD3(
     }
 }
 
-fun <T> NetworkBuilder.D3<T>.bias(optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = Fixed(0.0)) =
+fun <T> NetworkBuilder.D3<T>.bias(optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = Fixed(0f)) =
     addProcess(
         process = BiasD3(
             outputX = inputX,

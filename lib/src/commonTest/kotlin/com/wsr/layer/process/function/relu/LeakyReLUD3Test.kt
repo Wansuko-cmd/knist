@@ -15,7 +15,7 @@ class LeakyReLUD3Test {
         // [[[1, 2]], [[3, 4]]] (全て正の値でテスト)
         val input =
             listOf(
-                IOType.d3(2, 1, 2) { x, _, z -> (x * 2 + z + 1).toDouble() },
+                IOType.d3(2, 1, 2) { x, _, z -> (x * 2 + z + 1).toFloat() },
             )
 
         val result = leakyRelu._expect(input)
@@ -37,7 +37,7 @@ class LeakyReLUD3Test {
         val input =
             listOf(
                 IOType.d3(2, 1, 2) { x, _, z ->
-                    val value = (x * 2 + z + 1).toDouble()
+                    val value = (x * 2 + z + 1).toFloat()
                     if (z % 2 == 1) -value else value
                 },
             )

@@ -22,7 +22,7 @@ class DropoutD2Test {
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         // Inverted Dropoutのexpect(推論時)では入力をそのまま返す
@@ -49,7 +49,7 @@ class DropoutD2Test {
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         // deltaは[[2, 4], [6, 8]]を返す
@@ -57,12 +57,12 @@ class DropoutD2Test {
             listOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0 })
         }
 
-        // seed=42でrandom.nextDouble(0.0, 1.0)を4回呼び出したときの値を事前計算
+        // seed=42でrandom.nextFloat(0.0, 1.0)を4回呼び出したときの値を事前計算
         // Inverted Dropoutでは、マスクは0または1/ratio (= 2.0)
         val testRandom = Random(42)
         val q = 1.0 / 0.5 // 2.0
         val expectedMask = IOType.d2(2, 2) { _, _ ->
-            if (testRandom.nextDouble(0.0, 1.0) <= 0.5) q else 0.0
+            if (testRandom.nextFloat(0.0, 1.0) <= 0.5) q else 0.0
         }
 
         val result = dropout._train(input, calcDelta)

@@ -7,9 +7,9 @@ import kotlin.test.assertEquals
 
 class DotExtTest {
     @Test
-    fun `DoubleArray·DoubleArray=内積`() {
-        val a = doubleArrayOf(1.0, 2.0, 3.0)
-        val b = doubleArrayOf(4.0, 5.0, 6.0)
+    fun `FloatArray·FloatArray=内積`() {
+        val a = FloatArrayOf(1.0, 2.0, 3.0)
+        val b = FloatArrayOf(4.0, 5.0, 6.0)
         val result = a dot b
         assertEquals(
             expected = 32.0,
@@ -18,20 +18,20 @@ class DotExtTest {
     }
 
     @Test
-    fun `Array_DoubleArray·Array_DoubleArray=行列積`() {
+    fun `Array_FloatArray·Array_FloatArray=行列積`() {
         // [[1, 2],
         //  [3, 4]]
         val a =
             arrayOf(
-                doubleArrayOf(1.0, 2.0),
-                doubleArrayOf(3.0, 4.0),
+                FloatArrayOf(1.0, 2.0),
+                FloatArrayOf(3.0, 4.0),
             )
         // [[1, 2],
         //  [3, 4]]
         val b =
             arrayOf(
-                doubleArrayOf(1.0, 2.0),
-                doubleArrayOf(3.0, 4.0),
+                FloatArrayOf(1.0, 2.0),
+                FloatArrayOf(3.0, 4.0),
             )
         val result = a dot b
 

@@ -4,17 +4,17 @@ import com.wsr.BLAS
 import com.wsr.IOType
 
 infix fun IOType.D2.matMul(other: IOType.D1): IOType.D1 {
-    val result = DoubleArray(shape[0])
+    val result = FloatArray(shape[0])
     BLAS.dgemv(
         trans = false,
         m = shape[0],
         n = shape[1],
-        alpha = 1.0,
+        alpha = 1f,
         a = value,
         lda = shape[1],
         x = other.value,
         incX = 1,
-        beta = 0.0,
+        beta = 0f,
         y = result,
         incY = 1,
     )
@@ -22,19 +22,19 @@ infix fun IOType.D2.matMul(other: IOType.D1): IOType.D1 {
 }
 
 infix fun IOType.D2.matMul(other: IOType.D2): IOType.D2 {
-    val result = DoubleArray(shape[0] * other.shape[1])
+    val result = FloatArray(shape[0] * other.shape[1])
     BLAS.dgemm(
         transA = false,
         transB = false,
         m = shape[0],
         n = other.shape[1],
         k = shape[1],
-        alpha = 1.0,
+        alpha = 1f,
         a = value,
         lda = shape[1],
         b = other.value,
         ldb = other.shape[1],
-        beta = 0.0,
+        beta = 0f,
         c = result,
         ldc = other.shape[1],
     )

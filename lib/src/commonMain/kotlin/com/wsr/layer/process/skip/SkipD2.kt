@@ -39,7 +39,7 @@ class SkipD2 internal constructor(
                 IOType.d2(outputX, outputY) { x, y ->
                     val startX = x * strideX
                     val startY = y * strideY
-                    var sum = 0.0
+                    var sum = 0f
                     for (dx in 0 until strideX) {
                         for (dy in 0 until strideY) {
                             sum += it[startX + dx, startY + dy]

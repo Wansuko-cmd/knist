@@ -15,11 +15,11 @@ class ReLUD1 internal constructor(override val outputSize: Int) : Process.D1() {
         return List(input.size) { i ->
             IOType.d1(outputSize) {
                 if (input[i][it] >=
-                    0.0
+                    0f
                 ) {
                     delta[i][it]
                 } else {
-                    0.0
+                    0f
                 }
             }
         }
@@ -27,11 +27,11 @@ class ReLUD1 internal constructor(override val outputSize: Int) : Process.D1() {
 
     private fun forward(input: IOType.D1): IOType.D1 = IOType.d1(outputSize) {
         if (input[it] >=
-            0.0
+            0f
         ) {
             input[it]
         } else {
-            0.0
+            0f
         }
     }
 }

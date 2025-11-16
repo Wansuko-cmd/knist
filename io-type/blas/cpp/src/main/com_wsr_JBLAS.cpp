@@ -2,56 +2,56 @@
 #include <stdio.h>
 #include <cblas.h>
 
-JNIEXPORT jdouble JNICALL Java_com_wsr_JBLAS_ddot
-        (JNIEnv *env, jobject, jint n, jdoubleArray x, jint incx, jdoubleArray y, jint incy) {
+JNIEXPORT jFloat JNICALL Java_com_wsr_JBLAS_ddot
+        (JNIEnv *env, jobject, jint n, jFloatArray x, jint incx, jFloatArray y, jint incy) {
     // Get array elements from Java
-    jdouble *x_ptr = env->GetDoubleArrayElements(x, nullptr);
-    jdouble *y_ptr = env->GetDoubleArrayElements(y, nullptr);
+    jFloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
+    jFloat *y_ptr = env->GetFloatArrayElements(y, nullptr);
 
     // Call OpenBLAS ddot
-    jdouble result = cblas_ddot(n, x_ptr, incx, y_ptr, incy);
+    jFloat result = cblas_ddot(n, x_ptr, incx, y_ptr, incy);
 
     // Release arrays back to Java
-    env->ReleaseDoubleArrayElements(x, x_ptr, JNI_ABORT);
-    env->ReleaseDoubleArrayElements(y, y_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(y, y_ptr, JNI_ABORT);
 
     return result;
 }
 
 JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dscal
-    (JNIEnv *env, jobject, jint n, jdouble alpha, jdoubleArray x, jint incx) {
+    (JNIEnv *env, jobject, jint n, jFloat alpha, jFloatArray x, jint incx) {
     // Get array elements from Java
-    jdouble *x_ptr = env->GetDoubleArrayElements(x, nullptr);
+    jFloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
 
     // Call OpenBLAS dscal
     cblas_dscal(n, alpha, x_ptr, incx);
 
     // Release array back to Java (mode 0 = copy back and free)
-    env->ReleaseDoubleArrayElements(x, x_ptr, 0);
+    env->ReleaseFloatArrayElements(x, x_ptr, 0);
     }
 
     JNIEXPORT void JNICALL Java_com_wsr_JBLAS_daxpy
-    (JNIEnv *env, jobject, jint n, jdouble alpha, jdoubleArray x, jint incx, jdoubleArray y, jint incy) {
+    (JNIEnv *env, jobject, jint n, jFloat alpha, jFloatArray x, jint incx, jFloatArray y, jint incy) {
     // Get array elements from Java
-    jdouble *x_ptr = env->GetDoubleArrayElements(x, nullptr);
-    jdouble *y_ptr = env->GetDoubleArrayElements(y, nullptr);
+    jFloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
+    jFloat *y_ptr = env->GetFloatArrayElements(y, nullptr);
 
     // Call OpenBLAS daxpy
     cblas_daxpy(n, alpha, x_ptr, incx, y_ptr, incy);
 
     // Release arrays back to Java
-    env->ReleaseDoubleArrayElements(x, x_ptr, JNI_ABORT);
-    env->ReleaseDoubleArrayElements(y, y_ptr, 0);
+    env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(y, y_ptr, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dgemm(JNIEnv *env, jobject, jboolean transA, jboolean transB, jint m, jint n, jint k,
-        jdouble alpha, jdoubleArray a, jint lda, jdoubleArray b, jint ldb,
-jdouble beta, jdoubleArray c, jint ldc
+        jFloat alpha, jFloatArray a, jint lda, jFloatArray b, jint ldb,
+jFloat beta, jFloatArray c, jint ldc
 ) {
     // Get array elements from Java
-    jdouble *a_ptr = env->GetDoubleArrayElements(a, nullptr);
-    jdouble *b_ptr = env->GetDoubleArrayElements(b, nullptr);
-    jdouble *c_ptr = env->GetDoubleArrayElements(c, nullptr);
+    jFloat *a_ptr = env->GetFloatArrayElements(a, nullptr);
+    jFloat *b_ptr = env->GetFloatArrayElements(b, nullptr);
+    jFloat *c_ptr = env->GetFloatArrayElements(c, nullptr);
 
     // Convert transpose flags
     CBLAS_TRANSPOSE transA_blas = transA ? CblasTrans : CblasNoTrans;
@@ -62,19 +62,19 @@ jdouble beta, jdoubleArray c, jint ldc
             alpha, a_ptr, lda, b_ptr, ldb, beta, c_ptr, ldc);
 
     // Release arrays back to Java
-    env->ReleaseDoubleArrayElements(a, a_ptr, JNI_ABORT);
-    env->ReleaseDoubleArrayElements(b, b_ptr, JNI_ABORT);
-    env->ReleaseDoubleArrayElements(c, c_ptr, 0);
+    env->ReleaseFloatArrayElements(a, a_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(b, b_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(c, c_ptr, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dgemv
-(JNIEnv *env, jobject, jboolean trans, jint m, jint n, jdouble alpha,
-jdoubleArray a, jint lda, jdoubleArray x, jint incx,
-jdouble beta, jdoubleArray y, jint incy) {
+(JNIEnv *env, jobject, jboolean trans, jint m, jint n, jFloat alpha,
+jFloatArray a, jint lda, jFloatArray x, jint incx,
+jFloat beta, jFloatArray y, jint incy) {
     // Get array elements from Java
-    jdouble *a_ptr = env->GetDoubleArrayElements(a, nullptr);
-    jdouble *x_ptr = env->GetDoubleArrayElements(x, nullptr);
-    jdouble *y_ptr = env->GetDoubleArrayElements(y, nullptr);
+    jFloat *a_ptr = env->GetFloatArrayElements(a, nullptr);
+    jFloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
+    jFloat *y_ptr = env->GetFloatArrayElements(y, nullptr);
 
     // Convert transpose flag
     CBLAS_TRANSPOSE trans_blas = trans ? CblasTrans : CblasNoTrans;
@@ -83,7 +83,7 @@ jdouble beta, jdoubleArray y, jint incy) {
     cblas_dgemv(CblasRowMajor, trans_blas, m, n, alpha, a_ptr, lda, x_ptr, incx, beta, y_ptr, incy);
 
     // Release arrays back to Java
-    env->ReleaseDoubleArrayElements(a, a_ptr, JNI_ABORT);
-    env->ReleaseDoubleArrayElements(x, x_ptr, JNI_ABORT);
-    env->ReleaseDoubleArrayElements(y, y_ptr, 0);
+    env->ReleaseFloatArrayElements(a, a_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(y, y_ptr, 0);
 }

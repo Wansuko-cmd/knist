@@ -16,7 +16,7 @@ class SigmoidD2Test {
         // [[0, 1], [2, 3]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y).toFloat() },
             )
 
         val result = sigmoid._expect(input)
@@ -38,7 +38,7 @@ class SigmoidD2Test {
         // [[0, 1]]
         val input =
             listOf(
-                IOType.d2(1, 2) { _, y -> y.toDouble() },
+                IOType.d2(1, 2) { _, y -> y.toFloat() },
             )
 
         // deltaは[[1, 1]]を返す

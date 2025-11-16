@@ -28,7 +28,7 @@ class LayerNormAxis0D2 internal constructor(
         }
 
         val variance = numerator.pow(2).average(axis = 0)
-        val denominator = variance.value.map { sqrt(it + 1e-10) }
+        val denominator = variance.value.map { sqrt(it + 1e-10f) }
 
         val normalize = IOType.d2(outputX, outputY) { i, j ->
             numerator[i, j] / denominator[j]
@@ -46,7 +46,7 @@ class LayerNormAxis0D2 internal constructor(
         }
 
         val variance = numerator.map { it.pow(2).average(axis = 0) }
-        val denominator = variance.map { it.value.map { v -> sqrt(v + 1e-10) } }
+        val denominator = variance.map { it.value.map { v -> sqrt(v + 1e-10f) } }
 
         val normalize = numerator.mapIndexed { index, num ->
             IOType.d2(outputX, outputY) { i, j ->
@@ -76,27 +76,27 @@ class LayerNormAxis0D2 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx - axis=0なので各列で平均
-        val dx2 = (-1.0 * dNumerator.average(axis = 0)).broadcastToD2(axis = 1, size = outputX)
+        val dx2 = (-1f * dNumerator.average(axis = 0)).broadcastToD2(axis = 1, size = outputX)
 
         // dy/x <- variance(x)のx
         val dx3 = List(input.size) { index ->
             // 各列ごとの勾配を事前計算
             val dVariancePerCol = IOType.d1(outputY) { j ->
-                var dvn = 0.0
+                var dvn = 0f
                 for (i in 0 until outputX) {
                     dvn -= dOutput[index][i, j] * normalize[index][i, j]
                 }
-                val dvd = 2.0 * denominator[index][j].pow(2) * outputX.toDouble()
+                val dvd = 2f * denominator[index][j].pow(2) * outputX.toFloat()
                 dvn / dvd
             }
 
             // dy/[x-average(x)]のx部分
             val dSquared = IOType.d2(outputX, outputY) { i, j ->
-                2.0 * dVariancePerCol[j] * numerator[index][i, j]
+                2f * dVariancePerCol[j] * numerator[index][i, j]
             }
 
             // dy/[-average(x)]のx部分
-            val avgGradientScalar = -2.0 * numerator[index].average()
+            val avgGradientScalar = -2f * numerator[index].average()
             val dx2Broadcast = (dVariancePerCol * avgGradientScalar).broadcastToD2(axis = 1, size = outputX)
 
             dSquared + dx2Broadcast

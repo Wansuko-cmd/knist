@@ -54,7 +54,7 @@ class MinMaxNormD3 internal constructor(
         )
 
         // 分母側(dy/d[max(x) - min(x)])
-        val dDenominator: List<Double> =
+        val dDenominator: List<Float> =
             List(input.size) { denominator[it].pow(2) * (numerator[it] * dOutput[it]).sum() }
 
         // 分子側(dy/d[x - min(x)])
@@ -65,8 +65,8 @@ class MinMaxNormD3 internal constructor(
                 /**
                  * dy/input + dy/min(x) + dy/max(x)
                  * dy/dx = dNumerator
-                 * dy/min(x) = if(x == min(x)) -dNumerator + dDenominator else 0.0
-                 * dy/max(x) = if(x == max(x)) -dDenominator else 0.0
+                 * dy/min(x) = if(x == min(x)) -dNumerator + dDenominator else 0f
+                 * dy/max(x) = if(x == max(x)) -dDenominator else 0f
                  */
                 val inputValue = input[it][x, y, z]
                 when (inputValue) {
@@ -85,7 +85,7 @@ class MinMaxNormD3 internal constructor(
 
 fun <T> NetworkBuilder.D3<T>.minMaxNorm(
     optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = Fixed(1.0),
+    initializer: WeightInitializer = Fixed(1f),
 ) = addProcess(
     process =
     MinMaxNormD3(

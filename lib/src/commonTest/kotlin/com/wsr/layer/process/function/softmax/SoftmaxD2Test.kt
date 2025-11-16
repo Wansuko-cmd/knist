@@ -16,7 +16,7 @@ class SoftmaxD2Test {
         // [[1, 2, 3]]
         val input =
             listOf(
-                IOType.d2(1, 3) { _, y -> (y + 1).toDouble() },
+                IOType.d2(1, 3) { _, y -> (y + 1).toFloat() },
             )
 
         val result = softmax._expect(input)
@@ -46,7 +46,7 @@ class SoftmaxD2Test {
         // [[1, 2]]
         val input =
             listOf(
-                IOType.d2(1, 2) { _, y -> (y + 1).toDouble() },
+                IOType.d2(1, 2) { _, y -> (y + 1).toFloat() },
             )
 
         // 全て1のdelta

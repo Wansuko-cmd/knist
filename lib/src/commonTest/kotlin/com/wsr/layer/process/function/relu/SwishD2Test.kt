@@ -16,7 +16,7 @@ class SwishD2Test {
         // [[0, 1, 2]]
         val input =
             listOf(
-                IOType.d2(1, 3) { _, y -> y.toDouble() },
+                IOType.d2(1, 3) { _, y -> y.toFloat() },
             )
 
         val result = swish._expect(input)
@@ -40,7 +40,7 @@ class SwishD2Test {
         // [[0, 1]]
         val input =
             listOf(
-                IOType.d2(1, 2) { _, y -> y.toDouble() },
+                IOType.d2(1, 2) { _, y -> y.toFloat() },
             )
 
         // deltaは[[1, 1]]を返す

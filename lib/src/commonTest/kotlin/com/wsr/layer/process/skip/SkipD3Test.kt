@@ -19,7 +19,7 @@ class SkipD3Test {
             outputY = 2,
             outputZ = 3,
             optimizer = Sgd(0.1).d3(1, 2, 3),
-            weight = IOType.d3(1, 2, 3) { x, y, z -> (y * 3 + z + 1).toDouble() },
+            weight = IOType.d3(1, 2, 3) { x, y, z -> (y * 3 + z + 1).toFloat() },
         )
 
         // サブ層2: Linear (恒等変換)
@@ -40,7 +40,7 @@ class SkipD3Test {
         )
 
         // input = [[[10, 20, 30], [40, 50, 60]]]
-        val input = listOf(IOType.d3(1, 2, 3) { x, y, z -> ((y * 3 + z + 1) * 10).toDouble() })
+        val input = listOf(IOType.d3(1, 2, 3) { x, y, z -> ((y * 3 + z + 1) * 10).toFloat() })
 
         // サブ層1 (bias): [[[10, 20, 30], [40, 50, 60]]] + [[[1, 2, 3], [4, 5, 6]]]
         //               = [[[11, 22, 33], [44, 55, 66]]]
@@ -82,11 +82,11 @@ class SkipD3Test {
         )
 
         // input = [[[1, 2], [3, 4]]]
-        val input = listOf(IOType.d3(1, 2, 2) { x, y, z -> (y * 2 + z + 1).toDouble() })
+        val input = listOf(IOType.d3(1, 2, 2) { x, y, z -> (y * 2 + z + 1).toFloat() })
 
         // 次の層からのdelta = [[[10, 20], [30, 40]]]
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d3(1, 2, 2) { x, y, z -> ((y * 2 + z + 1) * 10).toDouble() })
+            listOf(IOType.d3(1, 2, 2) { x, y, z -> ((y * 2 + z + 1) * 10).toFloat() })
         }
 
         val result = skip._train(input, calcDelta)
@@ -133,11 +133,11 @@ class SkipD3Test {
         )
 
         // input = [[[2], [3]], [[4], [5]]]
-        val input = listOf(IOType.d3(2, 2, 1) { x, y, z -> (x * 2 + y + 2).toDouble() })
+        val input = listOf(IOType.d3(2, 2, 1) { x, y, z -> (x * 2 + y + 2).toFloat() })
 
         // 次の層からのdelta = [[[1], [2]], [[3], [4]]]
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d3(2, 2, 1) { x, y, z -> (x * 2 + y + 1).toDouble() })
+            listOf(IOType.d3(2, 2, 1) { x, y, z -> (x * 2 + y + 1).toFloat() })
         }
 
         // train実行前
@@ -191,7 +191,7 @@ class SkipD3Test {
         // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input = listOf(
             IOType.d3(2, 2, 2) { x, y, z ->
-                (x * 4 + y * 2 + z + 1).toDouble()
+                (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
 
@@ -236,7 +236,7 @@ class SkipD3Test {
         // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input = listOf(
             IOType.d3(2, 2, 2) { x, y, z ->
-                (x * 4 + y * 2 + z + 1).toDouble()
+                (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
 
@@ -244,7 +244,7 @@ class SkipD3Test {
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(
                 IOType.d3(2, 2, 2) { x, y, z ->
-                    ((x * 4 + y * 2 + z + 1) * 10).toDouble()
+                    ((x * 4 + y * 2 + z + 1) * 10).toFloat()
                 },
             )
         }
@@ -291,7 +291,7 @@ class SkipD3Test {
         // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input = listOf(
             IOType.d3(2, 2, 2) { x, y, z ->
-                (x * 4 + y * 2 + z + 1).toDouble()
+                (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
 
@@ -336,7 +336,7 @@ class SkipD3Test {
         // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input = listOf(
             IOType.d3(2, 2, 2) { x, y, z ->
-                (x * 4 + y * 2 + z + 1).toDouble()
+                (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
 
@@ -344,7 +344,7 @@ class SkipD3Test {
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(
                 IOType.d3(2, 2, 2) { x, y, z ->
-                    ((x * 4 + y * 2 + z + 1) * 10).toDouble()
+                    ((x * 4 + y * 2 + z + 1) * 10).toFloat()
                 },
             )
         }

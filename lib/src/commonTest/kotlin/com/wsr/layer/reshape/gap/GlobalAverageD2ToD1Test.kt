@@ -15,7 +15,7 @@ class GlobalAverageD2ToD1Test {
         // [[1, 2, 3], [4, 5, 6]]
         val input =
             listOf(
-                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() },
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() },
             )
 
         val result = reshape._expect(input)
@@ -34,7 +34,7 @@ class GlobalAverageD2ToD1Test {
         // [[1, 2, 3], [4, 5, 6]]
         val input =
             listOf(
-                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() },
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() },
             )
 
         // deltaは[6, 12]を返す

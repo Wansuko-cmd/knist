@@ -43,12 +43,12 @@ class LeakyReLUD2Test {
         // [[-1, 0], [1, 2]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y - 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y - 1).toFloat() },
             )
 
         // deltaは[[2, 3], [4, 5]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 2).toDouble() })
+            listOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 2).toFloat() })
         }
 
         val result = leakyRelu._train(input, calcDelta)

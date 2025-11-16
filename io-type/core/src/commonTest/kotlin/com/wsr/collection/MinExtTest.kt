@@ -36,7 +36,7 @@ class MinExtTest {
     fun `D2のmin=全要素の最小値`() {
         // [[1, 2, 3],
         //  [4, 5, 6]]
-        val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() }
+        val a = IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() }
         val result = a.min()
         assertEquals(
             expected = 1.0,
@@ -48,8 +48,8 @@ class MinExtTest {
     fun `List_D2のmin=各D2の最小値のリスト`() {
         val list =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val result = list.min()
         assertEquals(
@@ -63,7 +63,7 @@ class MinExtTest {
         // [[1, 2],
         //  [3, 4],
         //  [5, 6]]
-        val a = IOType.d2(3, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val a = IOType.d2(3, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val result = a.min(axis = 0)
         assertEquals(
             expected = IOType.d1(listOf(1.0, 2.0)),
@@ -76,7 +76,7 @@ class MinExtTest {
         // [[1, 2],
         //  [3, 4],
         //  [5, 6]]
-        val a = IOType.d2(3, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val a = IOType.d2(3, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val result = a.min(axis = 1)
         assertEquals(
             expected = IOType.d1(listOf(1.0, 3.0, 5.0)),
@@ -88,8 +88,8 @@ class MinExtTest {
     fun `List_D2のmin_axis0=各D2の列方向最小値のリスト`() {
         val list =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val result = list.min(axis = 0)
         assertEquals(expected = 2, actual = result.size)
@@ -101,8 +101,8 @@ class MinExtTest {
     fun `List_D2のmin_axis1=各D2の行方向最小値のリスト`() {
         val list =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val result = list.min(axis = 1)
         assertEquals(expected = 2, actual = result.size)
@@ -113,7 +113,7 @@ class MinExtTest {
     @Test
     fun `D3のmin=全要素の最小値`() {
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         val result = a.min()
         assertEquals(
             expected = 1.0,
@@ -125,8 +125,8 @@ class MinExtTest {
     fun `List_D3のmin=各D3の最小値のリスト`() {
         val list =
             listOf(
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 10).toDouble() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 10).toFloat() },
             )
         val result = list.min()
         assertEquals(
@@ -138,16 +138,16 @@ class MinExtTest {
     @Test
     fun `D3のmin_axis0=各YZ平面の最小値`() {
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         val result = a.min(axis = 0)
-        val expected = IOType.d2(2, 2) { y, z -> (y * 2 + z + 1).toDouble() }
+        val expected = IOType.d2(2, 2) { y, z -> (y * 2 + z + 1).toFloat() }
         assertEquals(expected = expected, actual = result)
     }
 
     @Test
     fun `D3のmin_axis1=各XZ平面の最小値`() {
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         val result = a.min(axis = 1)
         // Expected: [[1, 2], [5, 6]]
         assertEquals(expected = 2, actual = result.shape[0])
@@ -161,7 +161,7 @@ class MinExtTest {
     @Test
     fun `D3のmin_axis2=各XY平面の最小値`() {
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         val result = a.min(axis = 2)
         // Expected: [[1, 3], [5, 7]]
         assertEquals(expected = 2, actual = result.shape[0])
@@ -176,8 +176,8 @@ class MinExtTest {
     fun `List_D3のmin_axis0=各D3のX軸方向最小値のリスト`() {
         val list =
             listOf(
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 10).toDouble() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 10).toFloat() },
             )
         val result = list.min(axis = 0)
         assertEquals(expected = 2, actual = result.size)
@@ -193,8 +193,8 @@ class MinExtTest {
     fun `List_D3のmin_axis1=各D3のY軸方向最小値のリスト`() {
         val list =
             listOf(
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 10).toDouble() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 10).toFloat() },
             )
         val result = list.min(axis = 1)
         assertEquals(expected = 2, actual = result.size)
@@ -210,8 +210,8 @@ class MinExtTest {
     fun `List_D3のmin_axis2=各D3のZ軸方向最小値のリスト`() {
         val list =
             listOf(
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 10).toDouble() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 10).toFloat() },
             )
         val result = list.min(axis = 2)
         assertEquals(expected = 2, actual = result.size)

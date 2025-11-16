@@ -27,10 +27,10 @@ class BatchAverageExtTest {
             listOf(
                 // [[1, 2],
                 //  [3, 4]]
-                IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
                 // [[5, 6],
                 //  [7, 8]]
-                IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y + 5).toDouble() },
+                IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         // [[(1+5)/2, (2+6)/2],
         //  [(3+7)/2, (4+8)/2]] = [[3.0, 4.0], [5.0, 6.0]]
@@ -50,10 +50,10 @@ class BatchAverageExtTest {
             listOf(
                 // [[[1, 2], [3, 4]],
                 //  [[5, 6], [7, 8]]]
-                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
+                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
                 // [[[9, 10], [11, 12]],
                 //  [[13, 14], [15, 16]]]
-                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 9).toDouble() },
+                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 9).toFloat() },
             )
         // [[(1+9)/2, (2+10)/2], [(3+11)/2, (4+12)/2]],
         //  [[(5+13)/2, (6+14)/2], [(7+15)/2, (8+16)/2]]]

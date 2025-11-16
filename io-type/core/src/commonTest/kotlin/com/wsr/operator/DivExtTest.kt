@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 
 class DivExtTest {
     @Test
-    fun `D1÷Double=各要素をDoubleで割ったD1`() {
+    fun `D1÷Float=各要素をFloatで割ったD1`() {
         val a = IOType.d1(listOf(2.0, 4.0, 6.0))
         val result = a / 2.0
         assertEquals(
@@ -18,8 +18,8 @@ class DivExtTest {
     }
 
     @Test
-    fun `Double÷D2=Doubleを各要素で割ったD2`() {
-        val a = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+    fun `Float÷D2=Floatを各要素で割ったD2`() {
+        val a = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val result = 12.0 / a
         assertEquals(
             expected = IOType.d2(2, 2) { x, y -> 12.0 / (x * 2 + y + 1) },
@@ -28,8 +28,8 @@ class DivExtTest {
     }
 
     @Test
-    fun `Double÷D3=Doubleを各要素で割ったD3`() {
-        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() }
+    fun `Float÷D3=Floatを各要素で割ったD3`() {
+        val a = IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() }
         val result = 24.0 / a
         assertEquals(
             expected = IOType.d3(2, 2, 2) { x, y, z -> 24.0 / (x * 4 + y * 2 + z + 1) },

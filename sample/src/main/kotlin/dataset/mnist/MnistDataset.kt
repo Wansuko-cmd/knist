@@ -12,7 +12,7 @@ import java.util.zip.GZIPInputStream
 import kotlinx.serialization.Serializable
 import maxIndex
 
-data class MnistDataset(val pixels: List<Double>, val label: Int, val imageSize: Int) {
+data class MnistDataset(val pixels: List<Float>, val label: Int, val imageSize: Int) {
     override fun toString(): String = pixels
         .chunked(imageSize)
         .joinToString("\n") { row ->
@@ -44,7 +44,7 @@ data class MnistDataset(val pixels: List<Double>, val label: Int, val imageSize:
                     .map {
                         (1..imageHeight * imageWidth)
                             .map { imageStream.readUnsignedByte() }
-                            .map { it.toDouble() - (PIXEL_DEPTH / 2.0) }
+                            .map { it.toFloat() - (PIXEL_DEPTH / 2f) }
                             .map { it / PIXEL_DEPTH }
                     }
             return labels.zip(images) { label, image -> MnistDataset(image, label, imageWidth) }
@@ -53,11 +53,11 @@ data class MnistDataset(val pixels: List<Double>, val label: Int, val imageSize:
 }
 
 @Serializable
-data class PixelConverter(override val outputX: Int, override val outputY: Int) : Converter.D2<List<Double>>() {
-    override fun encode(input: List<List<Double>>): List<IOType.D2> = input
+data class PixelConverter(override val outputX: Int, override val outputY: Int) : Converter.D2<List<Float>>() {
+    override fun encode(input: List<List<Float>>): List<IOType.D2> = input
         .map { IOType.d2(listOf(28, 28), it) }
 
-    override fun decode(input: List<IOType.D2>): List<List<Double>> = input.map { it.value.toList() }
+    override fun decode(input: List<IOType.D2>): List<List<Float>> = input.map { it.value.toList() }
 }
 
 fun NetworkBuilder.Companion.inputPx(x: Int, y: Int, optimizer: Optimizer, initializer: WeightInitializer) = inputD2(
@@ -69,7 +69,7 @@ fun NetworkBuilder.Companion.inputPx(x: Int, y: Int, optimizer: Optimizer, initi
 @Serializable
 data class LabelConverter(override val outputSize: Int) : Converter.D1<Int>() {
     override fun encode(input: List<Int>): List<IOType.D1> = input.map { input ->
-        IOType.d1(10) { if (input == it) 1.0 else 0.0 }
+        IOType.d1(10) { if (input == it) 1f else 0f }
     }
 
     override fun decode(input: List<IOType.D1>): List<Int> = input.map { it.value.toTypedArray().maxIndex() }

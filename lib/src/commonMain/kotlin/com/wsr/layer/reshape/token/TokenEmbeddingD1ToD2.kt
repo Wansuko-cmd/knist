@@ -40,7 +40,7 @@ class TokenEmbeddingD1ToD2 internal constructor(
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = dw / input.size.toDouble(),
+            dw = dw / input.size.toFloat(),
         )
 
         // Embedding層は離散的なので、入力への勾配は意味を持たない
@@ -51,7 +51,7 @@ class TokenEmbeddingD1ToD2 internal constructor(
     private fun forward(input: List<IOType.D1>): List<IOType.D2> = input.map { tokenIds ->
         IOType.d2(outputX, outputY) { x, y ->
             val tokenId = tokenIds[x].toInt()
-            if (tokenId in 0 until vocabSize) weight[tokenId, y] else 0.0
+            if (tokenId in 0 until vocabSize) weight[tokenId, y] else 0f
         }
     }
 }
