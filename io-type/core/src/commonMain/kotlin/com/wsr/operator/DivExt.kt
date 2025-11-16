@@ -17,7 +17,7 @@ operator fun Float.div(other: IOType.D3) = IOType.d3(other.shape) { i, j, k -> t
  */
 operator fun IOType.D1.div(other: Float): IOType.D1 {
     val result = this.value.copyOf()
-    BLAS.dscal(n = result.size, alpha = 1f / other, x = result, incX = 1)
+    BLAS.sscal(n = result.size, alpha = 1f / other, x = result, incX = 1)
     return IOType.d1(result)
 }
 
@@ -43,7 +43,7 @@ operator fun List<IOType.D1>.div(other: IOType.D1) = List(size) {
  */
 operator fun IOType.D2.div(other: Float): IOType.D2 {
     val result = this.value.copyOf()
-    BLAS.dscal(n = result.size, alpha = 1f / other, x = result, incX = 1)
+    BLAS.sscal(n = result.size, alpha = 1f / other, x = result, incX = 1)
     return IOType.d2(shape, result)
 }
 
@@ -96,7 +96,7 @@ operator fun List<IOType.D2>.div(other: List<IOType.D1>) = List(size) { this[it]
  */
 operator fun IOType.D3.div(other: Float): IOType.D3 {
     val result = this.value.copyOf()
-    BLAS.dscal(n = result.size, alpha = 1f / other, x = result, incX = 1)
+    BLAS.sscal(n = result.size, alpha = 1f / other, x = result, incX = 1)
     return IOType.d3(shape, result)
 }
 

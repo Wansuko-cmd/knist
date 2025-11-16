@@ -27,7 +27,7 @@ infix fun Array<FloatArray>.dot(other: Array<FloatArray>): Array<FloatArray> {
     // C[m, n] = A[n, k]^T * B[m, k]^T = B[m, k] * A[n, k]^T
     // other[f] dot this[i] = sum_k(other[f][k] * this[i][k])
     // result[f][i] = other[f] dot this[i]
-    BLAS.dgemm(
+    BLAS.sgemm(
         transA = false,
         transB = true,
         m = m,
@@ -54,7 +54,7 @@ infix fun Array<FloatArray>.dot(other: Array<FloatArray>): Array<FloatArray> {
     return result
 }
 
-infix fun FloatArray.dot(other: FloatArray): Float = BLAS.ddot(
+infix fun FloatArray.dot(other: FloatArray): Float = BLAS.sdot(
     n = this.size,
     x = this,
     incX = 1,

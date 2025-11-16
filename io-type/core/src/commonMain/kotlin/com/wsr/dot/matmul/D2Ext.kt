@@ -5,7 +5,7 @@ import com.wsr.IOType
 
 infix fun IOType.D2.matMul(other: IOType.D1): IOType.D1 {
     val result = FloatArray(shape[0])
-    BLAS.dgemv(
+    BLAS.sgemv(
         trans = false,
         m = shape[0],
         n = shape[1],
@@ -23,7 +23,7 @@ infix fun IOType.D2.matMul(other: IOType.D1): IOType.D1 {
 
 infix fun IOType.D2.matMul(other: IOType.D2): IOType.D2 {
     val result = FloatArray(shape[0] * other.shape[1])
-    BLAS.dgemm(
+    BLAS.sgemm(
         transA = false,
         transB = false,
         m = shape[0],

@@ -14,7 +14,7 @@ operator fun IOType.D1.minus(other: Float): IOType.D1 {
 
 operator fun IOType.D1.minus(other: IOType.D1): IOType.D1 {
     val result = this.value.copyOf()
-    BLAS.daxpy(n = result.size, alpha = -1f, x = other.value, incX = 1, y = result, incY = 1)
+    BLAS.saxpy(n = result.size, alpha = -1f, x = other.value, incX = 1, y = result, incY = 1)
     return IOType.d1(result)
 }
 
@@ -41,7 +41,7 @@ operator fun IOType.D2.minus(other: Float): IOType.D2 {
 
 operator fun IOType.D2.minus(other: IOType.D2): IOType.D2 {
     val result = this.value.copyOf()
-    BLAS.daxpy(n = result.size, alpha = -1f, x = other.value, incX = 1, y = result, incY = 1)
+    BLAS.saxpy(n = result.size, alpha = -1f, x = other.value, incX = 1, y = result, incY = 1)
     return IOType.d2(this.shape, result)
 }
 
@@ -81,7 +81,7 @@ operator fun IOType.D3.minus(other: Float): IOType.D3 {
 
 operator fun IOType.D3.minus(other: IOType.D3): IOType.D3 {
     val result = this.value.copyOf()
-    BLAS.daxpy(n = result.size, alpha = -1f, x = other.value, incX = 1, y = result, incY = 1)
+    BLAS.saxpy(n = result.size, alpha = -1f, x = other.value, incX = 1, y = result, incY = 1)
     return IOType.d3(this.shape, result)
 }
 
