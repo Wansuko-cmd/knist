@@ -2,88 +2,88 @@
 #include <stdio.h>
 #include <cblas.h>
 
-JNIEXPORT jdouble JNICALL Java_com_wsr_JBLAS_ddot
-        (JNIEnv *env, jobject, jint n, jdoubleArray x, jint incx, jdoubleArray y, jint incy) {
+JNIEXPORT jfloat JNICALL Java_com_wsr_JBLAS_sdot
+        (JNIEnv *env, jobject, jint n, jfloatArray x, jint incx, jfloatArray y, jint incy) {
     // Get array elements from Java
-    jdouble *x_ptr = env->GetDoubleArrayElements(x, nullptr);
-    jdouble *y_ptr = env->GetDoubleArrayElements(y, nullptr);
+    jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
+    jfloat *y_ptr = env->GetFloatArrayElements(y, nullptr);
 
-    // Call OpenBLAS ddot
-    jdouble result = cblas_ddot(n, x_ptr, incx, y_ptr, incy);
+    // Call OpenBLAS sdot
+    jfloat result = cblas_sdot(n, x_ptr, incx, y_ptr, incy);
 
     // Release arrays back to Java
-    env->ReleaseDoubleArrayElements(x, x_ptr, JNI_ABORT);
-    env->ReleaseDoubleArrayElements(y, y_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(y, y_ptr, JNI_ABORT);
 
     return result;
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dscal
-    (JNIEnv *env, jobject, jint n, jdouble alpha, jdoubleArray x, jint incx) {
+JNIEXPORT void JNICALL Java_com_wsr_JBLAS_sscal
+    (JNIEnv *env, jobject, jint n, jfloat alpha, jfloatArray x, jint incx) {
     // Get array elements from Java
-    jdouble *x_ptr = env->GetDoubleArrayElements(x, nullptr);
+    jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
 
-    // Call OpenBLAS dscal
-    cblas_dscal(n, alpha, x_ptr, incx);
+    // Call OpenBLAS sscal
+    cblas_sscal(n, alpha, x_ptr, incx);
 
     // Release array back to Java (mode 0 = copy back and free)
-    env->ReleaseDoubleArrayElements(x, x_ptr, 0);
+    env->ReleaseFloatArrayElements(x, x_ptr, 0);
     }
 
-    JNIEXPORT void JNICALL Java_com_wsr_JBLAS_daxpy
-    (JNIEnv *env, jobject, jint n, jdouble alpha, jdoubleArray x, jint incx, jdoubleArray y, jint incy) {
+    JNIEXPORT void JNICALL Java_com_wsr_JBLAS_saxpy
+    (JNIEnv *env, jobject, jint n, jfloat alpha, jfloatArray x, jint incx, jfloatArray y, jint incy) {
     // Get array elements from Java
-    jdouble *x_ptr = env->GetDoubleArrayElements(x, nullptr);
-    jdouble *y_ptr = env->GetDoubleArrayElements(y, nullptr);
+    jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
+    jfloat *y_ptr = env->GetFloatArrayElements(y, nullptr);
 
-    // Call OpenBLAS daxpy
-    cblas_daxpy(n, alpha, x_ptr, incx, y_ptr, incy);
+    // Call OpenBLAS saxpy
+    cblas_saxpy(n, alpha, x_ptr, incx, y_ptr, incy);
 
     // Release arrays back to Java
-    env->ReleaseDoubleArrayElements(x, x_ptr, JNI_ABORT);
-    env->ReleaseDoubleArrayElements(y, y_ptr, 0);
+    env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(y, y_ptr, 0);
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dgemm(JNIEnv *env, jobject, jboolean transA, jboolean transB, jint m, jint n, jint k,
-        jdouble alpha, jdoubleArray a, jint lda, jdoubleArray b, jint ldb,
-jdouble beta, jdoubleArray c, jint ldc
+JNIEXPORT void JNICALL Java_com_wsr_JBLAS_sgemm(JNIEnv *env, jobject, jboolean transA, jboolean transB, jint m, jint n, jint k,
+        jfloat alpha, jfloatArray a, jint lda, jfloatArray b, jint ldb,
+jfloat beta, jfloatArray c, jint ldc
 ) {
     // Get array elements from Java
-    jdouble *a_ptr = env->GetDoubleArrayElements(a, nullptr);
-    jdouble *b_ptr = env->GetDoubleArrayElements(b, nullptr);
-    jdouble *c_ptr = env->GetDoubleArrayElements(c, nullptr);
+    jfloat *a_ptr = env->GetFloatArrayElements(a, nullptr);
+    jfloat *b_ptr = env->GetFloatArrayElements(b, nullptr);
+    jfloat *c_ptr = env->GetFloatArrayElements(c, nullptr);
 
     // Convert transpose flags
     CBLAS_TRANSPOSE transA_blas = transA ? CblasTrans : CblasNoTrans;
     CBLAS_TRANSPOSE transB_blas = transB ? CblasTrans : CblasNoTrans;
 
-    // Call OpenBLAS dgemm with row-major order
-    cblas_dgemm(CblasRowMajor, transA_blas, transB_blas, m, n, k,
+    // Call OpenBLAS sgemm with row-major order
+    cblas_sgemm(CblasRowMajor, transA_blas, transB_blas, m, n, k,
             alpha, a_ptr, lda, b_ptr, ldb, beta, c_ptr, ldc);
 
     // Release arrays back to Java
-    env->ReleaseDoubleArrayElements(a, a_ptr, JNI_ABORT);
-    env->ReleaseDoubleArrayElements(b, b_ptr, JNI_ABORT);
-    env->ReleaseDoubleArrayElements(c, c_ptr, 0);
+    env->ReleaseFloatArrayElements(a, a_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(b, b_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(c, c_ptr, 0);
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dgemv
-(JNIEnv *env, jobject, jboolean trans, jint m, jint n, jdouble alpha,
-jdoubleArray a, jint lda, jdoubleArray x, jint incx,
-jdouble beta, jdoubleArray y, jint incy) {
+JNIEXPORT void JNICALL Java_com_wsr_JBLAS_sgemv
+(JNIEnv *env, jobject, jboolean trans, jint m, jint n, jfloat alpha,
+jfloatArray a, jint lda, jfloatArray x, jint incx,
+jfloat beta, jfloatArray y, jint incy) {
     // Get array elements from Java
-    jdouble *a_ptr = env->GetDoubleArrayElements(a, nullptr);
-    jdouble *x_ptr = env->GetDoubleArrayElements(x, nullptr);
-    jdouble *y_ptr = env->GetDoubleArrayElements(y, nullptr);
+    jfloat *a_ptr = env->GetFloatArrayElements(a, nullptr);
+    jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
+    jfloat *y_ptr = env->GetFloatArrayElements(y, nullptr);
 
     // Convert transpose flag
     CBLAS_TRANSPOSE trans_blas = trans ? CblasTrans : CblasNoTrans;
 
-    // Call OpenBLAS dgemv with row-major order
-    cblas_dgemv(CblasRowMajor, trans_blas, m, n, alpha, a_ptr, lda, x_ptr, incx, beta, y_ptr, incy);
+    // Call OpenBLAS sgemv with row-major order
+    cblas_sgemv(CblasRowMajor, trans_blas, m, n, alpha, a_ptr, lda, x_ptr, incx, beta, y_ptr, incy);
 
     // Release arrays back to Java
-    env->ReleaseDoubleArrayElements(a, a_ptr, JNI_ABORT);
-    env->ReleaseDoubleArrayElements(x, x_ptr, JNI_ABORT);
-    env->ReleaseDoubleArrayElements(y, y_ptr, 0);
+    env->ReleaseFloatArrayElements(a, a_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
+    env->ReleaseFloatArrayElements(y, y_ptr, 0);
 }

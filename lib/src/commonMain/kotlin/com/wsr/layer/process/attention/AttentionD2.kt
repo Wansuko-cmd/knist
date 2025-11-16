@@ -31,7 +31,7 @@ class AttentionD2 internal constructor(
     private val optimizerV: List<Optimizer.D2>,
     private val optimizerO: Optimizer.D2,
 ) : Process.D2() {
-    private val mask by lazy { IOType.d2(outputX, outputX) { x, y -> if (x < y) -1e9 else 0.0 } }
+    private val mask by lazy { IOType.d2(outputX, outputX) { x, y -> if (x < y) -1e9f else 0f } }
     override fun expect(input: List<IOType.D2>): List<IOType.D2> {
         val heads = List(numOfHeads) {
             val query = input.matMul(weightQ[it])
@@ -39,7 +39,7 @@ class AttentionD2 internal constructor(
             val value = input.matMul(weightV[it])
 
             val mul = query.matMul(key.transpose())
-            val scaled = mul / sqrt(dim.toDouble())
+            val scaled = mul / sqrt(dim.toFloat())
             val masked = scaled + mask
             val softmax = softmax(masked)
             softmax.matMul(value)
@@ -59,7 +59,7 @@ class AttentionD2 internal constructor(
 
         val softmax = List(numOfHeads) {
             val mul = query[it].matMul(key[it].transpose())
-            val scaled = mul / sqrt(dim.toDouble())
+            val scaled = mul / sqrt(dim.toFloat())
             val masked = scaled + mask
             softmax(masked)
         }
@@ -104,7 +104,7 @@ class AttentionD2 internal constructor(
         }
 
         val dScaled = dMasked
-        val dMul = List(numOfHeads) { dScaled[it] / sqrt(dim.toDouble()) }
+        val dMul = List(numOfHeads) { dScaled[it] / sqrt(dim.toFloat()) }
 
         val dQuery = List(numOfHeads) { dMul[it].matMul(key[it]) }
         val dKey = List(numOfHeads) { dMul[it].transpose().matMul(query[it]) }
@@ -128,7 +128,7 @@ class AttentionD2 internal constructor(
         // dx
         return List(input.size) { batchIndex ->
             (0 until numOfHeads)
-                .fold(IOType.d2(outputX, outputY) { _, _ -> 0.0 }) { acc, headIndex ->
+                .fold(IOType.d2(outputX, outputY) { _, _ -> 0f }) { acc, headIndex ->
                     acc + dxq[headIndex][batchIndex] + dxk[headIndex][batchIndex] + dxv[headIndex][batchIndex]
                 }
         }

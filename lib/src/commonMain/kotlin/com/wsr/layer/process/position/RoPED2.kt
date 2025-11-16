@@ -12,10 +12,10 @@ import kotlinx.serialization.Serializable
 class RoPED2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
-    private val waveLength: Double,
+    private val waveLength: Float,
 ) : Process.D2() {
     private val theta by lazy {
-        IOType.d1(outputY / 2) { i -> 1.0 / waveLength.pow(2.0 * i / outputY) }
+        IOType.d1(outputY / 2) { i -> 1f / waveLength.pow(2f * i / outputY) }
     }
 
     private val cosCache by lazy {
@@ -55,7 +55,7 @@ class RoPED2 internal constructor(
     }
 }
 
-fun <T> NetworkBuilder.D2<T>.roPE(waveLength: Double = 10000.0) = addProcess(
+fun <T> NetworkBuilder.D2<T>.roPE(waveLength: Float = 10000f) = addProcess(
     process = RoPED2(
         outputX = inputX,
         outputY = inputY,

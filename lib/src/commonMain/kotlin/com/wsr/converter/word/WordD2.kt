@@ -19,7 +19,7 @@ class WordD2(private val words: List<String>, private val length: Int, private v
     override fun encode(input: List<List<String>>): List<IOType.D2> = input.map { text ->
         text.map {
             val id = wordToId[it] ?: unknownIndex
-            IOType.d1(outputY).also { it[id] = 1.0 }
+            IOType.d1(outputY).also { it[id] = 1f }
         }.toD2()
     }
 

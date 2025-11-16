@@ -4,6 +4,7 @@ package com.wsr.layer.process.dropout
 
 import com.wsr.IOType
 import com.wsr.layer.process.dropout.DropoutD2
+import com.wsr.nextFloat
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -15,14 +16,14 @@ class DropoutD2Test {
             DropoutD2(
                 outputX = 2,
                 outputY = 2,
-                ratio = 0.5,
+                ratio = 0.5f,
                 seed = 42,
             )
 
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         // Inverted Dropoutのexpect(推論時)では入力をそのまま返す
@@ -30,10 +31,10 @@ class DropoutD2Test {
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
-        assertEquals(expected = 1.0, actual = output[0, 0])
-        assertEquals(expected = 2.0, actual = output[0, 1])
-        assertEquals(expected = 3.0, actual = output[1, 0])
-        assertEquals(expected = 4.0, actual = output[1, 1])
+        assertEquals(expected = 1.0f, actual = output[0, 0])
+        assertEquals(expected = 2.0f, actual = output[0, 1])
+        assertEquals(expected = 3.0f, actual = output[1, 0])
+        assertEquals(expected = 4.0f, actual = output[1, 1])
     }
 
     @Test
@@ -42,27 +43,27 @@ class DropoutD2Test {
             DropoutD2(
                 outputX = 2,
                 outputY = 2,
-                ratio = 0.5,
+                ratio = 0.5f,
                 seed = 42,
             )
 
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         // deltaは[[2, 4], [6, 8]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0 })
+            listOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0f })
         }
 
-        // seed=42でrandom.nextDouble(0.0, 1.0)を4回呼び出したときの値を事前計算
-        // Inverted Dropoutでは、マスクは0または1/ratio (= 2.0)
+        // seed=42でrandom.nextFloat(0f, 1f)を4回呼び出したときの値を事前計算
+        // Inverted Dropoutでは、マスクは0または1/ratio (= 2.0f)
         val testRandom = Random(42)
-        val q = 1.0 / 0.5 // 2.0
+        val q = 1.0f / 0.5f // 2.0f
         val expectedMask = IOType.d2(2, 2) { _, _ ->
-            if (testRandom.nextDouble(0.0, 1.0) <= 0.5) q else 0.0
+            if (testRandom.nextFloat(0f, 1f) <= 0.5f) q else 0.0f
         }
 
         val result = dropout._train(input, calcDelta)
@@ -70,9 +71,9 @@ class DropoutD2Test {
         // maskに基づいてdeltaが乗算される
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2
-        assertEquals(expected = 2.0 * expectedMask[0, 0], actual = dx[0, 0])
-        assertEquals(expected = 4.0 * expectedMask[0, 1], actual = dx[0, 1])
-        assertEquals(expected = 6.0 * expectedMask[1, 0], actual = dx[1, 0])
-        assertEquals(expected = 8.0 * expectedMask[1, 1], actual = dx[1, 1])
+        assertEquals(expected = 2.0f * expectedMask[0, 0], actual = dx[0, 0])
+        assertEquals(expected = 4.0f * expectedMask[0, 1], actual = dx[0, 1])
+        assertEquals(expected = 6.0f * expectedMask[1, 0], actual = dx[1, 0])
+        assertEquals(expected = 8.0f * expectedMask[1, 1], actual = dx[1, 1])
     }
 }

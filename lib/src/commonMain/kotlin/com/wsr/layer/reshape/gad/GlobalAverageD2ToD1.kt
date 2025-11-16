@@ -19,7 +19,7 @@ internal class GlobalAverageD2ToD1(private val inputX: Int, private val inputY: 
         val output = input.map { input -> IOType.d1(outputSize) { input[it].average() } }
         val delta = calcDelta(output)
         return List(input.size) {
-            val delta = delta[it] / inputY.toDouble()
+            val delta = delta[it] / inputY.toFloat()
             IOType.d2(inputX, inputY) { x, _ -> delta[x] }
         }
     }

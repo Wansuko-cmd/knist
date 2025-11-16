@@ -12,12 +12,12 @@ class BiasD2Test {
     @Test
     fun `BiasD2の_expect=入力にバイアスを足した値を返す`() {
         // weight = [[1, 2], [3, 4]]
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val bias =
             BiasD2(
                 outputX = 2,
                 outputY = 2,
-                optimizer = Sgd(0.1).d2(
+                optimizer = Sgd(0.1f).d2(
                     x = weight.shape[0],
                     y = weight.shape[1],
                 ),
@@ -27,7 +27,7 @@ class BiasD2Test {
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         // [[1+1, 2+2], [3+3, 4+4]] = [[2, 4], [6, 8]]
@@ -35,21 +35,21 @@ class BiasD2Test {
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
-        assertEquals(expected = 2.0, actual = output[0, 0])
-        assertEquals(expected = 4.0, actual = output[0, 1])
-        assertEquals(expected = 6.0, actual = output[1, 0])
-        assertEquals(expected = 8.0, actual = output[1, 1])
+        assertEquals(expected = 2.0f, actual = output[0, 0])
+        assertEquals(expected = 4.0f, actual = output[0, 1])
+        assertEquals(expected = 6.0f, actual = output[1, 0])
+        assertEquals(expected = 8.0f, actual = output[1, 1])
     }
 
     @Test
     fun `BiasD2の_train=deltaをそのまま返し、バイアスを更新`() {
         // weight = [[1, 2], [3, 4]]
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val bias =
             BiasD2(
                 outputX = 2,
                 outputY = 2,
-                optimizer = Sgd(0.1).d2(
+                optimizer = Sgd(0.1f).d2(
                     x = weight.shape[0],
                     y = weight.shape[1],
                 ),
@@ -59,12 +59,12 @@ class BiasD2Test {
         // [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         // deltaは[[2, 4], [6, 8]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0 })
+            listOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0f })
         }
 
         val result = bias._train(input, calcDelta)
@@ -72,21 +72,21 @@ class BiasD2Test {
         assertEquals(expected = 1, actual = result.size)
         val delta = result[0] as IOType.D2
         // deltaは[[2, 4], [6, 8]]
-        assertEquals(expected = 2.0, actual = delta[0, 0])
-        assertEquals(expected = 4.0, actual = delta[0, 1])
-        assertEquals(expected = 6.0, actual = delta[1, 0])
-        assertEquals(expected = 8.0, actual = delta[1, 1])
+        assertEquals(expected = 2.0f, actual = delta[0, 0])
+        assertEquals(expected = 4.0f, actual = delta[0, 1])
+        assertEquals(expected = 6.0f, actual = delta[1, 0])
+        assertEquals(expected = 8.0f, actual = delta[1, 1])
     }
 
     @Test
     fun `BiasD2の_train=バイアスが更新され、期待通りの出力になる`() {
         // weight = [[1, 2], [3, 4]]
-        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() }
+        val weight = IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() }
         val bias =
             BiasD2(
                 outputX = 2,
                 outputY = 2,
-                optimizer = Sgd(0.1).d2(
+                optimizer = Sgd(0.1f).d2(
                     x = weight.shape[0],
                     y = weight.shape[1],
                 ),
@@ -96,28 +96,28 @@ class BiasD2Test {
         // input = [[1, 2], [3, 4]]
         val input =
             listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toDouble() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
 
         // deltaは[[2, 4], [6, 8]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0 })
+            listOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0f })
         }
 
         // trainでバイアスを更新
-        // weight -= rate * delta.average() = [[1, 2], [3, 4]] - 0.1 * [[2, 4], [6, 8]]
-        //                                   = [[1, 2], [3, 4]] - [[0.2, 0.4], [0.6, 0.8]]
-        //                                   = [[0.8, 1.6], [2.4, 3.2]]
+        // weight -= rate * delta.average() = [[1, 2], [3, 4]] - 0.1f * [[2, 4], [6, 8]]
+        //                                   = [[1, 2], [3, 4]] - [[0.2f, 0.4f], [0.6f, 0.8f]]
+        //                                   = [[0.8f, 1.6f], [2.4f, 3.2f]]
         bias._train(input, calcDelta)
 
         // 更新後のexpect結果
-        // output = input + weight = [[1, 2], [3, 4]] + [[0.8, 1.6], [2.4, 3.2]]
-        //                         = [[1.8, 3.6], [5.4, 7.2]]
+        // output = input + weight = [[1, 2], [3, 4]] + [[0.8f, 1.6f], [2.4f, 3.2f]]
+        //                         = [[1.8f, 3.6f], [5.4f, 7.2f]]
         val afterOutput = bias._expect(input)[0] as IOType.D2
 
-        assertEquals(expected = 1.8, actual = afterOutput[0, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 3.6, actual = afterOutput[0, 1], absoluteTolerance = 1e-10)
-        assertEquals(expected = 5.4, actual = afterOutput[1, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 7.2, actual = afterOutput[1, 1], absoluteTolerance = 1e-10)
+        assertEquals(expected = 1.8f, actual = afterOutput[0, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 3.6f, actual = afterOutput[0, 1], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 5.4f, actual = afterOutput[1, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 7.2f, actual = afterOutput[1, 1], absoluteTolerance = 1e-6f)
     }
 }

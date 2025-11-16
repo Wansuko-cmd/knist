@@ -29,7 +29,7 @@ class LayerNormD2 internal constructor(
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.map { sqrt(it + 1e-10) }
+        val denominator = variance.map { sqrt(it + 1e-10f) }
 
         return weight * (numerator / denominator)
     }
@@ -39,7 +39,7 @@ class LayerNormD2 internal constructor(
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.map { sqrt(it + 1e-10) }
+        val denominator = variance.map { sqrt(it + 1e-10f) }
 
         val normalize = numerator / denominator
         val output = weight * normalize
@@ -65,8 +65,8 @@ class LayerNormD2 internal constructor(
         val dx3: List<IOType.D2> = List(input.size) {
             /**
              * dy/[sqrt(variance(x)]
-             *   = (sum(dOutput * numerator) / denominator) * (-1 / (2.0 * denominator^2))
-             *   = -sum(dOutput * numerator / denominator) / 2.0 * denominator^2
+             *   = (sum(dOutput * numerator) / denominator) * (-1 / (2f * denominator^2))
+             *   = -sum(dOutput * numerator / denominator) / 2f * denominator^2
              *   = -sum(dOutput * normalize) / denominator^2
              *
              * d[sqrt(variance(x)]/[variance(x)] = 1 / outputSize
@@ -75,11 +75,11 @@ class LayerNormD2 internal constructor(
              *   = -sum(dOutput * normalize) / (denominator^2 * outputSize)
              */
             val dvn = -(dOutput[it] * normalize[it]).sum()
-            val dvd = 2.0 * denominator[it].pow(2) * (outputX * outputY).toDouble()
+            val dvd = 2f * denominator[it].pow(2) * (outputX * outputY).toFloat()
             val dVariance = dvn / dvd
 
             // dy/[x-average(x)]
-            val dSquared = 2.0 * dVariance * numerator[it]
+            val dSquared = 2f * dVariance * numerator[it]
 
             // dy/[x]
             val dx1 = dSquared
@@ -97,7 +97,7 @@ class LayerNormD2 internal constructor(
 fun <T> NetworkBuilder.D2<T>.layerNorm(
     axis: Int? = null,
     optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = Fixed(1.0),
+    initializer: WeightInitializer = Fixed(1f),
 ): NetworkBuilder.D2<T> {
     val process = when (axis) {
         null -> LayerNormD2(

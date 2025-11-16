@@ -9,43 +9,43 @@ extern "C" {
 #endif
 /*
  * Class:     com_wsr_JBLAS
- * Method:    ddot
- * Signature: (I[DI[DI)D
+ * Method:    sdot
+ * Signature: (I[FI[FI)F
  */
-JNIEXPORT jdouble JNICALL Java_com_wsr_JBLAS_ddot
-  (JNIEnv *, jobject, jint, jdoubleArray, jint, jdoubleArray, jint);
+JNIEXPORT jfloat JNICALL Java_com_wsr_JBLAS_sdot
+  (JNIEnv *, jobject, jint, jfloatArray, jint, jfloatArray, jint);
 
 /*
  * Class:     com_wsr_JBLAS
- * Method:    dscal
- * Signature: (ID[DI)V
+ * Method:    sscal
+ * Signature: (IF[FI)V
  */
-JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dscal
-  (JNIEnv *, jobject, jint, jdouble, jdoubleArray, jint);
+JNIEXPORT void JNICALL Java_com_wsr_JBLAS_sscal
+  (JNIEnv *, jobject, jint, jfloat, jfloatArray, jint);
 
 /*
  * Class:     com_wsr_JBLAS
- * Method:    daxpy
- * Signature: (ID[DI[DI)V
+ * Method:    saxpy
+ * Signature: (IF[FI[FI)V
  */
-JNIEXPORT void JNICALL Java_com_wsr_JBLAS_daxpy
-  (JNIEnv *, jobject, jint, jdouble, jdoubleArray, jint, jdoubleArray, jint);
+JNIEXPORT void JNICALL Java_com_wsr_JBLAS_saxpy
+  (JNIEnv *, jobject, jint, jfloat, jfloatArray, jint, jfloatArray, jint);
 
 /*
  * Class:     com_wsr_JBLAS
- * Method:    dgemm
- * Signature: (ZZIIID[DI[DID[DI)V
+ * Method:    sgemm
+ * Signature: (ZZIIIF[FI[FIF[FI)V
  */
-JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dgemm
-  (JNIEnv *, jobject, jboolean, jboolean, jint, jint, jint, jdouble, jdoubleArray, jint, jdoubleArray, jint, jdouble, jdoubleArray, jint);
+JNIEXPORT void JNICALL Java_com_wsr_JBLAS_sgemm
+  (JNIEnv *, jobject, jboolean, jboolean, jint, jint, jint, jfloat, jfloatArray, jint, jfloatArray, jint, jfloat, jfloatArray, jint);
 
 /*
  * Class:     com_wsr_JBLAS
- * Method:    dgemv
- * Signature: (ZIID[DI[DID[DI)V
+ * Method:    sgemv
+ * Signature: (ZIIF[FI[FIF[FI)V
  */
-JNIEXPORT void JNICALL Java_com_wsr_JBLAS_dgemv
-  (JNIEnv *, jobject, jboolean, jint, jint, jdouble, jdoubleArray, jint, jdoubleArray, jint, jdouble, jdoubleArray, jint);
+JNIEXPORT void JNICALL Java_com_wsr_JBLAS_sgemv
+  (JNIEnv *, jobject, jboolean, jint, jint, jfloat, jfloatArray, jint, jfloatArray, jint, jfloat, jfloatArray, jint);
 
 #ifdef __cplusplus
 }

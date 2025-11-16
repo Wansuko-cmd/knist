@@ -11,14 +11,14 @@ import com.wsr.power.sqrt
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
 
-private const val E = 1e-8
+private const val E = 1e-8f
 
 @Serializable
 data class Adam(
-    private val rate: Double,
-    private val momentum: Double = 0.9,
-    private val rms: Double = 0.999,
-    private val maxNorm: Double = Double.MAX_VALUE,
+    private val rate: Float,
+    private val momentum: Float = 0.9f,
+    private val rms: Float = 0.999f,
+    private val maxNorm: Float = Float.MAX_VALUE,
 ) : Optimizer {
     override fun d1(size: Int): Optimizer.D1 = AdamD1(
         rate = rate,
@@ -47,10 +47,10 @@ data class Adam(
 
 @Serializable
 internal data class AdamD1(
-    private val rate: Double,
-    private val momentum: Double,
-    private val rms: Double,
-    private val maxNorm: Double,
+    private val rate: Float,
+    private val momentum: Float,
+    private val rms: Float,
+    private val maxNorm: Float,
     private val shape: List<Int>,
 ) : Optimizer.D1(maxNorm) {
     private var m: IOType.D1 = IOType.d1(shape)
@@ -63,8 +63,8 @@ internal data class AdamD1(
         m = momentum * m + (1 - momentum) * dw
         v = rms * v + (1 - rms) * dw.pow(2)
 
-        val mHat = m / (1.0 - momentum.pow(t.toDouble()))
-        val vHat = v / (1.0 - rms.pow(t.toDouble()))
+        val mHat = m / (1f - momentum.pow(t.toFloat()))
+        val vHat = v / (1f - rms.pow(t.toFloat()))
 
         return weight - rate * mHat / vHat.sqrt(e = E)
     }
@@ -72,10 +72,10 @@ internal data class AdamD1(
 
 @Serializable
 internal data class AdamD2(
-    private val rate: Double,
-    private val momentum: Double,
-    private val rms: Double,
-    private val maxNorm: Double,
+    private val rate: Float,
+    private val momentum: Float,
+    private val rms: Float,
+    private val maxNorm: Float,
     private val shape: List<Int>,
 ) : Optimizer.D2(maxNorm) {
     private var m: IOType.D2 = IOType.d2(shape)
@@ -88,8 +88,8 @@ internal data class AdamD2(
         m = momentum * m + (1 - momentum) * dw
         v = rms * v + (1 - rms) * dw.pow(2)
 
-        val mHat = m / (1.0 - momentum.pow(t.toDouble()))
-        val vHat = v / (1.0 - rms.pow(t.toDouble()))
+        val mHat = m / (1f - momentum.pow(t.toFloat()))
+        val vHat = v / (1f - rms.pow(t.toFloat()))
 
         return weight - rate * mHat / vHat.sqrt(e = E)
     }
@@ -97,10 +97,10 @@ internal data class AdamD2(
 
 @Serializable
 internal data class AdamD3(
-    private val rate: Double,
-    private val momentum: Double,
-    private val rms: Double,
-    private val maxNorm: Double,
+    private val rate: Float,
+    private val momentum: Float,
+    private val rms: Float,
+    private val maxNorm: Float,
     private val shape: List<Int>,
 ) : Optimizer.D3(maxNorm) {
     private var m: IOType.D3 = IOType.d3(shape)
@@ -113,8 +113,8 @@ internal data class AdamD3(
         m = momentum * m + (1 - momentum) * dw
         v = rms * v + (1 - rms) * dw.pow(2)
 
-        val mHat = m / (1.0 - momentum.pow(t.toDouble()))
-        val vHat = v / (1.0 - rms.pow(t.toDouble()))
+        val mHat = m / (1f - momentum.pow(t.toFloat()))
+        val vHat = v / (1f - rms.pow(t.toFloat()))
 
         return weight - rate * mHat / vHat.sqrt(e = E)
     }

@@ -1,6 +1,7 @@
 package com.wsr.initializer
 
 import com.wsr.IOType
+import com.wsr.nextFloat
 import kotlin.math.sqrt
 import kotlin.random.Random
 
@@ -38,8 +39,8 @@ class He(seed: Int? = null) : WeightInitializer {
         return IOType.d4(shape = listOf(i, j, k, n), value = weight)
     }
 
-    private fun calcWeight(fanIn: Int, size: Int): DoubleArray {
-        val limit = sqrt(6.0 / fanIn)
-        return DoubleArray(size) { random.nextDouble(-limit, limit) }
+    private fun calcWeight(fanIn: Int, size: Int): FloatArray {
+        val limit = sqrt(6f / fanIn)
+        return FloatArray(size) { random.nextFloat(-limit, limit) }
     }
 }

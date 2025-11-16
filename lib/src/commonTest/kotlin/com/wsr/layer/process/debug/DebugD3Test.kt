@@ -22,7 +22,7 @@ class DebugD3Test {
         }
 
         val input = listOf(
-            IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
+            IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
         )
 
         val result = debug._expect(input)
@@ -49,11 +49,11 @@ class DebugD3Test {
         }
 
         val input = listOf(
-            IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toDouble() },
+            IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
         )
 
         val expectedDelta = listOf(
-            IOType.d3(2, 2, 2) { _, _, _ -> 1.0 },
+            IOType.d3(2, 2, 2) { _, _, _ -> 1.0f },
         )
 
         val calcDelta: (List<IOType>) -> List<IOType> = { expectedDelta }

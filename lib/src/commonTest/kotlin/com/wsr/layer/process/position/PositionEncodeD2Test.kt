@@ -12,12 +12,12 @@ import kotlin.test.assertEquals
 class PositionEncodeD2Test {
     @Test
     fun `PositionEncodeD2の_expect=入力に位置エンコーディングを加算`() {
-        val positionEncode = PositionEncodeD2(outputX = 2, outputY = 4, waveLength = 10000.0)
+        val positionEncode = PositionEncodeD2(outputX = 2, outputY = 4, waveLength = 10000.0f)
 
         // 入力は全て1.0（位置エンコーディングの影響だけを見るため）
         val input =
             listOf(
-                IOType.d2(2, 4) { _, _ -> 1.0 },
+                IOType.d2(2, 4) { _, _ -> 1.0f },
             )
 
         val result = positionEncode._expect(input)
@@ -31,41 +31,41 @@ class PositionEncodeD2Test {
         // 偶数次元と次の奇数次元で同じ周波数を使用
 
         // pos=0の場合（x=0）
-        val pe00 = sin(0.0 / 10000.0.pow(0.0 / 4.0)) // sin(0) = 0.0
-        val pe01 = cos(0.0 / 10000.0.pow(0.0 / 4.0)) // cos(0) = 1.0 (y=1 -> (y-1)=0)
-        val pe02 = sin(0.0 / 10000.0.pow(2.0 / 4.0)) // sin(0) = 0.0
-        val pe03 = cos(0.0 / 10000.0.pow(2.0 / 4.0)) // cos(0) = 1.0 (y=3 -> (y-1)=2)
+        val pe00 = sin(0.0f / 10000.0f.pow(0.0f / 4.0f)) // sin(0) = 0.0f
+        val pe01 = cos(0.0f / 10000.0f.pow(0.0f / 4.0f)) // cos(0) = 1.0f (y=1 -> (y-1)=0)
+        val pe02 = sin(0.0f / 10000.0f.pow(2.0f / 4.0f)) // sin(0) = 0.0f
+        val pe03 = cos(0.0f / 10000.0f.pow(2.0f / 4.0f)) // cos(0) = 1.0f (y=3 -> (y-1)=2)
 
-        assertEquals(expected = 1.0 + pe00, actual = output[0, 0], absoluteTolerance = 1e-4)
-        assertEquals(expected = 1.0 + pe01, actual = output[0, 1], absoluteTolerance = 1e-4)
-        assertEquals(expected = 1.0 + pe02, actual = output[0, 2], absoluteTolerance = 1e-4)
-        assertEquals(expected = 1.0 + pe03, actual = output[0, 3], absoluteTolerance = 1e-4)
+        assertEquals(expected = 1.0f + pe00, actual = output[0, 0], absoluteTolerance = 1e-4f)
+        assertEquals(expected = 1.0f + pe01, actual = output[0, 1], absoluteTolerance = 1e-4f)
+        assertEquals(expected = 1.0f + pe02, actual = output[0, 2], absoluteTolerance = 1e-4f)
+        assertEquals(expected = 1.0f + pe03, actual = output[0, 3], absoluteTolerance = 1e-4f)
 
         // pos=1の場合（x=1）
-        val pe10 = sin(1.0 / 10000.0.pow(0.0 / 4.0)) // sin(1)
-        val pe11 = cos(1.0 / 10000.0.pow(0.0 / 4.0)) // cos(1) (y=1 -> (y-1)=0)
-        val pe12 = sin(1.0 / 10000.0.pow(2.0 / 4.0)) // sin(1 / 100)
-        val pe13 = cos(1.0 / 10000.0.pow(2.0 / 4.0)) // cos(1 / 100) (y=3 -> (y-1)=2)
+        val pe10 = sin(1.0f / 10000.0f.pow(0.0f / 4.0f)) // sin(1)
+        val pe11 = cos(1.0f / 10000.0f.pow(0.0f / 4.0f)) // cos(1) (y=1 -> (y-1)=0)
+        val pe12 = sin(1.0f / 10000.0f.pow(2.0f / 4.0f)) // sin(1 / 100)
+        val pe13 = cos(1.0f / 10000.0f.pow(2.0f / 4.0f)) // cos(1 / 100) (y=3 -> (y-1)=2)
 
-        assertEquals(expected = 1.0 + pe10, actual = output[1, 0], absoluteTolerance = 1e-4)
-        assertEquals(expected = 1.0 + pe11, actual = output[1, 1], absoluteTolerance = 1e-4)
-        assertEquals(expected = 1.0 + pe12, actual = output[1, 2], absoluteTolerance = 1e-4)
-        assertEquals(expected = 1.0 + pe13, actual = output[1, 3], absoluteTolerance = 1e-4)
+        assertEquals(expected = 1.0f + pe10, actual = output[1, 0], absoluteTolerance = 1e-4f)
+        assertEquals(expected = 1.0f + pe11, actual = output[1, 1], absoluteTolerance = 1e-4f)
+        assertEquals(expected = 1.0f + pe12, actual = output[1, 2], absoluteTolerance = 1e-4f)
+        assertEquals(expected = 1.0f + pe13, actual = output[1, 3], absoluteTolerance = 1e-4f)
     }
 
     @Test
     fun `PositionEncodeD2の_train=deltaをそのまま返す`() {
-        val positionEncode = PositionEncodeD2(outputX = 2, outputY = 3, waveLength = 10000.0)
+        val positionEncode = PositionEncodeD2(outputX = 2, outputY = 3, waveLength = 10000.0f)
 
         // 入力は[[1, 2, 3], [4, 5, 6]]
         val input =
             listOf(
-                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toDouble() },
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() },
             )
 
-        // deltaは[[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]]を返す
+        // deltaは[[0.1f, 0.2f, 0.3f], [0.4f, 0.5f, 0.6f]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(2, 3) { x, y -> (x * 3 + y + 1) * 0.1 })
+            listOf(IOType.d2(2, 3) { x, y -> (x * 3 + y + 1) * 0.1f })
         }
 
         val result = positionEncode._train(input, calcDelta)
@@ -73,11 +73,11 @@ class PositionEncodeD2Test {
         // 位置エンコーディングの逆伝播は、加算なのでdeltaをそのまま返す
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2
-        assertEquals(expected = 0.1, actual = dx[0, 0], absoluteTolerance = 1e-6)
-        assertEquals(expected = 0.2, actual = dx[0, 1], absoluteTolerance = 1e-6)
-        assertEquals(expected = 0.3, actual = dx[0, 2], absoluteTolerance = 1e-6)
-        assertEquals(expected = 0.4, actual = dx[1, 0], absoluteTolerance = 1e-6)
-        assertEquals(expected = 0.5, actual = dx[1, 1], absoluteTolerance = 1e-6)
-        assertEquals(expected = 0.6, actual = dx[1, 2], absoluteTolerance = 1e-6)
+        assertEquals(expected = 0.1f, actual = dx[0, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 0.2f, actual = dx[0, 1], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 0.3f, actual = dx[0, 2], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 0.4f, actual = dx[1, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 0.5f, actual = dx[1, 1], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 0.6f, actual = dx[1, 2], absoluteTolerance = 1e-6f)
     }
 }

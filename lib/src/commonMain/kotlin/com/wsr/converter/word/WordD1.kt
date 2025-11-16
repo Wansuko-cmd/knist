@@ -15,7 +15,7 @@ class WordD1(private val words: List<String>, private val unknownIndex: Int) : C
 
     override fun encode(input: List<String>): List<IOType.D1> = input.map { text ->
         val id = wordToId[text] ?: unknownIndex
-        IOType.d1(outputSize).also { it[id] = 1.0 }
+        IOType.d1(outputSize).also { it[id] = 1f }
     }
 
     override fun decode(input: List<IOType.D1>): List<String> = input.map { input -> words[input.maxIndex()] }

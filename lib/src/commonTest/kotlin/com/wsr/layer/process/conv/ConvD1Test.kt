@@ -16,7 +16,7 @@ class ConvD1Test {
         // weight: [2, 2, 2]
         val weight =
             IOType.d3(2, 2, 2) { f, c, k ->
-                (f * 4 + c * 2 + k + 1).toDouble()
+                (f * 4 + c * 2 + k + 1).toFloat()
             }
         // filter0: [[1, 2], [3, 4]]
         // filter1: [[5, 6], [7, 8]]
@@ -29,7 +29,7 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                optimizer = Sgd(0.1).d3(
+                optimizer = Sgd(0.1f).d3(
                     x = weight.shape[0],
                     y = weight.shape[1],
                     z = weight.shape[2],
@@ -40,7 +40,7 @@ class ConvD1Test {
         // input: [[1, 2, 3], [4, 5, 6]]
         val input =
             listOf(
-                IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toDouble() },
+                IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
             )
 
         val result = conv._expect(input)
@@ -55,7 +55,7 @@ class ConvD1Test {
     fun `ConvD1の_train=逆畳み込みでdeltaを計算し、weightを更新`() {
         val weight =
             IOType.d3(2, 2, 2) { f, c, k ->
-                (f * 4 + c * 2 + k + 1).toDouble()
+                (f * 4 + c * 2 + k + 1).toFloat()
             }
 
         val conv =
@@ -66,7 +66,7 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                optimizer = Sgd(0.1).d3(
+                optimizer = Sgd(0.1f).d3(
                     x = weight.shape[0],
                     y = weight.shape[1],
                     z = weight.shape[2],
@@ -76,12 +76,12 @@ class ConvD1Test {
 
         val input =
             listOf(
-                IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toDouble() },
+                IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
             )
 
         val calcDelta: (List<IOType>) -> List<IOType> = { output ->
             val out = output[0] as IOType.D2
-            listOf(IOType.d2(out.shape) { f, i -> (f * 2 + i + 1).toDouble() })
+            listOf(IOType.d2(out.shape) { f, i -> (f * 2 + i + 1).toFloat() })
         }
 
         val result = conv._train(input, calcDelta)
@@ -96,7 +96,7 @@ class ConvD1Test {
     fun `ConvD1の_train=重みが更新され、期待通りの出力になる`() {
         val weight =
             IOType.d3(2, 2, 2) { f, c, k ->
-                (f * 4 + c * 2 + k + 1).toDouble()
+                (f * 4 + c * 2 + k + 1).toFloat()
             }
 
         val conv =
@@ -107,7 +107,7 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                optimizer = Sgd(0.1).d3(
+                optimizer = Sgd(0.1f).d3(
                     x = weight.shape[0],
                     y = weight.shape[1],
                     z = weight.shape[2],
@@ -117,24 +117,24 @@ class ConvD1Test {
 
         val input =
             listOf(
-                IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toDouble() },
+                IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
             )
 
         val calcDelta: (List<IOType>) -> List<IOType> = { output ->
             val out = output[0] as IOType.D2
-            listOf(IOType.d2(out.shape) { f, i -> (f * 2 + i + 1).toDouble() })
+            listOf(IOType.d2(out.shape) { f, i -> (f * 2 + i + 1).toFloat() })
         }
 
         // trainで重みを更新
         conv._train(input, calcDelta)
 
         // 更新後のexpect結果
-        // afterOutput = D2(value=[20.8, 26.4, 48.0, 64.0], shape=[2, 2])
+        // afterOutput = D2(value=[20.8f, 26.4f, 48.0f, 64.0f], shape=[2, 2])
         val afterOutput = conv._expect(input)[0] as IOType.D2
 
-        assertEquals(expected = 20.8, actual = afterOutput[0, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 26.4, actual = afterOutput[0, 1], absoluteTolerance = 1e-10)
-        assertEquals(expected = 48.0, actual = afterOutput[1, 0], absoluteTolerance = 1e-10)
-        assertEquals(expected = 64.0, actual = afterOutput[1, 1], absoluteTolerance = 1e-10)
+        assertEquals(expected = 20.8f, actual = afterOutput[0, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 26.4f, actual = afterOutput[0, 1], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 48.0f, actual = afterOutput[1, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 64.0f, actual = afterOutput[1, 1], absoluteTolerance = 1e-5f)
     }
 }

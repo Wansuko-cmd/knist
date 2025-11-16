@@ -12,8 +12,8 @@ class LinearD1Test {
         val converter = LinearD1(outputSize = 3)
 
         val input = listOf(
-            IOType.d1(listOf(1.0, 2.0, 3.0)),
-            IOType.d1(listOf(4.0, 5.0, 6.0)),
+            IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+            IOType.d1(listOf(4.0f, 5.0f, 6.0f)),
         )
 
         val result = converter.encode(input)
@@ -30,8 +30,8 @@ class LinearD1Test {
         val converter = LinearD1(outputSize = 3)
 
         val input = listOf(
-            IOType.d1(listOf(1.0, 2.0, 3.0)),
-            IOType.d1(listOf(4.0, 5.0, 6.0)),
+            IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+            IOType.d1(listOf(4.0f, 5.0f, 6.0f)),
         )
 
         val result = converter.decode(input)
@@ -48,8 +48,8 @@ class LinearD1Test {
         val converter = LinearD1(outputSize = 5)
 
         val input = listOf(
-            IOType.d1(listOf(1.0, 2.0, 3.0, 4.0, 5.0)),
-            IOType.d1(listOf(6.0, 7.0, 8.0, 9.0, 10.0)),
+            IOType.d1(listOf(1.0f, 2.0f, 3.0f, 4.0f, 5.0f)),
+            IOType.d1(listOf(6.0f, 7.0f, 8.0f, 9.0f, 10.0f)),
         )
 
         // encode -> decode
@@ -69,7 +69,7 @@ class LinearD1Test {
         val converter = LinearD1(outputSize = 5)
 
         val input = listOf(
-            IOType.d1(listOf(1.0, 2.0, 3.0, 4.0, 5.0)),
+            IOType.d1(listOf(1.0f, 2.0f, 3.0f, 4.0f, 5.0f)),
         )
 
         // decode -> encode

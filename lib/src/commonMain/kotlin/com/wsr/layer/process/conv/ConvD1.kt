@@ -28,7 +28,7 @@ class ConvD1 internal constructor(
 
     init {
         check((inputSize - kernel + 2 * padding) % stride == 0) {
-            val output = (inputSize - kernel + 2 * padding) / stride.toDouble() + 1.0
+            val output = (inputSize - kernel + 2 * padding) / stride.toFloat() + 1.0
             """
             invalid parameter.
             inputSize: $inputSize
