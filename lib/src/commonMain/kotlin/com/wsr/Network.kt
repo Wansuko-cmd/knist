@@ -7,6 +7,8 @@ import kotlinx.serialization.Serializable
 import okio.BufferedSink
 import okio.BufferedSource
 
+private typealias TrainLambda = (List<IOType>, List<IOType>) -> List<IOType>
+
 @Serializable(with = NetworkSerializer::class)
 class Network<I, O> internal constructor(
     val inputConverter: Converter,
@@ -14,14 +16,16 @@ class Network<I, O> internal constructor(
     val layers: List<Layer>,
     val output: Output,
 ) {
-    private val trainLambda: (List<IOType>, List<IOType>) -> List<IOType> =
-        layers
-            .reversed()
-            .fold({ acc, label ->  output._train(acc, label) }) { acc: (List<IOType>, List<IOType>) -> List<IOType>, layer: Layer ->
+    private val trainLambda: (TrainLambda) -> TrainLambda = run {
+        val initial: (TrainLambda) -> TrainLambda = { it }
+        layers.foldRight(initial) { layer: Layer, acc: (TrainLambda) -> TrainLambda ->
+            { final: TrainLambda ->
                 { input: List<IOType>, label: List<IOType> ->
-                    layer._train(input) { acc(it, label) }
+                    layer._train(input) { i -> acc(final)(i, label) }
                 }
             }
+        }
+    }
 
     @Suppress("UNCHECKED_CAST")
     fun expect(input: I): O = expect(input = listOf(input))[0]
@@ -36,8 +40,14 @@ class Network<I, O> internal constructor(
         train(input = listOf(input), label = listOf(label))
     }
 
-    fun train(input: List<I>, label: List<O>) {
-        trainLambda(inputConverter._encode(input), outputConverter._encode(label))
+    fun train(input: List<I>, label: List<O>): Float {
+        var loss = 0f
+        val output: TrainLambda = { input: List<IOType>, label: List<IOType> ->
+            loss = output._loss(input, label)
+            output._train(input, label)
+        }
+        trainLambda(output).invoke(inputConverter._encode(input), outputConverter._encode(label))
+        return loss
     }
 
     fun toJson(): String = NetworkSerializer.encodeToString(this)
