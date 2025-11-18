@@ -2,7 +2,7 @@ package com.wsr
 
 import com.wsr.converter.Converter
 import com.wsr.layer.Layer
-import com.wsr.layer.output.Output
+import com.wsr.output.Output
 import kotlinx.serialization.Serializable
 import okio.BufferedSink
 import okio.BufferedSource

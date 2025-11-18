@@ -1,9 +1,9 @@
-package com.wsr.layer.output.sigmoid
+package com.wsr.output.sigmoid
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.Converter
-import com.wsr.layer.output.Output
+import com.wsr.output.Output
 import com.wsr.operator.minus
 import kotlin.math.exp
 import kotlinx.serialization.Serializable

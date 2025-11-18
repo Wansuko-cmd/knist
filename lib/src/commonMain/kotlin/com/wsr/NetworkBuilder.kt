@@ -5,7 +5,7 @@ import com.wsr.converter.linear.LinearD1
 import com.wsr.converter.linear.LinearD2
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Layer
-import com.wsr.layer.output.Output
+import com.wsr.output.Output
 import com.wsr.layer.process.Process
 import com.wsr.layer.reshape.Reshape
 import com.wsr.optimizer.Optimizer

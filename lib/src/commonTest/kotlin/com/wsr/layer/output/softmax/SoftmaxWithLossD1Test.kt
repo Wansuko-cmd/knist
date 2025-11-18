@@ -3,7 +3,7 @@
 package com.wsr.layer.output.softmax
 
 import com.wsr.IOType
-import com.wsr.layer.output.softmax.SoftmaxWithLossD1
+import com.wsr.output.softmax.SoftmaxWithLossD1
 import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertEquals

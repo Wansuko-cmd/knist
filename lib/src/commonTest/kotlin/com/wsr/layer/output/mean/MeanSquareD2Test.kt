@@ -3,6 +3,7 @@
 package com.wsr.layer.output.mean
 
 import com.wsr.IOType
+import com.wsr.output.mean.MeanSquareD2
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

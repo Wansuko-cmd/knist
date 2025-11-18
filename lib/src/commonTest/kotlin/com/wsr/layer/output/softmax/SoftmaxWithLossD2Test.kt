@@ -3,6 +3,7 @@
 package com.wsr.layer.output.softmax
 
 import com.wsr.IOType
+import com.wsr.output.softmax.SoftmaxWithLossD2
 import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -379,7 +380,8 @@ class SoftmaxWithLossD2Test {
                     }
                 },
             )
-        val softmax = SoftmaxWithLossD2(outputX = 2, outputY = 3, temperature = 1.0f, maskValue = null)
+        val softmax =
+            SoftmaxWithLossD2(outputX = 2, outputY = 3, temperature = 1.0f, maskValue = null)
         val result = softmax._train(input, label)
 
         // 行0のsoftmax
