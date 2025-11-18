@@ -26,6 +26,10 @@ internal class SoftmaxWithLossD1 internal constructor(
         }
     }
 
+    override fun loss(input: List<IOType.D1>, label: List<IOType.D1>): Float {
+        TODO("Not yet implemented")
+    }
+
     override fun train(input: List<IOType.D1>, label: List<IOType.D1>): List<IOType.D1> {
         val input = input / temperature
         val output = input.map { (value) ->

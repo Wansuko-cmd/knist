@@ -9,15 +9,25 @@ sealed interface Output {
     fun _expect(input: List<IOType>): List<IOType>
 
     @Suppress("FunctionName")
+    fun _loss(input: List<IOType>, label: List<IOType>): Float
+
+    @Suppress("FunctionName")
     fun _train(input: List<IOType>, label: List<IOType>): List<IOType>
 
     @Serializable
     abstract class D1 : Output {
         protected abstract fun expect(input: List<IOType.D1>): List<IOType.D1>
 
+        protected abstract fun loss(input: List<IOType.D1>, label: List<IOType.D1>): Float
+
         protected abstract fun train(input: List<IOType.D1>, label: List<IOType.D1>): List<IOType.D1>
 
         final override fun _expect(input: List<IOType>): List<IOType> = expect(input = input as List<IOType.D1>)
+
+        final override fun _loss(input: List<IOType>, label: List<IOType>): Float = loss(
+            input = input as List<IOType.D1>,
+            label = label as List<IOType.D1>,
+        )
 
         final override fun _train(input: List<IOType>, label: List<IOType>): List<IOType> = train(
             input = input as List<IOType.D1>,
@@ -29,9 +39,16 @@ sealed interface Output {
     abstract class D2 : Output {
         protected abstract fun expect(input: List<IOType.D2>): List<IOType.D2>
 
+        protected abstract fun loss(input: List<IOType.D2>, label: List<IOType.D2>): Float
+
         protected abstract fun train(input: List<IOType.D2>, label: List<IOType.D2>): List<IOType.D2>
 
         final override fun _expect(input: List<IOType>): List<IOType> = expect(input = input as List<IOType.D2>)
+
+        final override fun _loss(input: List<IOType>, label: List<IOType>): Float = loss(
+            input = input as List<IOType.D2>,
+            label = label as List<IOType.D2>,
+        )
 
         final override fun _train(input: List<IOType>, label: List<IOType>): List<IOType> = train(
             input = input as List<IOType.D2>,

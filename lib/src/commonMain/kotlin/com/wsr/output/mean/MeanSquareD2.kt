@@ -11,6 +11,10 @@ import kotlinx.serialization.Serializable
 internal class MeanSquareD2 internal constructor(val outputX: Int, val outputY: Int) : Output.D2() {
     override fun expect(input: List<IOType.D2>): List<IOType.D2> = input
 
+    override fun loss(input: List<IOType.D2>, label: List<IOType.D2>): Float {
+        TODO("Not yet implemented")
+    }
+
     override fun train(input: List<IOType.D2>, label: List<IOType.D2>): List<IOType.D2> = input - label
 }
 
