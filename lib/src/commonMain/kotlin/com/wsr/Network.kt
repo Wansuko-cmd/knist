@@ -2,6 +2,7 @@ package com.wsr
 
 import com.wsr.converter.Converter
 import com.wsr.layer.Layer
+import com.wsr.layer.output.Output
 import kotlinx.serialization.Serializable
 import okio.BufferedSink
 import okio.BufferedSource
@@ -11,11 +12,12 @@ class Network<I, O> internal constructor(
     val inputConverter: Converter,
     val outputConverter: Converter,
     val layers: List<Layer>,
+    val output: Output,
 ) {
     private val trainLambda: (List<IOType>, List<IOType>) -> List<IOType> =
         layers
             .reversed()
-            .fold({ _, label -> label }) { acc: (List<IOType>, List<IOType>) -> List<IOType>, layer: Layer ->
+            .fold({ acc, label ->  output._train(acc, label) }) { acc: (List<IOType>, List<IOType>) -> List<IOType>, layer: Layer ->
                 { input: List<IOType>, label: List<IOType> ->
                     layer._train(input) { acc(it, label) }
                 }
@@ -26,7 +28,8 @@ class Network<I, O> internal constructor(
 
     @Suppress("UNCHECKED_CAST")
     fun expect(input: List<I>): List<O> = layers
-        .fold(inputConverter._encode(input)) { acc, layer -> layer._expect(acc) }
+        .fold(inputConverter._encode(input)) { acc, process -> process._expect(acc) }
+        .let { output._expect(it) }
         .let { outputConverter._decode(it) } as List<O>
 
     fun train(input: I, label: O) {
