@@ -1,15 +1,18 @@
-package com.wsr.layer.output.softmax
+package com.wsr.output.softmax
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.collection.sum
 import com.wsr.converter.Converter
-import com.wsr.layer.output.Output
 import com.wsr.operator.div
 import com.wsr.operator.minus
 import com.wsr.operator.times
+import com.wsr.output.Output
+import com.wsr.output.TResult
 import com.wsr.reshape.broadcastToD2
 import com.wsr.reshape.toD2
 import kotlin.math.exp
+import kotlin.math.ln
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -34,7 +37,7 @@ internal class SoftmaxWithLossD2 internal constructor(
         }
     }
 
-    override fun train(input: List<IOType.D2>, label: List<IOType.D2>): List<IOType.D2> {
+    override fun train(input: List<IOType.D2>, label: List<IOType.D2>): TResult<IOType.D2> {
         val input = input / temperature
         val output = input.map { input ->
             (0 until outputX)
@@ -47,8 +50,12 @@ internal class SoftmaxWithLossD2 internal constructor(
                 }
                 .toD2()
         }
-
-        return (output - label) * label.generateMask()
+        val loss = (output * label).sum(axis = 1)
+            .flatMap { (value) -> value.map { -ln(it + 1e-7f) } }
+            .average()
+            .toFloat()
+        val delta = (output - label) * label.generateMask()
+        return TResult(loss = loss, delta = delta)
     }
 
     private fun List<IOType.D2>.generateMask(): List<IOType.D2> = when {

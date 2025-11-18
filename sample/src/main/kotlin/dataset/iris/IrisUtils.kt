@@ -4,11 +4,11 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.linear.inputD1
 import com.wsr.initializer.He
-import com.wsr.layer.output.softmax.softmaxWithLoss
 import com.wsr.layer.process.affine.affine
 import com.wsr.layer.process.bias.bias
 import com.wsr.layer.process.function.relu.reLU
 import com.wsr.optimizer.sgd.Sgd
+import com.wsr.output.softmax.softmaxWithLoss
 import maxIndex
 
 fun createIrisModel(epoc: Int) {
