@@ -3,8 +3,8 @@ package com.wsr.output.mean
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.Converter
-import com.wsr.output.Output
 import com.wsr.operator.minus
+import com.wsr.output.Output
 import com.wsr.output.TResult
 import kotlinx.serialization.Serializable
 

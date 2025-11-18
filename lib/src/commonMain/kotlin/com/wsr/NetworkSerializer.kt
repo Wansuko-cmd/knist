@@ -10,13 +10,6 @@ import com.wsr.converter.word.WordD1
 import com.wsr.converter.word.WordD2
 import com.wsr.converter.word.WordsD1
 import com.wsr.layer.Layer
-import com.wsr.output.Output
-import com.wsr.output.mean.MeanSquareD1
-import com.wsr.output.mean.MeanSquareD2
-import com.wsr.output.sigmoid.SigmoidWithLossD1
-import com.wsr.output.sigmoid.SigmoidWithLossD2
-import com.wsr.output.softmax.SoftmaxWithLossD1
-import com.wsr.output.softmax.SoftmaxWithLossD2
 import com.wsr.layer.process.affine.AffineD1
 import com.wsr.layer.process.affine.AffineD2
 import com.wsr.layer.process.attention.AttentionD2
@@ -90,6 +83,13 @@ import com.wsr.optimizer.rms.RmsPropD3
 import com.wsr.optimizer.sgd.SgdD1
 import com.wsr.optimizer.sgd.SgdD2
 import com.wsr.optimizer.sgd.SgdD3
+import com.wsr.output.Output
+import com.wsr.output.mean.MeanSquareD1
+import com.wsr.output.mean.MeanSquareD2
+import com.wsr.output.sigmoid.SigmoidWithLossD1
+import com.wsr.output.sigmoid.SigmoidWithLossD2
+import com.wsr.output.softmax.SoftmaxWithLossD1
+import com.wsr.output.softmax.SoftmaxWithLossD2
 import kotlin.reflect.KClass
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer

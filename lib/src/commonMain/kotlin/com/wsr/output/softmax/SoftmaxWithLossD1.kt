@@ -3,10 +3,10 @@ package com.wsr.output.softmax
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.Converter
-import com.wsr.output.Output
 import com.wsr.operator.div
 import com.wsr.operator.minus
 import com.wsr.operator.times
+import com.wsr.output.Output
 import com.wsr.output.TResult
 import kotlin.math.exp
 import kotlinx.serialization.Serializable

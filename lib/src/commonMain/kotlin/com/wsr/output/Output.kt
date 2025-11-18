@@ -3,10 +3,7 @@ package com.wsr.output
 import com.wsr.IOType
 import kotlinx.serialization.Serializable
 
-data class TResult<T : IOType>(
-    val loss: Float,
-    val delta: List<T>,
-)
+data class TResult<T : IOType>(val loss: Float, val delta: List<T>)
 
 @Suppress("UNCHECKED_CAST")
 sealed interface Output {
