@@ -9,6 +9,9 @@ fun List<IOType.D1>.sum(): List<Float> = map { it.sum() }
 
 fun IOType.D2.sum() = value.sum()
 
+@JvmName("sumD2s")
+fun List<IOType.D2>.sum(): List<Float> = map { it.sum() }
+
 fun IOType.D2.sum(axis: Int): IOType.D1 = when (axis) {
     0 -> {
         // 列方向の合計: 各列の要素を合計
