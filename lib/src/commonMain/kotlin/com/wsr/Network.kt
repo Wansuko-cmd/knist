@@ -43,8 +43,9 @@ class Network<I, O> internal constructor(
     fun train(input: List<I>, label: List<O>): Float {
         var loss = 0f
         val output: TrainLambda = { input: List<IOType>, label: List<IOType> ->
-            loss = output._loss(input, label)
-            output._train(input, label)
+            val output = output._train(input, label)
+            loss = output.loss
+            output.delta
         }
         trainLambda(output).invoke(inputConverter._encode(input), outputConverter._encode(label))
         return loss

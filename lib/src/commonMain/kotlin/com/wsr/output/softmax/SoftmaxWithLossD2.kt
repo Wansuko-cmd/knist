@@ -7,6 +7,7 @@ import com.wsr.output.Output
 import com.wsr.operator.div
 import com.wsr.operator.minus
 import com.wsr.operator.times
+import com.wsr.output.TResult
 import com.wsr.reshape.broadcastToD2
 import com.wsr.reshape.toD2
 import kotlin.math.exp
@@ -34,11 +35,7 @@ internal class SoftmaxWithLossD2 internal constructor(
         }
     }
 
-    override fun loss(input: List<IOType.D2>, label: List<IOType.D2>): Float {
-        TODO("Not yet implemented")
-    }
-
-    override fun train(input: List<IOType.D2>, label: List<IOType.D2>): List<IOType.D2> {
+    override fun train(input: List<IOType.D2>, label: List<IOType.D2>): TResult<IOType.D2> {
         val input = input / temperature
         val output = input.map { input ->
             (0 until outputX)
@@ -51,8 +48,9 @@ internal class SoftmaxWithLossD2 internal constructor(
                 }
                 .toD2()
         }
-
-        return (output - label) * label.generateMask()
+        val loss = TODO()
+        val delta = (output - label) * label.generateMask()
+        return TResult(loss = loss, delta = delta)
     }
 
     private fun List<IOType.D2>.generateMask(): List<IOType.D2> = when {
