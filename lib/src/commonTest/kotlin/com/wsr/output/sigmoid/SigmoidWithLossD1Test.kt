@@ -1,12 +1,13 @@
 @file:Suppress("NonAsciiCharacters")
 
-package com.wsr.layer.output.sigmoid
+package com.wsr.output.sigmoid
 
 import com.wsr.IOType
-import com.wsr.layer.output.sigmoid.SigmoidWithLossD1
+import com.wsr.output.sigmoid.SigmoidWithLossD1
 import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.text.get
 
 class SigmoidWithLossD1Test {
     @Test
@@ -44,9 +45,21 @@ class SigmoidWithLossD1Test {
         // sigmoid(2) = 1/(1+e^-2) ≈ 0.8808f
         val sig2 = 1 / (1 + exp(-2.0f))
 
-        assertEquals(expected = 1, actual = result.size)
+        // loss = -mean(sum(label * ln(sigmoid + 1e-7) + (1-label) * ln(1-sigmoid + 1e-7)))
+        // sum() sums all elements in each batch, average() averages across batches
+        // label = [1, 0, 0], sigmoid = [0.5, 0.7311, 0.8808]
+        // loss = -(sum([1*ln(0.5+ε) + 0*ln(0.5+ε), 0*ln(0.7311+ε) + 1*ln(0.2689+ε), 0*ln(0.8808+ε) + 1*ln(0.1192+ε)])) / batchSize
+        // loss = -(ln(0.5) + ln(0.2689) + ln(0.1192)) / 1
+        val epsilon = 1e-7f
+        val loss0 = 1.0f * kotlin.math.ln(sig0 + epsilon) + (1.0f - 1.0f) * kotlin.math.ln(1.0f - sig0 + epsilon)
+        val loss1 = 0.0f * kotlin.math.ln(sig1 + epsilon) + (1.0f - 0.0f) * kotlin.math.ln(1.0f - sig1 + epsilon)
+        val loss2 = 0.0f * kotlin.math.ln(sig2 + epsilon) + (1.0f - 0.0f) * kotlin.math.ln(1.0f - sig2 + epsilon)
+        val expectedLoss = -(loss0 + loss1 + loss2)
+        assertEquals(expected = expectedLoss, actual = result.loss, absoluteTolerance = 1e-5f)
+
+        assertEquals(expected = 1, actual = result.delta.size)
         // [0.5f-1, 0.7311f-0, 0.8808f-0]
-        val output = result[0] as IOType.D1
+        val output = result.delta[0] as IOType.D1
         assertEquals(expected = sig0 - 1.0f, actual = output[0], absoluteTolerance = 1e-4f)
         assertEquals(expected = sig1 - 0.0f, actual = output[1], absoluteTolerance = 1e-4f)
         assertEquals(expected = sig2 - 0.0f, actual = output[2], absoluteTolerance = 1e-4f)

@@ -2,39 +2,53 @@ package com.wsr
 
 import com.wsr.converter.Converter
 import com.wsr.layer.Layer
+import com.wsr.output.Output
 import kotlinx.serialization.Serializable
 import okio.BufferedSink
 import okio.BufferedSource
+
+private typealias TrainLambda = (List<IOType>, List<IOType>) -> List<IOType>
 
 @Serializable(with = NetworkSerializer::class)
 class Network<I, O> internal constructor(
     val inputConverter: Converter,
     val outputConverter: Converter,
     val layers: List<Layer>,
+    val output: Output,
 ) {
-    private val trainLambda: (List<IOType>, List<IOType>) -> List<IOType> =
-        layers
-            .reversed()
-            .fold({ _, label -> label }) { acc: (List<IOType>, List<IOType>) -> List<IOType>, layer: Layer ->
+    private val trainLambda: (TrainLambda) -> TrainLambda = run {
+        val initial: (TrainLambda) -> TrainLambda = { it }
+        layers.foldRight(initial) { layer: Layer, acc: (TrainLambda) -> TrainLambda ->
+            { final: TrainLambda ->
                 { input: List<IOType>, label: List<IOType> ->
-                    layer._train(input) { acc(it, label) }
+                    layer._train(input) { i -> acc(final)(i, label) }
                 }
             }
+        }
+    }
 
     @Suppress("UNCHECKED_CAST")
     fun expect(input: I): O = expect(input = listOf(input))[0]
 
     @Suppress("UNCHECKED_CAST")
     fun expect(input: List<I>): List<O> = layers
-        .fold(inputConverter._encode(input)) { acc, layer -> layer._expect(acc) }
+        .fold(inputConverter._encode(input)) { acc, process -> process._expect(acc) }
+        .let { output._expect(it) }
         .let { outputConverter._decode(it) } as List<O>
 
     fun train(input: I, label: O) {
         train(input = listOf(input), label = listOf(label))
     }
 
-    fun train(input: List<I>, label: List<O>) {
-        trainLambda(inputConverter._encode(input), outputConverter._encode(label))
+    fun train(input: List<I>, label: List<O>): Float {
+        var loss = 0f
+        val output: TrainLambda = { input: List<IOType>, label: List<IOType> ->
+            val output = output._train(input, label)
+            loss = output.loss
+            output.delta
+        }
+        trainLambda(output).invoke(inputConverter._encode(input), outputConverter._encode(label))
+        return loss
     }
 
     fun toJson(): String = NetworkSerializer.encodeToString(this)

@@ -5,10 +5,10 @@ import com.wsr.converter.linear.LinearD1
 import com.wsr.converter.linear.LinearD2
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Layer
-import com.wsr.layer.output.Output
 import com.wsr.layer.process.Process
 import com.wsr.layer.reshape.Reshape
 import com.wsr.optimizer.Optimizer
+import com.wsr.output.Output
 
 sealed interface NetworkBuilder<I, O> {
     val input: Converter
@@ -32,13 +32,15 @@ sealed interface NetworkBuilder<I, O> {
         fun addOutput(output: Output.D1) = Network<I, IOType.D1>(
             inputConverter = input,
             outputConverter = LinearD1(inputSize),
-            layers = layers + output,
+            layers = layers,
+            output = output,
         )
 
         fun <O> addOutput(output: Output.D1, converter: D1<I>.() -> Converter.D1<O>) = Network<I, O>(
             inputConverter = input,
             outputConverter = converter(),
-            layers = layers + output,
+            layers = layers,
+            output = output,
         )
 
         fun addReshape(reshape: Reshape.D1ToD2): D2<I> = D2(
@@ -72,13 +74,15 @@ sealed interface NetworkBuilder<I, O> {
         fun addOutput(output: Output.D2) = Network<I, IOType.D2>(
             inputConverter = input,
             outputConverter = LinearD2(inputX, inputY),
-            layers = layers + output,
+            layers = layers,
+            output = output,
         )
 
         fun <O> addOutput(output: Output.D2, converter: D2<I>.() -> Converter.D2<O>) = Network<I, O>(
             inputConverter = input,
             outputConverter = converter(),
-            layers = layers + output,
+            layers = layers,
+            output = output,
         )
 
         fun addReshape(reshape: Reshape.D2ToD1): D1<I> = D1(
