@@ -10,8 +10,8 @@ import com.wsr.operator.times
 import com.wsr.output.Output
 import com.wsr.output.TResult
 import kotlin.math.exp
-import kotlinx.serialization.Serializable
 import kotlin.math.ln
+import kotlinx.serialization.Serializable
 
 @Serializable
 internal class SoftmaxWithLossD1 internal constructor(
