@@ -40,6 +40,8 @@ class MeanSquareD1Test {
         // [[1-0, 2-1, 3-2], [4-3, 5-4, 6-5]] = [[1, 1, 1], [1, 1, 1]]
         val result = meanSquare._train(input, label)
 
+        // loss = 0.5 * mean(delta^2) = 0.5 * mean([1^2, 1^2, 1^2, 1^2, 1^2, 1^2]) = 0.5 * 1.0 = 0.5
+        assertEquals(expected = 0.5f, actual = result.loss)
         assertEquals(expected = 2, actual = result.delta.size)
         assertEquals(expected = IOType.d1(listOf(1.0f, 1.0f, 1.0f)), actual = result.delta[0])
         assertEquals(expected = IOType.d1(listOf(1.0f, 1.0f, 1.0f)), actual = result.delta[1])

@@ -72,6 +72,18 @@ class SoftmaxWithLossD1Test {
         val exp2 = exp(3.0f - 3.0f)
         val sum = exp0 + exp1 + exp2
 
+        // loss = -mean(ln(sum(label * softmax) + 1e-7))
+        // label = [0, 0, 1], softmax = [exp0/sum, exp1/sum, exp2/sum]
+        // sum(label * softmax) = 0*(exp0/sum) + 0*(exp1/sum) + 1*(exp2/sum) = exp2/sum
+        // loss = -ln(exp2/sum + 1e-7)
+        val epsilon = 1e-7f
+        val softmax0 = exp0 / sum
+        val softmax1 = exp1 / sum
+        val softmax2 = exp2 / sum
+        val labelDotSoftmax = 0.0f * softmax0 + 0.0f * softmax1 + 1.0f * softmax2
+        val expectedLoss = -kotlin.math.ln(labelDotSoftmax + epsilon)
+        assertEquals(expected = expectedLoss, actual = result.loss, absoluteTolerance = 1e-5f)
+
         assertEquals(expected = 1, actual = result.delta.size)
         // [exp0/sum - 0, exp1/sum - 0, exp2/sum - 1]
         val output = result.delta[0] as IOType.D1
@@ -112,6 +124,20 @@ class SoftmaxWithLossD1Test {
         val exp1 = exp(2.0f - 3.0f)
         val exp2 = exp(3.0f - 3.0f)
         val sum = exp0 + exp1 + exp2
+
+        // loss = -mean(ln(sum(label * softmax) + 1e-7))
+        // label = [0, 0, -1] (maskValue=-1なのでインデックス2はマスク扱いだが、sumには含まれる)
+        // ただし、-1は通常の値として扱われる (maskValueはdelta計算時のマスク)
+        // sum(label * softmax) = 0*(exp0/sum) + 0*(exp1/sum) + (-1)*(exp2/sum) = -(exp2/sum)
+        // loss = -ln(-(exp2/sum) + 1e-7)
+        // 注: 負の値にlnを適用すると問題があるが、実装ではそのまま計算される
+        val epsilon = 1e-7f
+        val softmax0 = exp0 / sum
+        val softmax1 = exp1 / sum
+        val softmax2 = exp2 / sum
+        val labelDotSoftmax = 0.0f * softmax0 + 0.0f * softmax1 + (-1.0f) * softmax2
+        val expectedLoss = -kotlin.math.ln(labelDotSoftmax + epsilon)
+        assertEquals(expected = expectedLoss, actual = result.loss, absoluteTolerance = 1e-5f)
 
         assertEquals(expected = 1, actual = result.delta.size)
         val output = result.delta[0] as IOType.D1

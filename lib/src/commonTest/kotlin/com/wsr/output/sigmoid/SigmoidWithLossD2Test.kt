@@ -47,6 +47,19 @@ class SigmoidWithLossD2Test {
         // sigmoid(3) = 1/(1+e^-3) ≈ 0.9526f
         val sig3 = 1 / (1 + exp(-3.0f))
 
+        // loss = -mean(sum(label * ln(sigmoid + 1e-7) + (1-label) * ln(1-sigmoid + 1e-7)))
+        // sum() sums all elements in each batch, average() averages across batches
+        // label = [[1, 0], [0, 1]], sigmoid = [[0.5, 0.7311], [0.8808, 0.9526]]
+        // loss = -(sum([1*ln(0.5+ε)+0*ln(0.5+ε), 0*ln(0.7311+ε)+1*ln(0.2689+ε), 0*ln(0.8808+ε)+1*ln(0.1192+ε), 1*ln(0.9526+ε)+0*ln(0.0474+ε)])) / batchSize
+        // loss = -(ln(0.5) + ln(0.2689) + ln(0.1192) + ln(0.9526)) / 1
+        val epsilon = 1e-7f
+        val loss00 = 1.0f * kotlin.math.ln(sig0 + epsilon) + (1.0f - 1.0f) * kotlin.math.ln(1.0f - sig0 + epsilon)
+        val loss01 = 0.0f * kotlin.math.ln(sig1 + epsilon) + (1.0f - 0.0f) * kotlin.math.ln(1.0f - sig1 + epsilon)
+        val loss10 = 0.0f * kotlin.math.ln(sig2 + epsilon) + (1.0f - 0.0f) * kotlin.math.ln(1.0f - sig2 + epsilon)
+        val loss11 = 1.0f * kotlin.math.ln(sig3 + epsilon) + (1.0f - 1.0f) * kotlin.math.ln(1.0f - sig3 + epsilon)
+        val expectedLoss = -(loss00 + loss01 + loss10 + loss11)
+        assertEquals(expected = expectedLoss, actual = result.loss, absoluteTolerance = 1e-5f)
+
         assertEquals(expected = 1, actual = result.delta.size)
         val output = result.delta[0] as IOType.D2
         assertEquals(expected = 2, actual = output.shape[0])

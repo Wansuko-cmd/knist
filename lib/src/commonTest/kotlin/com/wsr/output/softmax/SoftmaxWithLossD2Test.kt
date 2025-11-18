@@ -75,6 +75,20 @@ class SoftmaxWithLossD2Test {
         val exp2 = exp(3.0f - 3.0f)
         val sum = exp0 + exp1 + exp2
 
+        // loss = mean(flatMap(-ln(sum_axis1(label * softmax) + 1e-7)))
+        // sum(axis=1) sums across columns for each row
+        // label = [[0, 0, 1]], softmax = [[exp0/sum, exp1/sum, exp2/sum]]
+        // sum_axis1(label * softmax) = [0*(exp0/sum) + 0*(exp1/sum) + 1*(exp2/sum)] = [exp2/sum]
+        // flatMap(-ln([exp2/sum] + ε)) = [-ln(exp2/sum + ε)]
+        // loss = average([-ln(exp2/sum + ε)]) = -ln(exp2/sum + ε)
+        val epsilon = 1e-7f
+        val softmax0 = exp0 / sum
+        val softmax1 = exp1 / sum
+        val softmax2 = exp2 / sum
+        val row0Sum = 0.0f * softmax0 + 0.0f * softmax1 + 1.0f * softmax2
+        val expectedLoss = -kotlin.math.ln(row0Sum + epsilon)
+        assertEquals(expected = expectedLoss, actual = result.loss, absoluteTolerance = 1e-5f)
+
         assertEquals(expected = 1, actual = result.delta.size)
         // [[exp0/sum - 0, exp1/sum - 0, exp2/sum - 1]]
         val output = result.delta[0] as IOType.D2
@@ -123,6 +137,19 @@ class SoftmaxWithLossD2Test {
         val exp2 = exp(1.5f - 1.5f)
         val sum = exp0 + exp1 + exp2
 
+        // loss = mean(flatMap(-ln(sum_axis1(label * softmax) + 1e-7)))
+        // temperature=2.0適用後にsoftmax計算
+        // label = [[0, 0, 1]], softmax = [[exp0/sum, exp1/sum, exp2/sum]]
+        // sum_axis1(label * softmax) = [0*(exp0/sum) + 0*(exp1/sum) + 1*(exp2/sum)] = [exp2/sum]
+        // loss = -ln(exp2/sum + ε)
+        val epsilon = 1e-7f
+        val softmax0 = exp0 / sum
+        val softmax1 = exp1 / sum
+        val softmax2 = exp2 / sum
+        val row0Sum = 0.0f * softmax0 + 0.0f * softmax1 + 1.0f * softmax2
+        val expectedLoss = -kotlin.math.ln(row0Sum + epsilon)
+        assertEquals(expected = expectedLoss, actual = result.loss, absoluteTolerance = 1e-5f)
+
         assertEquals(expected = 1, actual = result.delta.size)
         val output = result.delta[0] as IOType.D2
         assertEquals(
@@ -167,34 +194,61 @@ class SoftmaxWithLossD2Test {
         val softmax = SoftmaxWithLossD2(outputX = 2, outputY = 4, temperature = 1.0f, maskValue = 3)
         val result = softmax._train(input, label)
 
-        // 行0のsoftmax計算(4要素全てで計算される)
-        val exp0 = exp(1.0f - 3.0f)
-        val exp1 = exp(2.0f - 3.0f)
-        val exp2 = exp(3.0f - 3.0f)
-        val exp3 = exp(0.0f - 3.0f)
-        val sum = exp0 + exp1 + exp2 + exp3
+        // 行0のsoftmax計算: [1, 2, 3, 0]
+        val exp00 = exp(1.0f - 3.0f)
+        val exp01 = exp(2.0f - 3.0f)
+        val exp02 = exp(3.0f - 3.0f)
+        val exp03 = exp(0.0f - 3.0f)
+        val sum0 = exp00 + exp01 + exp02 + exp03
+
+        // 行1のsoftmax計算: [4, 5, 6, 0]
+        val exp10 = exp(4.0f - 6.0f)
+        val exp11 = exp(5.0f - 6.0f)
+        val exp12 = exp(6.0f - 6.0f)
+        val exp13 = exp(0.0f - 6.0f)
+        val sum1 = exp10 + exp11 + exp12 + exp13
+
+        // loss = mean(flatMap(-ln(sum_axis1(label * softmax) + 1e-7)))
+        // label = [[0, 0, 1, 0], [0, 0, 0, 1]]
+        // 行0: クラス2が正解、sum_axis1 = 0*(exp00/sum0) + 0*(exp01/sum0) + 1*(exp02/sum0) + 0*(exp03/sum0) = exp02/sum0
+        // 行1: maskValue=3のインデックスが1.0なのでパディング行、sum_axis1 = 0+0+0+1*(exp13/sum1) = exp13/sum1
+        // 両行のlossが計算され平均される
+        // loss = average([-ln(exp02/sum0 + ε), -ln(exp13/sum1 + ε)])
+        val epsilon = 1e-7f
+        val softmax00 = exp00 / sum0
+        val softmax01 = exp01 / sum0
+        val softmax02 = exp02 / sum0
+        val softmax03 = exp03 / sum0
+        val softmax10 = exp10 / sum1
+        val softmax11 = exp11 / sum1
+        val softmax12 = exp12 / sum1
+        val softmax13 = exp13 / sum1
+        val row0Sum = 0.0f * softmax00 + 0.0f * softmax01 + 1.0f * softmax02 + 0.0f * softmax03
+        val row1Sum = 0.0f * softmax10 + 0.0f * softmax11 + 0.0f * softmax12 + 1.0f * softmax13
+        val expectedLoss = (-kotlin.math.ln(row0Sum + epsilon) + (-kotlin.math.ln(row1Sum + epsilon))) / 2.0f
+        assertEquals(expected = expectedLoss, actual = result.loss, absoluteTolerance = 1e-5f)
 
         assertEquals(expected = 1, actual = result.delta.size)
         val output = result.delta[0] as IOType.D2
 
         // 行0: 通常の勾配(パディングでない)
         assertEquals(
-            expected = (exp0 / sum - 0.0f),
+            expected = (exp00 / sum0 - 0.0f),
             actual = output[0, 0],
             absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = (exp1 / sum - 0.0f),
+            expected = (exp01 / sum0 - 0.0f),
             actual = output[0, 1],
             absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = (exp2 / sum - 1.0f),
+            expected = (exp02 / sum0 - 1.0f),
             actual = output[0, 2],
             absoluteTolerance = 1e-4f,
         )
         assertEquals(
-            expected = (exp3 / sum - 0.0f),
+            expected = (exp03 / sum0 - 0.0f),
             actual = output[0, 3],
             absoluteTolerance = 1e-4f,
         )
@@ -239,6 +293,24 @@ class SoftmaxWithLossD2Test {
         val exp11 = exp(5.0f - 6.0f)
         val exp12 = exp(6.0f - 6.0f)
         val sum1 = exp10 + exp11 + exp12
+
+        // loss = mean(flatMap(-ln(sum_axis1(label * softmax) + 1e-7)))
+        // label = [[-1, -1, 1], [0, 0, 1]], softmax = [[exp00/sum0, exp01/sum0, exp02/sum0], [exp10/sum1, exp11/sum1, exp12/sum1]]
+        // maskValue=nullなので全要素が有効、-1もラベル値として扱われる
+        // 行0: sum_axis1 = (-1)*(exp00/sum0) + (-1)*(exp01/sum0) + 1*(exp02/sum0)
+        // 行1: sum_axis1 = 0*(exp10/sum1) + 0*(exp11/sum1) + 1*(exp12/sum1) = exp12/sum1
+        // loss = average([-ln(row0_sum + ε), -ln(row1_sum + ε)])
+        val epsilon = 1e-7f
+        val softmax00 = exp00 / sum0
+        val softmax01 = exp01 / sum0
+        val softmax02 = exp02 / sum0
+        val softmax10 = exp10 / sum1
+        val softmax11 = exp11 / sum1
+        val softmax12 = exp12 / sum1
+        val row0Sum = (-1.0f) * softmax00 + (-1.0f) * softmax01 + 1.0f * softmax02
+        val row1Sum = 0.0f * softmax10 + 0.0f * softmax11 + 1.0f * softmax12
+        val expectedLoss = (-kotlin.math.ln(row0Sum + epsilon) + (-kotlin.math.ln(row1Sum + epsilon))) / 2.0f
+        assertEquals(expected = expectedLoss, actual = result.loss, absoluteTolerance = 1e-5f)
 
         assertEquals(expected = 1, actual = result.delta.size)
         val output = result.delta[0] as IOType.D2
