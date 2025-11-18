@@ -15,6 +15,7 @@ class LayerNormAxis1D2Test {
             LayerNormAxis1D2(
                 outputX = 2,
                 outputY = 2,
+                e = 1e-10f,
                 optimizer = Sgd(0.1f).d2(x = 2, y = 2),
                 weight = weight,
             )
@@ -73,6 +74,7 @@ class LayerNormAxis1D2Test {
             LayerNormAxis1D2(
                 outputX = 2,
                 outputY = 2,
+                e = 1e-10f,
                 optimizer = Sgd(0.1f).d2(x = 2, y = 2),
                 weight = weight,
             )
@@ -145,6 +147,7 @@ class LayerNormAxis1D2Test {
             LayerNormAxis1D2(
                 outputX = 2,
                 outputY = 2,
+                e = 1e-10f,
                 optimizer = Sgd(0.01f).d2(x = 2, y = 2),
                 weight = weight,
             )

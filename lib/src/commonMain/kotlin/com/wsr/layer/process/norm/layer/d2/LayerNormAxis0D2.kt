@@ -3,21 +3,20 @@ package com.wsr.layer.process.norm.layer.d2
 import com.wsr.IOType
 import com.wsr.collection.average
 import com.wsr.layer.process.Process
-import com.wsr.operator.div
-import com.wsr.operator.minus
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
+import com.wsr.power.sqrt
 import com.wsr.reshape.broadcastToD2
-import kotlin.math.pow
-import kotlin.math.sqrt
 import kotlinx.serialization.Serializable
+import kotlin.math.pow
 
 @Serializable
 class LayerNormAxis0D2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
+    private val e: Float,
     private val optimizer: Optimizer.D2,
     private var weight: IOType.D2,
 ) : Process.D2() {
@@ -28,7 +27,7 @@ class LayerNormAxis0D2 internal constructor(
         }
 
         val variance = numerator.pow(2).average(axis = 0)
-        val denominator = variance.value.map { sqrt(it + 1e-10f) }
+        val denominator = variance.sqrt(e)
 
         val normalize = IOType.d2(outputX, outputY) { i, j ->
             numerator[i, j] / denominator[j]
@@ -46,7 +45,7 @@ class LayerNormAxis0D2 internal constructor(
         }
 
         val variance = numerator.map { it.pow(2).average(axis = 0) }
-        val denominator = variance.map { it.value.map { v -> sqrt(v + 1e-10f) } }
+        val denominator = variance.map { it.sqrt(e) }
 
         val normalize = numerator.mapIndexed { index, num ->
             IOType.d2(outputX, outputY) { i, j ->

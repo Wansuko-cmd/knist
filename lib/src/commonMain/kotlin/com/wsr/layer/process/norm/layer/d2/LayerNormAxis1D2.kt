@@ -19,6 +19,7 @@ import kotlinx.serialization.Serializable
 class LayerNormAxis1D2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
+    private val e: Float,
     private val optimizer: Optimizer.D2,
     private var weight: IOType.D2,
 ) : Process.D2() {
@@ -27,7 +28,7 @@ class LayerNormAxis1D2 internal constructor(
         val numerator = input - average
 
         val variance = numerator.pow(2).average(axis = 1)
-        val denominator = variance.map { it.sqrt() }
+        val denominator = variance.map { it.sqrt(e) }
 
         val normalize = numerator / denominator
         return weight * normalize
@@ -38,7 +39,7 @@ class LayerNormAxis1D2 internal constructor(
         val numerator = input - average
 
         val variance = numerator.pow(2).average(axis = 1)
-        val denominator = variance.map { it.sqrt() }
+        val denominator = variance.map { it.sqrt(e) }
 
         val normalize = numerator / denominator
 
