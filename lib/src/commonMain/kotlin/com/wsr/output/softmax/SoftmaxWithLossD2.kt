@@ -2,6 +2,7 @@ package com.wsr.output.softmax
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.collection.sum
 import com.wsr.converter.Converter
 import com.wsr.operator.div
 import com.wsr.operator.minus
@@ -12,6 +13,7 @@ import com.wsr.reshape.broadcastToD2
 import com.wsr.reshape.toD2
 import kotlin.math.exp
 import kotlinx.serialization.Serializable
+import kotlin.math.ln
 
 @Serializable
 internal class SoftmaxWithLossD2 internal constructor(
@@ -48,7 +50,10 @@ internal class SoftmaxWithLossD2 internal constructor(
                 }
                 .toD2()
         }
-        val loss = TODO()
+        val loss = (output * label).sum(axis = 1)
+            .flatMap { (value) -> value.map { -ln(it + 1e-7f) } }
+            .average()
+            .toFloat()
         val delta = (output - label) * label.generateMask()
         return TResult(loss = loss, delta = delta)
     }
