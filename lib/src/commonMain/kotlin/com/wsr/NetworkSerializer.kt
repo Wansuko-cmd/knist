@@ -10,6 +10,7 @@ import com.wsr.converter.word.WordD1
 import com.wsr.converter.word.WordD2
 import com.wsr.converter.word.WordsD1
 import com.wsr.layer.Layer
+import com.wsr.layer.output.Output
 import com.wsr.layer.output.mean.MeanSquareD1
 import com.wsr.layer.output.mean.MeanSquareD2
 import com.wsr.layer.output.sigmoid.SigmoidWithLossD1
@@ -110,24 +111,28 @@ import okio.BufferedSource
 class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
     private val converterSerializer = json.serializersModule.serializer<Converter>()
     private val layerSerializer = json.serializersModule.serializer<List<Layer>>()
+    private val outputSerializer = json.serializersModule.serializer<Output>()
 
     override val descriptor: SerialDescriptor =
         buildClassSerialDescriptor(
             serialName = "com.wsr.Network",
             converterSerializer.descriptor,
             layerSerializer.descriptor,
+            outputSerializer.descriptor,
         )
 
     override fun serialize(encoder: Encoder, value: Network<I, O>) {
         converterSerializer.serialize(encoder, value.inputConverter)
         converterSerializer.serialize(encoder, value.outputConverter)
         layerSerializer.serialize(encoder, value.layers)
+        outputSerializer.serialize(encoder, value.output)
     }
 
     override fun deserialize(decoder: Decoder) = Network<I, O>(
         inputConverter = converterSerializer.deserialize(decoder),
         outputConverter = converterSerializer.deserialize(decoder),
         layers = layerSerializer.deserialize(decoder),
+        output = outputSerializer.deserialize(decoder),
     )
 
     companion object {
@@ -311,7 +316,9 @@ private val buildInSerializersModule = SerializersModule {
 
         // Token
         subclass(TokenEmbeddingD1ToD2::class)
+    }
 
+    polymorphic(Output::class) {
         /**
          * Output
          */
