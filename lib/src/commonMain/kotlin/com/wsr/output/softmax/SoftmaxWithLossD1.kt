@@ -1,9 +1,9 @@
-package com.wsr.layer.output.softmax
+package com.wsr.output.softmax
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.Converter
-import com.wsr.layer.output.Output
+import com.wsr.output.Output
 import com.wsr.operator.div
 import com.wsr.operator.minus
 import com.wsr.operator.times

@@ -3,6 +3,7 @@
 package com.wsr.layer.output.sigmoid
 
 import com.wsr.IOType
+import com.wsr.output.sigmoid.SigmoidWithLossD2
 import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertEquals
