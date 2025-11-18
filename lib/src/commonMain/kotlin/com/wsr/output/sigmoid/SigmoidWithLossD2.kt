@@ -10,8 +10,8 @@ import com.wsr.operator.times
 import com.wsr.output.Output
 import com.wsr.output.TResult
 import com.wsr.power.ln
-import kotlinx.serialization.Serializable
 import kotlin.math.exp
+import kotlinx.serialization.Serializable
 
 @Serializable
 internal class SigmoidWithLossD2 internal constructor(val outputX: Int, val outputY: Int) : Output.D2() {
