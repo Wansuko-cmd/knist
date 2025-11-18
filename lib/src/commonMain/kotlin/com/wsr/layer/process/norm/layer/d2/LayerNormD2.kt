@@ -21,6 +21,7 @@ import kotlinx.serialization.Serializable
 class LayerNormD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
+    private val e: Float,
     private val optimizer: Optimizer.D2,
     private var weight: IOType.D2,
 ) : Process.D2() {
@@ -29,7 +30,7 @@ class LayerNormD2 internal constructor(
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.map { sqrt(it + 1e-10f) }
+        val denominator = variance.map { sqrt(it + e) }
 
         return weight * (numerator / denominator)
     }
@@ -39,7 +40,7 @@ class LayerNormD2 internal constructor(
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.map { sqrt(it + 1e-10f) }
+        val denominator = variance.map { sqrt(it + e) }
 
         val normalize = numerator / denominator
         val output = weight * normalize
@@ -96,6 +97,7 @@ class LayerNormD2 internal constructor(
 
 fun <T> NetworkBuilder.D2<T>.layerNorm(
     axis: Int? = null,
+    e: Float = 1e-6f,
     optimizer: Optimizer = this.optimizer,
     initializer: WeightInitializer = Fixed(1f),
 ): NetworkBuilder.D2<T> {
@@ -103,6 +105,7 @@ fun <T> NetworkBuilder.D2<T>.layerNorm(
         null -> LayerNormD2(
             outputX = inputX,
             outputY = inputY,
+            e = e,
             optimizer = optimizer.d2(inputX, inputY),
             weight = initializer.d2(
                 input = listOf(inputX, inputY),
@@ -115,6 +118,7 @@ fun <T> NetworkBuilder.D2<T>.layerNorm(
         0 -> LayerNormAxis0D2(
             outputX = inputX,
             outputY = inputY,
+            e = e,
             optimizer = optimizer.d2(
                 inputX,
                 inputY,
@@ -130,6 +134,7 @@ fun <T> NetworkBuilder.D2<T>.layerNorm(
         1 -> LayerNormAxis1D2(
             outputX = inputX,
             outputY = inputY,
+            e = e,
             optimizer = optimizer.d2(
                 inputX,
                 inputY,
