@@ -16,7 +16,11 @@ internal class GlobalAverageD3ToD2(private val inputX: Int, private val inputY: 
 
     override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D2> = forward(input)
 
-    override fun train(input: List<IOType.D3>, context: Context, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D3> {
+    override fun train(
+        input: List<IOType.D3>,
+        context: Context,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D3> {
         val output = forward(input)
         val delta = calcDelta(output)
         return List(input.size) {

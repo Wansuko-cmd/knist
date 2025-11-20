@@ -13,7 +13,11 @@ internal class ReshapeD3ToD2(override val outputX: Int, override val outputY: In
         IOType.d2(shape = listOf(outputX, outputY), value = it.value)
     }
 
-    override fun train(input: List<IOType.D3>, context: Context, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D3> {
+    override fun train(
+        input: List<IOType.D3>,
+        context: Context,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D3> {
         val output = input.map {
             IOType.d2(shape = listOf(outputX, outputY), value = it.value)
         }

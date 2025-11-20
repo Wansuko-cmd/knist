@@ -12,7 +12,11 @@ internal class ReshapeD2ToD1(override val outputSize: Int) : Reshape.D2ToD1() {
 
     override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D1> = input.map { IOType.d1(it.value) }
 
-    override fun train(input: List<IOType.D2>, context: Context, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D2> {
+    override fun train(
+        input: List<IOType.D2>,
+        context: Context,
+        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
+    ): List<IOType.D2> {
         val output = input.map { IOType.d1(it.value) }
         val delta = calcDelta(output)
         return List(input.size) { i ->

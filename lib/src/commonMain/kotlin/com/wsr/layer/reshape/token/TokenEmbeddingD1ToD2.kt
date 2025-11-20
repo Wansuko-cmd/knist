@@ -22,7 +22,11 @@ class TokenEmbeddingD1ToD2 internal constructor(
 
     override fun expect(input: List<IOType.D1>, context: Context): List<IOType.D2> = forward(input)
 
-    override fun train(input: List<IOType.D1>, context: Context, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D1> {
+    override fun train(
+        input: List<IOType.D1>,
+        context: Context,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D1> {
         val output = forward(input)
         val delta = calcDelta(output)
 

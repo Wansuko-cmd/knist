@@ -37,7 +37,11 @@ class LayerNormAxis0D2 internal constructor(
         weight * normalize
     }
 
-    override fun train(input: List<IOType.D2>, context: Context, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
+    override fun train(
+        input: List<IOType.D2>,
+        context: Context,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
         val average = input.map { it.average(axis = 0) }
         val numerator = input.mapIndexed { index, data ->
             IOType.d2(outputX, outputY) { i, j ->

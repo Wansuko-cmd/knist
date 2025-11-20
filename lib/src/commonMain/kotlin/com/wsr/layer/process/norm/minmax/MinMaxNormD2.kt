@@ -28,7 +28,11 @@ class MinMaxNormD2 internal constructor(
         }
     }
 
-    override fun train(input: List<IOType.D2>, context: Context, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
+    override fun train(
+        input: List<IOType.D2>,
+        context: Context,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
         val min = input.map { it.value.min() }
         val max = input.map { it.value.max() }
 

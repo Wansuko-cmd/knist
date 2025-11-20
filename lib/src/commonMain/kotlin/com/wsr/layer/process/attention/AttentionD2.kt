@@ -14,9 +14,9 @@ import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.broadcastToD2
 import com.wsr.reshape.transpose
-import kotlinx.serialization.Serializable
 import kotlin.math.exp
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
 
 @Serializable
 class AttentionD2 internal constructor(
@@ -55,7 +55,11 @@ class AttentionD2 internal constructor(
         return concat.matMul(weightO)
     }
 
-    override fun train(input: List<IOType.D2>, context: Context, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
+    override fun train(
+        input: List<IOType.D2>,
+        context: Context,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
         val query = List(numOfHeads) { input.matMul(weightQ[it]) }
         val key = List(numOfHeads) { input.matMul(weightK[it]) }
         val value = List(numOfHeads) { input.matMul(weightV[it]) }

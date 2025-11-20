@@ -243,13 +243,19 @@ class LayerNormD3Test {
                     // input[i, j, k]を少し増やす
                     val inputPlus = input[0].value.copyOf()
                     inputPlus[i * 4 + j * 2 + k] += epsilon
-                    val outputPlus = norm._expect(listOf(IOType.Companion.d3(listOf(2, 2, 2), inputPlus.toList())), context)
+                    val outputPlus = norm._expect(
+                        listOf(IOType.Companion.d3(listOf(2, 2, 2), inputPlus.toList())),
+                        context,
+                    )
                     val lossPlus = calcLoss(outputPlus, calcDelta)
 
                     // input[i, j, k]を少し減らす
                     val inputMinus = input[0].value.copyOf()
                     inputMinus[i * 4 + j * 2 + k] -= epsilon
-                    val outputMinus = norm._expect(listOf(IOType.Companion.d3(listOf(2, 2, 2), inputMinus.toList())), context)
+                    val outputMinus = norm._expect(
+                        listOf(IOType.Companion.d3(listOf(2, 2, 2), inputMinus.toList())),
+                        context,
+                    )
                     val lossMinus = calcLoss(outputMinus, calcDelta)
 
                     // 数値微分

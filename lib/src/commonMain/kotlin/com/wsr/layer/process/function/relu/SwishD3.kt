@@ -18,7 +18,11 @@ class SwishD3 internal constructor(override val outputX: Int, override val outpu
         ) { x, y, z -> input[x, y, z] / (1 + exp(-input[x, y, z])) }
     }
 
-    override fun train(input: List<IOType.D3>, context: Context, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
+    override fun train(
+        input: List<IOType.D3>,
+        context: Context,
+        calcDelta: (List<IOType.D3>) -> List<IOType.D3>,
+    ): List<IOType.D3> {
         val sigmoid = input.map { input ->
             IOType.d3(
                 i = outputX,

@@ -22,7 +22,11 @@ class DropoutD3 internal constructor(
 
     override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D3> = input
 
-    override fun train(input: List<IOType.D3>, context: Context, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
+    override fun train(
+        input: List<IOType.D3>,
+        context: Context,
+        calcDelta: (List<IOType.D3>) -> List<IOType.D3>,
+    ): List<IOType.D3> {
         val mask = IOType.d3(
             i = outputX,
             j = outputY,

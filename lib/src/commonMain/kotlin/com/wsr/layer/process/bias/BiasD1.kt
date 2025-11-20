@@ -18,7 +18,11 @@ class BiasD1 internal constructor(
 ) : Process.D1() {
     override fun expect(input: List<IOType.D1>, context: Context): List<IOType.D1> = input + weight
 
-    override fun train(input: List<IOType.D1>, context: Context, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
+    override fun train(
+        input: List<IOType.D1>,
+        context: Context,
+        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
+    ): List<IOType.D1> {
         val output = input + weight
         val delta = calcDelta(output)
         weight = optimizer.adapt(weight = weight, dw = delta)
