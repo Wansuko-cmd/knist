@@ -3,6 +3,7 @@
 package com.wsr.layer.process.pool
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.pool.MaxPoolD2
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -22,12 +23,13 @@ class MaxPoolD2Test {
             listOf(
                 IOType.d2(1, 4) { _, y -> (y + 1).toFloat() },
             )
+        val context = Context(input)
 
         // forward実装: IOType.d2(outputX, outputY) { x, y -> ... input[x, y] ... }
         // outputY = inputSize / poolSize = 4 / 2 = 2
         // y=0のとき: max(input[0,0], input[0,1]) = max(1, 2) = 2
         // y=1のとき: max(input[0,1], input[0,2]) = max(2, 3) = 3
-        val result = maxPool._expect(input)
+        val result = maxPool._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
@@ -56,13 +58,14 @@ class MaxPoolD2Test {
                     }
                 },
             )
+        val context = Context(input)
 
         // deltaは[[2, 6]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d2(1, 2) { _, y -> if (y == 0) 2.0f else 6.0f })
         }
 
-        val result = maxPool._train(input, calcDelta)
+        val result = maxPool._train(input, context, calcDelta)
 
         // forward: y=0でmax(input[0,0], input[0,1]) = max(1, 3) = 3
         //          y=1でmax(input[0,1], input[0,2]) = max(3, 2) = 3

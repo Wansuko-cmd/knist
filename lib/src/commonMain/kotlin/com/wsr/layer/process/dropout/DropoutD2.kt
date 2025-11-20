@@ -2,6 +2,7 @@ package com.wsr.layer.process.dropout
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.nextFloat
 import com.wsr.operator.times
@@ -18,9 +19,13 @@ class DropoutD2 internal constructor(
     private val random by lazy { seed?.let { Random(it) } ?: Random }
     private val q = 1 / ratio
 
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input
+    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> = input
 
-    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
+    override fun train(
+        input: List<IOType.D2>,
+        context: Context,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
         val mask = IOType.d2(outputX, outputY) { _, _ ->
             if (random.nextFloat(0f, 1f) <= ratio) q else 0f
         }

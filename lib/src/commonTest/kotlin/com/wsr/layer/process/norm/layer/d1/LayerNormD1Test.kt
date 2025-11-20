@@ -1,6 +1,7 @@
 package com.wsr.layer.process.norm.layer.d1
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.math.sqrt
 import kotlin.test.Test
@@ -24,8 +25,9 @@ class LayerNormD1Test {
                 IOType.Companion.d1(listOf(2.0f, 4.0f)),
                 IOType.Companion.d1(listOf(1.0f, 3.0f)),
             )
+        val context = Context(input)
 
-        val result = norm._expect(input)
+        val result = norm._expect(input, context)
 
         // バッチ1: mean=3, numerator=[-1, 1], variance=1, std=sqrt(1+1e-10)
         // output = [-1, 1] / sqrt(1+1e-10)
@@ -76,6 +78,7 @@ class LayerNormD1Test {
                 IOType.Companion.d1(listOf(0.0f, 2.0f)),
                 IOType.Companion.d1(listOf(2.0f, 4.0f)),
             )
+        val context = Context(input)
 
         // deltaは全て[1, 1]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = { outputs ->
@@ -93,13 +96,13 @@ class LayerNormD1Test {
 
         // trainを実行
         try {
-            norm._train(input, calcDelta)
+            norm._train(input, context, calcDelta)
         } catch (e: NotImplementedError) {
             // dxの計算が未実装なので例外をキャッチ
         }
 
         // 更新後のexpect結果を確認（バッチ1で）
-        val afterOutput = norm._expect(listOf(input[0]))[0] as IOType.D1
+        val afterOutput = norm._expect(listOf(input[0]), context)[0] as IOType.D1
         val expectedStd = sqrt(1.0f + 1e-10f)
         // output = [2.1f, 1.9f] * [-1, 1] / std
         assertEquals(
@@ -130,6 +133,7 @@ class LayerNormD1Test {
             listOf(
                 IOType.Companion.d1(listOf(1.0f, 4.0f, 7.0f)),
             )
+        val context = Context(input)
 
         // deltaは[1, 0.5f, -1]を返す（任意の勾配）
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -144,13 +148,13 @@ class LayerNormD1Test {
             // input[i]を少し増やす
             val inputPlus = input[0].value.toMutableList()
             inputPlus[i] += epsilon
-            val outputPlus = norm._expect(listOf(IOType.Companion.d1(inputPlus)))
+            val outputPlus = norm._expect(listOf(IOType.Companion.d1(inputPlus)), context)
             val lossPlus = calcLoss(outputPlus, calcDelta)
 
             // input[i]を少し減らす
             val inputMinus = input[0].value.toMutableList()
             inputMinus[i] -= epsilon
-            val outputMinus = norm._expect(listOf(IOType.Companion.d1(inputMinus)))
+            val outputMinus = norm._expect(listOf(IOType.Companion.d1(inputMinus)), context)
             val lossMinus = calcLoss(outputMinus, calcDelta)
 
             // 数値微分
@@ -159,7 +163,7 @@ class LayerNormD1Test {
         }
 
         // 実際のdxを計算（trainメソッドから）
-        val dx = norm._train(input, calcDelta)[0] as IOType.D1
+        val dx = norm._train(input, context, calcDelta)[0] as IOType.D1
 
         // 数値微分と実際の勾配を比較
         for (i in 0 until 3) {

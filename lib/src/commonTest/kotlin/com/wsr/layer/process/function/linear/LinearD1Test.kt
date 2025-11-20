@@ -3,6 +3,7 @@
 package com.wsr.layer.process.function.linear
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.function.linear.LinearD1
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,8 +18,9 @@ class LinearD1Test {
             listOf(
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
+        val context = Context(input)
 
-        val result = linear._expect(input)
+        val result = linear._expect(input, context)
 
         assertEquals(expected = input, actual = result)
     }
@@ -32,13 +34,14 @@ class LinearD1Test {
             listOf(
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
+        val context = Context(input)
 
         // deltaは[2, 4, 6]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d1(listOf(2.0f, 4.0f, 6.0f)))
         }
 
-        val result = linear._train(input, calcDelta)
+        val result = linear._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D1

@@ -5,6 +5,7 @@ import com.wsr.NetworkBuilder
 import com.wsr.collection.sum
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
+import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
@@ -19,7 +20,7 @@ class MinMaxNormD3 internal constructor(
     private val optimizer: Optimizer.D3,
     private var weight: IOType.D3,
 ) : Process.D3() {
-    override fun expect(input: List<IOType.D3>): List<IOType.D3> {
+    override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D3> {
         val min = input.map { it.value.min() }
         val max = input.map { it.value.max() }
         return List(input.size) {
@@ -32,7 +33,11 @@ class MinMaxNormD3 internal constructor(
         }
     }
 
-    override fun train(input: List<IOType.D3>, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
+    override fun train(
+        input: List<IOType.D3>,
+        context: Context,
+        calcDelta: (List<IOType.D3>) -> List<IOType.D3>,
+    ): List<IOType.D3> {
         val min = input.map { it.value.min() }
         val max = input.map { it.value.max() }
 

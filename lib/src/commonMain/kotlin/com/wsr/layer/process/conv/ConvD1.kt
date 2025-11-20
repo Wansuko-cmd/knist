@@ -5,6 +5,7 @@ import com.wsr.NetworkBuilder
 import com.wsr.conv.convD1
 import com.wsr.conv.deConvD1
 import com.wsr.initializer.WeightInitializer
+import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.toD2
@@ -40,9 +41,14 @@ class ConvD1 internal constructor(
         }
     }
 
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.convD1(weight, stride, padding)
+    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> =
+        input.convD1(weight, stride, padding)
 
-    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
+    override fun train(
+        input: List<IOType.D2>,
+        context: Context,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
         val output = input.convD1(weight, stride, padding)
         val delta = calcDelta(output)
 

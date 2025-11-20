@@ -3,6 +3,7 @@
 package com.wsr.layer.process.position
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -19,8 +20,9 @@ class RoPED2Test {
             listOf(
                 IOType.d2(2, 4) { x, y -> (x * 4 + y + 1).toFloat() },
             )
+        val context = Context(input)
 
-        val result = rope._expect(input)
+        val result = rope._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
@@ -74,13 +76,14 @@ class RoPED2Test {
             listOf(
                 IOType.d2(2, 4) { x, y -> (x * 4 + y + 1).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[0.1f, 0.2f, 0.3f, 0.4f], [0.5f, 0.6f, 0.7f, 0.8f]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d2(2, 4) { x, y -> (x * 4 + y + 1) * 0.1f })
         }
 
-        val result = rope._train(input, calcDelta)
+        val result = rope._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2

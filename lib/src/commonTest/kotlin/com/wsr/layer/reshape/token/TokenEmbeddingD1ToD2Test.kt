@@ -3,6 +3,7 @@
 package com.wsr.layer.reshape.token
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.math.abs
 import kotlin.test.Test
@@ -39,8 +40,9 @@ class TokenEmbeddingD1ToD2Test {
         val input = listOf(
             IOType.d1(floatArrayOf(1.0f, 2.0f, 1.0f, 3.0f)),
         )
+        val context = Context(input)
 
-        val result = embedding._expect(input)
+        val result = embedding._expect(input, context)
 
         // 検証
         assertEquals(expected = 1, actual = result.size)
@@ -89,8 +91,9 @@ class TokenEmbeddingD1ToD2Test {
         val input = listOf(
             IOType.d1(floatArrayOf(1.0f, 10.0f, 2.0f)),
         )
+        val context = Context(input)
 
-        val result = embedding._expect(input)
+        val result = embedding._expect(input, context)
 
         val output = result[0] as IOType.D2
 
@@ -133,6 +136,7 @@ class TokenEmbeddingD1ToD2Test {
         val input = listOf(
             IOType.d1(floatArrayOf(1.0f, 2.0f)),
         )
+        val context = Context(input)
 
         // 勾配を返すラムダ:
         // 位置0 (token 1): [0.5f, 0.5f]
@@ -146,13 +150,13 @@ class TokenEmbeddingD1ToD2Test {
         }
 
         // 学習前の重みを取得
-        val weightBefore = embedding._expect(input)[0] as IOType.D2
+        val weightBefore = embedding._expect(input, context)[0] as IOType.D2
 
         // 学習実行
-        embedding._train(input, calcDelta)
+        embedding._train(input, context, calcDelta)
 
         // 学習後の重みを取得
-        val weightAfter = embedding._expect(input)[0] as IOType.D2
+        val weightAfter = embedding._expect(input, context)[0] as IOType.D2
 
         // Token 1の重み変化を検証
         // 初期: [2, 2], 勾配: [0.5f, 0.5f], 更新後: [2 - 0.1f*0.5f, 2 - 0.1f*0.5f] = [1.95f, 1.95f]
@@ -190,6 +194,7 @@ class TokenEmbeddingD1ToD2Test {
         val input = listOf(
             IOType.d1(floatArrayOf(1.0f, 1.0f, 2.0f)),
         )
+        val context = Context(input)
 
         // 勾配: 全て1.0
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -198,9 +203,9 @@ class TokenEmbeddingD1ToD2Test {
             )
         }
 
-        val weightBefore = embedding._expect(input)[0] as IOType.D2
-        embedding._train(input, calcDelta)
-        val weightAfter = embedding._expect(input)[0] as IOType.D2
+        val weightBefore = embedding._expect(input, context)[0] as IOType.D2
+        embedding._train(input, context, calcDelta)
+        val weightAfter = embedding._expect(input, context)[0] as IOType.D2
 
         // Token 1は2回使われているので、勾配が2倍蓄積される
         // 初期: [2, 2], 勾配合計: [2, 2], 更新後: [2 - 0.1f*2, 2 - 0.1f*2] = [1.8f, 1.8f]
@@ -239,6 +244,7 @@ class TokenEmbeddingD1ToD2Test {
         val input = listOf(
             IOType.d1(floatArrayOf(0.0f, 1.0f)),
         )
+        val context = Context(input)
 
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(
@@ -249,11 +255,11 @@ class TokenEmbeddingD1ToD2Test {
         // Token 2の初期重み (初期値: [3, 3])
         val token2BeforeValue = 3.0f // 初期化時の値
 
-        embedding._train(input, calcDelta)
+        embedding._train(input, context, calcDelta)
 
         // Token 2の重みをチェック (シーケンス長=2なので2要素の入力が必要)
         val inputForToken2 = listOf(IOType.d1(floatArrayOf(2.0f, 2.0f)))
-        val token2After = embedding._expect(inputForToken2)[0] as IOType.D2
+        val token2After = embedding._expect(inputForToken2, context)[0] as IOType.D2
 
         // Token 2は使われていないので変化しない
         assertEquals(expected = token2BeforeValue, actual = token2After[0, 0])

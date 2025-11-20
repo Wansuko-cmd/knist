@@ -3,6 +3,7 @@
 package com.wsr.layer.process.skip
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.bias.BiasD3
 import com.wsr.layer.process.function.linear.LinearD3
 import com.wsr.layer.process.skip.SkipD3
@@ -41,13 +42,14 @@ class SkipD3Test {
 
         // input = [[[10, 20, 30], [40, 50, 60]]]
         val input = listOf(IOType.d3(1, 2, 3) { x, y, z -> ((y * 3 + z + 1) * 10).toFloat() })
+        val context = Context(input)
 
         // サブ層1 (bias): [[[10, 20, 30], [40, 50, 60]]] + [[[1, 2, 3], [4, 5, 6]]]
         //               = [[[11, 22, 33], [44, 55, 66]]]
         // サブ層2 (linear): [[[11, 22, 33], [44, 55, 66]]] = [[[11, 22, 33], [44, 55, 66]]]
         // skip出力: [[[10, 20, 30], [40, 50, 60]]] + [[[11, 22, 33], [44, 55, 66]]]
         //         = [[[21, 42, 63], [84, 105, 126]]]
-        val result = skip._expect(input)
+        val result = skip._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
@@ -83,13 +85,14 @@ class SkipD3Test {
 
         // input = [[[1, 2], [3, 4]]]
         val input = listOf(IOType.d3(1, 2, 2) { x, y, z -> (y * 2 + z + 1).toFloat() })
+        val context = Context(input)
 
         // 次の層からのdelta = [[[10, 20], [30, 40]]]
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d3(1, 2, 2) { x, y, z -> ((y * 2 + z + 1) * 10).toFloat() })
         }
 
-        val result = skip._train(input, calcDelta)
+        val result = skip._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D3
@@ -134,6 +137,7 @@ class SkipD3Test {
 
         // input = [[[2], [3]], [[4], [5]]]
         val input = listOf(IOType.d3(2, 2, 1) { x, y, z -> (x * 2 + y + 2).toFloat() })
+        val context = Context(input)
 
         // 次の層からのdelta = [[[1], [2]], [[3], [4]]]
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -147,7 +151,7 @@ class SkipD3Test {
         // skip出力: [[[2], [3]], [[4], [5]]] + [[[3], [4]], [[5], [6]]]
         //         = [[[5], [7]], [[9], [11]]]
 
-        skip._train(input, calcDelta)
+        skip._train(input, context, calcDelta)
 
         // train実行後の期待値
         // bias更新: [[[1], [1]], [[1], [1]]] - 0.1f * [[[1], [2]], [[3], [4]]]
@@ -159,7 +163,7 @@ class SkipD3Test {
         //         = [[[2.9f], [3.8f]], [[4.7f], [5.6f]]]
         // skip出力: [[[2], [3]], [[4], [5]]] + [[[2.9f], [3.8f]], [[4.7f], [5.6f]]]
         //         = [[[4.9f], [6.8f]], [[8.7f], [10.6f]]]
-        val afterOutput = skip._expect(input)[0] as IOType.D3
+        val afterOutput = skip._expect(input, context)[0] as IOType.D3
 
         assertEquals(expected = 4.9f, actual = afterOutput[0, 0, 0], absoluteTolerance = 1e-6f)
         assertEquals(expected = 6.8f, actual = afterOutput[0, 1, 0], absoluteTolerance = 1e-6f)
@@ -194,11 +198,12 @@ class SkipD3Test {
                 (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
+        val context = Context(input)
 
         // main path: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         // skip path: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         // 出力: [[[2, 4], [6, 8]], [[10, 12], [14, 16]]]
-        val result = skip._expect(input)
+        val result = skip._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
@@ -239,6 +244,7 @@ class SkipD3Test {
                 (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
+        val context = Context(input)
 
         // 次の層からのdelta = [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -249,7 +255,7 @@ class SkipD3Test {
             )
         }
 
-        val result = skip._train(input, calcDelta)
+        val result = skip._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D3
@@ -294,11 +300,12 @@ class SkipD3Test {
                 (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
+        val context = Context(input)
 
         // main path: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         // skip path: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         // 出力: [[[2, 4], [6, 8]], [[10, 12], [14, 16]]]
-        val result = skip._expect(input)
+        val result = skip._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
@@ -339,6 +346,7 @@ class SkipD3Test {
                 (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
+        val context = Context(input)
 
         // 次の層からのdelta = [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -349,7 +357,7 @@ class SkipD3Test {
             )
         }
 
-        val result = skip._train(input, calcDelta)
+        val result = skip._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D3

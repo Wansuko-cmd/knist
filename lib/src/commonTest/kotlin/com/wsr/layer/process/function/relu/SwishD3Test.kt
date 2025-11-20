@@ -3,6 +3,7 @@
 package com.wsr.layer.process.function.relu
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.function.relu.SwishD3
 import kotlin.math.exp
 import kotlin.test.Test
@@ -18,8 +19,9 @@ class SwishD3Test {
             listOf(
                 IOType.d3(1, 1, 3) { _, _, z -> z.toFloat() },
             )
+        val context = Context(input)
 
-        val result = swish._expect(input)
+        val result = swish._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
@@ -41,13 +43,14 @@ class SwishD3Test {
             listOf(
                 IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() },
             )
+        val context = Context(input)
 
         // 全て1のdelta
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d3(1, 1, 2) { _, _, _ -> 1.0f })
         }
 
-        val result = swish._train(input, calcDelta)
+        val result = swish._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D3

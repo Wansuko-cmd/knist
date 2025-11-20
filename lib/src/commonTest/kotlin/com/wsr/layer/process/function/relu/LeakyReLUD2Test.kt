@@ -3,6 +3,7 @@
 package com.wsr.layer.process.function.relu
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.function.relu.LeakyReLUD2
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -24,9 +25,10 @@ class LeakyReLUD2Test {
                     }
                 },
             )
+        val context = Context(input)
 
         // [[0.01f, 0.01f], [0, 1]]
-        val result = leakyRelu._expect(input)
+        val result = leakyRelu._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
@@ -45,13 +47,14 @@ class LeakyReLUD2Test {
             listOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y - 1).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[2, 3], [4, 5]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 2).toFloat() })
         }
 
-        val result = leakyRelu._train(input, calcDelta)
+        val result = leakyRelu._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2
