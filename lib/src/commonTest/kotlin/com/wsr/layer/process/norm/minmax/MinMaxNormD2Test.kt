@@ -3,6 +3,7 @@
 package com.wsr.layer.process.norm.minmax
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.norm.minmax.MinMaxNormD2
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
@@ -26,8 +27,9 @@ class MinMaxNormD2Test {
             listOf(
                 IOType.d2(2, 2) { x, y -> listOf(listOf(1.0f, 2.0f), listOf(3.0f, 5.0f))[x][y] },
             )
+        val context = Context(input)
 
-        val result = norm._expect(input)
+        val result = norm._expect(input, context)
 
         // min=1, max=5, denominator=4
         // output = alpha * (input - min) / denominator
@@ -56,13 +58,14 @@ class MinMaxNormD2Test {
             listOf(
                 IOType.d2(2, 2) { x, y -> listOf(listOf(1.0f, 2.0f), listOf(3.0f, 5.0f))[x][y] },
             )
+        val context = Context(input)
 
         // deltaは[[1, 1], [1, 1]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d2(2, 2) { _, _ -> 1.0f })
         }
 
-        val result = norm._train(input, calcDelta)
+        val result = norm._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2
@@ -88,6 +91,7 @@ class MinMaxNormD2Test {
             listOf(
                 IOType.d2(2, 2) { x, y -> listOf(listOf(1.0f, 2.0f), listOf(3.0f, 5.0f))[x][y] },
             )
+        val context = Context(input)
 
         // deltaは[[1, 1], [1, 1]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -99,13 +103,13 @@ class MinMaxNormD2Test {
         // alpha -= 0.1f * mean * delta = [[2, 2], [2, 2]] - 0.1f * [[0*1, 0.25f*1], [0.5f*1, 1*1]]
         //                              = [[2, 2], [2, 2]] - [[0, 0.025f], [0.05f, 0.1f]]
         //                              = [[2, 1.975f], [1.95f, 1.9f]]
-        norm._train(input, calcDelta)
+        norm._train(input, context, calcDelta)
 
         // 更新後のexpect結果
         // output = alpha * (input - min) / (max - min)
         //        = [[2, 1.975f], [1.95f, 1.9f]] * [[0, 0.25f], [0.5f, 1]]
         //        = [[0, 0.49375f], [0.975f, 1.9f]]
-        val afterOutput = norm._expect(input)[0] as IOType.D2
+        val afterOutput = norm._expect(input, context)[0] as IOType.D2
 
         assertEquals(expected = 0.0f, actual = afterOutput[0, 0], absoluteTolerance = 1e-6f)
         assertEquals(expected = 0.49375f, actual = afterOutput[0, 1], absoluteTolerance = 1e-6f)

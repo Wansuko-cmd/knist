@@ -3,6 +3,7 @@
 package com.wsr.layer.reshape.reshape
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.reshape.reshape.ReshapeD3ToD1
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,8 +18,9 @@ class ReshapeD3ToD1Test {
             listOf(
                 IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
+        val context = Context(input)
 
-        val result = reshape._expect(input)
+        val result = reshape._expect(input, context)
 
         // [1, 2, 3, 4, 5, 6, 7, 8]
         assertEquals(expected = 1, actual = result.size)
@@ -42,13 +44,14 @@ class ReshapeD3ToD1Test {
             listOf(
                 IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[2, 4, 6, 8, 10, 12, 14, 16]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d1((1..8).map { it * 2.0f }))
         }
 
-        val result = reshape._train(input, calcDelta)
+        val result = reshape._train(input, context, calcDelta)
 
         // [[[2, 4], [6, 8]], [[10, 12], [14, 16]]]
         assertEquals(expected = 1, actual = result.size)

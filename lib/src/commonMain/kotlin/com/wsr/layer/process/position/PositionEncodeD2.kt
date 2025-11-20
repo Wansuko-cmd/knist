@@ -2,6 +2,7 @@ package com.wsr.layer.process.position
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
 import kotlin.math.cos
@@ -25,11 +26,15 @@ class PositionEncodeD2 internal constructor(
         }
     }
 
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.map { input ->
+    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> = input.map { input ->
         input + position
     }
 
-    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
+    override fun train(
+        input: List<IOType.D2>,
+        context: Context,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
         val output = input.map { input -> input + position }
         return calcDelta(output)
     }

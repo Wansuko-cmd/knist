@@ -3,6 +3,7 @@
 package com.wsr.layer.process.affine
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.affine.AffineD1
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
@@ -30,12 +31,13 @@ class AffineD1Test {
             listOf(
                 IOType.d1(listOf(1.0f, 2.0f)),
             )
+        val context = Context(input)
 
         // weight.transpose() dot input
         // [[1, 4],   [[1],     [[1*1+4*2],   [[9],
         //  [2, 5],    [2]]  =   [2*1+5*2],  =  [12],
         //  [3, 6]]              [3*1+6*2]]     [15]]
-        val result = affine._expect(input)
+        val result = affine._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D1
@@ -64,13 +66,14 @@ class AffineD1Test {
             listOf(
                 IOType.d1(listOf(1.0f, 2.0f)),
             )
+        val context = Context(input)
 
         // deltaは[1, 1]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d1(listOf(1.0f, 1.0f)))
         }
 
-        val result = affine._train(input, calcDelta)
+        val result = affine._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D1
@@ -99,6 +102,7 @@ class AffineD1Test {
             listOf(
                 IOType.d1(listOf(1.0f, 2.0f)),
             )
+        val context = Context(input)
 
         // deltaは[1, 1]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -109,14 +113,14 @@ class AffineD1Test {
         // dw = input.transpose() dot delta = [[1], [2]] dot [[1, 1]] = [[1, 1], [2, 2]]
         // weight -= 0.1f / 1 * dw = [[1, 2], [3, 4]] - [[0.1f, 0.1f], [0.2f, 0.2f]]
         //                         = [[0.9f, 1.9f], [2.8f, 3.8f]]
-        affine._train(input, calcDelta)
+        affine._train(input, context, calcDelta)
 
         // 更新後のexpect結果
         // output = weight.transpose() dot input
         //        = [[0.9f, 2.8f], [1.9f, 3.8f]] dot [[1], [2]]
         //        = [[0.9f*1 + 2.8f*2], [1.9f*1 + 3.8f*2]]
         //        = [[6.5f], [9.5f]]
-        val afterOutput = affine._expect(input)[0] as IOType.D1
+        val afterOutput = affine._expect(input, context)[0] as IOType.D1
 
         assertEquals(
             expected = 6.5f,

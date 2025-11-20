@@ -4,12 +4,13 @@ package com.wsr.layer.process.skip
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.layer.Context
 import com.wsr.layer.Layer
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
 import kotlinx.serialization.Serializable
 
-private typealias CALC_DELTA_D2 = (List<IOType.D2>) -> List<IOType.D2>
+private typealias CALC_DELTA_D2 = (input: List<IOType.D2>, context: Context) -> List<IOType.D2>
 
 @Serializable
 class SkipD2 internal constructor(
@@ -72,32 +73,36 @@ class SkipD2 internal constructor(
         }
     }
 
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> {
-        val main = layers.fold(input) { acc, layer -> layer._expect(acc) as List<IOType.D2> }
+    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> {
+        val main = layers.fold(input) { acc, layer -> layer._expect(acc, context) as List<IOType.D2> }
         val skip = input.map(resizeToOutput)
         return main + skip
     }
 
-    private val trainChain: ((List<IOType.D2>) -> List<IOType.D2>) -> CALC_DELTA_D2 by lazy {
+    private val trainChain: (CALC_DELTA_D2) -> CALC_DELTA_D2 by lazy {
         layers.foldRight(
             initial = { final: CALC_DELTA_D2 -> final },
         ) { layer, acc ->
             { final ->
-                { input ->
-                    layer._train(input) { acc(final)(it as List<IOType.D2>) } as List<IOType.D2>
+                { input, context ->
+                    layer._train(input, context) { acc(final)(it as List<IOType.D2>, context) } as List<IOType.D2>
                 }
             }
         }
     }
 
-    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
+    override fun train(
+        input: List<IOType.D2>,
+        context: Context,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
         var skipDelta: List<IOType.D2> = emptyList()
 
-        val final: CALC_DELTA_D2 = { acc ->
+        val final: CALC_DELTA_D2 = { acc, context ->
             val output = input.map(resizeToOutput) + acc
             calcDelta(output).also { skipDelta = it }
         }
-        val mainDelta = trainChain(final)(input)
+        val mainDelta = trainChain(final)(input, context)
 
         return mainDelta + skipDelta.map(resizeToInput)
     }

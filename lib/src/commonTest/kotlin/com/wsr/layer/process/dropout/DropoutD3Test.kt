@@ -3,6 +3,7 @@
 package com.wsr.layer.process.dropout
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.dropout.DropoutD3
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,8 +19,9 @@ class DropoutD3Test {
             listOf(
                 IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
+        val context = Context(input)
 
-        val result = dropout._expect(input)
+        val result = dropout._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
@@ -43,13 +45,14 @@ class DropoutD3Test {
             listOf(
                 IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
+        val context = Context(input)
 
         // 全て1のdelta
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d3(2, 2, 2) { _, _, _ -> 1.0f })
         }
 
-        val result = dropout._train(input, calcDelta)
+        val result = dropout._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D3

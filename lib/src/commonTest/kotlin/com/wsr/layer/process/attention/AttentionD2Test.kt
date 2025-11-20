@@ -3,6 +3,7 @@
 package com.wsr.layer.process.attention
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,8 +44,14 @@ class AttentionD2Test {
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() },
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 2).toFloat() },
         )
+        // Contextには元の入力(ダミーのD1)を渡す
+        val originalInput = listOf(
+            IOType.d1(channel) { it.toFloat() },
+            IOType.d1(channel) { it.toFloat() },
+        )
+        val context = Context(originalInput)
 
-        val result = attention._expect(input)
+        val result = attention._expect(input, context)
 
         // 出力形状の確認
         assertEquals(expected = 2, actual = result.size)
@@ -85,13 +92,15 @@ class AttentionD2Test {
         val input = listOf(
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
         )
+        val originalInput = listOf(IOType.d1(channel) { it.toFloat() })
+        val context = Context(originalInput)
 
         // deltaは全て1.0を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d2(channel, inputY) { _, _ -> 1.0f })
         }
 
-        val result = attention._train(input, calcDelta)
+        val result = attention._train(input, context, calcDelta)
 
         // 入力への勾配の形状を確認
         assertEquals(expected = 1, actual = result.size)
@@ -132,9 +141,11 @@ class AttentionD2Test {
         val input = listOf(
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.01f },
         )
+        val originalInput = listOf(IOType.d1(channel) { it.toFloat() })
+        val context = Context(originalInput)
 
         // 更新前の出力を保存
-        val beforeOutput = attention._expect(input)[0] as IOType.D2
+        val beforeOutput = attention._expect(input, context)[0] as IOType.D2
         val beforeValue = beforeOutput[0, 0]
 
         // deltaは全て1.0を返す
@@ -143,10 +154,10 @@ class AttentionD2Test {
         }
 
         // 訓練を実行（重みが更新される）
-        attention._train(input, calcDelta)
+        attention._train(input, context, calcDelta)
 
         // 更新後の出力
-        val afterOutput = attention._expect(input)[0] as IOType.D2
+        val afterOutput = attention._expect(input, context)[0] as IOType.D2
         val afterValue = afterOutput[0, 0]
 
         // 重みが更新されたことを確認（出力が変わっている）
@@ -188,8 +199,10 @@ class AttentionD2Test {
         val input = listOf(
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
         )
+        val originalInput = listOf(IOType.d1(channel) { it.toFloat() })
+        val context = Context(originalInput)
 
-        val result = attention._expect(input)
+        val result = attention._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
@@ -229,8 +242,10 @@ class AttentionD2Test {
         val input = listOf(
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
         )
+        val originalInput = listOf(IOType.d1(channel) { it.toFloat() })
+        val context = Context(originalInput)
 
-        val result = attention._expect(input)
+        val result = attention._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2

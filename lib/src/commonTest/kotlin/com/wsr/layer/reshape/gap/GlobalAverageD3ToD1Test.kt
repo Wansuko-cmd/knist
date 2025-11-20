@@ -3,6 +3,7 @@
 package com.wsr.layer.reshape.gap
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.reshape.gad.GlobalAverageD3ToD1
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,8 +18,9 @@ class GlobalAverageD3ToD1Test {
             listOf(
                 IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
+        val context = Context(input)
 
-        val result = reshape._expect(input)
+        val result = reshape._expect(input, context)
 
         // [average([1, 2, 3, 4]), average([5, 6, 7, 8])] = [2.5f, 6.5f]
         assertEquals(expected = 1, actual = result.size)
@@ -36,13 +38,14 @@ class GlobalAverageD3ToD1Test {
             listOf(
                 IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[8, 16]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d1(listOf(8.0f, 16.0f)))
         }
 
-        val result = reshape._train(input, calcDelta)
+        val result = reshape._train(input, context, calcDelta)
 
         // delta / (inputY * inputZ) = [8/(2*2), 16/(2*2)] = [2, 4]
         // [[[2, 2], [2, 2]], [[4, 4], [4, 4]]]

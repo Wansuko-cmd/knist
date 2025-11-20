@@ -5,6 +5,7 @@ import com.wsr.NetworkBuilder
 import com.wsr.collection.sum
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
+import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
@@ -18,7 +19,7 @@ class MinMaxNormD2 internal constructor(
     private val optimizer: Optimizer.D2,
     private var weight: IOType.D2,
 ) : Process.D2() {
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> {
+    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> {
         val min = input.map { it.value.min() }
         val max = input.map { it.value.max() }
         return List(input.size) {
@@ -27,7 +28,11 @@ class MinMaxNormD2 internal constructor(
         }
     }
 
-    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
+    override fun train(
+        input: List<IOType.D2>,
+        context: Context,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
         val min = input.map { it.value.min() }
         val max = input.map { it.value.max() }
 

@@ -3,6 +3,7 @@
 package com.wsr.layer.process.conv
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.conv.ConvD1
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
@@ -42,8 +43,9 @@ class ConvD1Test {
             listOf(
                 IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
             )
+        val context = Context(input)
 
-        val result = conv._expect(input)
+        val result = conv._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
@@ -78,13 +80,14 @@ class ConvD1Test {
             listOf(
                 IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
             )
+        val context = Context(input)
 
         val calcDelta: (List<IOType>) -> List<IOType> = { output ->
             val out = output[0] as IOType.D2
             listOf(IOType.d2(out.shape) { f, i -> (f * 2 + i + 1).toFloat() })
         }
 
-        val result = conv._train(input, calcDelta)
+        val result = conv._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2
@@ -119,6 +122,7 @@ class ConvD1Test {
             listOf(
                 IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
             )
+        val context = Context(input)
 
         val calcDelta: (List<IOType>) -> List<IOType> = { output ->
             val out = output[0] as IOType.D2
@@ -126,11 +130,11 @@ class ConvD1Test {
         }
 
         // trainで重みを更新
-        conv._train(input, calcDelta)
+        conv._train(input, context, calcDelta)
 
         // 更新後のexpect結果
         // afterOutput = D2(value=[20.8f, 26.4f, 48.0f, 64.0f], shape=[2, 2])
-        val afterOutput = conv._expect(input)[0] as IOType.D2
+        val afterOutput = conv._expect(input, context)[0] as IOType.D2
 
         assertEquals(expected = 20.8f, actual = afterOutput[0, 0], absoluteTolerance = 1e-5f)
         assertEquals(expected = 26.4f, actual = afterOutput[0, 1], absoluteTolerance = 1e-5f)

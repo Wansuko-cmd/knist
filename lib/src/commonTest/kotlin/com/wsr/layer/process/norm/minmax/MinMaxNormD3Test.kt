@@ -3,6 +3,7 @@
 package com.wsr.layer.process.norm.minmax
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.norm.minmax.MinMaxNormD3
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
@@ -27,8 +28,9 @@ class MinMaxNormD3Test {
             listOf(
                 IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
+        val context = Context(input)
 
-        val result = norm._expect(input)
+        val result = norm._expect(input, context)
 
         // min=1, max=8, denominator=7
         // output = alpha * (input - min) / denominator
@@ -62,13 +64,14 @@ class MinMaxNormD3Test {
             listOf(
                 IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[[1, 1], [1, 1]], [[1, 1], [1, 1]]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d3(2, 2, 2) { _, _, _ -> 1.0f })
         }
 
-        val result = norm._train(input, calcDelta)
+        val result = norm._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D3
@@ -96,6 +99,7 @@ class MinMaxNormD3Test {
             listOf(
                 IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[[1, 1], [1, 1]], [[1, 1], [1, 1]]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -108,11 +112,11 @@ class MinMaxNormD3Test {
         //        = [[[2, 2], [2, 2]], [[2, 2], [2, 2]]] - 0.1f * [[[0*1, 1/7*1], [2/7*1, 3/7*1]], [[4/7*1, 5/7*1], [6/7*1, 1*1]]]
         //        = [[[2, 2], [2, 2]], [[2, 2], [2, 2]]] - [[[0, 0.014286f], [0.028571f, 0.042857f]], [[0.057143f, 0.071429f], [0.085714f, 0.1f]]]
         //        = [[[2, 1.985714f], [1.971429f, 1.957143f]], [[1.942857f, 1.928571f], [1.914286f, 1.9f]]]
-        norm._train(input, calcDelta)
+        norm._train(input, context, calcDelta)
 
         // 更新後のexpect結果
         // output = alpha * (input - min) / (max - min)
-        val afterOutput = norm._expect(input)[0] as IOType.D3
+        val afterOutput = norm._expect(input, context)[0] as IOType.D3
 
         assertEquals(expected = 0.0f, actual = afterOutput[0, 0, 0], absoluteTolerance = 1e-6f)
         assertEquals(

@@ -3,6 +3,7 @@ package com.wsr.layer.reshape.reshape
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.NetworkBuilder.D1
+import com.wsr.layer.Context
 import com.wsr.layer.reshape.Reshape
 import kotlinx.serialization.Serializable
 
@@ -10,11 +11,15 @@ import kotlinx.serialization.Serializable
 internal class ReshapeD3ToD1(override val outputSize: Int) : Reshape.D3ToD1() {
     constructor(inputX: Int, inputY: Int, inputZ: Int) : this(outputSize = inputX * inputY * inputZ)
 
-    override fun expect(input: List<IOType.D3>): List<IOType.D1> = input.map {
+    override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D1> = input.map {
         IOType.d1(value = it.value)
     }
 
-    override fun train(input: List<IOType.D3>, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D3> {
+    override fun train(
+        input: List<IOType.D3>,
+        context: Context,
+        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
+    ): List<IOType.D3> {
         val output = input.map { IOType.d1(value = it.value) }
         val delta = calcDelta(output)
         return List(input.size) { i ->
