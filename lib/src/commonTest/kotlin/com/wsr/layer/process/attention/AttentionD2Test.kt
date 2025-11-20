@@ -44,7 +44,12 @@ class AttentionD2Test {
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() },
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 2).toFloat() },
         )
-        val context = Context(input)
+        // Contextには元の入力(ダミーのD1)を渡す
+        val originalInput = listOf(
+            IOType.d1(channel) { it.toFloat() },
+            IOType.d1(channel) { it.toFloat() },
+        )
+        val context = Context(originalInput)
 
         val result = attention._expect(input, context)
 
@@ -87,7 +92,8 @@ class AttentionD2Test {
         val input = listOf(
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
         )
-        val context = Context(input)
+        val originalInput = listOf(IOType.d1(channel) { it.toFloat() })
+        val context = Context(originalInput)
 
         // deltaは全て1.0を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -135,7 +141,8 @@ class AttentionD2Test {
         val input = listOf(
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.01f },
         )
-        val context = Context(input)
+        val originalInput = listOf(IOType.d1(channel) { it.toFloat() })
+        val context = Context(originalInput)
 
         // 更新前の出力を保存
         val beforeOutput = attention._expect(input, context)[0] as IOType.D2
@@ -192,7 +199,8 @@ class AttentionD2Test {
         val input = listOf(
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
         )
-        val context = Context(input)
+        val originalInput = listOf(IOType.d1(channel) { it.toFloat() })
+        val context = Context(originalInput)
 
         val result = attention._expect(input, context)
 
@@ -234,7 +242,8 @@ class AttentionD2Test {
         val input = listOf(
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
         )
-        val context = Context(input)
+        val originalInput = listOf(IOType.d1(channel) { it.toFloat() })
+        val context = Context(originalInput)
 
         val result = attention._expect(input, context)
 
