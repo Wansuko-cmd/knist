@@ -1,7 +1,7 @@
 [versions]
 # Library Info
 lib-group-id = "io.github.bugdog24"
-lib-version = "0.0.17-alpha01"
+lib-version = "0.0.17-alpha02"
 
 # kotlin
 kotlin = "2.2.20"
