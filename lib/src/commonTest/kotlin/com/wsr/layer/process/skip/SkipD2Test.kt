@@ -3,6 +3,7 @@
 package com.wsr.layer.process.skip
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.affine.AffineD2
 import com.wsr.layer.process.bias.BiasD2
 import com.wsr.layer.process.skip.SkipD2
@@ -39,11 +40,12 @@ class SkipD2Test {
 
         // input = [[10, 20]]
         val input = listOf(IOType.d2(1, 2) { x, y -> if (x == 0 && y == 0) 10.0f else 20.0f })
+        val context = Context(input)
 
         // サブ層1 (bias): [[10, 20]] + [[1, 2]] = [[11, 22]]
         // サブ層2 (affine): 恒等変換 [[11, 22]] = [[11, 22]]
         // skip出力: [[10, 20]] + [[11, 22]] = [[21, 42]]
-        val result = skip._expect(input)
+        val result = skip._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
@@ -72,13 +74,14 @@ class SkipD2Test {
 
         // input = [[1, 2, 3]]
         val input = listOf(IOType.d2(1, 3) { x, y -> (y + 1).toFloat() })
+        val context = Context(input)
 
         // 次の層からのdelta = [[10, 20, 30]]
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d2(1, 3) { x, y -> ((y + 1) * 10).toFloat() })
         }
 
-        val result = skip._train(input, calcDelta)
+        val result = skip._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2
@@ -121,6 +124,7 @@ class SkipD2Test {
 
         // input = [[2, 3]]
         val input = listOf(IOType.d2(1, 2) { x, y -> if (x == 0 && y == 0) 2.0f else 3.0f })
+        val context = Context(input)
 
         // 次の層からのdelta = [[1, 2]]
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -132,7 +136,7 @@ class SkipD2Test {
         // bias出力: [[2, 3]] + [[1, 1]] = [[3, 4]]
         // skip出力: [[2, 3]] + [[3, 4]] = [[5, 7]]
 
-        skip._train(input, calcDelta)
+        skip._train(input, context, calcDelta)
 
         // train実行後の期待値
         // bias更新: [[1, 1]] - 0.1f * [[1, 2]] = [[0.9f, 0.8f]]
@@ -146,7 +150,7 @@ class SkipD2Test {
         // affine出力: weight^T · input = [[0.8f, -0.3f], [-0.4f, 0.4f]] · [[2], [3]] = [[0.7f], [0.4f]]
         // bias出力: [[0.7f, 0.4f]] + [[0.9f, 0.8f]] = [[1.6f, 1.2f]]
         // skip出力: [[2, 3]] + [[1.6f, 1.2f]] = [[3.6f, 4.2f]]
-        val afterOutput = skip._expect(input)[0] as IOType.D2
+        val afterOutput = skip._expect(input, context)[0] as IOType.D2
 
         assertEquals(expected = 3.6f, actual = afterOutput[0, 0], absoluteTolerance = 1e-6f)
         assertEquals(expected = 4.2f, actual = afterOutput[0, 1], absoluteTolerance = 1e-6f)
@@ -183,11 +187,12 @@ class SkipD2Test {
                 }
             },
         )
+        val context = Context(input)
 
         // main path: Bias([[0,0,0],[0,0,0],[0,0,0]]) -> [[1,2,0],[3,4,0],[0,0,0]]
         // skip path: [[1,2,0],[3,4,0],[0,0,0]]
         // 出力: [[2,4,0],[6,8,0],[0,0,0]]
-        val result = skip._expect(input)
+        val result = skip._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
@@ -232,6 +237,7 @@ class SkipD2Test {
                 }
             },
         )
+        val context = Context(input)
 
         // 次の層からのdelta = [[10,20,30],[40,50,60],[70,80,90]]
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -242,7 +248,7 @@ class SkipD2Test {
             )
         }
 
-        val result = skip._train(input, calcDelta)
+        val result = skip._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2
@@ -320,11 +326,12 @@ class SkipD2Test {
                 }
             },
         )
+        val context = Context(input)
 
         // main path: [[3.5f, 5.5f], [11.5f, 13.5f]]
         // skip path: [[3.5f, 5.5f], [11.5f, 13.5f]]
         // 出力: [[7.0f, 11.0f], [23.0f, 27.0f]]
-        val result = skip2._expect(input2)
+        val result = skip2._expect(input2, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
@@ -364,6 +371,7 @@ class SkipD2Test {
                 }
             },
         )
+        val context = Context(input)
 
         // 次の層からのdelta = [[40, 80], [120, 160]]
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -374,7 +382,7 @@ class SkipD2Test {
             )
         }
 
-        val result = skip._train(input, calcDelta)
+        val result = skip._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2

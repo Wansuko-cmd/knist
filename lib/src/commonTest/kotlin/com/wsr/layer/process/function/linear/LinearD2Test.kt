@@ -3,6 +3,7 @@
 package com.wsr.layer.process.function.linear
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.function.linear.LinearD2
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,8 +18,9 @@ class LinearD2Test {
             listOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
+        val context = Context(input)
 
-        val result = linear._expect(input)
+        val result = linear._expect(input, context)
 
         assertEquals(expected = input, actual = result)
     }
@@ -32,13 +34,14 @@ class LinearD2Test {
             listOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[2, 4], [6, 8]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0f })
         }
 
-        val result = linear._train(input, calcDelta)
+        val result = linear._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2

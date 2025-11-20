@@ -3,6 +3,7 @@
 package com.wsr.layer.process.function.relu
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.function.relu.SwishD2
 import kotlin.math.exp
 import kotlin.test.Test
@@ -18,8 +19,9 @@ class SwishD2Test {
             listOf(
                 IOType.d2(1, 3) { _, y -> y.toFloat() },
             )
+        val context = Context(input)
 
-        val result = swish._expect(input)
+        val result = swish._expect(input, context)
 
         // swish(x) = x / (1 + e^-x) = x * sigmoid(x)
         val sig0 = 1 / (1 + exp(-0.0f))
@@ -42,13 +44,14 @@ class SwishD2Test {
             listOf(
                 IOType.d2(1, 2) { _, y -> y.toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[1, 1]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d2(1, 2) { _, _ -> 1.0f })
         }
 
-        val result = swish._train(input, calcDelta)
+        val result = swish._train(input, context, calcDelta)
 
         // sigmoid = 1 / (1 + e^-x)
         val sig0 = 1 / (1 + exp(-0.0f))

@@ -3,6 +3,7 @@
 package com.wsr.layer.process.dropout
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.dropout.DropoutD1
 import com.wsr.nextFloat
 import kotlin.random.Random
@@ -24,9 +25,10 @@ class DropoutD1Test {
             listOf(
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
+        val context = Context(input)
 
         // Inverted Dropoutのexpect(推論時)では入力をそのまま返す
-        val result = dropout._expect(input)
+        val result = dropout._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D1
@@ -49,6 +51,7 @@ class DropoutD1Test {
             listOf(
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
+        val context = Context(input)
 
         // deltaは[2, 4, 6]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -61,7 +64,7 @@ class DropoutD1Test {
         val q = 1.0f / 0.5f // 2.0f
         val expectedMask = List(3) { if (testRandom.nextFloat(0f, 1f) <= 0.5f) q else 0.0f }
 
-        val result = dropout._train(input, calcDelta)
+        val result = dropout._train(input, context, calcDelta)
 
         // maskに基づいてdeltaが乗算される
         assertEquals(expected = 1, actual = result.size)
