@@ -153,12 +153,9 @@ class AttentionD2 internal constructor(
     } else {
         input.map { input ->
             val input = input as IOType.D1
-            val paddingMask = IOType.d1(outputX) { if (input[it] == maskValue?.toFloat()) -1e9f else 0f }
-
-            val keyMask = paddingMask.broadcastToD2(axis = 1, outputX)
-            val queryMask = paddingMask.broadcastToD2(axis = 0, outputX)
-
-            keyMask + queryMask
+            IOType
+                .d1(outputX) { if (input[it] == maskValue.toFloat()) -1e9f else 0f }
+                .broadcastToD2(axis = 1, outputX)
         }
     }
 }
