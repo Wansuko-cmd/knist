@@ -2,6 +2,7 @@ package com.wsr.layer.process.position
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import kotlin.math.cos
 import kotlin.math.pow
@@ -26,9 +27,9 @@ class RoPED2 internal constructor(
         IOType.d2(outputX, outputY / 2) { x, y -> sin(x * theta[y]) }
     }
 
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input.applyRoPE()
+    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> = input.applyRoPE()
 
-    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
+    override fun train(input: List<IOType.D2>, context: Context, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
         val output = input.applyRoPE()
         val delta = calcDelta(output)
         return delta.applyRoPE()

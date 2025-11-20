@@ -3,6 +3,7 @@ package com.wsr.layer.reshape.token
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.initializer.WeightInitializer
+import com.wsr.layer.Context
 import com.wsr.layer.reshape.Reshape
 import com.wsr.operator.div
 import com.wsr.operator.plus
@@ -19,9 +20,9 @@ class TokenEmbeddingD1ToD2 internal constructor(
     private var weight: IOType.D2,
 ) : Reshape.D1ToD2() {
 
-    override fun expect(input: List<IOType.D1>): List<IOType.D2> = forward(input)
+    override fun expect(input: List<IOType.D1>, context: Context): List<IOType.D2> = forward(input)
 
-    override fun train(input: List<IOType.D1>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D1> {
+    override fun train(input: List<IOType.D1>, context: Context, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D1> {
         val output = forward(input)
         val delta = calcDelta(output)
 

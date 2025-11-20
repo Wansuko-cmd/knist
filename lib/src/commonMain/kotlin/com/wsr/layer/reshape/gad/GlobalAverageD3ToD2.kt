@@ -2,6 +2,7 @@ package com.wsr.layer.reshape.gad
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.layer.Context
 import com.wsr.layer.reshape.Reshape
 import com.wsr.operator.div
 import com.wsr.reshape.transpose
@@ -13,9 +14,9 @@ internal class GlobalAverageD3ToD2(private val inputX: Int, private val inputY: 
     override val outputX: Int = inputY
     override val outputY: Int = inputZ
 
-    override fun expect(input: List<IOType.D3>): List<IOType.D2> = forward(input)
+    override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D2> = forward(input)
 
-    override fun train(input: List<IOType.D3>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D3> {
+    override fun train(input: List<IOType.D3>, context: Context, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D3> {
         val output = forward(input)
         val delta = calcDelta(output)
         return List(input.size) {

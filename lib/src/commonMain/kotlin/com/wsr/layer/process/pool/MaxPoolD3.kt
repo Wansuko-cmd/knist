@@ -2,6 +2,7 @@ package com.wsr.layer.process.pool
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import kotlinx.serialization.Serializable
 
@@ -25,9 +26,9 @@ class MaxPoolD3 internal constructor(val poolSize: Int, val channel: Int, val in
         }
     }
 
-    override fun expect(input: List<IOType.D3>): List<IOType.D3> = input.map(::forward)
+    override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D3> = input.map(::forward)
 
-    override fun train(input: List<IOType.D3>, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
+    override fun train(input: List<IOType.D3>, context: Context, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
         val output = input.map(::forward)
         val delta = calcDelta(output)
         return List(input.size) { index ->

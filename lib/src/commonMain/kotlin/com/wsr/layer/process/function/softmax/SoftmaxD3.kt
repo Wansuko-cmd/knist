@@ -3,6 +3,7 @@ package com.wsr.layer.process.function.softmax
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.collection.sum
+import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import kotlin.math.exp
 import kotlinx.serialization.Serializable
@@ -10,9 +11,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 class SoftmaxD3 internal constructor(override val outputX: Int, override val outputY: Int, override val outputZ: Int) :
     Process.D3() {
-    override fun expect(input: List<IOType.D3>): List<IOType.D3> = forward(input)
+    override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D3> = forward(input)
 
-    override fun train(input: List<IOType.D3>, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
+    override fun train(input: List<IOType.D3>, context: Context, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
         val output = forward(input)
         val delta = calcDelta(output)
         return List(input.size) { i ->

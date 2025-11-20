@@ -6,6 +6,7 @@ import com.wsr.collection.max
 import com.wsr.collection.sum
 import com.wsr.dot.matmul.matMul
 import com.wsr.initializer.WeightInitializer
+import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
 import com.wsr.operator.plus
@@ -32,7 +33,7 @@ class AttentionD2 internal constructor(
     private val optimizerO: Optimizer.D2,
 ) : Process.D2() {
     private val mask by lazy { IOType.d2(outputX, outputX) { x, y -> if (x < y) -1e9f else 0f } }
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> {
+    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> {
         val heads = List(numOfHeads) {
             val query = input.matMul(weightQ[it])
             val key = input.matMul(weightK[it])
@@ -52,7 +53,7 @@ class AttentionD2 internal constructor(
         return concat.matMul(weightO)
     }
 
-    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
+    override fun train(input: List<IOType.D2>, context: Context, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
         val query = List(numOfHeads) { input.matMul(weightQ[it]) }
         val key = List(numOfHeads) { input.matMul(weightK[it]) }
         val value = List(numOfHeads) { input.matMul(weightV[it]) }
