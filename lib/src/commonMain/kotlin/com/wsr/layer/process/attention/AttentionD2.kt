@@ -31,7 +31,7 @@ class AttentionD2 internal constructor(
     private val optimizerV: List<Optimizer.D2>,
     private val optimizerO: Optimizer.D2,
 ) : Process.D2() {
-    private val mask by lazy { IOType.d2(outputX, outputX) { x, y -> if (x > y) -1e9f else 0f } }
+    private val mask by lazy { IOType.d2(outputX, outputX) { x, y -> if (x < y) -1e9f else 0f } }
     override fun expect(input: List<IOType.D2>): List<IOType.D2> {
         val heads = List(numOfHeads) {
             val query = input.matMul(weightQ[it])
