@@ -3,6 +3,7 @@
 package com.wsr.layer.process.affine
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.affine.AffineD2
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
@@ -30,8 +31,9 @@ class AffineD2Test {
             listOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
+        val context = Context(input)
 
-        val result = affine._expect(input)
+        val result = affine._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
@@ -68,13 +70,14 @@ class AffineD2Test {
             listOf(
                 IOType.d2(1, 2) { _, y -> (y + 1).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[1, 1]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d2(1, 2) { _, _ -> 1.0f })
         }
 
-        val result = affine._train(input, calcDelta)
+        val result = affine._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2
@@ -106,6 +109,7 @@ class AffineD2Test {
             listOf(
                 IOType.d2(1, 2) { _, y -> (y + 1).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[1, 1]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -116,13 +120,13 @@ class AffineD2Test {
         // dw = input[0].transpose() · delta[0] = [[1], [2]] · [[1, 1]] = [[1, 1], [2, 2]]
         // weight -= 0.1f * dw = [[1, 2], [3, 4]] - [[0.1f, 0.1f], [0.2f, 0.2f]]
         //                    = [[0.9f, 1.9f], [2.8f, 3.8f]]
-        affine._train(input, calcDelta)
+        affine._train(input, context, calcDelta)
 
         // 更新後のexpect結果
         // output[0] = weight.transpose() · input[0]
         //           = [[0.9f, 2.8f], [1.9f, 3.8f]] · [[1], [2]]
         //           = [[6.5f], [9.5f]]
-        val afterOutput = affine._expect(input)[0] as IOType.D2
+        val afterOutput = affine._expect(input, context)[0] as IOType.D2
 
         assertEquals(expected = 6.5f, actual = afterOutput[0, 0], absoluteTolerance = 1e-6f)
         assertEquals(expected = 9.5f, actual = afterOutput[0, 1], absoluteTolerance = 1e-6f)

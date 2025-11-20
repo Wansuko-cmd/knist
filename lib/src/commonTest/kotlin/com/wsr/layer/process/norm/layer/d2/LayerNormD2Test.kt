@@ -1,6 +1,7 @@
 package com.wsr.layer.process.norm.layer.d2
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.math.sqrt
 import kotlin.test.Test
@@ -26,8 +27,9 @@ class LayerNormD2Test {
                 IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y * 2).toFloat() },
                 IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y * 2 + 2).toFloat() },
             )
+        val context = Context(input)
 
-        val result = norm._expect(input)
+        val result = norm._expect(input, context)
 
         // バッチ1: [[0, 2], [2, 4]], mean=2, numerator=[[-2, 0], [0, 2]], variance=2, std=sqrt(2+1e-10)
         // output = [[-2, 0], [0, 2]] / sqrt(2+1e-10)
@@ -100,6 +102,7 @@ class LayerNormD2Test {
                 IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y * 2).toFloat() },
                 IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y * 2 + 2).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは全て[[1, 1], [1, 1]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = { outputs ->
@@ -119,13 +122,13 @@ class LayerNormD2Test {
 
         // trainを実行
         try {
-            norm._train(input, calcDelta)
+            norm._train(input, context, calcDelta)
         } catch (e: NotImplementedError) {
             // dxの計算が未実装なので例外をキャッチ
         }
 
         // 更新後のexpect結果を確認（バッチ1で）
-        val afterOutput = norm._expect(listOf(input[0]))[0] as IOType.D2
+        val afterOutput = norm._expect(listOf(input[0]), context)[0] as IOType.D2
         val expectedStd = sqrt(2.0f + 1e-10f)
         // output = [[2.1414f, 2], [2, 1.8586f]] * [[-2, 0], [0, 2]] / std
         assertEquals(
@@ -176,6 +179,7 @@ class LayerNormD2Test {
             listOf(
                 IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[1, 0.5f], [-1, 0.8f]]を返す（任意の勾配）
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -201,13 +205,13 @@ class LayerNormD2Test {
                 // input[i, j]を少し増やす
                 val inputPlus = input[0].value.copyOf()
                 inputPlus[i * 2 + j] += epsilon
-                val outputPlus = norm._expect(listOf(IOType.Companion.d2(listOf(2, 2), inputPlus.toList())))
+                val outputPlus = norm._expect(listOf(IOType.Companion.d2(listOf(2, 2), inputPlus.toList())), context)
                 val lossPlus = calcLoss(outputPlus, calcDelta)
 
                 // input[i, j]を少し減らす
                 val inputMinus = input[0].value.copyOf()
                 inputMinus[i * 2 + j] -= epsilon
-                val outputMinus = norm._expect(listOf(IOType.Companion.d2(listOf(2, 2), inputMinus.toList())))
+                val outputMinus = norm._expect(listOf(IOType.Companion.d2(listOf(2, 2), inputMinus.toList())), context)
                 val lossMinus = calcLoss(outputMinus, calcDelta)
 
                 // 数値微分
@@ -218,7 +222,7 @@ class LayerNormD2Test {
         }
 
         // 実際のdxを計算（trainメソッドから）
-        val dx = norm._train(input, calcDelta)[0] as IOType.D2
+        val dx = norm._train(input, context, calcDelta)[0] as IOType.D2
 
         // 数値微分と実際の勾配を比較
         for (i in 0 until 2) {

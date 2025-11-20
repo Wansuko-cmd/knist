@@ -3,6 +3,7 @@
 package com.wsr.layer.process.debug
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.debug.DebugD2
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -25,8 +26,9 @@ class DebugD2Test {
             listOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
+        val context = Context(input)
 
-        val result = debug._expect(input)
+        val result = debug._expect(input, context)
 
         // 入力をそのまま返す
         assertEquals(expected = input, actual = result)
@@ -52,13 +54,14 @@ class DebugD2Test {
             listOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[2, 4], [6, 8]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0f })
         }
 
-        val result = debug._train(input, calcDelta)
+        val result = debug._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2

@@ -3,6 +3,7 @@
 package com.wsr.layer.process.function.sigmoid
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.function.sigmoid.SigmoidD1
 import kotlin.math.exp
 import kotlin.test.Test
@@ -18,8 +19,9 @@ class SigmoidD1Test {
             listOf(
                 IOType.d1(listOf(0.0f, 1.0f, 2.0f)),
             )
+        val context = Context(input)
 
-        val result = sigmoid._expect(input)
+        val result = sigmoid._expect(input, context)
 
         // sigmoid(x) = 1 / (1 + e^-x)
         val sig0 = 1 / (1 + exp(-0.0f))
@@ -42,13 +44,14 @@ class SigmoidD1Test {
             listOf(
                 IOType.d1(listOf(0.0f, 1.0f)),
             )
+        val context = Context(input)
 
         // deltaは[1, 1]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d1(listOf(1.0f, 1.0f)))
         }
 
-        val result = sigmoid._train(input, calcDelta)
+        val result = sigmoid._train(input, context, calcDelta)
 
         // output = sigmoid(input)
         val sig0 = 1 / (1 + exp(-0.0f))

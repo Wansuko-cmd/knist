@@ -3,6 +3,7 @@
 package com.wsr.layer.process.debug
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.debug.DebugD3
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -24,8 +25,9 @@ class DebugD3Test {
         val input = listOf(
             IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
         )
+        val context = Context(input)
 
-        val result = debug._expect(input)
+        val result = debug._expect(input, context)
 
         // 入力がそのまま返される
         assertEquals(expected = input, actual = result)
@@ -51,6 +53,7 @@ class DebugD3Test {
         val input = listOf(
             IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
         )
+        val context = Context(input)
 
         val expectedDelta = listOf(
             IOType.d3(2, 2, 2) { _, _, _ -> 1.0f },
@@ -58,7 +61,7 @@ class DebugD3Test {
 
         val calcDelta: (List<IOType>) -> List<IOType> = { expectedDelta }
 
-        val result = debug._train(input, calcDelta)
+        val result = debug._train(input, context, calcDelta)
 
         // deltaがそのまま返される
         assertEquals(expected = expectedDelta, actual = result)

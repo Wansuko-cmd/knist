@@ -3,6 +3,7 @@
 package com.wsr.layer.process.position
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -28,10 +29,11 @@ class PositionEmbeddingD2Test {
             listOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
+        val context = Context(input)
 
         // 出力 = 入力 + 位置埋め込み
         // [[5, 6], [7, 8]] + [[1, 2], [3, 4]] = [[6, 8], [10, 12]]
-        val result = positionEmbedding._expect(input)
+        val result = positionEmbedding._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
@@ -61,13 +63,14 @@ class PositionEmbeddingD2Test {
             listOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[0.1f, 0.2f], [0.3f, 0.4f]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 1) * 0.1f })
         }
 
-        val result = positionEmbedding._train(input, calcDelta)
+        val result = positionEmbedding._train(input, context, calcDelta)
 
         // 位置埋め込みの逆伝播は、加算なのでdeltaをそのまま返す
         assertEquals(expected = 1, actual = result.size)
@@ -98,6 +101,7 @@ class PositionEmbeddingD2Test {
             listOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[2, 4], [6, 8]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -108,12 +112,12 @@ class PositionEmbeddingD2Test {
         // weight -= rate * delta.average() = [[1, 2], [3, 4]] - 0.1f * [[2, 4], [6, 8]]
         //                                   = [[1, 2], [3, 4]] - [[0.2f, 0.4f], [0.6f, 0.8f]]
         //                                   = [[0.8f, 1.6f], [2.4f, 3.2f]]
-        positionEmbedding._train(input, calcDelta)
+        positionEmbedding._train(input, context, calcDelta)
 
         // 更新後のexpect結果
         // output = input + weight = [[5, 6], [7, 8]] + [[0.8f, 1.6f], [2.4f, 3.2f]]
         //                         = [[5.8f, 7.6f], [9.4f, 11.2f]]
-        val afterOutput = positionEmbedding._expect(input)[0] as IOType.D2
+        val afterOutput = positionEmbedding._expect(input, context)[0] as IOType.D2
 
         assertEquals(expected = 5.8f, actual = afterOutput[0, 0], absoluteTolerance = 1e-6f)
         assertEquals(expected = 7.6f, actual = afterOutput[0, 1], absoluteTolerance = 1e-6f)

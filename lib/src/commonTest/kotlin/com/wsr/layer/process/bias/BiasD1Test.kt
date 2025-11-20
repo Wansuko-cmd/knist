@@ -3,6 +3,7 @@
 package com.wsr.layer.process.bias
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.bias.BiasD1
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
@@ -26,9 +27,10 @@ class BiasD1Test {
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
                 IOType.d1(listOf(4.0f, 5.0f, 6.0f)),
             )
+        val context = Context(input)
 
         // [[1+1, 2+2, 3+3], [4+1, 5+2, 6+3]] = [[2, 4, 6], [5, 7, 9]]
-        val result = bias._expect(input)
+        val result = bias._expect(input, context)
 
         assertEquals(expected = 2, actual = result.size)
         val output0 = result[0] as IOType.D1
@@ -58,13 +60,14 @@ class BiasD1Test {
             listOf(
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
+        val context = Context(input)
 
         // deltaは[2, 4, 6]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d1(listOf(2.0f, 4.0f, 6.0f)))
         }
 
-        val result = bias._train(input, calcDelta)
+        val result = bias._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val delta = result[0] as IOType.D1
@@ -89,6 +92,7 @@ class BiasD1Test {
             listOf(
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
+        val context = Context(input)
 
         // deltaは[2, 4, 6]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -99,11 +103,11 @@ class BiasD1Test {
         // weight -= rate * delta.average() = [1, 2, 3] - 0.1f * [2, 4, 6]
         //                                   = [1, 2, 3] - [0.2f, 0.4f, 0.6f]
         //                                   = [0.8f, 1.6f, 2.4f]
-        bias._train(input, calcDelta)
+        bias._train(input, context, calcDelta)
 
         // 更新後のexpect結果
         // output = input + weight = [1, 2, 3] + [0.8f, 1.6f, 2.4f] = [1.8f, 3.6f, 5.4f]
-        val afterOutput = bias._expect(input)[0] as IOType.D1
+        val afterOutput = bias._expect(input, context)[0] as IOType.D1
 
         assertEquals(
             expected = 1.8f,

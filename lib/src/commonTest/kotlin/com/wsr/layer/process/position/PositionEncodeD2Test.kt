@@ -3,6 +3,7 @@
 package com.wsr.layer.process.position
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -19,8 +20,9 @@ class PositionEncodeD2Test {
             listOf(
                 IOType.d2(2, 4) { _, _ -> 1.0f },
             )
+        val context = Context(input)
 
-        val result = positionEncode._expect(input)
+        val result = positionEncode._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
@@ -62,13 +64,14 @@ class PositionEncodeD2Test {
             listOf(
                 IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[0.1f, 0.2f, 0.3f], [0.4f, 0.5f, 0.6f]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d2(2, 3) { x, y -> (x * 3 + y + 1) * 0.1f })
         }
 
-        val result = positionEncode._train(input, calcDelta)
+        val result = positionEncode._train(input, context, calcDelta)
 
         // 位置エンコーディングの逆伝播は、加算なのでdeltaをそのまま返す
         assertEquals(expected = 1, actual = result.size)

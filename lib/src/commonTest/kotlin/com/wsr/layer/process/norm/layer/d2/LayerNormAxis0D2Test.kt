@@ -1,6 +1,7 @@
 package com.wsr.layer.process.norm.layer.d2
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.math.sqrt
 import kotlin.test.Test
@@ -34,8 +35,9 @@ class LayerNormAxis0D2Test {
                     }
                 },
             )
+        val context = Context(input)
 
-        val result = norm._expect(input)
+        val result = norm._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
@@ -91,6 +93,7 @@ class LayerNormAxis0D2Test {
                     }
                 },
             )
+        val context = Context(input)
 
         // deltaは全て[[1, 1], [1, 1]]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = { outputs ->
@@ -109,10 +112,10 @@ class LayerNormAxis0D2Test {
         // weight -= 0.1f * dw
 
         // trainを実行
-        norm._train(input, calcDelta)
+        norm._train(input, context, calcDelta)
 
         // 更新後のexpect結果を確認
-        val afterOutput = norm._expect(input)[0] as IOType.D2
+        val afterOutput = norm._expect(input, context)[0] as IOType.D2
 
         // weight更新: weight[0,0] = 2.0f - 0.1f * normalized00 = 2.0f + 0.1f / sqrt(1+1e-10)
         // output[0,0] = weight[0,0] * normalized00
@@ -164,6 +167,7 @@ class LayerNormAxis0D2Test {
             listOf(
                 IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
+        val context = Context(input)
 
         // deltaは[[1, 0.5f], [-1, 0.8f]]を返す（任意の勾配）
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -189,13 +193,13 @@ class LayerNormAxis0D2Test {
                 // input[i, j]を少し増やす
                 val inputPlus = input[0].value.copyOf()
                 inputPlus[i * 2 + j] += epsilon
-                val outputPlus = norm._expect(listOf(IOType.Companion.d2(listOf(2, 2), inputPlus.toList())))
+                val outputPlus = norm._expect(listOf(IOType.Companion.d2(listOf(2, 2), inputPlus.toList())), context)
                 val lossPlus = calcLoss(outputPlus, calcDelta)
 
                 // input[i, j]を少し減らす
                 val inputMinus = input[0].value.copyOf()
                 inputMinus[i * 2 + j] -= epsilon
-                val outputMinus = norm._expect(listOf(IOType.Companion.d2(listOf(2, 2), inputMinus.toList())))
+                val outputMinus = norm._expect(listOf(IOType.Companion.d2(listOf(2, 2), inputMinus.toList())), context)
                 val lossMinus = calcLoss(outputMinus, calcDelta)
 
                 // 数値微分
@@ -206,7 +210,7 @@ class LayerNormAxis0D2Test {
         }
 
         // 実際のdxを計算（trainメソッドから）
-        val dx = norm._train(input, calcDelta)[0] as IOType.D2
+        val dx = norm._train(input, context, calcDelta)[0] as IOType.D2
 
         // 数値微分と実際の勾配を比較
         for (i in 0 until 2) {

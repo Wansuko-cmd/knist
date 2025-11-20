@@ -3,6 +3,7 @@
 package com.wsr.layer.process.norm.minmax
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.norm.minmax.MinMaxNormD1
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
@@ -25,8 +26,9 @@ class MinMaxNormD1Test {
             listOf(
                 IOType.d1(listOf(1.0f, 2.0f, 5.0f)),
             )
+        val context = Context(input)
 
-        val result = norm._expect(input)
+        val result = norm._expect(input, context)
 
         // min=1, max=5, denominator=4
         // output = alpha * (input - min) / denominator
@@ -53,13 +55,14 @@ class MinMaxNormD1Test {
             listOf(
                 IOType.d1(listOf(1.0f, 2.0f, 5.0f)),
             )
+        val context = Context(input)
 
         // deltaは[1, 1, 1]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d1(listOf(1.0f, 1.0f, 1.0f)))
         }
 
-        val result = norm._train(input, calcDelta)
+        val result = norm._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D1
@@ -83,6 +86,7 @@ class MinMaxNormD1Test {
             listOf(
                 IOType.d1(listOf(1.0f, 3.0f, 5.0f)),
             )
+        val context = Context(input)
 
         // deltaは[1, 1, 1]を返す
         val calcDelta: (List<IOType>) -> List<IOType> = {
@@ -94,13 +98,13 @@ class MinMaxNormD1Test {
         // alpha -= 0.1f * mean * delta = [2, 2, 2] - 0.1f * [0*1, 0.5f*1, 1*1]
         //                              = [2, 2, 2] - [0, 0.05f, 0.1f]
         //                              = [2, 1.95f, 1.9f]
-        norm._train(input, calcDelta)
+        norm._train(input, context, calcDelta)
 
         // 更新後のexpect結果
         // output = alpha * (input - min) / (max - min)
         //        = [2, 1.95f, 1.9f] * [0, 0.5f, 1]
         //        = [0, 0.975f, 1.9f]
-        val afterOutput = norm._expect(input)[0] as IOType.D1
+        val afterOutput = norm._expect(input, context)[0] as IOType.D1
 
         assertEquals(
             expected = 0.0f,

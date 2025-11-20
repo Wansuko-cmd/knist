@@ -3,6 +3,7 @@
 package com.wsr.layer.process.function.softmax
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.function.softmax.SoftmaxD2
 import kotlin.math.exp
 import kotlin.test.Test
@@ -18,8 +19,9 @@ class SoftmaxD2Test {
             listOf(
                 IOType.d2(1, 3) { _, y -> (y + 1).toFloat() },
             )
+        val context = Context(input)
 
-        val result = softmax._expect(input)
+        val result = softmax._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
@@ -48,13 +50,14 @@ class SoftmaxD2Test {
             listOf(
                 IOType.d2(1, 2) { _, y -> (y + 1).toFloat() },
             )
+        val context = Context(input)
 
         // 全て1のdelta
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d2(1, 2) { _, _ -> 1.0f })
         }
 
-        val result = softmax._train(input, calcDelta)
+        val result = softmax._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2

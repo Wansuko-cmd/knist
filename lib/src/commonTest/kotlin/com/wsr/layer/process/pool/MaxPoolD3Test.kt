@@ -3,6 +3,7 @@
 package com.wsr.layer.process.pool
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.pool.MaxPoolD3
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,8 +22,9 @@ class MaxPoolD3Test {
             listOf(
                 IOType.d3(1, 4, 4) { _, y, z -> (y * 4 + z + 1).toFloat() },
             )
+        val context = Context(input)
 
-        val result = maxPool._expect(input)
+        val result = maxPool._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
@@ -53,13 +55,14 @@ class MaxPoolD3Test {
             listOf(
                 IOType.d3(1, 4, 4) { _, y, z -> (y * 4 + z + 1).toFloat() },
             )
+        val context = Context(input)
 
         // 全て1のdelta (2x2)
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d3(1, 2, 2) { _, _, _ -> 1.0f })
         }
 
-        val result = maxPool._train(input, calcDelta)
+        val result = maxPool._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D3

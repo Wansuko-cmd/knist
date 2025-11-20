@@ -3,6 +3,7 @@
 package com.wsr.layer.process.function.relu
 
 import com.wsr.IOType
+import com.wsr.layer.Context
 import com.wsr.layer.process.function.relu.ReLUD3
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,8 +21,9 @@ class ReLUD3Test {
                     if (z % 2 == 1) -value else value
                 },
             )
+        val context = Context(input)
 
-        val result = relu._expect(input)
+        val result = relu._expect(input, context)
 
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
@@ -48,13 +50,14 @@ class ReLUD3Test {
                     if (z % 2 == 1) -value else value
                 },
             )
+        val context = Context(input)
 
         // 全て1のdelta
         val calcDelta: (List<IOType>) -> List<IOType> = {
             listOf(IOType.d3(2, 2, 2) { _, _, _ -> 1.0f })
         }
 
-        val result = relu._train(input, calcDelta)
+        val result = relu._train(input, context, calcDelta)
 
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D3
