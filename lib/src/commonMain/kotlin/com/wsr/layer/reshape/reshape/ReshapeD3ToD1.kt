@@ -15,7 +15,11 @@ internal class ReshapeD3ToD1(override val outputSize: Int) : Reshape.D3ToD1() {
         IOType.d1(value = it.value)
     }
 
-    override fun train(input: List<IOType.D3>, context: Context, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D3> {
+    override fun train(
+        input: List<IOType.D3>,
+        context: Context,
+        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
+    ): List<IOType.D3> {
         val output = input.map { IOType.d1(value = it.value) }
         val delta = calcDelta(output)
         return List(input.size) { i ->

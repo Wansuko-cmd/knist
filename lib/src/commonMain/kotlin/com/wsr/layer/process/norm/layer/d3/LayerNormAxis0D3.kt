@@ -22,7 +22,11 @@ class LayerNormAxis0D3 internal constructor(
         TODO("axis0の次元で正規化する")
     }
 
-    override fun train(input: List<IOType.D3>, context: Context, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
+    override fun train(
+        input: List<IOType.D3>,
+        context: Context,
+        calcDelta: (List<IOType.D3>) -> List<IOType.D3>,
+    ): List<IOType.D3> {
         TODO("axis0の次元で正規化する")
     }
 }

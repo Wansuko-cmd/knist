@@ -30,7 +30,11 @@ class PositionEncodeD2 internal constructor(
         input + position
     }
 
-    override fun train(input: List<IOType.D2>, context: Context, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
+    override fun train(
+        input: List<IOType.D2>,
+        context: Context,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
         val output = input.map { input -> input + position }
         return calcDelta(output)
     }

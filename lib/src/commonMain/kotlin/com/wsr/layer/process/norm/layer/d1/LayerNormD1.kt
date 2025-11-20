@@ -34,7 +34,11 @@ class LayerNormD1 internal constructor(
         return weight * (numerator / denominator)
     }
 
-    override fun train(input: List<IOType.D1>, context: Context, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
+    override fun train(
+        input: List<IOType.D1>,
+        context: Context,
+        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
+    ): List<IOType.D1> {
         val average = input.average()
         val numerator = input - average
 

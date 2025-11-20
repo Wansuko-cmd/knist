@@ -18,7 +18,11 @@ class PositionEmbeddingD2 internal constructor(
 ) : Process.D2() {
     override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> = input + weight
 
-    override fun train(input: List<IOType.D2>, context: Context, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
+    override fun train(
+        input: List<IOType.D2>,
+        context: Context,
+        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
+    ): List<IOType.D2> {
         val output = input + weight
         val delta = calcDelta(output)
         weight = optimizer.adapt(weight = weight, dw = delta)

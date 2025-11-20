@@ -20,7 +20,11 @@ class DropoutD1 internal constructor(
 
     override fun expect(input: List<IOType.D1>, context: Context): List<IOType.D1> = input
 
-    override fun train(input: List<IOType.D1>, context: Context, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
+    override fun train(
+        input: List<IOType.D1>,
+        context: Context,
+        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
+    ): List<IOType.D1> {
         val mask = IOType.d1(outputSize) { if (random.nextFloat(0f, 1f) <= ratio) q else 0f }
         val output = input * mask
         val delta = calcDelta(output)

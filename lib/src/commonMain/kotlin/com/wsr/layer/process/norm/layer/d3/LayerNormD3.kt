@@ -36,7 +36,11 @@ class LayerNormD3 internal constructor(
         return weight * (numerator / denominator)
     }
 
-    override fun train(input: List<IOType.D3>, context: Context, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
+    override fun train(
+        input: List<IOType.D3>,
+        context: Context,
+        calcDelta: (List<IOType.D3>) -> List<IOType.D3>,
+    ): List<IOType.D3> {
         val average = input.average()
         val numerator = input - average
 

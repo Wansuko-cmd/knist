@@ -11,7 +11,11 @@ import kotlinx.serialization.Serializable
 class SoftmaxD1 internal constructor(override val outputSize: Int) : Process.D1() {
     override fun expect(input: List<IOType.D1>, context: Context): List<IOType.D1> = forward(input)
 
-    override fun train(input: List<IOType.D1>, context: Context, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
+    override fun train(
+        input: List<IOType.D1>,
+        context: Context,
+        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
+    ): List<IOType.D1> {
         val output = forward(input)
         val delta = calcDelta(output)
         return List(input.size) { i ->

@@ -18,7 +18,11 @@ class DebugD3 internal constructor(override val outputX: Int, override val outpu
 
     override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D3> = input.also { onInput(it) }
 
-    override fun train(input: List<IOType.D3>, context: Context, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
+    override fun train(
+        input: List<IOType.D3>,
+        context: Context,
+        calcDelta: (List<IOType.D3>) -> List<IOType.D3>,
+    ): List<IOType.D3> {
         val input = input.also { onInput(it) }
         val delta = calcDelta(input).also { onDelta(it) }
         return delta
