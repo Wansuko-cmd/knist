@@ -6,6 +6,7 @@ import com.wsr.collection.average
 import com.wsr.collection.sum
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
+import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
 import com.wsr.operator.minus
@@ -25,7 +26,7 @@ class LayerNormD2 internal constructor(
     private val optimizer: Optimizer.D2,
     private var weight: IOType.D2,
 ) : Process.D2() {
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> {
+    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> {
         val average = input.average()
         val numerator = input - average
 
@@ -35,7 +36,7 @@ class LayerNormD2 internal constructor(
         return weight * (numerator / denominator)
     }
 
-    override fun train(input: List<IOType.D2>, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
+    override fun train(input: List<IOType.D2>, context: Context, calcDelta: (List<IOType.D2>) -> List<IOType.D2>): List<IOType.D2> {
         val average = input.average()
         val numerator = input - average
 

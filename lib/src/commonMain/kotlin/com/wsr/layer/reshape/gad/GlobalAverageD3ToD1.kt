@@ -2,6 +2,7 @@ package com.wsr.layer.reshape.gad
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.layer.Context
 import com.wsr.layer.reshape.Reshape
 import com.wsr.operator.div
 import kotlinx.serialization.Serializable
@@ -11,11 +12,11 @@ internal class GlobalAverageD3ToD1(private val inputX: Int, private val inputY: 
     Reshape.D3ToD1() {
     override val outputSize: Int = inputX
 
-    override fun expect(input: List<IOType.D3>): List<IOType.D1> = input.map { input ->
+    override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D1> = input.map { input ->
         IOType.d1(outputSize) { input[it].value.average().toFloat() }
     }
 
-    override fun train(input: List<IOType.D3>, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D3> {
+    override fun train(input: List<IOType.D3>, context: Context, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D3> {
         val output = input.map { input -> IOType.d1(outputSize) { input[it].value.average().toFloat() } }
         val delta = calcDelta(output)
         return List(input.size) {

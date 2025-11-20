@@ -4,6 +4,7 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.dot.matmul.matMul
 import com.wsr.initializer.WeightInitializer
+import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.div
 import com.wsr.optimizer.Optimizer
@@ -17,9 +18,9 @@ class AffineD1 internal constructor(
     private val optimizer: Optimizer.D2,
     private var weight: IOType.D2,
 ) : Process.D1() {
-    override fun expect(input: List<IOType.D1>): List<IOType.D1> = forward(input)
+    override fun expect(input: List<IOType.D1>, context: Context): List<IOType.D1> = forward(input)
 
-    override fun train(input: List<IOType.D1>, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
+    override fun train(input: List<IOType.D1>, context: Context, calcDelta: (List<IOType.D1>) -> List<IOType.D1>): List<IOType.D1> {
         val output = forward(input)
         val delta = calcDelta(output)
         val dx = weight.matMul(delta)

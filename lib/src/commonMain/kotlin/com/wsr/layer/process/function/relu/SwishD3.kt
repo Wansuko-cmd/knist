@@ -2,6 +2,7 @@ package com.wsr.layer.process.function.relu
 
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import kotlin.math.exp
 import kotlinx.serialization.Serializable
@@ -9,7 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 class SwishD3 internal constructor(override val outputX: Int, override val outputY: Int, override val outputZ: Int) :
     Process.D3() {
-    override fun expect(input: List<IOType.D3>): List<IOType.D3> = input.map { input ->
+    override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D3> = input.map { input ->
         IOType.d3(
             i = outputX,
             j = outputY,
@@ -17,7 +18,7 @@ class SwishD3 internal constructor(override val outputX: Int, override val outpu
         ) { x, y, z -> input[x, y, z] / (1 + exp(-input[x, y, z])) }
     }
 
-    override fun train(input: List<IOType.D3>, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
+    override fun train(input: List<IOType.D3>, context: Context, calcDelta: (List<IOType.D3>) -> List<IOType.D3>): List<IOType.D3> {
         val sigmoid = input.map { input ->
             IOType.d3(
                 i = outputX,
