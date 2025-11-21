@@ -15,8 +15,11 @@ fun <T : IOType> List<T>.toBatch(): Batch<T> {
     )
 }
 
+@JvmName("batchD1sToList")
 fun Batch<IOType.D1>.toList(): List<IOType.D1> = List(size) { get(it) }
 
+@JvmName("batchD2sToList")
 fun Batch<IOType.D2>.toList(): List<IOType.D2> = List(size) { get(it) }
 
+@JvmName("batchD3sToList")
 fun Batch<IOType.D3>.toList(): List<IOType.D3> = List(size) { get(it) }
