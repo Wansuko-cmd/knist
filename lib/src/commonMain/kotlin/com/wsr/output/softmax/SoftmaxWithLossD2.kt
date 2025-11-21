@@ -9,11 +9,11 @@ import com.wsr.operator.minus
 import com.wsr.operator.times
 import com.wsr.output.Output
 import com.wsr.output.TResult
+import com.wsr.power.ln
 import com.wsr.reshape.broadcastToD2
 import com.wsr.reshape.toD2
-import kotlin.math.exp
-import kotlin.math.ln
 import kotlinx.serialization.Serializable
+import kotlin.math.exp
 
 @Serializable
 internal class SoftmaxWithLossD2 internal constructor(
@@ -50,11 +50,19 @@ internal class SoftmaxWithLossD2 internal constructor(
                 }
                 .toD2()
         }
-        val loss = (output * label).sum(axis = 1)
-            .flatMap { (value) -> value.map { -ln(it + 1e-7f) } }
+        val mask = label.generateMask()
+
+        // -log(p)
+        val losses = -1f * (output * label).sum(axis = 1).ln(1e-7f)
+        val maskD1 = mask.sum(axis = 1)
+        val maskedLosses = losses * maskD1
+
+        // 有効値のみの平均を取る
+        val loss = maskedLosses.zip(maskD1) { maskedLoss, mask -> maskedLoss.sum() / mask.sum() }
             .average()
             .toFloat()
-        val delta = (output - label) * label.generateMask()
+
+        val delta = (output - label) * mask
         return TResult(loss = loss, delta = delta)
     }
 
