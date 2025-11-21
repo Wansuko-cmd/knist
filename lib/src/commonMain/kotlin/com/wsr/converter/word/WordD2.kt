@@ -21,6 +21,9 @@ class WordD2(private val words: List<String>, private val length: Int, private v
             val id = wordToId[word] ?: unknownIndex
             result[index] = IOType.d1(outputY).also { it[id] = 1f }
         }
+        for (index in text.size until outputX) {
+            result[index] = IOType.d1(outputY).also { it[0] = 1f }
+        }
         result
     }
 
