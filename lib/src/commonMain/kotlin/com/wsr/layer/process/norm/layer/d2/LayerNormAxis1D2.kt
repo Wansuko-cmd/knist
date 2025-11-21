@@ -1,5 +1,6 @@
 package com.wsr.layer.process.norm.layer.d2
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.collection.average
 import com.wsr.collection.sum
@@ -13,6 +14,8 @@ import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
 import com.wsr.power.sqrt
 import com.wsr.reshape.broadcastToD2
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
 
@@ -24,7 +27,8 @@ class LayerNormAxis1D2 internal constructor(
     private val optimizer: Optimizer.D2,
     private var weight: IOType.D2,
 ) : Process.D2() {
-    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> {
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
+        val input = input.toList()
         val average = input.average(axis = 1)
         val numerator = input - average
 
@@ -32,14 +36,15 @@ class LayerNormAxis1D2 internal constructor(
         val denominator = variance.map { it.sqrt(e) }
 
         val normalize = numerator / denominator
-        return weight * normalize
+        return (weight * normalize).toBatch()
     }
 
     override fun train(
-        input: List<IOType.D2>,
+        input: Batch<IOType.D2>,
         context: Context,
-        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
-    ): List<IOType.D2> {
+        calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
+    ): Batch<IOType.D2> {
+        val input = input.toList()
         val average = input.average(axis = 1)
         val numerator = input - average
 
@@ -49,11 +54,11 @@ class LayerNormAxis1D2 internal constructor(
         val normalize = numerator / denominator
 
         val output = weight * normalize
-        val delta = calcDelta(output)
+        val delta = calcDelta(output.toBatch()).toList()
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = normalize * delta,
+            dw = (normalize * delta).toBatch(),
         )
 
         // dOutput
@@ -90,6 +95,6 @@ class LayerNormAxis1D2 internal constructor(
         }
 
         // dy/dx
-        return dx1 + dx2 + dx3
+        return (dx1 + dx2 + dx3).toBatch()
     }
 }

@@ -1,5 +1,6 @@
 package com.wsr.layer.process.debug
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layer.Context
@@ -10,18 +11,18 @@ import kotlinx.serialization.Transient
 @Serializable
 class DebugD1 internal constructor(override val outputSize: Int) : Process.D1() {
     @Transient
-    var onInput: (List<IOType.D1>) -> Unit = {}
+    var onInput: (Batch<IOType.D1>) -> Unit = {}
 
     @Transient
-    var onDelta: (List<IOType.D1>) -> Unit = {}
+    var onDelta: (Batch<IOType.D1>) -> Unit = {}
 
-    override fun expect(input: List<IOType.D1>, context: Context): List<IOType.D1> = input.also { onInput(it) }
+    override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D1> = input.also { onInput(it) }
 
     override fun train(
-        input: List<IOType.D1>,
+        input: Batch<IOType.D1>,
         context: Context,
-        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
-    ): List<IOType.D1> {
+        calcDelta: (Batch<IOType.D1>) -> Batch<IOType.D1>,
+    ): Batch<IOType.D1> {
         val input = input.also { onInput(it) }
         val delta = calcDelta(input).also { onDelta(it) }
         return delta
@@ -31,7 +32,7 @@ class DebugD1 internal constructor(override val outputSize: Int) : Process.D1() 
 /**
  * ※Json化するとラムダ式はリセットされる
  */
-fun <T> NetworkBuilder.D1<T>.debug(onInput: (List<IOType.D1>) -> Unit = {}, onDelta: (List<IOType.D1>) -> Unit = {}) =
+fun <T> NetworkBuilder.D1<T>.debug(onInput: (Batch<IOType.D1>) -> Unit = {}, onDelta: (Batch<IOType.D1>) -> Unit = {}) =
     addProcess(
         process = DebugD1(outputSize = inputSize)
             .apply {

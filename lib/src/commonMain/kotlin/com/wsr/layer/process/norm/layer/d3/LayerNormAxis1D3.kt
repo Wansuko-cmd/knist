@@ -1,5 +1,6 @@
 package com.wsr.layer.process.norm.layer.d3
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
@@ -18,15 +19,15 @@ class LayerNormAxis1D3 internal constructor(
     private val optimizer: Optimizer.D3,
     private var weight: IOType.D3,
 ) : Process.D3() {
-    override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D3> {
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> {
         TODO("axis1の次元で正規化する")
     }
 
     override fun train(
-        input: List<IOType.D3>,
+        input: Batch<IOType.D3>,
         context: Context,
-        calcDelta: (List<IOType.D3>) -> List<IOType.D3>,
-    ): List<IOType.D3> {
+        calcDelta: (Batch<IOType.D3>) -> Batch<IOType.D3>,
+    ): Batch<IOType.D3> {
         TODO("axis1の次元で正規化する")
     }
 }

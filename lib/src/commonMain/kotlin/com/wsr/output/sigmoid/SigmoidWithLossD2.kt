@@ -1,5 +1,6 @@
 package com.wsr.output.sigmoid
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.collection.sum
@@ -10,14 +11,18 @@ import com.wsr.operator.times
 import com.wsr.output.Output
 import com.wsr.output.TResult
 import com.wsr.power.ln
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlin.math.exp
 import kotlinx.serialization.Serializable
 
 @Serializable
 internal class SigmoidWithLossD2 internal constructor(val outputX: Int, val outputY: Int) : Output.D2() {
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> = input
+    override fun expect(input: Batch<IOType.D2>): Batch<IOType.D2> = input
 
-    override fun train(input: List<IOType.D2>, label: List<IOType.D2>): TResult<IOType.D2> {
+    override fun train(input: Batch<IOType.D2>, label: Batch<IOType.D2>): TResult<IOType.D2> {
+        val input = input.toList()
+        val label = label.toList()
         val output = input.map { input ->
             IOType.d2(outputX, outputY) { x, y -> 1 / (1 + exp(-input[x, y])) }
         }
@@ -28,7 +33,7 @@ internal class SigmoidWithLossD2 internal constructor(val outputX: Int, val outp
             -(y + p).sum().average().toFloat()
         }
         val delta = output - label
-        return TResult(loss = loss, delta = delta)
+        return TResult(loss = loss, delta = delta.toBatch())
     }
 }
 

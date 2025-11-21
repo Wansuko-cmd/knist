@@ -2,15 +2,18 @@
 
 package com.wsr.layer.process.skip
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layer.Context
 import com.wsr.layer.Layer
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlinx.serialization.Serializable
 
-private typealias CALC_DELTA_D3 = (input: List<IOType.D3>, context: Context) -> List<IOType.D3>
+private typealias CALC_DELTA_D3 = (input: Batch<IOType.D3>, context: Context) -> Batch<IOType.D3>
 
 @Serializable
 class SkipD3 internal constructor(
@@ -82,10 +85,10 @@ class SkipD3 internal constructor(
         }
     }
 
-    override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D3> {
-        val main = layers.fold(input) { acc, layer -> layer._expect(acc, context) as List<IOType.D3> }
-        val skip = input.map(resizeToOutput)
-        return main + skip
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> {
+        val main = layers.fold(input) { acc, layer -> layer._expect(acc, context) as Batch<IOType.D3> }
+        val skip = input.toList().map(resizeToOutput)
+        return (main.toList() + skip).toBatch()
     }
 
     private val trainChain: (CALC_DELTA_D3) -> CALC_DELTA_D3 by lazy {
@@ -94,26 +97,26 @@ class SkipD3 internal constructor(
         ) { layer, acc ->
             { final ->
                 { input, context ->
-                    layer._train(input, context) { acc(final)(it as List<IOType.D3>, context) } as List<IOType.D3>
+                    layer._train(input, context) { acc(final)(it as Batch<IOType.D3>, context) } as Batch<IOType.D3>
                 }
             }
         }
     }
 
     override fun train(
-        input: List<IOType.D3>,
+        input: Batch<IOType.D3>,
         context: Context,
-        calcDelta: (List<IOType.D3>) -> List<IOType.D3>,
-    ): List<IOType.D3> {
+        calcDelta: (Batch<IOType.D3>) -> Batch<IOType.D3>,
+    ): Batch<IOType.D3> {
         var skipDelta: List<IOType.D3> = emptyList()
 
         val final: CALC_DELTA_D3 = { acc, context ->
-            val output = input.map(resizeToOutput) + acc
-            calcDelta(output).also { skipDelta = it }
+            val output = input.toList().map(resizeToOutput) + acc.toList()
+            calcDelta(output.toBatch()).also { skipDelta = it.toList() }
         }
         val mainDelta = trainChain(final)(input, context)
 
-        return mainDelta + skipDelta.map(resizeToInput)
+        return (mainDelta.toList() + skipDelta.map(resizeToInput)).toBatch()
     }
 }
 

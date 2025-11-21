@@ -1,9 +1,12 @@
 package com.wsr.layer.process.pool
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -22,21 +25,22 @@ class MaxPoolD2 internal constructor(val poolSize: Int, val channel: Int, val in
         }
     }
 
-    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> = input.map(::forward)
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> = input.toList().map(::forward).toBatch()
 
     override fun train(
-        input: List<IOType.D2>,
+        input: Batch<IOType.D2>,
         context: Context,
-        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
-    ): List<IOType.D2> {
+        calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
+    ): Batch<IOType.D2> {
+        val input = input.toList()
         val output = input.map(::forward)
-        val delta = calcDelta(output)
+        val delta = calcDelta(output.toBatch()).toList()
         return List(input.size) { index ->
             IOType.d2(channel, inputSize) { c, i ->
                 val o = i / poolSize
                 if (input[index][c, i] == output[index][c, o]) delta[index][c, o] else 0f
             }
-        }
+        }.toBatch()
     }
 
     private fun forward(input: IOType.D2): IOType.D2 = IOType.d2(outputX, outputY) { x, y ->

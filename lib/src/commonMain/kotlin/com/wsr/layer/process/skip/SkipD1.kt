@@ -2,15 +2,18 @@
 
 package com.wsr.layer.process.skip
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layer.Context
 import com.wsr.layer.Layer
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlinx.serialization.Serializable
 
-private typealias CALC_DELTA_D1 = (input: List<IOType.D1>, context: Context) -> List<IOType.D1>
+private typealias CALC_DELTA_D1 = (input: Batch<IOType.D1>, context: Context) -> Batch<IOType.D1>
 
 @Serializable
 class SkipD1 internal constructor(
@@ -48,10 +51,10 @@ class SkipD1 internal constructor(
         }
     }
 
-    override fun expect(input: List<IOType.D1>, context: Context): List<IOType.D1> {
-        val main = layers.fold(input) { acc, layer -> layer._expect(acc, context) as List<IOType.D1> }
-        val skip = input.map(resizeToOutput)
-        return main + skip
+    override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D1> {
+        val main = layers.fold(input) { acc, layer -> layer._expect(acc, context) as Batch<IOType.D1> }
+        val skip = input.toList().map(resizeToOutput)
+        return (main.toList() + skip).toBatch()
     }
 
     private val trainChain: (CALC_DELTA_D1) -> CALC_DELTA_D1 by lazy {
@@ -60,26 +63,26 @@ class SkipD1 internal constructor(
         ) { layer, acc ->
             { final ->
                 { input, context ->
-                    layer._train(input, context) { acc(final)(it as List<IOType.D1>, context) } as List<IOType.D1>
+                    layer._train(input, context) { acc(final)(it as Batch<IOType.D1>, context) } as Batch<IOType.D1>
                 }
             }
         }
     }
 
     override fun train(
-        input: List<IOType.D1>,
+        input: Batch<IOType.D1>,
         context: Context,
-        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
-    ): List<IOType.D1> {
+        calcDelta: (Batch<IOType.D1>) -> Batch<IOType.D1>,
+    ): Batch<IOType.D1> {
         var skipDelta: List<IOType.D1> = emptyList()
 
         val final: CALC_DELTA_D1 = { acc, context ->
-            val output = input.map(resizeToOutput) + acc
-            calcDelta(output).also { skipDelta = it }
+            val output = input.toList().map(resizeToOutput) + acc.toList()
+            calcDelta(output.toBatch()).also { skipDelta = it.toList() }
         }
-        val mainDelta = trainChain(final)(input, context)
+        val mainDelta = trainChain(final)(input, context).toList()
 
-        return mainDelta + skipDelta.map(resizeToInput)
+        return (mainDelta + skipDelta.map(resizeToInput)).toBatch()
     }
 }
 

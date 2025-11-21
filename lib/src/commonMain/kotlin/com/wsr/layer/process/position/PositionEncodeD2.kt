@@ -1,10 +1,13 @@
 package com.wsr.layer.process.position
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -26,16 +29,16 @@ class PositionEncodeD2 internal constructor(
         }
     }
 
-    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> = input.map { input ->
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> = input.toList().map { input ->
         input + position
-    }
+    }.toBatch()
 
     override fun train(
-        input: List<IOType.D2>,
+        input: Batch<IOType.D2>,
         context: Context,
-        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
-    ): List<IOType.D2> {
-        val output = input.map { input -> input + position }
+        calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
+    ): Batch<IOType.D2> {
+        val output = input.toList().map { input -> input + position }.toBatch()
         return calcDelta(output)
     }
 }
