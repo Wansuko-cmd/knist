@@ -1,7 +1,8 @@
 package com.wsr
 
 class Batch<out T : IOType>(val value: FloatArray, val size: Int, val shape: List<Int>) {
-    internal val step = shape.reduce { acc, i -> acc * i }
+    val step = shape.reduce { acc, i -> acc * i }
+    val indices = 0 until size
 
     fun copy(value: FloatArray = this.value.copyOf(), size: Int = this.size, shape: List<Int> = this.shape) =
         Batch<T>(value = value, size = size, shape = shape)
