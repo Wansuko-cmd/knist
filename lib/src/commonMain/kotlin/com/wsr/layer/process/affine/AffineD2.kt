@@ -7,11 +7,10 @@ import com.wsr.dot.matmul.matMul
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
+import com.wsr.matmul.matMul
 import com.wsr.operator.div
 import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.transpose
-import com.wsr.toBatch
-import com.wsr.toList
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -32,16 +31,16 @@ class AffineD2 internal constructor(
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
         val output = forward(input)
-        val delta = calcDelta(output).toList()
+        val delta = calcDelta(output)
 
         val dx = delta.matMul(weight.transpose())
-        val dw = input.toList().transpose().matMul(delta)
+        val dw = input.transpose().matMul(delta)
 
-        weight = optimizer.adapt(weight = weight, dw = dw.toBatch())
-        return dx.toBatch()
+        weight = optimizer.adapt(weight = weight, dw = dw)
+        return dx
     }
 
-    private fun forward(input: Batch<IOType.D2>): Batch<IOType.D2> = input.toList().matMul(weight).toBatch()
+    private fun forward(input: Batch<IOType.D2>): Batch<IOType.D2> = input.matMul(weight)
 }
 
 fun <T> NetworkBuilder.D2<T>.affine(
