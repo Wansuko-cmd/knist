@@ -1,8 +1,8 @@
-package com.wsr.matmul
+package com.wsr.batch.matmul
 
 import com.wsr.Batch
 import com.wsr.IOType
-import com.wsr.collection.map
+import com.wsr.batch.collection.map
 import com.wsr.dot.matmul.matMul
 import com.wsr.get
 import com.wsr.set
