@@ -2,13 +2,15 @@
 
 package com.wsr.layer.process.conv
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.conv.ConvD1
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
 class ConvD1Test {
     @Test
     fun `ConvD1の_expect=畳み込み処理を適用`() {
@@ -40,15 +42,14 @@ class ConvD1Test {
 
         // input: [[1, 2, 3], [4, 5, 6]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
             )
         val context = Context(input)
 
-        val result = conv._expect(input, context)
-
+        val result = conv._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D2
+        val output = result[0]
         assertEquals(expected = 2, actual = output.shape[0]) // filter
         assertEquals(expected = 2, actual = output.shape[1]) // output size
     }
@@ -77,20 +78,18 @@ class ConvD1Test {
             )
 
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
             )
         val context = Context(input)
 
-        val calcDelta: (List<IOType>) -> List<IOType> = { output ->
-            val out = output[0] as IOType.D2
-            listOf(IOType.d2(out.shape) { f, i -> (f * 2 + i + 1).toFloat() })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = { output ->
+            batchOf(IOType.d2(output.shape) { f, i -> (f * 2 + i + 1).toFloat() })
         }
 
-        val result = conv._train(input, context, calcDelta)
-
+        val result = conv._train(input, context, calcDelta) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D2
+        val dx = result[0]
         assertEquals(expected = 2, actual = dx.shape[0]) // channel
         assertEquals(expected = 3, actual = dx.shape[1]) // input size
     }
@@ -119,26 +118,24 @@ class ConvD1Test {
             )
 
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
             )
         val context = Context(input)
 
-        val calcDelta: (List<IOType>) -> List<IOType> = { output ->
-            val out = output[0] as IOType.D2
-            listOf(IOType.d2(out.shape) { f, i -> (f * 2 + i + 1).toFloat() })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = { output ->
+            batchOf(IOType.d2(output.shape) { f, i -> (f * 2 + i + 1).toFloat() })
         }
 
         // trainで重みを更新
-        conv._train(input, context, calcDelta)
-
+        conv._train(input, context, calcDelta) as Batch<IOType.D2>
         // 更新後のexpect結果
         // afterOutput = D2(value=[20.8f, 26.4f, 48.0f, 64.0f], shape=[2, 2])
-        val afterOutput = conv._expect(input, context)[0] as IOType.D2
+        val afterOutput = conv._expect(input, context) as Batch<IOType.D2>
 
-        assertEquals(expected = 20.8f, actual = afterOutput[0, 0], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 26.4f, actual = afterOutput[0, 1], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 48.0f, actual = afterOutput[1, 0], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 64.0f, actual = afterOutput[1, 1], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 20.8f, actual = afterOutput[0][0, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 26.4f, actual = afterOutput[0][0, 1], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 48.0f, actual = afterOutput[0][1, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 64.0f, actual = afterOutput[0][1, 1], absoluteTolerance = 1e-5f)
     }
 }

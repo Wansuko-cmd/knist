@@ -1,5 +1,6 @@
 package com.wsr.layer.process.attention
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.collection.max
@@ -14,6 +15,8 @@ import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.broadcastToD2
 import com.wsr.reshape.transpose
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlin.math.exp
 import kotlin.math.sqrt
 import kotlinx.serialization.Serializable
@@ -35,7 +38,8 @@ class AttentionD2 internal constructor(
     private val optimizerO: Optimizer.D2,
 ) : Process.D2() {
     private val mask by lazy { IOType.d2(outputX, outputX) { x, y -> if (x < y) -1e9f else 0f } }
-    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> {
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
+        val input = input.toList()
         val heads = List(numOfHeads) {
             val query = input.matMul(weightQ[it])
             val key = input.matMul(weightK[it])
@@ -52,14 +56,15 @@ class AttentionD2 internal constructor(
                 heads[y / dim][it][x, y % dim]
             }
         }
-        return concat.matMul(weightO)
+        return concat.matMul(weightO).toBatch()
     }
 
     override fun train(
-        input: List<IOType.D2>,
+        input: Batch<IOType.D2>,
         context: Context,
-        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
-    ): List<IOType.D2> {
+        calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
+    ): Batch<IOType.D2> {
+        val input = input.toList()
         val query = List(numOfHeads) { input.matMul(weightQ[it]) }
         val key = List(numOfHeads) { input.matMul(weightK[it]) }
         val value = List(numOfHeads) { input.matMul(weightV[it]) }
@@ -80,12 +85,12 @@ class AttentionD2 internal constructor(
         }
         val output = concat.matMul(weightO)
 
-        val delta = calcDelta(output)
+        val delta = calcDelta(output.toBatch()).toList()
 
         // 出力変換（weightO）の逆伝播
         val dConcat = delta.matMul(weightO.transpose())
         val dwo = concat.transpose().matMul(delta)
-        weightO = optimizerO.adapt(weightO, dwo)
+        weightO = optimizerO.adapt(weightO, dwo.toBatch())
 
         // Concatの逆伝播（各ヘッドへの勾配に分割）
         val dHeads = List(numOfHeads) { headIndex ->
@@ -128,9 +133,9 @@ class AttentionD2 internal constructor(
         val dwv = List(numOfHeads) { n -> inputT.matMul(dValue[n]) }
 
         // 重みの更新
-        weightQ = List(numOfHeads) { optimizerQ[it].adapt(weightQ[it], dwq[it]) }
-        weightK = List(numOfHeads) { optimizerK[it].adapt(weightK[it], dwk[it]) }
-        weightV = List(numOfHeads) { optimizerV[it].adapt(weightV[it], dwv[it]) }
+        weightQ = List(numOfHeads) { optimizerQ[it].adapt(weightQ[it], dwq[it].toBatch()) }
+        weightK = List(numOfHeads) { optimizerK[it].adapt(weightK[it], dwk[it].toBatch()) }
+        weightV = List(numOfHeads) { optimizerV[it].adapt(weightV[it], dwv[it].toBatch()) }
 
         // dx
         return List(input.size) { batchIndex ->
@@ -138,7 +143,7 @@ class AttentionD2 internal constructor(
                 .fold(IOType.d2(outputX, outputY) { _, _ -> 0f }) { acc, headIndex ->
                     acc + dxq[headIndex][batchIndex] + dxk[headIndex][batchIndex] + dxv[headIndex][batchIndex]
                 }
-        }
+        }.toBatch()
     }
 
     private fun softmax(input: List<IOType.D2>): List<IOType.D2> = input.map { input ->
@@ -151,7 +156,7 @@ class AttentionD2 internal constructor(
     private fun Context.generatePaddingMask(): List<IOType.D2> = if (maskValue == null) {
         List(input.size) { IOType.d2(outputX, outputX) { _, _ -> 0f } }
     } else {
-        input.map { input ->
+        (input as Batch<IOType.D1>).toList().map { input ->
             val input = input as IOType.D1
             IOType
                 .d1(outputX) { if (input[it] == maskValue.toFloat()) -1e9f else 0f }

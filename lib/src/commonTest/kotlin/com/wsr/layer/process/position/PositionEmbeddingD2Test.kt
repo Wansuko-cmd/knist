@@ -2,7 +2,10 @@
 
 package com.wsr.layer.process.position
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
@@ -26,15 +29,14 @@ class PositionEmbeddingD2Test {
 
         // 入力は[[5, 6], [7, 8]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val context = Context(input)
 
         // 出力 = 入力 + 位置埋め込み
         // [[5, 6], [7, 8]] + [[1, 2], [3, 4]] = [[6, 8], [10, 12]]
-        val result = positionEmbedding._expect(input, context)
-
+        val result = positionEmbedding._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
         assertEquals(expected = 6.0f, actual = output[0, 0])
@@ -60,18 +62,17 @@ class PositionEmbeddingD2Test {
 
         // input = [[5, 6], [7, 8]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val context = Context(input)
 
         // deltaは[[0.1f, 0.2f], [0.3f, 0.4f]]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 1) * 0.1f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 1) * 0.1f })
         }
 
-        val result = positionEmbedding._train(input, context, calcDelta)
-
+        val result = positionEmbedding._train(input, context, calcDelta) as Batch<IOType.D2>
         // 位置埋め込みの逆伝播は、加算なのでdeltaをそのまま返す
         assertEquals(expected = 1, actual = result.size)
         val delta = result[0] as IOType.D2
@@ -98,30 +99,29 @@ class PositionEmbeddingD2Test {
 
         // input = [[5, 6], [7, 8]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val context = Context(input)
 
         // deltaは[[2, 4], [6, 8]]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0f })
         }
 
         // trainで位置埋め込みを更新
         // weight -= rate * delta.average() = [[1, 2], [3, 4]] - 0.1f * [[2, 4], [6, 8]]
         //                                   = [[1, 2], [3, 4]] - [[0.2f, 0.4f], [0.6f, 0.8f]]
         //                                   = [[0.8f, 1.6f], [2.4f, 3.2f]]
-        positionEmbedding._train(input, context, calcDelta)
-
+        positionEmbedding._train(input, context, calcDelta) as Batch<IOType.D2>
         // 更新後のexpect結果
         // output = input + weight = [[5, 6], [7, 8]] + [[0.8f, 1.6f], [2.4f, 3.2f]]
         //                         = [[5.8f, 7.6f], [9.4f, 11.2f]]
-        val afterOutput = positionEmbedding._expect(input, context)[0] as IOType.D2
+        val afterOutput = positionEmbedding._expect(input, context) as Batch<IOType.D2>
 
-        assertEquals(expected = 5.8f, actual = afterOutput[0, 0], absoluteTolerance = 1e-6f)
-        assertEquals(expected = 7.6f, actual = afterOutput[0, 1], absoluteTolerance = 1e-6f)
-        assertEquals(expected = 9.4f, actual = afterOutput[1, 0], absoluteTolerance = 1e-6f)
-        assertEquals(expected = 11.2f, actual = afterOutput[1, 1], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 5.8f, actual = afterOutput[0][0, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 7.6f, actual = afterOutput[0][0, 1], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 9.4f, actual = afterOutput[0][1, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 11.2f, actual = afterOutput[0][1, 1], absoluteTolerance = 1e-6f)
     }
 }

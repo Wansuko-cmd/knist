@@ -1,10 +1,13 @@
 package com.wsr.converter.word
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.Converter
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -17,7 +20,7 @@ class WordsD1(
     val vocabSize = words.size
     private val wordToId = words.mapIndexed { index, word -> word to index.toFloat() }.toMap()
 
-    override fun encode(input: List<List<String>>): List<IOType.D1> = input.map { sentence ->
+    override fun encode(input: List<List<String>>): Batch<IOType.D1> = input.toList().map { sentence ->
         val tokenIds = sentence
             .take(outputSize)
             .map { wordToId[it] ?: unknownIndex.toFloat() }
@@ -25,9 +28,9 @@ class WordsD1(
         IOType.d1(outputSize) { paddingIndex.toFloat() }.also {
             tokenIds.toFloatArray().copyInto(it.value)
         }
-    }
+    }.toBatch()
 
-    override fun decode(input: List<IOType.D1>): List<List<String>> = input.map { input ->
+    override fun decode(input: Batch<IOType.D1>): List<List<String>> = input.toList().map { input ->
         input.value
             .toList()
             .mapNotNull { id ->

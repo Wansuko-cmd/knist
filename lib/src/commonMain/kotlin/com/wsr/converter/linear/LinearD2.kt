@@ -1,16 +1,19 @@
 package com.wsr.converter.linear
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.Converter
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlinx.serialization.Serializable
 
 @Serializable
 class LinearD2(override val outputX: Int, override val outputY: Int) : Converter.D2<IOType.D2>() {
-    override fun encode(input: List<IOType.D2>): List<IOType.D2> = input
-    override fun decode(input: List<IOType.D2>): List<IOType.D2> = input
+    override fun encode(input: List<IOType.D2>): Batch<IOType.D2> = input.toBatch()
+    override fun decode(input: Batch<IOType.D2>): List<IOType.D2> = input.toList()
 }
 
 fun NetworkBuilder.Companion.inputD2(x: Int, y: Int, optimizer: Optimizer, initializer: WeightInitializer) = inputD2(

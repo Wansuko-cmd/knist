@@ -1,5 +1,6 @@
 package com.wsr.layer.process.norm.minmax
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.collection.max
@@ -11,6 +12,8 @@ import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
 
@@ -20,20 +23,22 @@ class MinMaxNormD1 internal constructor(
     private val optimizer: Optimizer.D1,
     private var weight: IOType.D1,
 ) : Process.D1() {
-    override fun expect(input: List<IOType.D1>, context: Context): List<IOType.D1> {
+    override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D1> {
+        val input = input.toList()
         val min = input.min()
         val max = input.max()
         return List(input.size) {
             val denominator = max[it] - min[it]
             IOType.d1(outputSize) { x -> weight[x] * (input[it][x] - min[it]) / denominator }
-        }
+        }.toBatch()
     }
 
     override fun train(
-        input: List<IOType.D1>,
+        input: Batch<IOType.D1>,
         context: Context,
-        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
-    ): List<IOType.D1> {
+        calcDelta: (Batch<IOType.D1>) -> Batch<IOType.D1>,
+    ): Batch<IOType.D1> {
+        val input = input.toList()
         val min = input.min()
         val max = input.max()
 
@@ -45,13 +50,13 @@ class MinMaxNormD1 internal constructor(
         val mean = List(input.size) { denominator[it] * numerator[it] }
         val output = mean.map { weight * it }
 
-        val delta = calcDelta(output)
+        val delta = calcDelta(output.toBatch()).toList()
 
         val dOutput = delta.map { it * weight }
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = mean * delta,
+            dw = (mean * delta).toBatch(),
         )
 
         // 分母側(dy/d[max(x) - min(x)])
@@ -77,7 +82,7 @@ class MinMaxNormD1 internal constructor(
                     else -> dNumerator[it][x]
                 }
             }
-        }
+        }.toBatch()
     }
 }
 

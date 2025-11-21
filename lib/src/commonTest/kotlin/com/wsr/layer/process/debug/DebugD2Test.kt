@@ -2,7 +2,10 @@
 
 package com.wsr.layer.process.debug
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.debug.DebugD2
 import kotlin.test.Test
@@ -11,7 +14,7 @@ import kotlin.test.assertEquals
 class DebugD2Test {
     @Test
     fun `DebugD2の_expect=入力をそのまま返し、onInputを呼び出す`() {
-        var capturedInput: List<IOType.D2>? = null
+        var capturedInput: Batch<IOType.D2>? = null
         val debug =
             DebugD2(
                 outputX = 2,
@@ -23,13 +26,12 @@ class DebugD2Test {
 
         // [[1, 2], [3, 4]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val context = Context(input)
 
-        val result = debug._expect(input, context)
-
+        val result = debug._expect(input, context) as Batch<IOType.D2>
         // 入力をそのまま返す
         assertEquals(expected = input, actual = result)
         // onInputが呼び出される
@@ -38,8 +40,8 @@ class DebugD2Test {
 
     @Test
     fun `DebugD2の_train=deltaをそのまま返し、onInputとonDeltaを呼び出す`() {
-        var capturedInput: List<IOType.D2>? = null
-        var capturedDelta: List<IOType.D2>? = null
+        var capturedInput: Batch<IOType.D2>? = null
+        var capturedDelta: Batch<IOType.D2>? = null
         val debug =
             DebugD2(
                 outputX = 2,
@@ -51,18 +53,17 @@ class DebugD2Test {
 
         // [[1, 2], [3, 4]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val context = Context(input)
 
         // deltaは[[2, 4], [6, 8]]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0f })
         }
 
-        val result = debug._train(input, context, calcDelta)
-
+        val result = debug._train(input, context, calcDelta) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2
         // deltaは[[2, 4], [6, 8]]

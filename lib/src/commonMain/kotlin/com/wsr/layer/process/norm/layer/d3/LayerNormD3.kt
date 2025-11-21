@@ -1,5 +1,6 @@
 package com.wsr.layer.process.norm.layer.d3
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.collection.average
@@ -14,6 +15,8 @@ import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlinx.serialization.Serializable
@@ -26,21 +29,23 @@ class LayerNormD3 internal constructor(
     private val optimizer: Optimizer.D3,
     private var weight: IOType.D3,
 ) : Process.D3() {
-    override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D3> {
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> {
+        val input = input.toList()
         val average = input.average()
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
         val denominator = variance.map { sqrt(it + 1e-10f) }
 
-        return weight * (numerator / denominator)
+        return (weight * (numerator / denominator)).toBatch()
     }
 
     override fun train(
-        input: List<IOType.D3>,
+        input: Batch<IOType.D3>,
         context: Context,
-        calcDelta: (List<IOType.D3>) -> List<IOType.D3>,
-    ): List<IOType.D3> {
+        calcDelta: (Batch<IOType.D3>) -> Batch<IOType.D3>,
+    ): Batch<IOType.D3> {
+        val input = input.toList()
         val average = input.average()
         val numerator = input - average
 
@@ -49,13 +54,13 @@ class LayerNormD3 internal constructor(
 
         val normalize = numerator / denominator
         val output = weight * normalize
-        val delta = calcDelta(output)
+        val delta = calcDelta(output.toBatch()).toList()
 
         val dOutput = delta * weight
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = normalize * delta,
+            dw = (normalize * delta).toBatch(),
         )
 
         // dy/[x-average(x)]
@@ -96,7 +101,7 @@ class LayerNormD3 internal constructor(
             dx1 + dx2
         }
         // dy/dx
-        return dx1 + dx2 + dx3
+        return (dx1 + dx2 + dx3).toBatch()
     }
 }
 

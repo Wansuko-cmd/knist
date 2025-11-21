@@ -3,9 +3,10 @@
 package com.wsr.converter.word
 
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
 class WordsD1Test {
     private val words = listOf("<PAD>", "<UNK>", "hello", "world", "test")
     private val paddingIndex = 0
@@ -106,7 +107,7 @@ class WordsD1Test {
             paddingIndex = paddingIndex,
         )
 
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(listOf(2.0f, 3.0f, 0.0f, 0.0f, 0.0f)),
             IOType.d1(listOf(4.0f, 0.0f, 0.0f, 0.0f, 0.0f)),
         )
@@ -131,7 +132,7 @@ class WordsD1Test {
             paddingIndex = paddingIndex,
         )
 
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(listOf(2.0f, 99.0f, 3.0f, 0.0f, 0.0f)),
         )
 
@@ -152,7 +153,7 @@ class WordsD1Test {
             paddingIndex = paddingIndex,
         )
 
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(listOf(2.0f, 1.0f, 3.0f, 0.0f, 0.0f)),
         )
 
@@ -194,7 +195,7 @@ class WordsD1Test {
             paddingIndex = paddingIndex,
         )
 
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(listOf(2.0f, 3.0f, 0.0f, 0.0f, 0.0f)),
         )
 
@@ -204,7 +205,7 @@ class WordsD1Test {
 
         // 結果は元の入力と同じになる
         assertEquals(expected = input.size, actual = encoded.size)
-        for (i in input.indices) {
+        for (i in 0 until input.size) {
             for (j in 0 until input[i].shape[0]) {
                 assertEquals(expected = input[i][j], actual = encoded[i][j])
             }
