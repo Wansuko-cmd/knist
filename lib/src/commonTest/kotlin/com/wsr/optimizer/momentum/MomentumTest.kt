@@ -2,9 +2,8 @@
 
 package com.wsr.optimizer.momentum
 
-import kotlin.test.Test
-
 import com.wsr.get
+import kotlin.test.Test
 
 class MomentumTest {
     @Test

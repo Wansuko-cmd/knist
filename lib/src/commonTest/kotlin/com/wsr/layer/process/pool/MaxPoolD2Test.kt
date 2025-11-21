@@ -2,16 +2,14 @@
 
 package com.wsr.layer.process.pool
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.pool.MaxPoolD2
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class MaxPoolD2Test {
     @Test
@@ -25,7 +23,8 @@ class MaxPoolD2Test {
 
         // [[1, 2, 3, 4]]
         val input =
-            batchOf(IOType.d2(1, 4) { _, y -> (y + 1).toFloat() },
+            batchOf(
+                IOType.d2(1, 4) { _, y -> (y + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -51,7 +50,8 @@ class MaxPoolD2Test {
 
         // [[1, 3, 2, 4]]
         val input =
-            batchOf(IOType.d2(1, 4) { _, y ->
+            batchOf(
+                IOType.d2(1, 4) { _, y ->
                     when (y) {
                         0 -> 1.0f
                         1 -> 3.0f

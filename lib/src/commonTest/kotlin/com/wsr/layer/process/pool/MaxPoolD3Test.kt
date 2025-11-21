@@ -2,16 +2,14 @@
 
 package com.wsr.layer.process.pool
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.pool.MaxPoolD3
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class MaxPoolD3Test {
     @Test
@@ -24,7 +22,8 @@ class MaxPoolD3Test {
         //   [9, 10, 11, 12],
         //   [13, 14, 15, 16]]]
         val input =
-            batchOf(IOType.d3(1, 4, 4) { _, y, z -> (y * 4 + z + 1).toFloat() },
+            batchOf(
+                IOType.d3(1, 4, 4) { _, y, z -> (y * 4 + z + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -55,7 +54,8 @@ class MaxPoolD3Test {
 
         // 1チャネル、4x4の入力
         val input =
-            batchOf(IOType.d3(1, 4, 4) { _, y, z -> (y * 4 + z + 1).toFloat() },
+            batchOf(
+                IOType.d3(1, 4, 4) { _, y, z -> (y * 4 + z + 1).toFloat() },
             )
         val context = Context(input)
 

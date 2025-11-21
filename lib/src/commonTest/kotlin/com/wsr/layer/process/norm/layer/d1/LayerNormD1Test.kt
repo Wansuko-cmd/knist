@@ -1,17 +1,15 @@
 package com.wsr.layer.process.norm.layer.d1
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
+import com.wsr.toBatch
 import kotlin.math.sqrt
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
-import com.wsr.toBatch
 
 class LayerNormD1Test {
     @Test
@@ -27,7 +25,8 @@ class LayerNormD1Test {
 
         // 2つのバッチ: [2, 4], [1, 3]
         val input =
-            batchOf(IOType.Companion.d1(listOf(2.0f, 4.0f)),
+            batchOf(
+                IOType.Companion.d1(listOf(2.0f, 4.0f)),
                 IOType.Companion.d1(listOf(1.0f, 3.0f)),
             )
         val context = Context(input)
@@ -78,7 +77,8 @@ class LayerNormD1Test {
 
         // 2つのバッチ: [0, 2], [2, 4]
         val input =
-            batchOf(IOType.Companion.d1(listOf(0.0f, 2.0f)),
+            batchOf(
+                IOType.Companion.d1(listOf(0.0f, 2.0f)),
                 IOType.Companion.d1(listOf(2.0f, 4.0f)),
             )
         val context = Context(input)
@@ -129,7 +129,8 @@ class LayerNormD1Test {
 
         // [1, 4, 7]
         val input =
-            batchOf(IOType.Companion.d1(listOf(1.0f, 4.0f, 7.0f)),
+            batchOf(
+                IOType.Companion.d1(listOf(1.0f, 4.0f, 7.0f)),
             )
         val context = Context(input)
 

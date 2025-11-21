@@ -2,16 +2,14 @@
 
 package com.wsr.layer.reshape.reshape
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.reshape.reshape.ReshapeD3ToD2
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class ReshapeD3ToD2Test {
     @Test
@@ -20,7 +18,8 @@ class ReshapeD3ToD2Test {
 
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
-            batchOf(IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+            batchOf(
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -44,7 +43,8 @@ class ReshapeD3ToD2Test {
 
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
-            batchOf(IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+            batchOf(
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
         val context = Context(input)
 

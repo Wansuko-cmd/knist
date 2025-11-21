@@ -2,17 +2,15 @@
 
 package com.wsr.layer.process.function.relu
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.function.relu.SwishD2
 import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class SwishD2Test {
     @Test
@@ -21,7 +19,8 @@ class SwishD2Test {
 
         // [[0, 1, 2]]
         val input =
-            batchOf(IOType.d2(1, 3) { _, y -> y.toFloat() },
+            batchOf(
+                IOType.d2(1, 3) { _, y -> y.toFloat() },
             )
         val context = Context(input)
 
@@ -44,7 +43,8 @@ class SwishD2Test {
 
         // [[0, 1]]
         val input =
-            batchOf(IOType.d2(1, 2) { _, y -> y.toFloat() },
+            batchOf(
+                IOType.d2(1, 2) { _, y -> y.toFloat() },
             )
         val context = Context(input)
 

@@ -13,7 +13,9 @@ import kotlinx.serialization.Serializable
 internal class ReshapeD2ToD1(override val outputSize: Int) : Reshape.D2ToD1() {
     constructor(inputX: Int, inputY: Int) : this(outputSize = inputX * inputY)
 
-    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D1> = input.toList().map { IOType.d1(it.value) }.toBatch()
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D1> = input.toList().map {
+        IOType.d1(it.value)
+    }.toBatch()
 
     override fun train(
         input: Batch<IOType.D2>,

@@ -2,9 +2,8 @@
 
 package com.wsr.optimizer.rms
 
-import kotlin.test.Test
-
 import com.wsr.get
+import kotlin.test.Test
 
 class RmsPropTest {
     @Test

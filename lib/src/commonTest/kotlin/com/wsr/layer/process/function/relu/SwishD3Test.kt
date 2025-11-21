@@ -2,19 +2,15 @@
 
 package com.wsr.layer.process.function.relu
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.function.relu.SwishD3
 import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class SwishD3Test {
     @Test
@@ -23,7 +19,8 @@ class SwishD3Test {
 
         // [[[0, 1, 2]]]
         val input =
-            batchOf(IOType.d3(1, 1, 3) { _, _, z -> z.toFloat() },
+            batchOf(
+                IOType.d3(1, 1, 3) { _, _, z -> z.toFloat() },
             )
         val context = Context(input)
 
@@ -45,7 +42,8 @@ class SwishD3Test {
 
         // [[[1, 2]]]
         val input =
-            batchOf(IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() },
+            batchOf(
+                IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() },
             )
         val context = Context(input)
 

@@ -2,17 +2,15 @@
 
 package com.wsr.layer.process.function.sigmoid
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.function.sigmoid.SigmoidD1
 import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class SigmoidD1Test {
     @Test
@@ -21,7 +19,8 @@ class SigmoidD1Test {
 
         // [[0, 1, 2]]
         val input =
-            batchOf(IOType.d1(listOf(0.0f, 1.0f, 2.0f)),
+            batchOf(
+                IOType.d1(listOf(0.0f, 1.0f, 2.0f)),
             )
         val context = Context(input)
 
@@ -44,7 +43,8 @@ class SigmoidD1Test {
 
         // [[0, 1]]
         val input =
-            batchOf(IOType.d1(listOf(0.0f, 1.0f)),
+            batchOf(
+                IOType.d1(listOf(0.0f, 1.0f)),
             )
         val context = Context(input)
 

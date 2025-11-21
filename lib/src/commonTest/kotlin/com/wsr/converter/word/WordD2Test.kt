@@ -4,9 +4,9 @@ package com.wsr.converter.word
 
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.get
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.wsr.get
 class WordD2Test {
     private val words = listOf("<PAD>", "<UNK>", "hello", "world", "test")
     private val length = 3

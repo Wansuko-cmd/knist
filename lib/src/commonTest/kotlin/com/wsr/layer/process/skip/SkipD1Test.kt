@@ -2,7 +2,10 @@
 
 package com.wsr.layer.process.skip
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.affine.AffineD1
 import com.wsr.layer.process.bias.BiasD1
@@ -10,11 +13,6 @@ import com.wsr.layer.process.skip.SkipD1
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class SkipD1Test {
     @Test

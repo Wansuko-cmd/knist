@@ -2,17 +2,15 @@
 
 package com.wsr.layer.process.function.softmax
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.function.softmax.SoftmaxD2
 import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class SoftmaxD2Test {
     @Test
@@ -21,7 +19,8 @@ class SoftmaxD2Test {
 
         // [[1, 2, 3]]
         val input =
-            batchOf(IOType.d2(1, 3) { _, y -> (y + 1).toFloat() },
+            batchOf(
+                IOType.d2(1, 3) { _, y -> (y + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -50,7 +49,8 @@ class SoftmaxD2Test {
 
         // [[1, 2]]
         val input =
-            batchOf(IOType.d2(1, 2) { _, y -> (y + 1).toFloat() },
+            batchOf(
+                IOType.d2(1, 2) { _, y -> (y + 1).toFloat() },
             )
         val context = Context(input)
 

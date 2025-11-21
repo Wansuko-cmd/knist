@@ -5,12 +5,12 @@ package com.wsr.layer.process.conv
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.conv.ConvD1
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.wsr.get
 class ConvD1Test {
     @Test
     fun `ConvD1の_expect=畳み込み処理を適用`() {
@@ -42,7 +42,8 @@ class ConvD1Test {
 
         // input: [[1, 2, 3], [4, 5, 6]]
         val input =
-            batchOf(IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
+            batchOf(
+                IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -77,7 +78,8 @@ class ConvD1Test {
             )
 
         val input =
-            batchOf(IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
+            batchOf(
+                IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -116,7 +118,8 @@ class ConvD1Test {
             )
 
         val input =
-            batchOf(IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
+            batchOf(
+                IOType.d2(2, 3) { c, i -> (c * 3 + i + 1).toFloat() },
             )
         val context = Context(input)
 

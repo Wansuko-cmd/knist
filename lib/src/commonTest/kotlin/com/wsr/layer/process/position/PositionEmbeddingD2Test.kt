@@ -2,16 +2,14 @@
 
 package com.wsr.layer.process.position
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class PositionEmbeddingD2Test {
     @Test
@@ -31,7 +29,8 @@ class PositionEmbeddingD2Test {
 
         // 入力は[[5, 6], [7, 8]]
         val input =
-            batchOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
+            batchOf(
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val context = Context(input)
 
@@ -63,7 +62,8 @@ class PositionEmbeddingD2Test {
 
         // input = [[5, 6], [7, 8]]
         val input =
-            batchOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
+            batchOf(
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val context = Context(input)
 
@@ -99,7 +99,8 @@ class PositionEmbeddingD2Test {
 
         // input = [[5, 6], [7, 8]]
         val input =
-            batchOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
+            batchOf(
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 5).toFloat() },
             )
         val context = Context(input)
 

@@ -2,7 +2,10 @@
 
 package com.wsr.layer.process.skip
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.affine.AffineD2
 import com.wsr.layer.process.bias.BiasD2
@@ -10,11 +13,6 @@ import com.wsr.layer.process.skip.SkipD2
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class SkipD2Test {
     @Test
@@ -178,7 +176,8 @@ class SkipD2Test {
         )
 
         // input = [[1, 2, 0], [3, 4, 0], [0, 0, 0]]  (既にzero-paddingされている想定)
-        val input = batchOf(IOType.d2(3, 3) { x, y ->
+        val input = batchOf(
+            IOType.d2(3, 3) { x, y ->
                 when {
                     x == 0 && y == 0 -> 1.0f
                     x == 0 && y == 1 -> 2.0f
@@ -226,7 +225,8 @@ class SkipD2Test {
         )
 
         // input = [[1, 2, 0], [3, 4, 0], [0, 0, 0]]
-        val input = batchOf(IOType.d2(3, 3) { x, y ->
+        val input = batchOf(
+            IOType.d2(3, 3) { x, y ->
                 when {
                     x == 0 && y == 0 -> 1.0f
                     x == 0 && y == 1 -> 2.0f
@@ -240,7 +240,8 @@ class SkipD2Test {
 
         // 次の層からのdelta = [[10,20,30],[40,50,60],[70,80,90]]
         val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
-            batchOf(IOType.d2(3, 3) { x, y ->
+            batchOf(
+                IOType.d2(3, 3) { x, y ->
                     ((x * 3 + y + 1) * 10).toFloat()
                 },
             )
@@ -283,7 +284,8 @@ class SkipD2Test {
         )
 
         // input = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]]
-        val input = batchOf(IOType.d2(4, 4) { x, y ->
+        val input = batchOf(
+            IOType.d2(4, 4) { x, y ->
                 (x * 4 + y + 1).toFloat()
             },
         )
@@ -311,7 +313,8 @@ class SkipD2Test {
         )
 
         // input = [[3.5f, 5.5f], [11.5f, 13.5f]] (既にaverage poolingされている想定)
-        val input2 = batchOf(IOType.d2(2, 2) { x, y ->
+        val input2 = batchOf(
+            IOType.d2(2, 2) { x, y ->
                 when {
                     x == 0 && y == 0 -> 3.5f
                     x == 0 && y == 1 -> 5.5f
@@ -354,7 +357,8 @@ class SkipD2Test {
         )
 
         // input = [[3.5f, 5.5f], [11.5f, 13.5f]] (既にaverage poolingされている想定)
-        val input = batchOf(IOType.d2(2, 2) { x, y ->
+        val input = batchOf(
+            IOType.d2(2, 2) { x, y ->
                 when {
                     x == 0 && y == 0 -> 3.5f
                     x == 0 && y == 1 -> 5.5f
@@ -368,7 +372,8 @@ class SkipD2Test {
 
         // 次の層からのdelta = [[40, 80], [120, 160]]
         val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
-            batchOf(IOType.d2(2, 2) { x, y ->
+            batchOf(
+                IOType.d2(2, 2) { x, y ->
                     ((x * 2 + y + 1) * 40).toFloat()
                 },
             )

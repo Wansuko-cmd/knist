@@ -5,12 +5,12 @@ package com.wsr.layer.process.affine
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.affine.AffineD2
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.wsr.get
 class AffineD2Test {
     @Test
     fun `AffineD2の_expect=チャネルごとに重み行列との積を計算`() {
@@ -30,7 +30,8 @@ class AffineD2Test {
 
         // input = [[1, 2], [3, 4]]
         val input =
-            batchOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+            batchOf(
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -68,7 +69,8 @@ class AffineD2Test {
 
         // input = [[1, 2]]
         val input =
-            batchOf(IOType.d2(1, 2) { _, y -> (y + 1).toFloat() },
+            batchOf(
+                IOType.d2(1, 2) { _, y -> (y + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -105,7 +107,8 @@ class AffineD2Test {
 
         // input = [[1, 2]]
         val input =
-            batchOf(IOType.d2(1, 2) { _, y -> (y + 1).toFloat() },
+            batchOf(
+                IOType.d2(1, 2) { _, y -> (y + 1).toFloat() },
             )
         val context = Context(input)
 

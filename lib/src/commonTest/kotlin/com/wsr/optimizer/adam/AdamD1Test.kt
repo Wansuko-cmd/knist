@@ -3,10 +3,9 @@
 package com.wsr.optimizer.adam
 
 import com.wsr.IOType
+import com.wsr.get
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
 
 class AdamD1Test {
     @Test

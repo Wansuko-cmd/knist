@@ -5,12 +5,12 @@ package com.wsr.layer.process.bias
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.bias.BiasD2
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.wsr.get
 class BiasD2Test {
     @Test
     fun `BiasD2の_expect=入力にバイアスを足した値を返す`() {
@@ -29,7 +29,8 @@ class BiasD2Test {
 
         // [[1, 2], [3, 4]]
         val input =
-            batchOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+            batchOf(
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -60,7 +61,8 @@ class BiasD2Test {
 
         // [[1, 2], [3, 4]]
         val input =
-            batchOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+            batchOf(
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -96,7 +98,8 @@ class BiasD2Test {
 
         // input = [[1, 2], [3, 4]]
         val input =
-            batchOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+            batchOf(
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val context = Context(input)
 

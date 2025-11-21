@@ -2,16 +2,14 @@
 
 package com.wsr.layer.process.function.relu
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.function.relu.ReLUD3
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class ReLUD3Test {
     @Test
@@ -20,7 +18,8 @@ class ReLUD3Test {
 
         // [[[1, -2], [3, -4]], [[5, -6], [7, -8]]]
         val input =
-            batchOf(IOType.d3(2, 2, 2) { x, y, z ->
+            batchOf(
+                IOType.d3(2, 2, 2) { x, y, z ->
                     val value = (x * 4 + y * 2 + z + 1).toFloat()
                     if (z % 2 == 1) -value else value
                 },
@@ -47,7 +46,8 @@ class ReLUD3Test {
 
         // [[[1, -2], [3, -4]], [[5, -6], [7, -8]]]
         val input =
-            batchOf(IOType.d3(2, 2, 2) { x, y, z ->
+            batchOf(
+                IOType.d3(2, 2, 2) { x, y, z ->
                     val value = (x * 4 + y * 2 + z + 1).toFloat()
                     if (z % 2 == 1) -value else value
                 },
