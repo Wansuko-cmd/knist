@@ -1,5 +1,6 @@
 package com.wsr.layer.reshape.token
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.initializer.WeightInitializer
@@ -8,6 +9,8 @@ import com.wsr.layer.reshape.Reshape
 import com.wsr.operator.div
 import com.wsr.operator.plus
 import com.wsr.optimizer.Optimizer
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlin.repeat
 import kotlinx.serialization.Serializable
 
@@ -20,15 +23,16 @@ class TokenEmbeddingD1ToD2 internal constructor(
     private var weight: IOType.D2,
 ) : Reshape.D1ToD2() {
 
-    override fun expect(input: List<IOType.D1>, context: Context): List<IOType.D2> = forward(input)
+    override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D2> = forward(input)
 
     override fun train(
-        input: List<IOType.D1>,
+        input: Batch<IOType.D1>,
         context: Context,
-        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
-    ): List<IOType.D1> {
-        val output = forward(input)
-        val delta = calcDelta(output)
+        calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
+    ): Batch<IOType.D1> {
+        val input = input.toList()
+        val output = forward(input.toBatch())
+        val delta = calcDelta(output).toList()
 
         val dw = IOType.d2(shape = listOf(vocabSize, outputY))
         repeat(input.size) {
@@ -50,15 +54,15 @@ class TokenEmbeddingD1ToD2 internal constructor(
 
         // Embedding層は離散的なので、入力への勾配は意味を持たない
         // しかし型の整合性のため、ダミーのD1を返す
-        return List(input.size) { IOType.d1(input[it].shape) }
+        return List(input.size) { IOType.d1(input[it].shape) }.toBatch()
     }
 
-    private fun forward(input: List<IOType.D1>): List<IOType.D2> = input.map { tokenIds ->
+    private fun forward(input: Batch<IOType.D1>): Batch<IOType.D2> = input.toList().map { tokenIds ->
         IOType.d2(outputX, outputY) { x, y ->
             val tokenId = tokenIds[x].toInt()
             if (tokenId in 0 until vocabSize) weight[tokenId, y] else 0f
         }
-    }
+    }.toBatch()
 }
 
 fun <T> NetworkBuilder.D1<T>.tokenEmbedding(

@@ -1,5 +1,6 @@
 package com.wsr.layer.process.conv
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.conv.convD1
@@ -11,6 +12,8 @@ import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.toD2
 import com.wsr.reshape.toD3
 import com.wsr.reshape.transpose
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -41,16 +44,17 @@ class ConvD1 internal constructor(
         }
     }
 
-    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> =
-        input.convD1(weight, stride, padding)
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> =
+        input.toList().convD1(weight, stride, padding).toBatch()
 
     override fun train(
-        input: List<IOType.D2>,
+        input: Batch<IOType.D2>,
         context: Context,
-        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
-    ): List<IOType.D2> {
+        calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
+    ): Batch<IOType.D2> {
+        val input = input.toList()
         val output = input.convD1(weight, stride, padding)
-        val delta = calcDelta(output)
+        val delta = calcDelta(output.toBatch()).toList()
 
         val reversed =
             IOType
@@ -67,9 +71,9 @@ class ConvD1 internal constructor(
                         }.toD2()
                 }.toD3()
         }
-        weight = optimizer.adapt(weight = weight, dw = dw)
+        weight = optimizer.adapt(weight = weight, dw = dw.toBatch())
 
-        return dx
+        return dx.toBatch()
     }
 }
 

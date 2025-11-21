@@ -1,5 +1,6 @@
 package com.wsr.layer.process.affine
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.dot.matmul.matMul
@@ -10,6 +11,8 @@ import com.wsr.operator.div
 import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.toD2
 import com.wsr.reshape.transpose
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,22 +21,22 @@ class AffineD1 internal constructor(
     private val optimizer: Optimizer.D2,
     private var weight: IOType.D2,
 ) : Process.D1() {
-    override fun expect(input: List<IOType.D1>, context: Context): List<IOType.D1> = forward(input)
+    override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D1> = forward(input)
 
     override fun train(
-        input: List<IOType.D1>,
+        input: Batch<IOType.D1>,
         context: Context,
-        calcDelta: (List<IOType.D1>) -> List<IOType.D1>,
-    ): List<IOType.D1> {
+        calcDelta: (Batch<IOType.D1>) -> Batch<IOType.D1>,
+    ): Batch<IOType.D1> {
         val output = forward(input)
-        val delta = calcDelta(output)
+        val delta = calcDelta(output).toList()
         val dx = weight.matMul(delta)
-        val dw = input.toD2().transpose().matMul(delta.toD2())
+        val dw = input.toList().toD2().transpose().matMul(delta.toD2())
         weight = optimizer.adapt(weight = weight, dw = dw)
-        return dx
+        return dx.toBatch()
     }
 
-    private fun forward(input: List<IOType.D1>): List<IOType.D1> = weight.transpose().matMul(input)
+    private fun forward(input: Batch<IOType.D1>): Batch<IOType.D1> = weight.transpose().matMul(input.toList()).toBatch()
 }
 
 fun <T> NetworkBuilder.D1<T>.affine(

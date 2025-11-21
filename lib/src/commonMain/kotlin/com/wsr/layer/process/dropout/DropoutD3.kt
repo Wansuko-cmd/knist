@@ -1,11 +1,14 @@
 package com.wsr.layer.process.dropout
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.nextFloat
 import com.wsr.operator.times
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlin.random.Random
 import kotlinx.serialization.Serializable
 
@@ -20,21 +23,21 @@ class DropoutD3 internal constructor(
     private val random by lazy { seed?.let { Random(it) } ?: Random }
     private val q = 1 / ratio
 
-    override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D3> = input
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> = input
 
     override fun train(
-        input: List<IOType.D3>,
+        input: Batch<IOType.D3>,
         context: Context,
-        calcDelta: (List<IOType.D3>) -> List<IOType.D3>,
-    ): List<IOType.D3> {
+        calcDelta: (Batch<IOType.D3>) -> Batch<IOType.D3>,
+    ): Batch<IOType.D3> {
         val mask = IOType.d3(
             i = outputX,
             j = outputY,
             k = outputZ,
         ) { _, _, _ -> if (random.nextFloat(0f, 1f) <= ratio) q else 0f }
-        val output = input * mask
-        val delta = calcDelta(output)
-        return delta * mask
+        val output = input.toList() * mask
+        val delta = calcDelta(output.toBatch())
+        return (delta.toList() * mask).toBatch()
     }
 }
 
