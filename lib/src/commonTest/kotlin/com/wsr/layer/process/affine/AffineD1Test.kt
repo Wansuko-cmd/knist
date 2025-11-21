@@ -5,12 +5,12 @@ package com.wsr.layer.process.affine
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.affine.AffineD1
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.wsr.get
 class AffineD1Test {
     @Test
     fun `AffineD1の_expect=重み行列との積を返す`() {

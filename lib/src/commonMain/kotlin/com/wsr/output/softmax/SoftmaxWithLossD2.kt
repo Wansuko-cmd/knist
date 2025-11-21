@@ -15,8 +15,8 @@ import com.wsr.reshape.broadcastToD2
 import com.wsr.reshape.toD2
 import com.wsr.toBatch
 import com.wsr.toList
-import kotlinx.serialization.Serializable
 import kotlin.math.exp
+import kotlinx.serialization.Serializable
 
 @Serializable
 internal class SoftmaxWithLossD2 internal constructor(

@@ -5,12 +5,12 @@ package com.wsr.layer.process.dropout
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.dropout.DropoutD3
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import com.wsr.get
 class DropoutD3Test {
     @Test
     fun `DropoutD3の_expect=入力をそのまま返す`() {
@@ -18,7 +18,8 @@ class DropoutD3Test {
 
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
-            batchOf(IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+            batchOf(
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -42,7 +43,8 @@ class DropoutD3Test {
 
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
-            batchOf(IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+            batchOf(
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
         val context = Context(input)
 

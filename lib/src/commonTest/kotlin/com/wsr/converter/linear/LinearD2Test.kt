@@ -4,9 +4,9 @@ package com.wsr.converter.linear
 
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.get
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.wsr.get
 class LinearD2Test {
     @Test
     fun `LinearD2のencode=入力をそのまま返す`() {

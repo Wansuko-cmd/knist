@@ -2,16 +2,14 @@
 
 package com.wsr.layer.process.function.relu
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.function.relu.LeakyReLUD3
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class LeakyReLUD3Test {
     @Test
@@ -20,7 +18,8 @@ class LeakyReLUD3Test {
 
         // [[[1, 2]], [[3, 4]]] (全て正の値でテスト)
         val input =
-            batchOf(IOType.d3(2, 1, 2) { x, _, z -> (x * 2 + z + 1).toFloat() },
+            batchOf(
+                IOType.d3(2, 1, 2) { x, _, z -> (x * 2 + z + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -40,7 +39,8 @@ class LeakyReLUD3Test {
 
         // [[[1, -2]], [[3, -4]]] 正負混在
         val input =
-            batchOf(IOType.d3(2, 1, 2) { x, _, z ->
+            batchOf(
+                IOType.d3(2, 1, 2) { x, _, z ->
                     val value = (x * 2 + z + 1).toFloat()
                     if (z % 2 == 1) -value else value
                 },

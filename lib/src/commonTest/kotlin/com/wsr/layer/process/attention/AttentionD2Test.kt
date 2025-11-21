@@ -5,12 +5,12 @@ package com.wsr.layer.process.attention
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import com.wsr.get
 class AttentionD2Test {
     @Test
     fun `AttentionD2の_expect=Multi-Head Attentionの出力形状が正しい`() {
@@ -42,11 +42,13 @@ class AttentionD2Test {
         )
 
         // 入力: [batch=2, channel=4, inputY=8]
-        val input = batchOf(IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() },
+        val input = batchOf(
+            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() },
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 2).toFloat() },
         )
         // Contextには元の入力(ダミーのD1)を渡す
-        val originalInput = batchOf(IOType.d1(channel) { it.toFloat() },
+        val originalInput = batchOf(
+            IOType.d1(channel) { it.toFloat() },
             IOType.d1(channel) { it.toFloat() },
         )
         val context = Context(originalInput)
@@ -88,7 +90,8 @@ class AttentionD2Test {
             optimizerO = Sgd(0.01f).d2(numOfHeads * dim, inputY),
         )
 
-        val input = batchOf(IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
+        val input = batchOf(
+            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
         )
         val originalInput = batchOf(IOType.d1(channel) { it.toFloat() })
         val context = Context(originalInput)
@@ -135,7 +138,8 @@ class AttentionD2Test {
             optimizerO = Sgd(0.1f).d2(numOfHeads * dim, inputY),
         )
 
-        val input = batchOf(IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.01f },
+        val input = batchOf(
+            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.01f },
         )
         val originalInput = batchOf(IOType.d1(channel) { it.toFloat() })
         val context = Context(originalInput)
@@ -191,7 +195,8 @@ class AttentionD2Test {
             optimizerO = Sgd(0.01f).d2(numOfHeads * dim, inputY),
         )
 
-        val input = batchOf(IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
+        val input = batchOf(
+            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
         )
         val originalInput = batchOf(IOType.d1(channel) { it.toFloat() })
         val context = Context(originalInput)
@@ -232,7 +237,8 @@ class AttentionD2Test {
             optimizerO = Sgd(0.01f).d2(numOfHeads * dim, inputY),
         )
 
-        val input = batchOf(IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
+        val input = batchOf(
+            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
         )
         val originalInput = batchOf(IOType.d1(channel) { it.toFloat() })
         val context = Context(originalInput)

@@ -19,7 +19,8 @@ class PositionEmbeddingD2 internal constructor(
     private val optimizer: Optimizer.D2,
     private var weight: IOType.D2,
 ) : Process.D2() {
-    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> = (input.toList() + weight).toBatch()
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> =
+        (input.toList() + weight).toBatch()
 
     override fun train(
         input: Batch<IOType.D2>,

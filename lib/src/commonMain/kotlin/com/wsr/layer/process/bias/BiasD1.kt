@@ -19,7 +19,8 @@ class BiasD1 internal constructor(
     private val optimizer: Optimizer.D1,
     private var weight: IOType.D1,
 ) : Process.D1() {
-    override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D1> = (input.toList() + weight).toBatch()
+    override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D1> =
+        (input.toList() + weight).toBatch()
 
     override fun train(
         input: Batch<IOType.D1>,

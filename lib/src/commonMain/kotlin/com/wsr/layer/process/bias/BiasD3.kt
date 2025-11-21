@@ -21,7 +21,8 @@ class BiasD3(
     private val optimizer: Optimizer.D3,
     private var weight: IOType.D3,
 ) : Process.D3() {
-    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> = (input.toList() + weight).toBatch()
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> =
+        (input.toList() + weight).toBatch()
 
     override fun train(
         input: Batch<IOType.D3>,

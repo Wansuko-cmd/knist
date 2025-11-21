@@ -17,7 +17,8 @@ class LinearD1Test {
 
         // [[1, 2, 3]]
         val input =
-            batchOf(IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+            batchOf(
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val context = Context(input)
 
@@ -31,7 +32,8 @@ class LinearD1Test {
 
         // [[1, 2, 3]]
         val input =
-            batchOf(IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+            batchOf(
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val context = Context(input)
 

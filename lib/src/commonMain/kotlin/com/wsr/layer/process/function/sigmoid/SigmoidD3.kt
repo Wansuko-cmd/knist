@@ -13,7 +13,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 class SigmoidD3 internal constructor(override val outputX: Int, override val outputY: Int, override val outputZ: Int) :
     Process.D3() {
-    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> = input.toList().map(::forward).toBatch()
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> =
+        input.toList().map(::forward).toBatch()
 
     override fun train(
         input: Batch<IOType.D3>,

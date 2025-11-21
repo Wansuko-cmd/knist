@@ -5,11 +5,11 @@ package com.wsr.layer.process.debug
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.debug.DebugD1
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.wsr.get
 class DebugD1Test {
     @Test
     fun `DebugD1の_expect=入力をそのまま返し、onInputを呼び出す`() {
@@ -22,7 +22,8 @@ class DebugD1Test {
 
         // [1, 2, 3]
         val input =
-            batchOf(IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+            batchOf(
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val context = Context(input)
 
@@ -45,7 +46,8 @@ class DebugD1Test {
 
         // [1, 2, 3]
         val input =
-            batchOf(IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+            batchOf(
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val context = Context(input)
 

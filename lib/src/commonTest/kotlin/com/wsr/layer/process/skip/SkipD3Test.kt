@@ -2,7 +2,10 @@
 
 package com.wsr.layer.process.skip
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.bias.BiasD3
 import com.wsr.layer.process.function.linear.LinearD3
@@ -10,11 +13,6 @@ import com.wsr.layer.process.skip.SkipD3
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class SkipD3Test {
     @Test
@@ -195,7 +193,8 @@ class SkipD3Test {
         )
 
         // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val input = batchOf(IOType.d3(2, 2, 2) { x, y, z ->
+        val input = batchOf(
+            IOType.d3(2, 2, 2) { x, y, z ->
                 (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
@@ -239,7 +238,8 @@ class SkipD3Test {
         )
 
         // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val input = batchOf(IOType.d3(2, 2, 2) { x, y, z ->
+        val input = batchOf(
+            IOType.d3(2, 2, 2) { x, y, z ->
                 (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
@@ -247,7 +247,8 @@ class SkipD3Test {
 
         // 次の層からのdelta = [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
         val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
-            batchOf(IOType.d3(2, 2, 2) { x, y, z ->
+            batchOf(
+                IOType.d3(2, 2, 2) { x, y, z ->
                     ((x * 4 + y * 2 + z + 1) * 10).toFloat()
                 },
             )
@@ -292,7 +293,8 @@ class SkipD3Test {
         )
 
         // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val input = batchOf(IOType.d3(2, 2, 2) { x, y, z ->
+        val input = batchOf(
+            IOType.d3(2, 2, 2) { x, y, z ->
                 (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
@@ -336,7 +338,8 @@ class SkipD3Test {
         )
 
         // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val input = batchOf(IOType.d3(2, 2, 2) { x, y, z ->
+        val input = batchOf(
+            IOType.d3(2, 2, 2) { x, y, z ->
                 (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
@@ -344,7 +347,8 @@ class SkipD3Test {
 
         // 次の層からのdelta = [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
         val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
-            batchOf(IOType.d3(2, 2, 2) { x, y, z ->
+            batchOf(
+                IOType.d3(2, 2, 2) { x, y, z ->
                     ((x * 4 + y * 2 + z + 1) * 10).toFloat()
                 },
             )

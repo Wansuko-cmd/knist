@@ -6,7 +6,6 @@ import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
 import com.wsr.get
-import com.wsr.output.TResult
 import com.wsr.output.mean.MeanSquareD1
 import kotlin.test.Test
 import kotlin.test.assertEquals

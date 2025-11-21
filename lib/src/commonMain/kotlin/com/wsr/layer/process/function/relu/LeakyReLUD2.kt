@@ -11,7 +11,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class LeakyReLUD2 internal constructor(override val outputX: Int, override val outputY: Int) : Process.D2() {
-    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> = input.toList().map(::forward).toBatch()
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> =
+        input.toList().map(::forward).toBatch()
 
     override fun train(
         input: Batch<IOType.D2>,

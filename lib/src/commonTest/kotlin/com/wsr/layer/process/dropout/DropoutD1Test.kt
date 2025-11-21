@@ -5,13 +5,13 @@ package com.wsr.layer.process.dropout
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.dropout.DropoutD1
 import com.wsr.nextFloat
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.wsr.get
 class DropoutD1Test {
     @Test
     fun `DropoutD1の_expect=入力をそのまま返す`() {
@@ -24,7 +24,8 @@ class DropoutD1Test {
 
         // [[1, 2, 3]]
         val input =
-            batchOf(IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+            batchOf(
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val context = Context(input)
 
@@ -48,7 +49,8 @@ class DropoutD1Test {
 
         // [[1, 2, 3]]
         val input =
-            batchOf(IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+            batchOf(
+                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val context = Context(input)
 

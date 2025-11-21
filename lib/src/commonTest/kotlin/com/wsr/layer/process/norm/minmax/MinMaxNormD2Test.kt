@@ -2,17 +2,15 @@
 
 package com.wsr.layer.process.norm.minmax
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.norm.minmax.MinMaxNormD2
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class MinMaxNormD2Test {
     @Test
@@ -29,7 +27,8 @@ class MinMaxNormD2Test {
 
         // [[1, 2], [3, 5]]
         val input =
-            batchOf(IOType.d2(2, 2) { x, y -> listOf(listOf(1.0f, 2.0f), listOf(3.0f, 5.0f))[x][y] },
+            batchOf(
+                IOType.d2(2, 2) { x, y -> listOf(listOf(1.0f, 2.0f), listOf(3.0f, 5.0f))[x][y] },
             )
         val context = Context(input)
 
@@ -58,7 +57,8 @@ class MinMaxNormD2Test {
 
         // [[1, 2], [3, 5]]
         val input =
-            batchOf(IOType.d2(2, 2) { x, y -> listOf(listOf(1.0f, 2.0f), listOf(3.0f, 5.0f))[x][y] },
+            batchOf(
+                IOType.d2(2, 2) { x, y -> listOf(listOf(1.0f, 2.0f), listOf(3.0f, 5.0f))[x][y] },
             )
         val context = Context(input)
 
@@ -89,7 +89,8 @@ class MinMaxNormD2Test {
 
         // [[1, 2], [3, 5]] - min=1, max=5
         val input =
-            batchOf(IOType.d2(2, 2) { x, y -> listOf(listOf(1.0f, 2.0f), listOf(3.0f, 5.0f))[x][y] },
+            batchOf(
+                IOType.d2(2, 2) { x, y -> listOf(listOf(1.0f, 2.0f), listOf(3.0f, 5.0f))[x][y] },
             )
         val context = Context(input)
 

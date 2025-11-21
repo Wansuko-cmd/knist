@@ -2,16 +2,14 @@
 
 package com.wsr.layer.process.function.linear
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.function.linear.LinearD2
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class LinearD2Test {
     @Test
@@ -20,7 +18,8 @@ class LinearD2Test {
 
         // [[1, 2], [3, 4]]
         val input =
-            batchOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+            batchOf(
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -34,7 +33,8 @@ class LinearD2Test {
 
         // [[1, 2], [3, 4]]
         val input =
-            batchOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+            batchOf(
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val context = Context(input)
 

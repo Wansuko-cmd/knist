@@ -2,18 +2,16 @@
 
 package com.wsr.layer.process.position
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class PositionEncodeD2Test {
     @Test
@@ -22,7 +20,8 @@ class PositionEncodeD2Test {
 
         // 入力は全て1.0（位置エンコーディングの影響だけを見るため）
         val input =
-            batchOf(IOType.d2(2, 4) { _, _ -> 1.0f },
+            batchOf(
+                IOType.d2(2, 4) { _, _ -> 1.0f },
             )
         val context = Context(input)
 
@@ -64,7 +63,8 @@ class PositionEncodeD2Test {
 
         // 入力は[[1, 2, 3], [4, 5, 6]]
         val input =
-            batchOf(IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() },
+            batchOf(
+                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() },
             )
         val context = Context(input)
 

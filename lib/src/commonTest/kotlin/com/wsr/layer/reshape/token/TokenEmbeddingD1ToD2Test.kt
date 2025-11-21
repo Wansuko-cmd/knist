@@ -2,18 +2,16 @@
 
 package com.wsr.layer.reshape.token
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.math.abs
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class TokenEmbeddingD1ToD2Test {
     @Test
@@ -42,7 +40,8 @@ class TokenEmbeddingD1ToD2Test {
         )
 
         // 入力: トークンID列 [1, 2, 1, 3]
-        val input = batchOf(IOType.d1(floatArrayOf(1.0f, 2.0f, 1.0f, 3.0f)),
+        val input = batchOf(
+            IOType.d1(floatArrayOf(1.0f, 2.0f, 1.0f, 3.0f)),
         )
         val context = Context(input)
 
@@ -91,7 +90,8 @@ class TokenEmbeddingD1ToD2Test {
         )
 
         // 入力: トークンID列 [1, 10, 2] (10は範囲外)
-        val input = batchOf(IOType.d1(floatArrayOf(1.0f, 10.0f, 2.0f)),
+        val input = batchOf(
+            IOType.d1(floatArrayOf(1.0f, 10.0f, 2.0f)),
         )
         val context = Context(input)
 
@@ -134,7 +134,8 @@ class TokenEmbeddingD1ToD2Test {
         )
 
         // 入力: トークンID列 [1, 2]
-        val input = batchOf(IOType.d1(floatArrayOf(1.0f, 2.0f)),
+        val input = batchOf(
+            IOType.d1(floatArrayOf(1.0f, 2.0f)),
         )
         val context = Context(input)
 
@@ -142,7 +143,8 @@ class TokenEmbeddingD1ToD2Test {
         // 位置0 (token 1): [0.5f, 0.5f]
         // 位置1 (token 2): [1.0f, 1.0f]
         val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
-            batchOf(IOType.d2(seqLen, embeddingDim) { x, y ->
+            batchOf(
+                IOType.d2(seqLen, embeddingDim) { x, y ->
                     if (x == 0) 0.5f else 1.0f
                 },
             )
@@ -189,13 +191,15 @@ class TokenEmbeddingD1ToD2Test {
         )
 
         // 入力: トークンID列 [1, 1, 2] (token 1が2回)
-        val input = batchOf(IOType.d1(floatArrayOf(1.0f, 1.0f, 2.0f)),
+        val input = batchOf(
+            IOType.d1(floatArrayOf(1.0f, 1.0f, 2.0f)),
         )
         val context = Context(input)
 
         // 勾配: 全て1.0
         val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
-            batchOf(IOType.d2(seqLen, embeddingDim) { _, _ -> 1.0f },
+            batchOf(
+                IOType.d2(seqLen, embeddingDim) { _, _ -> 1.0f },
             )
         }
 
@@ -237,12 +241,14 @@ class TokenEmbeddingD1ToD2Test {
         )
 
         // 入力: [0, 1] (token 2, 3は使われない)
-        val input = batchOf(IOType.d1(floatArrayOf(0.0f, 1.0f)),
+        val input = batchOf(
+            IOType.d1(floatArrayOf(0.0f, 1.0f)),
         )
         val context = Context(input)
 
         val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
-            batchOf(IOType.d2(seqLen, embeddingDim) { _, _ -> 1.0f },
+            batchOf(
+                IOType.d2(seqLen, embeddingDim) { _, _ -> 1.0f },
             )
         }
 

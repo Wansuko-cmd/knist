@@ -5,12 +5,12 @@ package com.wsr.layer.process.debug
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.debug.DebugD3
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import com.wsr.get
 class DebugD3Test {
     @Test
     fun `DebugD3の_expect=入力をそのまま返し、onInputを呼び出す`() {
@@ -24,7 +24,8 @@ class DebugD3Test {
             onDelta = {}
         }
 
-        val input = batchOf(IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+        val input = batchOf(
+            IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
         )
         val context = Context(input)
 
@@ -50,11 +51,13 @@ class DebugD3Test {
             onDelta = { deltaCaptured = it }
         }
 
-        val input = batchOf(IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+        val input = batchOf(
+            IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
         )
         val context = Context(input)
 
-        val expectedDelta = batchOf(IOType.d3(2, 2, 2) { _, _, _ -> 1.0f },
+        val expectedDelta = batchOf(
+            IOType.d3(2, 2, 2) { _, _, _ -> 1.0f },
         )
 
         val calcDelta: (Batch<IOType>) -> Batch<IOType> = { expectedDelta }

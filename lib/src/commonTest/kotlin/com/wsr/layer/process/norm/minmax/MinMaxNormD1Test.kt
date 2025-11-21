@@ -2,17 +2,15 @@
 
 package com.wsr.layer.process.norm.minmax
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.norm.minmax.MinMaxNormD1
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-import com.wsr.get
-
-import com.wsr.Batch
-import com.wsr.batchOf
 
 class MinMaxNormD1Test {
     @Test
@@ -28,7 +26,8 @@ class MinMaxNormD1Test {
 
         // [1, 2, 5]
         val input =
-            batchOf(IOType.d1(listOf(1.0f, 2.0f, 5.0f)),
+            batchOf(
+                IOType.d1(listOf(1.0f, 2.0f, 5.0f)),
             )
         val context = Context(input)
 
@@ -55,7 +54,8 @@ class MinMaxNormD1Test {
 
         // [1, 2, 5]
         val input =
-            batchOf(IOType.d1(listOf(1.0f, 2.0f, 5.0f)),
+            batchOf(
+                IOType.d1(listOf(1.0f, 2.0f, 5.0f)),
             )
         val context = Context(input)
 
@@ -84,7 +84,8 @@ class MinMaxNormD1Test {
 
         // [1, 3, 5] - min=1, max=5
         val input =
-            batchOf(IOType.d1(listOf(1.0f, 3.0f, 5.0f)),
+            batchOf(
+                IOType.d1(listOf(1.0f, 3.0f, 5.0f)),
             )
         val context = Context(input)
 

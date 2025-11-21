@@ -1,17 +1,10 @@
 package com.wsr
 
-class Batch<out T : IOType>(
-    val value: FloatArray,
-    val size: Int,
-    val shape: List<Int>,
-) {
+class Batch<out T : IOType>(val value: FloatArray, val size: Int, val shape: List<Int>) {
     internal val step = shape.reduce { acc, i -> acc * i }
 
-    fun copy(
-        value: FloatArray = this.value.copyOf(),
-        size: Int = this.size,
-        shape: List<Int> = this.shape,
-    ) = Batch<T>(value = value, size = size, shape = shape)
+    fun copy(value: FloatArray = this.value.copyOf(), size: Int = this.size, shape: List<Int> = this.shape) =
+        Batch<T>(value = value, size = size, shape = shape)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
