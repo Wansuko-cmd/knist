@@ -49,16 +49,19 @@ fun <T : IOType> batchOf(vararg elements: T): Batch<T> {
     )
 }
 
+@JvmName("batchD1sGet")
 operator fun Batch<IOType.D1>.get(i: Int): IOType.D1 {
     val index = i * step
     return IOType.d1(value.sliceArray(index until index + step))
 }
 
+@JvmName("batchD2sGet")
 operator fun Batch<IOType.D2>.get(i: Int): IOType.D2 {
     val index = i * step
     return IOType.d2(shape, value.sliceArray(index until index + step))
 }
 
+@JvmName("batchD3sGet")
 operator fun Batch<IOType.D3>.get(i: Int): IOType.D3 {
     val index = i * step
     return IOType.d3(shape, value.sliceArray(index until index + step))
