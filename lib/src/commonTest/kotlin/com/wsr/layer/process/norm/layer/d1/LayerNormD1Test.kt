@@ -7,6 +7,12 @@ import kotlin.math.sqrt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+import com.wsr.get
+
+import com.wsr.Batch
+import com.wsr.batchOf
+import com.wsr.toBatch
+
 class LayerNormD1Test {
     @Test
     fun `LayerNormD1の_expect=Layer正規化を適用`() {
@@ -21,18 +27,16 @@ class LayerNormD1Test {
 
         // 2つのバッチ: [2, 4], [1, 3]
         val input =
-            listOf(
-                IOType.Companion.d1(listOf(2.0f, 4.0f)),
+            batchOf(IOType.Companion.d1(listOf(2.0f, 4.0f)),
                 IOType.Companion.d1(listOf(1.0f, 3.0f)),
             )
         val context = Context(input)
 
-        val result = norm._expect(input, context)
-
+        val result = norm._expect(input, context) as Batch<IOType.D1>
         // バッチ1: mean=3, numerator=[-1, 1], variance=1, std=sqrt(1+1e-10)
         // output = [-1, 1] / sqrt(1+1e-10)
         assertEquals(expected = 2, actual = result.size)
-        val output1 = result[0] as IOType.D1
+        val output1 = result[0]
         val expectedStd1 = sqrt(1.0f + 1e-10f)
         assertEquals(
             expected = (-1.0f / expectedStd1),
@@ -74,15 +78,14 @@ class LayerNormD1Test {
 
         // 2つのバッチ: [0, 2], [2, 4]
         val input =
-            listOf(
-                IOType.Companion.d1(listOf(0.0f, 2.0f)),
+            batchOf(IOType.Companion.d1(listOf(0.0f, 2.0f)),
                 IOType.Companion.d1(listOf(2.0f, 4.0f)),
             )
         val context = Context(input)
 
         // deltaは全て[1, 1]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = { outputs ->
-            outputs.map { IOType.Companion.d1(listOf(1.0f, 1.0f)) }
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = { outputs ->
+            (0 until outputs.size).map { IOType.d1(listOf(1.0f, 1.0f)) }.toBatch()
         }
 
         // バッチ1: mean=1, numerator=[-1, 1], variance=1, std=sqrt(1+1e-10)
@@ -95,24 +98,20 @@ class LayerNormD1Test {
         // weight -= 0.1f * dw = [2, 2] - 0.1f * [-1, 1] = [2, 2] - [-0.1f, 0.1f] = [2.1f, 1.9f]
 
         // trainを実行
-        try {
-            norm._train(input, context, calcDelta)
-        } catch (e: NotImplementedError) {
-            // dxの計算が未実装なので例外をキャッチ
-        }
+        norm._train(input, context, calcDelta) as Batch<IOType.D1>
 
         // 更新後のexpect結果を確認（バッチ1で）
-        val afterOutput = norm._expect(listOf(input[0]), context)[0] as IOType.D1
+        val afterOutput = norm._expect(batchOf(input[0]), context) as Batch<IOType.D1>
         val expectedStd = sqrt(1.0f + 1e-10f)
         // output = [2.1f, 1.9f] * [-1, 1] / std
         assertEquals(
             expected = (2.1f * (-1.0f / expectedStd)),
-            actual = afterOutput[0],
+            actual = afterOutput[0][0],
             absoluteTolerance = 1e-4f,
         )
         assertEquals(
             expected = (1.9f * (1.0f / expectedStd)),
-            actual = afterOutput[1],
+            actual = afterOutput[0][1],
             absoluteTolerance = 1e-4f,
         )
     }
@@ -130,14 +129,13 @@ class LayerNormD1Test {
 
         // [1, 4, 7]
         val input =
-            listOf(
-                IOType.Companion.d1(listOf(1.0f, 4.0f, 7.0f)),
+            batchOf(IOType.Companion.d1(listOf(1.0f, 4.0f, 7.0f)),
             )
         val context = Context(input)
 
         // deltaは[1, 0.5f, -1]を返す（任意の勾配）
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.Companion.d1(listOf(1.0f, 0.5f, -1.0f)))
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.Companion.d1(listOf(1.0f, 0.5f, -1.0f)))
         }
 
         // 数値微分でdxを計算
@@ -148,13 +146,13 @@ class LayerNormD1Test {
             // input[i]を少し増やす
             val inputPlus = input[0].value.toMutableList()
             inputPlus[i] += epsilon
-            val outputPlus = norm._expect(listOf(IOType.Companion.d1(inputPlus)), context)
+            val outputPlus = norm._expect(batchOf(IOType.d1(inputPlus)), context) as Batch<IOType.D1>
             val lossPlus = calcLoss(outputPlus, calcDelta)
 
             // input[i]を少し減らす
             val inputMinus = input[0].value.toMutableList()
             inputMinus[i] -= epsilon
-            val outputMinus = norm._expect(listOf(IOType.Companion.d1(inputMinus)), context)
+            val outputMinus = norm._expect(batchOf(IOType.d1(inputMinus)), context) as Batch<IOType.D1>
             val lossMinus = calcLoss(outputMinus, calcDelta)
 
             // 数値微分
@@ -163,13 +161,13 @@ class LayerNormD1Test {
         }
 
         // 実際のdxを計算（trainメソッドから）
-        val dx = norm._train(input, context, calcDelta)[0] as IOType.D1
+        val dx = norm._train(input, context, calcDelta) as Batch<IOType.D1>
 
         // 数値微分と実際の勾配を比較
         for (i in 0 until 3) {
             assertEquals(
                 expected = numericalGradients[i],
-                actual = dx[i],
+                actual = dx[0][i],
                 absoluteTolerance = 2e-2f,
                 message = "要素[$i]の勾配が数値微分と一致しません",
             )
@@ -180,12 +178,12 @@ class LayerNormD1Test {
      * 損失関数（テスト用）
      * loss = Σ(output_i * delta_i)
      */
-    private fun calcLoss(output: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): Float {
-        val delta = calcDelta(output)[0] as IOType.D1
-        val out = output[0] as IOType.D1
+    private fun calcLoss(output: Batch<IOType>, calcDelta: (Batch<IOType>) -> Batch<IOType>): Float {
+        val delta = calcDelta(output)as Batch<IOType.D1>
+        val out = output as Batch<IOType.D1>
         var loss = 0.0f
         for (i in 0 until out.value.size) {
-            loss += out[i] * delta[i]
+            loss += out[0][i] * delta[0][i]
         }
         return loss
     }

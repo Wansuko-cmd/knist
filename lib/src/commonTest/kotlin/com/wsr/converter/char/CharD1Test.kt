@@ -3,6 +3,9 @@
 package com.wsr.converter.char
 
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.collection.forEach
+import com.wsr.get
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -60,7 +63,7 @@ class CharD1Test {
     fun `CharD1のdecode=one-hotベクトルを文字に変換する`() {
         val converter = CharD1()
 
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(CharD1.vocabSize).also { it[1] = 1.0f }, // 'a'
             IOType.d1(CharD1.vocabSize).also { it[2] = 1.0f }, // 'b'
             IOType.d1(CharD1.vocabSize).also { it[3] = 1.0f }, // 'c'
@@ -79,7 +82,7 @@ class CharD1Test {
         val converter = CharD1()
 
         // Softmax出力のような確率分布を想定
-        val input = listOf(
+        val input = batchOf(
             // index 1 ('a') が最大
             IOType.d1(CharD1.vocabSize).also {
                 it[0] = 0.1f
@@ -121,7 +124,7 @@ class CharD1Test {
         val converter = CharD1()
 
         // 確率分布からdecode -> encode
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(CharD1.vocabSize).also {
                 it[0] = 0.1f
                 it[1] = 0.6f // 'a' が最大

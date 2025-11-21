@@ -9,6 +9,13 @@ import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+import com.wsr.get
+
+import com.wsr.get
+
+import com.wsr.Batch
+import com.wsr.batchOf
+
 class SwishD3Test {
     @Test
     fun `SwishD3の_expect=swish関数を適用`() {
@@ -16,15 +23,13 @@ class SwishD3Test {
 
         // [[[0, 1, 2]]]
         val input =
-            listOf(
-                IOType.d3(1, 1, 3) { _, _, z -> z.toFloat() },
+            batchOf(IOType.d3(1, 1, 3) { _, _, z -> z.toFloat() },
             )
         val context = Context(input)
 
-        val result = swish._expect(input, context)
-
+        val result = swish._expect(input, context) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D3
+        val output = result[0]
         // swish(x) = x * sigmoid(x) = x / (1 + exp(-x))
         // swish(0) = 0
         // swish(1) = 1 / (1 + exp(-1)) ≈ 0.731f
@@ -40,20 +45,18 @@ class SwishD3Test {
 
         // [[[1, 2]]]
         val input =
-            listOf(
-                IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() },
+            batchOf(IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() },
             )
         val context = Context(input)
 
         // 全て1のdelta
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d3(1, 1, 2) { _, _, _ -> 1.0f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d3(1, 1, 2) { _, _, _ -> 1.0f })
         }
 
-        val result = swish._train(input, context, calcDelta)
-
+        val result = swish._train(input, context, calcDelta) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D3
+        val dx = result[0]
         // swish'(x) = sigmoid(x) + x * sigmoid(x) * (1 - sigmoid(x))
         // = swish(x) + sigmoid(x) * (1 - swish(x))
         val sigmoid1 = 1.0f / (1.0f + exp(-1.0f))

@@ -4,6 +4,8 @@ package com.wsr.optimizer.momentum
 
 import kotlin.test.Test
 
+import com.wsr.get
+
 class MomentumTest {
     @Test
     fun `Momentumの_d1=MomentumD1インスタンスを返す`() {

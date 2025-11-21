@@ -2,7 +2,10 @@
 
 package com.wsr.output.softmax
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.output.softmax.SoftmaxWithLossD1
 import kotlin.math.exp
 import kotlin.test.Test
@@ -14,7 +17,7 @@ class SoftmaxWithLossD1Test {
     fun `SoftmaxWithLossD1の_expect=softmaxを適用した値を返す`() {
         // [1, 2, 3]
         val input =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val softmax = SoftmaxWithLossD1(outputSize = 3, temperature = 1.0f)
@@ -30,20 +33,20 @@ class SoftmaxWithLossD1Test {
         val sum = exp0 + exp1 + exp2
 
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D1
+        val output = result as Batch<IOType.D1>
         assertEquals(
             expected = exp0 / sum,
-            actual = output[0],
+            actual = output[0][0],
             absoluteTolerance = 1e-4f,
         )
         assertEquals(
             expected = exp1 / sum,
-            actual = output[1],
+            actual = output[0][1],
             absoluteTolerance = 1e-4f,
         )
         assertEquals(
             expected = exp2 / sum,
-            actual = output[2],
+            actual = output[0][2],
             absoluteTolerance = 1e-4f,
         )
     }
@@ -52,12 +55,12 @@ class SoftmaxWithLossD1Test {
     fun `SoftmaxWithLossD1の_train=softmax適用後にラベルを引いた値を返す`() {
         // [[1, 2, 3]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         // [[0, 0, 1]]
         val label =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(0.0f, 0.0f, 1.0f)),
             )
         val softmax = SoftmaxWithLossD1(outputSize = 3, temperature = 1.0f)
@@ -86,20 +89,20 @@ class SoftmaxWithLossD1Test {
 
         assertEquals(expected = 1, actual = result.delta.size)
         // [exp0/sum - 0, exp1/sum - 0, exp2/sum - 1]
-        val output = result.delta[0] as IOType.D1
+        val output = result.delta as Batch<IOType.D1>
         assertEquals(
             expected = (exp0 / sum - 0f),
-            actual = output[0],
+            actual = output[0][0],
             absoluteTolerance = 1e-4f,
         )
         assertEquals(
             expected = (exp1 / sum - 0f),
-            actual = output[1],
+            actual = output[0][1],
             absoluteTolerance = 1e-4f,
         )
         assertEquals(
             expected = (exp2 / sum - 1f),
-            actual = output[2],
+            actual = output[0][2],
             absoluteTolerance = 1e-4f,
         )
     }
@@ -108,12 +111,12 @@ class SoftmaxWithLossD1Test {
     fun `SoftmaxWithLossD1の_train=maskValueで指定した値の要素は勾配が0になる`() {
         // [[1, 2, 3]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         // [[0, 0, -1]] ← 要素2はマスク対象
         val label =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(0.0f, 0.0f, -1.0f)),
             )
         val softmax = SoftmaxWithLossD1(outputSize = 3, temperature = 1.0f, maskValue = -1)
@@ -140,21 +143,21 @@ class SoftmaxWithLossD1Test {
         assertEquals(expected = expectedLoss, actual = result.loss, absoluteTolerance = 1e-5f)
 
         assertEquals(expected = 1, actual = result.delta.size)
-        val output = result.delta[0] as IOType.D1
+        val output = result.delta as Batch<IOType.D1>
 
         // 要素0, 1: 通常の勾配
         assertEquals(
             expected = (exp0 / sum - 0f),
-            actual = output[0],
+            actual = output[0][0],
             absoluteTolerance = 1e-4f,
         )
         assertEquals(
             expected = (exp1 / sum - 0f),
-            actual = output[1],
+            actual = output[0][1],
             absoluteTolerance = 1e-4f,
         )
 
         // 要素2: maskValue=-1なので勾配は0
-        assertEquals(expected = 0.0f, actual = output[2], absoluteTolerance = 1e-4f)
+        assertEquals(expected = 0.0f, actual = output[0][2], absoluteTolerance = 1e-4f)
     }
 }

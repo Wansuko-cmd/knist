@@ -2,13 +2,15 @@
 
 package com.wsr.layer.process.bias
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
 import com.wsr.layer.Context
 import com.wsr.layer.process.bias.BiasD1
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
+import com.wsr.get
 class BiasD1Test {
     @Test
     fun `BiasD1の_expect=入力にバイアスを足した値を返す`() {
@@ -23,22 +25,20 @@ class BiasD1Test {
 
         // [[1, 2, 3], [4, 5, 6]]
         val input =
-            listOf(
-                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+            batchOf(IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
                 IOType.d1(listOf(4.0f, 5.0f, 6.0f)),
             )
         val context = Context(input)
 
         // [[1+1, 2+2, 3+3], [4+1, 5+2, 6+3]] = [[2, 4, 6], [5, 7, 9]]
-        val result = bias._expect(input, context)
-
+        val result = bias._expect(input, context) as Batch<IOType.D1>
         assertEquals(expected = 2, actual = result.size)
-        val output0 = result[0] as IOType.D1
+        val output0 = result[0]
         assertEquals(expected = 2.0f, actual = output0[0])
         assertEquals(expected = 4.0f, actual = output0[1])
         assertEquals(expected = 6.0f, actual = output0[2])
 
-        val output1 = result[1] as IOType.D1
+        val output1 = result[1]
         assertEquals(expected = 5.0f, actual = output1[0])
         assertEquals(expected = 7.0f, actual = output1[1])
         assertEquals(expected = 9.0f, actual = output1[2])
@@ -57,20 +57,18 @@ class BiasD1Test {
 
         // [[1, 2, 3]]
         val input =
-            listOf(
-                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+            batchOf(IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val context = Context(input)
 
         // deltaは[2, 4, 6]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d1(listOf(2.0f, 4.0f, 6.0f)))
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d1(listOf(2.0f, 4.0f, 6.0f)))
         }
 
-        val result = bias._train(input, context, calcDelta)
-
+        val result = bias._train(input, context, calcDelta) as Batch<IOType.D1>
         assertEquals(expected = 1, actual = result.size)
-        val delta = result[0] as IOType.D1
+        val delta = result[0]
         assertEquals(expected = 2.0f, actual = delta[0])
         assertEquals(expected = 4.0f, actual = delta[1])
         assertEquals(expected = 6.0f, actual = delta[2])
@@ -89,39 +87,37 @@ class BiasD1Test {
 
         // input = [1, 2, 3]
         val input =
-            listOf(
-                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+            batchOf(IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val context = Context(input)
 
         // deltaは[2, 4, 6]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d1(listOf(2.0f, 4.0f, 6.0f)))
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d1(listOf(2.0f, 4.0f, 6.0f)))
         }
 
         // trainでバイアスを更新
         // weight -= rate * delta.average() = [1, 2, 3] - 0.1f * [2, 4, 6]
         //                                   = [1, 2, 3] - [0.2f, 0.4f, 0.6f]
         //                                   = [0.8f, 1.6f, 2.4f]
-        bias._train(input, context, calcDelta)
-
+        bias._train(input, context, calcDelta) as Batch<IOType.D1>
         // 更新後のexpect結果
         // output = input + weight = [1, 2, 3] + [0.8f, 1.6f, 2.4f] = [1.8f, 3.6f, 5.4f]
-        val afterOutput = bias._expect(input, context)[0] as IOType.D1
+        val afterOutput = bias._expect(input, context) as Batch<IOType.D1>
 
         assertEquals(
             expected = 1.8f,
-            actual = afterOutput[0],
+            actual = afterOutput[0][0],
             absoluteTolerance = 1e-6f,
         )
         assertEquals(
             expected = 3.6f,
-            actual = afterOutput[1],
+            actual = afterOutput[0][1],
             absoluteTolerance = 1e-6f,
         )
         assertEquals(
             expected = 5.4f,
-            actual = afterOutput[2],
+            actual = afterOutput[0][2],
             absoluteTolerance = 1e-6f,
         )
     }

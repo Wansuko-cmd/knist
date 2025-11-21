@@ -2,7 +2,10 @@
 
 package com.wsr.output.sigmoid
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.output.sigmoid.SigmoidWithLossD1
 import kotlin.math.exp
 import kotlin.test.Test
@@ -14,7 +17,7 @@ class SigmoidWithLossD1Test {
     fun `SigmoidWithLossD1の_expect=入力をそのまま返す`() {
         // [1, 2, 3]
         val input =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val sigmoid = SigmoidWithLossD1(outputSize = 3)
@@ -27,12 +30,12 @@ class SigmoidWithLossD1Test {
     fun `SigmoidWithLossD1の_train=sigmoid適用後にラベルを引いた値を返す`() {
         // [[0, 1, 2]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(0.0f, 1.0f, 2.0f)),
             )
         // [[1, 0, 0]]
         val label =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(1.0f, 0.0f, 0.0f)),
             )
         val sigmoid = SigmoidWithLossD1(outputSize = 3)
@@ -59,9 +62,9 @@ class SigmoidWithLossD1Test {
 
         assertEquals(expected = 1, actual = result.delta.size)
         // [0.5f-1, 0.7311f-0, 0.8808f-0]
-        val output = result.delta[0] as IOType.D1
-        assertEquals(expected = sig0 - 1.0f, actual = output[0], absoluteTolerance = 1e-4f)
-        assertEquals(expected = sig1 - 0.0f, actual = output[1], absoluteTolerance = 1e-4f)
-        assertEquals(expected = sig2 - 0.0f, actual = output[2], absoluteTolerance = 1e-4f)
+        val output = result.delta as Batch<IOType.D1>
+        assertEquals(expected = sig0 - 1.0f, actual = output[0][0], absoluteTolerance = 1e-4f)
+        assertEquals(expected = sig1 - 0.0f, actual = output[0][1], absoluteTolerance = 1e-4f)
+        assertEquals(expected = sig2 - 0.0f, actual = output[0][2], absoluteTolerance = 1e-4f)
     }
 }

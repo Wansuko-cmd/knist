@@ -11,6 +11,11 @@ import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+import com.wsr.get
+
+import com.wsr.Batch
+import com.wsr.batchOf
+
 class SkipD3Test {
     @Test
     fun `SkipD3の_expect=サブ層を通した結果と入力を足す`() {
@@ -41,7 +46,7 @@ class SkipD3Test {
         )
 
         // input = [[[10, 20, 30], [40, 50, 60]]]
-        val input = listOf(IOType.d3(1, 2, 3) { x, y, z -> ((y * 3 + z + 1) * 10).toFloat() })
+        val input = batchOf(IOType.d3(1, 2, 3) { x, y, z -> ((y * 3 + z + 1) * 10).toFloat() })
         val context = Context(input)
 
         // サブ層1 (bias): [[[10, 20, 30], [40, 50, 60]]] + [[[1, 2, 3], [4, 5, 6]]]
@@ -49,10 +54,9 @@ class SkipD3Test {
         // サブ層2 (linear): [[[11, 22, 33], [44, 55, 66]]] = [[[11, 22, 33], [44, 55, 66]]]
         // skip出力: [[[10, 20, 30], [40, 50, 60]]] + [[[11, 22, 33], [44, 55, 66]]]
         //         = [[[21, 42, 63], [84, 105, 126]]]
-        val result = skip._expect(input, context)
-
+        val result = skip._expect(input, context) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D3
+        val output = result[0]
         assertEquals(expected = 21.0f, actual = output[0, 0, 0])
         assertEquals(expected = 42.0f, actual = output[0, 0, 1])
         assertEquals(expected = 63.0f, actual = output[0, 0, 2])
@@ -84,18 +88,17 @@ class SkipD3Test {
         )
 
         // input = [[[1, 2], [3, 4]]]
-        val input = listOf(IOType.d3(1, 2, 2) { x, y, z -> (y * 2 + z + 1).toFloat() })
+        val input = batchOf(IOType.d3(1, 2, 2) { x, y, z -> (y * 2 + z + 1).toFloat() })
         val context = Context(input)
 
         // 次の層からのdelta = [[[10, 20], [30, 40]]]
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d3(1, 2, 2) { x, y, z -> ((y * 2 + z + 1) * 10).toFloat() })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d3(1, 2, 2) { x, y, z -> ((y * 2 + z + 1) * 10).toFloat() })
         }
 
-        val result = skip._train(input, context, calcDelta)
-
+        val result = skip._train(input, context, calcDelta) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D3
+        val dx = result[0]
 
         // skip pathの勾配: [[[10, 20], [30, 40]]] (deltaがそのまま流れる)
         // main pathの勾配: [[[10, 20], [30, 40]]] (biasは勾配をそのまま返す)
@@ -136,12 +139,12 @@ class SkipD3Test {
         )
 
         // input = [[[2], [3]], [[4], [5]]]
-        val input = listOf(IOType.d3(2, 2, 1) { x, y, z -> (x * 2 + y + 2).toFloat() })
+        val input = batchOf(IOType.d3(2, 2, 1) { x, y, z -> (x * 2 + y + 2).toFloat() })
         val context = Context(input)
 
         // 次の層からのdelta = [[[1], [2]], [[3], [4]]]
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d3(2, 2, 1) { x, y, z -> (x * 2 + y + 1).toFloat() })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d3(2, 2, 1) { x, y, z -> (x * 2 + y + 1).toFloat() })
         }
 
         // train実行前
@@ -151,8 +154,7 @@ class SkipD3Test {
         // skip出力: [[[2], [3]], [[4], [5]]] + [[[3], [4]], [[5], [6]]]
         //         = [[[5], [7]], [[9], [11]]]
 
-        skip._train(input, context, calcDelta)
-
+        skip._train(input, context, calcDelta) as Batch<IOType.D3>
         // train実行後の期待値
         // bias更新: [[[1], [1]], [[1], [1]]] - 0.1f * [[[1], [2]], [[3], [4]]]
         //        = [[[0.9f], [0.8f]], [[0.7f], [0.6f]]]
@@ -163,12 +165,12 @@ class SkipD3Test {
         //         = [[[2.9f], [3.8f]], [[4.7f], [5.6f]]]
         // skip出力: [[[2], [3]], [[4], [5]]] + [[[2.9f], [3.8f]], [[4.7f], [5.6f]]]
         //         = [[[4.9f], [6.8f]], [[8.7f], [10.6f]]]
-        val afterOutput = skip._expect(input, context)[0] as IOType.D3
+        val afterOutput = skip._expect(input, context) as Batch<IOType.D3>
 
-        assertEquals(expected = 4.9f, actual = afterOutput[0, 0, 0], absoluteTolerance = 1e-6f)
-        assertEquals(expected = 6.8f, actual = afterOutput[0, 1, 0], absoluteTolerance = 1e-6f)
-        assertEquals(expected = 8.7f, actual = afterOutput[1, 0, 0], absoluteTolerance = 1e-6f)
-        assertEquals(expected = 10.6f, actual = afterOutput[1, 1, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 4.9f, actual = afterOutput[0][0, 0, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 6.8f, actual = afterOutput[0][0, 1, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 8.7f, actual = afterOutput[0][1, 0, 0], absoluteTolerance = 1e-6f)
+        assertEquals(expected = 10.6f, actual = afterOutput[0][1, 1, 0], absoluteTolerance = 1e-6f)
     }
 
     @Test
@@ -193,8 +195,7 @@ class SkipD3Test {
         )
 
         // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val input = listOf(
-            IOType.d3(2, 2, 2) { x, y, z ->
+        val input = batchOf(IOType.d3(2, 2, 2) { x, y, z ->
                 (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
@@ -203,10 +204,9 @@ class SkipD3Test {
         // main path: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         // skip path: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         // 出力: [[[2, 4], [6, 8]], [[10, 12], [14, 16]]]
-        val result = skip._expect(input, context)
-
+        val result = skip._expect(input, context) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D3
+        val output = result[0]
         assertEquals(expected = 2.0f, actual = output[0, 0, 0])
         assertEquals(expected = 4.0f, actual = output[0, 0, 1])
         assertEquals(expected = 6.0f, actual = output[0, 1, 0])
@@ -239,26 +239,23 @@ class SkipD3Test {
         )
 
         // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val input = listOf(
-            IOType.d3(2, 2, 2) { x, y, z ->
+        val input = batchOf(IOType.d3(2, 2, 2) { x, y, z ->
                 (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
         val context = Context(input)
 
         // 次の層からのdelta = [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(
-                IOType.d3(2, 2, 2) { x, y, z ->
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d3(2, 2, 2) { x, y, z ->
                     ((x * 4 + y * 2 + z + 1) * 10).toFloat()
                 },
             )
         }
 
-        val result = skip._train(input, context, calcDelta)
-
+        val result = skip._train(input, context, calcDelta) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D3
+        val dx = result[0]
 
         // skip pathの勾配: [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
         // main pathの勾配: [[[10, 20], [30, 40]], [[50, 60], [70, 80]]] (biasは勾配をそのまま返す)
@@ -295,8 +292,7 @@ class SkipD3Test {
         )
 
         // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val input = listOf(
-            IOType.d3(2, 2, 2) { x, y, z ->
+        val input = batchOf(IOType.d3(2, 2, 2) { x, y, z ->
                 (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
@@ -305,10 +301,9 @@ class SkipD3Test {
         // main path: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         // skip path: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         // 出力: [[[2, 4], [6, 8]], [[10, 12], [14, 16]]]
-        val result = skip._expect(input, context)
-
+        val result = skip._expect(input, context) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D3
+        val output = result[0]
         assertEquals(expected = 2.0f, actual = output[0, 0, 0])
         assertEquals(expected = 4.0f, actual = output[0, 0, 1])
         assertEquals(expected = 6.0f, actual = output[0, 1, 0])
@@ -341,26 +336,23 @@ class SkipD3Test {
         )
 
         // input = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-        val input = listOf(
-            IOType.d3(2, 2, 2) { x, y, z ->
+        val input = batchOf(IOType.d3(2, 2, 2) { x, y, z ->
                 (x * 4 + y * 2 + z + 1).toFloat()
             },
         )
         val context = Context(input)
 
         // 次の層からのdelta = [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(
-                IOType.d3(2, 2, 2) { x, y, z ->
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d3(2, 2, 2) { x, y, z ->
                     ((x * 4 + y * 2 + z + 1) * 10).toFloat()
                 },
             )
         }
 
-        val result = skip._train(input, context, calcDelta)
-
+        val result = skip._train(input, context, calcDelta) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D3
+        val dx = result[0]
 
         // skip pathの勾配: [[[10, 20], [30, 40]], [[50, 60], [70, 80]]]
         // main pathの勾配: [[[10, 20], [30, 40]], [[50, 60], [70, 80]]] (biasは勾配をそのまま返す)

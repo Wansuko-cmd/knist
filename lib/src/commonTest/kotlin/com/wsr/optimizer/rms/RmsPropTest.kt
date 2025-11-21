@@ -4,6 +4,8 @@ package com.wsr.optimizer.rms
 
 import kotlin.test.Test
 
+import com.wsr.get
+
 class RmsPropTest {
     @Test
     fun `RmsPropの_d1=RmsPropD1インスタンスを返す`() {

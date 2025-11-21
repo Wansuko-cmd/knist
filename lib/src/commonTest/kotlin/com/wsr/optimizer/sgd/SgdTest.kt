@@ -4,6 +4,8 @@ package com.wsr.optimizer.sgd
 
 import kotlin.test.Test
 
+import com.wsr.get
+
 class SgdTest {
     @Test
     fun `Sgdの_d1=SgdD1インスタンスを返す`() {

@@ -8,6 +8,11 @@ import com.wsr.layer.process.function.linear.LinearD3
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+import com.wsr.get
+
+import com.wsr.Batch
+import com.wsr.batchOf
+
 class LinearD3Test {
     @Test
     fun `LinearD3の_expect=入力をそのまま返す`() {
@@ -15,13 +20,11 @@ class LinearD3Test {
 
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
-            listOf(
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+            batchOf(IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
         val context = Context(input)
 
-        val result = linear._expect(input, context)
-
+        val result = linear._expect(input, context) as Batch<IOType.D3>
         assertEquals(expected = input, actual = result)
     }
 
@@ -31,20 +34,18 @@ class LinearD3Test {
 
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
-            listOf(
-                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+            batchOf(IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
         val context = Context(input)
 
         // deltaは入力の2倍
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1) * 2.0f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1) * 2.0f })
         }
 
-        val result = linear._train(input, context, calcDelta)
-
+        val result = linear._train(input, context, calcDelta) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D3
+        val dx = result[0]
         // deltaは入力の2倍
         assertEquals(expected = 2.0f, actual = dx[0, 0, 0])
         assertEquals(expected = 4.0f, actual = dx[0, 0, 1])
