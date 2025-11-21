@@ -1,8 +1,12 @@
 package com.wsr.layer.process.norm.layer.d3
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
+import com.wsr.toBatch
 import kotlin.math.sqrt
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -23,18 +27,17 @@ class LayerNormD3Test {
 
         // 2つのバッチ: [[[0, 2], [2, 4]], [[4, 6], [6, 8]]], [[[2, 4], [4, 6]], [[6, 8], [8, 10]]]
         val input =
-            listOf(
+            batchOf(
                 IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2).toFloat() },
                 IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2 + 2).toFloat() },
             )
         val context = Context(input)
 
-        val result = norm._expect(input, context)
-
+        val result = norm._expect(input, context) as Batch<IOType.D3>
         // バッチ1: [[[0, 2], [2, 4]], [[4, 6], [6, 8]]], mean=4, numerator=[[[-4, -2], [-2, 0]], [[0, 2], [2, 4]]]
         // variance = (16 + 4 + 4 + 0 + 0 + 4 + 4 + 16) / 8 = 48 / 8 = 6, std=sqrt(6+1e-10)
         assertEquals(expected = 2, actual = result.size)
-        val output1 = result[0] as IOType.D3
+        val output1 = result[0]
         val expectedStd1 = sqrt(6.0f + 1e-10f)
         assertEquals(
             expected = (-4.0f / expectedStd1),
@@ -138,15 +141,15 @@ class LayerNormD3Test {
 
         // 2つのバッチ: [[[0, 2], [2, 4]], [[4, 6], [6, 8]]], [[[2, 4], [4, 6]], [[6, 8], [8, 10]]]
         val input =
-            listOf(
+            batchOf(
                 IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2).toFloat() },
                 IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2 + 2).toFloat() },
             )
         val context = Context(input)
 
         // deltaは全て[[[1, 1], [1, 1]], [[1, 1], [1, 1]]]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = { outputs ->
-            outputs.map { IOType.Companion.d3(2, 2, 2) { _, _, _ -> 1.0f } }
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = { outputs ->
+            (0 until outputs.size).map { IOType.Companion.d3(2, 2, 2) { _, _, _ -> 1.0f } }.toBatch()
         }
 
         val expectedStd = sqrt(6.0f + 1e-10f)
@@ -156,27 +159,26 @@ class LayerNormD3Test {
         // weight -= 0.1f * dw
 
         // trainを実行
-        norm._train(input, context, calcDelta)
-
+        norm._train(input, context, calcDelta) as Batch<IOType.D3>
         // 更新後のexpect結果を確認（バッチ1で）
-        val afterOutput = norm._expect(listOf(input[0]), context)[0] as IOType.D3
+        val afterOutput = norm._expect(batchOf(input[0]), context) as Batch<IOType.D3>
 
         // output = updated_weight * normalized
         // normalized[0, 0, 0] = -4.0f / expectedStd
         // updated_weight[0, 0, 0] = 2.0f - 0.1f * (-4.0f / expectedStd) = 2.0f + 0.4f / expectedStd
         assertEquals(
             expected = (2.0f + 0.1f * 4.0f / expectedStd) * (-4.0f / expectedStd),
-            actual = afterOutput[0, 0, 0],
+            actual = afterOutput[0][0, 0, 0],
             absoluteTolerance = 1e-4f,
         )
         assertEquals(
             expected = (2.0f + 0.1f * 2.0f / expectedStd) * (-2.0f / expectedStd),
-            actual = afterOutput[0, 0, 1],
+            actual = afterOutput[0][0, 0, 1],
             absoluteTolerance = 1e-4f,
         )
         assertEquals(
             expected = (2.0f - 0.1f * 4.0f / expectedStd) * (4.0f / expectedStd),
-            actual = afterOutput[1, 1, 1],
+            actual = afterOutput[0][1, 1, 1],
             absoluteTolerance = 1e-4f,
         )
     }
@@ -208,14 +210,14 @@ class LayerNormD3Test {
 
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
-            listOf(
+            batchOf(
                 IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
         val context = Context(input)
 
         // deltaは[[[1, 0.5f], [-1, 0.8f]], [[0.7f, -0.5f], [0.9f, 1.2f]]]を返す（任意の勾配）
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(
                 IOType.Companion.d3(2, 2, 2) { x, y, z ->
                     when {
                         x == 0 && y == 0 && z == 0 -> 1.0f
@@ -244,7 +246,7 @@ class LayerNormD3Test {
                     val inputPlus = input[0].value.copyOf()
                     inputPlus[i * 4 + j * 2 + k] += epsilon
                     val outputPlus = norm._expect(
-                        listOf(IOType.Companion.d3(listOf(2, 2, 2), inputPlus.toList())),
+                        batchOf(IOType.Companion.d3(listOf(2, 2, 2), inputPlus.toList())),
                         context,
                     )
                     val lossPlus = calcLoss(outputPlus, calcDelta)
@@ -253,7 +255,7 @@ class LayerNormD3Test {
                     val inputMinus = input[0].value.copyOf()
                     inputMinus[i * 4 + j * 2 + k] -= epsilon
                     val outputMinus = norm._expect(
-                        listOf(IOType.Companion.d3(listOf(2, 2, 2), inputMinus.toList())),
+                        batchOf(IOType.Companion.d3(listOf(2, 2, 2), inputMinus.toList())),
                         context,
                     )
                     val lossMinus = calcLoss(outputMinus, calcDelta)
@@ -268,7 +270,7 @@ class LayerNormD3Test {
         }
 
         // 実際のdxを計算（trainメソッドから）
-        val dx = norm._train(input, context, calcDelta)[0] as IOType.D3
+        val dx = norm._train(input, context, calcDelta) as Batch<IOType.D3>
 
         // 数値微分と実際の勾配を比較
         for (i in 0 until 2) {
@@ -276,7 +278,7 @@ class LayerNormD3Test {
                 for (k in 0 until 2) {
                     assertEquals(
                         expected = numericalGradients[i][j][k],
-                        actual = dx[i, j, k],
+                        actual = dx[0][i, j, k],
                         absoluteTolerance = 8e-2f,
                         message = "要素[$i, $j, $k]の勾配が数値微分と一致しません",
                     )
@@ -289,14 +291,14 @@ class LayerNormD3Test {
      * 損失関数（テスト用）
      * loss = Σ(output_ijk * delta_ijk)
      */
-    private fun calcLoss(output: List<IOType>, calcDelta: (List<IOType>) -> List<IOType>): Float {
-        val delta = calcDelta(output)[0] as IOType.D3
-        val out = output[0] as IOType.D3
+    private fun calcLoss(output: Batch<IOType>, calcDelta: (Batch<IOType>) -> Batch<IOType>): Float {
+        val delta = calcDelta(output) as Batch<IOType.D3>
+        val out = output as Batch<IOType.D3>
         var loss = 0.0f
         for (i in 0 until out.shape[0]) {
             for (j in 0 until out.shape[1]) {
                 for (k in 0 until out.shape[2]) {
-                    loss += out[i, j, k] * delta[i, j, k]
+                    loss += out[0][i, j, k] * delta[0][i, j, k]
                 }
             }
         }

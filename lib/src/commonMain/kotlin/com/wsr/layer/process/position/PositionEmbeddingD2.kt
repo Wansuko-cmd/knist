@@ -1,5 +1,6 @@
 package com.wsr.layer.process.position
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.initializer.WeightInitializer
@@ -7,6 +8,8 @@ import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
 import com.wsr.optimizer.Optimizer
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -16,17 +19,19 @@ class PositionEmbeddingD2 internal constructor(
     private val optimizer: Optimizer.D2,
     private var weight: IOType.D2,
 ) : Process.D2() {
-    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> = input + weight
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> =
+        (input.toList() + weight).toBatch()
 
     override fun train(
-        input: List<IOType.D2>,
+        input: Batch<IOType.D2>,
         context: Context,
-        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
-    ): List<IOType.D2> {
+        calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
+    ): Batch<IOType.D2> {
+        val input = input.toList()
         val output = input + weight
-        val delta = calcDelta(output)
-        weight = optimizer.adapt(weight = weight, dw = delta)
-        return delta
+        val delta = calcDelta(output.toBatch()).toList()
+        weight = optimizer.adapt(weight = weight, dw = delta.toBatch())
+        return delta.toBatch()
     }
 }
 

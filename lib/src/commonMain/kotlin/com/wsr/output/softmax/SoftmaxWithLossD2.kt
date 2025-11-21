@@ -1,5 +1,6 @@
 package com.wsr.output.softmax
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.collection.sum
@@ -12,8 +13,10 @@ import com.wsr.output.TResult
 import com.wsr.power.ln
 import com.wsr.reshape.broadcastToD2
 import com.wsr.reshape.toD2
-import kotlinx.serialization.Serializable
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlin.math.exp
+import kotlinx.serialization.Serializable
 
 @Serializable
 internal class SoftmaxWithLossD2 internal constructor(
@@ -22,8 +25,8 @@ internal class SoftmaxWithLossD2 internal constructor(
     val temperature: Float,
     val maskValue: Int? = null,
 ) : Output.D2() {
-    override fun expect(input: List<IOType.D2>): List<IOType.D2> {
-        val input = input / temperature
+    override fun expect(input: Batch<IOType.D2>): Batch<IOType.D2> {
+        val input = input.toList() / temperature
         return input.map { input ->
             (0 until outputX)
                 .map { input[it] }
@@ -34,11 +37,12 @@ internal class SoftmaxWithLossD2 internal constructor(
                     IOType.d1(outputY) { exp[it] / sum }
                 }
                 .toD2()
-        }
+        }.toBatch()
     }
 
-    override fun train(input: List<IOType.D2>, label: List<IOType.D2>): TResult<IOType.D2> {
-        val input = input / temperature
+    override fun train(input: Batch<IOType.D2>, label: Batch<IOType.D2>): TResult<IOType.D2> {
+        val input = input.toList() / temperature
+        val label = label.toList()
         val output = input.map { input ->
             (0 until outputX)
                 .map { input[it] }
@@ -63,7 +67,7 @@ internal class SoftmaxWithLossD2 internal constructor(
             .toFloat()
 
         val delta = (output - label) * mask
-        return TResult(loss = loss, delta = delta)
+        return TResult(loss = loss, delta = delta.toBatch())
     }
 
     private fun List<IOType.D2>.generateMask(): List<IOType.D2> = when {

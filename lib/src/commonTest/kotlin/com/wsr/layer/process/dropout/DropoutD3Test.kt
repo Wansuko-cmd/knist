@@ -2,13 +2,15 @@
 
 package com.wsr.layer.process.dropout
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.dropout.DropoutD3
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-
 class DropoutD3Test {
     @Test
     fun `DropoutD3の_expect=入力をそのまま返す`() {
@@ -16,13 +18,12 @@ class DropoutD3Test {
 
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
         val context = Context(input)
 
-        val result = dropout._expect(input, context)
-
+        val result = dropout._expect(input, context) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
         // Inverted Dropoutのexpect(推論時)では入力をそのまま返す
@@ -42,20 +43,19 @@ class DropoutD3Test {
 
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
         val context = Context(input)
 
         // 全て1のdelta
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d3(2, 2, 2) { _, _, _ -> 1.0f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d3(2, 2, 2) { _, _, _ -> 1.0f })
         }
 
-        val result = dropout._train(input, context, calcDelta)
-
+        val result = dropout._train(input, context, calcDelta) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D3
+        val dx = result[0]
 
         // trainモードではランダムにマスク（0 or 1/ratio）が適用される
         // Inverted Dropoutでは、マスクは0または1/ratio (= 2.0f)

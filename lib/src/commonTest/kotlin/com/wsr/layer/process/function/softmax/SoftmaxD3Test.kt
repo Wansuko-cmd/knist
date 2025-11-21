@@ -2,7 +2,10 @@
 
 package com.wsr.layer.process.function.softmax
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.function.softmax.SoftmaxD3
 import kotlin.math.exp
@@ -16,15 +19,14 @@ class SoftmaxD3Test {
 
         // [[[1, 2, 3]]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d3(1, 1, 3) { _, _, z -> (z + 1).toFloat() },
             )
         val context = Context(input)
 
-        val result = softmax._expect(input, context)
-
+        val result = softmax._expect(input, context) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D3
+        val output = result[0]
 
         // softmax(x_i) = exp(x_i - max) / sum(exp(x_j - max))
         // max = 3
@@ -46,20 +48,19 @@ class SoftmaxD3Test {
 
         // [[[1, 2]]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() },
             )
         val context = Context(input)
 
         // 全て1のdelta
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d3(1, 1, 2) { _, _, _ -> 1.0f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d3(1, 1, 2) { _, _, _ -> 1.0f })
         }
 
-        val result = softmax._train(input, context, calcDelta)
-
+        val result = softmax._train(input, context, calcDelta) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D3
+        val dx = result[0]
 
         // softmax'(x) = softmax(x) * (1 - softmax(x)) when using delta
         // 出力を計算

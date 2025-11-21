@@ -2,13 +2,15 @@
 
 package com.wsr.layer.process.affine
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.affine.AffineD1
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
 class AffineD1Test {
     @Test
     fun `AffineD1の_expect=重み行列との積を返す`() {
@@ -28,7 +30,7 @@ class AffineD1Test {
 
         // [[1, 2]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(1.0f, 2.0f)),
             )
         val context = Context(input)
@@ -37,10 +39,10 @@ class AffineD1Test {
         // [[1, 4],   [[1],     [[1*1+4*2],   [[9],
         //  [2, 5],    [2]]  =   [2*1+5*2],  =  [12],
         //  [3, 6]]              [3*1+6*2]]     [15]]
-        val result = affine._expect(input, context)
+        val result = affine._expect(input, context) as Batch<IOType.D1>
 
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D1
+        val output = result[0]
         assertEquals(expected = 9.0f, actual = output[0])
         assertEquals(expected = 12.0f, actual = output[1])
         assertEquals(expected = 15.0f, actual = output[2])
@@ -63,20 +65,20 @@ class AffineD1Test {
 
         // [[1, 2]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(1.0f, 2.0f)),
             )
         val context = Context(input)
 
         // deltaは[1, 1]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d1(listOf(1.0f, 1.0f)))
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d1(listOf(1.0f, 1.0f)))
         }
 
-        val result = affine._train(input, context, calcDelta)
+        val result = affine._train(input, context, calcDelta) as Batch<IOType.D1>
 
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D1
+        val dx = result[0]
         // dx = weight dot delta = [[1,2],[3,4]] dot [[1],[1]] = [[3],[7]]
         assertEquals(expected = 3.0f, actual = dx[0])
         assertEquals(expected = 7.0f, actual = dx[1])
@@ -99,37 +101,36 @@ class AffineD1Test {
 
         // input = [1, 2]
         val input =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(1.0f, 2.0f)),
             )
         val context = Context(input)
 
         // deltaは[1, 1]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d1(listOf(1.0f, 1.0f)))
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d1(listOf(1.0f, 1.0f)))
         }
 
         // trainで重みを更新
         // dw = input.transpose() dot delta = [[1], [2]] dot [[1, 1]] = [[1, 1], [2, 2]]
         // weight -= 0.1f / 1 * dw = [[1, 2], [3, 4]] - [[0.1f, 0.1f], [0.2f, 0.2f]]
         //                         = [[0.9f, 1.9f], [2.8f, 3.8f]]
-        affine._train(input, context, calcDelta)
-
+        affine._train(input, context, calcDelta) as Batch<IOType.D1>
         // 更新後のexpect結果
         // output = weight.transpose() dot input
         //        = [[0.9f, 2.8f], [1.9f, 3.8f]] dot [[1], [2]]
         //        = [[0.9f*1 + 2.8f*2], [1.9f*1 + 3.8f*2]]
         //        = [[6.5f], [9.5f]]
-        val afterOutput = affine._expect(input, context)[0] as IOType.D1
+        val afterOutput = affine._expect(input, context) as Batch<IOType.D1>
 
         assertEquals(
             expected = 6.5f,
-            actual = afterOutput[0],
+            actual = afterOutput[0][0],
             absoluteTolerance = 1e-6f,
         )
         assertEquals(
             expected = 9.5f,
-            actual = afterOutput[1],
+            actual = afterOutput[0][1],
             absoluteTolerance = 1e-6f,
         )
     }

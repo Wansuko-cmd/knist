@@ -2,9 +2,11 @@
 
 package com.wsr.layer.process.function.linear
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
-import com.wsr.layer.process.function.linear.LinearD1
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -15,13 +17,12 @@ class LinearD1Test {
 
         // [[1, 2, 3]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val context = Context(input)
 
-        val result = linear._expect(input, context)
-
+        val result = linear._expect(input, context) as Batch<IOType.D1>
         assertEquals(expected = input, actual = result)
     }
 
@@ -31,18 +32,17 @@ class LinearD1Test {
 
         // [[1, 2, 3]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val context = Context(input)
 
         // deltaは[2, 4, 6]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d1(listOf(2.0f, 4.0f, 6.0f)))
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d1(listOf(2.0f, 4.0f, 6.0f)))
         }
 
-        val result = linear._train(input, context, calcDelta)
-
+        val result = linear._train(input, context, calcDelta) as Batch<IOType.D1>
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D1
         assertEquals(expected = 2.0f, actual = dx[0])

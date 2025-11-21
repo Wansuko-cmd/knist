@@ -1,5 +1,6 @@
 package com.wsr.layer.process.bias
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.initializer.Fixed
@@ -8,6 +9,8 @@ import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
 import com.wsr.optimizer.Optimizer
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,15 +21,16 @@ class BiasD3(
     private val optimizer: Optimizer.D3,
     private var weight: IOType.D3,
 ) : Process.D3() {
-    override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D3> = input + weight
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> =
+        (input.toList() + weight).toBatch()
 
     override fun train(
-        input: List<IOType.D3>,
+        input: Batch<IOType.D3>,
         context: Context,
-        calcDelta: (List<IOType.D3>) -> List<IOType.D3>,
-    ): List<IOType.D3> {
-        val output = input + weight
-        val delta = calcDelta(output)
+        calcDelta: (Batch<IOType.D3>) -> Batch<IOType.D3>,
+    ): Batch<IOType.D3> {
+        val output = input.toList() + weight
+        val delta = calcDelta(output.toBatch())
         weight = optimizer.adapt(weight = weight, dw = delta)
         return delta
     }

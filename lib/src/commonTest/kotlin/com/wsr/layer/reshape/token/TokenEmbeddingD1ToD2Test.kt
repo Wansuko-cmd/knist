@@ -2,7 +2,10 @@
 
 package com.wsr.layer.reshape.token
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.math.abs
@@ -37,16 +40,15 @@ class TokenEmbeddingD1ToD2Test {
         )
 
         // 入力: トークンID列 [1, 2, 1, 3]
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(floatArrayOf(1.0f, 2.0f, 1.0f, 3.0f)),
         )
         val context = Context(input)
 
-        val result = embedding._expect(input, context)
-
+        val result = embedding._expect(input, context) as Batch<IOType.D2>
         // 検証
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D2
+        val output = result[0]
 
         // トークン1の埋め込み: [2, 2, 2]
         assertEquals(expected = 2.0f, actual = output[0, 0])
@@ -88,14 +90,13 @@ class TokenEmbeddingD1ToD2Test {
         )
 
         // 入力: トークンID列 [1, 10, 2] (10は範囲外)
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(floatArrayOf(1.0f, 10.0f, 2.0f)),
         )
         val context = Context(input)
 
-        val result = embedding._expect(input, context)
-
-        val output = result[0] as IOType.D2
+        val result = embedding._expect(input, context) as Batch<IOType.D2>
+        val output = result[0]
 
         // トークン1: [2, 2, 2]
         assertEquals(expected = 2.0f, actual = output[0, 0])
@@ -133,7 +134,7 @@ class TokenEmbeddingD1ToD2Test {
         )
 
         // 入力: トークンID列 [1, 2]
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(floatArrayOf(1.0f, 2.0f)),
         )
         val context = Context(input)
@@ -141,8 +142,8 @@ class TokenEmbeddingD1ToD2Test {
         // 勾配を返すラムダ:
         // 位置0 (token 1): [0.5f, 0.5f]
         // 位置1 (token 2): [1.0f, 1.0f]
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(
                 IOType.d2(seqLen, embeddingDim) { x, y ->
                     if (x == 0) 0.5f else 1.0f
                 },
@@ -150,25 +151,24 @@ class TokenEmbeddingD1ToD2Test {
         }
 
         // 学習前の重みを取得
-        val weightBefore = embedding._expect(input, context)[0] as IOType.D2
+        val weightBefore = embedding._expect(input, context) as Batch<IOType.D2>
 
         // 学習実行
-        embedding._train(input, context, calcDelta)
-
+        embedding._train(input, context, calcDelta) as Batch<IOType.D1>
         // 学習後の重みを取得
-        val weightAfter = embedding._expect(input, context)[0] as IOType.D2
+        val weightAfter = embedding._expect(input, context) as Batch<IOType.D2>
 
         // Token 1の重み変化を検証
         // 初期: [2, 2], 勾配: [0.5f, 0.5f], 更新後: [2 - 0.1f*0.5f, 2 - 0.1f*0.5f] = [1.95f, 1.95f]
-        assertTrue(weightBefore[0, 0] > weightAfter[0, 0], "Token 1の重みが減少するべき")
-        assertEquals(expected = 1.95f, actual = weightAfter[0, 0], absoluteTolerance = 0.01f)
-        assertEquals(expected = 1.95f, actual = weightAfter[0, 1], absoluteTolerance = 0.01f)
+        assertTrue(weightBefore[0][0, 0] > weightAfter[0][0, 0], "Token 1の重みが減少するべき")
+        assertEquals(expected = 1.95f, actual = weightAfter[0][0, 0], absoluteTolerance = 0.01f)
+        assertEquals(expected = 1.95f, actual = weightAfter[0][0, 1], absoluteTolerance = 0.01f)
 
         // Token 2の重み変化を検証
         // 初期: [3, 3], 勾配: [1.0f, 1.0f], 更新後: [3 - 0.1f*1.0f, 3 - 0.1f*1.0f] = [2.9f, 2.9f]
-        assertTrue(weightBefore[1, 0] > weightAfter[1, 0], "Token 2の重みが減少するべき")
-        assertEquals(expected = 2.9f, actual = weightAfter[1, 0], absoluteTolerance = 0.01f)
-        assertEquals(expected = 2.9f, actual = weightAfter[1, 1], absoluteTolerance = 0.01f)
+        assertTrue(weightBefore[0][1, 0] > weightAfter[0][1, 0], "Token 2の重みが減少するべき")
+        assertEquals(expected = 2.9f, actual = weightAfter[0][1, 0], absoluteTolerance = 0.01f)
+        assertEquals(expected = 2.9f, actual = weightAfter[0][1, 1], absoluteTolerance = 0.01f)
     }
 
     @Test
@@ -191,30 +191,30 @@ class TokenEmbeddingD1ToD2Test {
         )
 
         // 入力: トークンID列 [1, 1, 2] (token 1が2回)
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(floatArrayOf(1.0f, 1.0f, 2.0f)),
         )
         val context = Context(input)
 
         // 勾配: 全て1.0
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(
                 IOType.d2(seqLen, embeddingDim) { _, _ -> 1.0f },
             )
         }
 
-        val weightBefore = embedding._expect(input, context)[0] as IOType.D2
-        embedding._train(input, context, calcDelta)
-        val weightAfter = embedding._expect(input, context)[0] as IOType.D2
+        val weightBefore = embedding._expect(input, context) as Batch<IOType.D2>
+        embedding._train(input, context, calcDelta) as Batch<IOType.D1>
+        val weightAfter = embedding._expect(input, context) as Batch<IOType.D2>
 
         // Token 1は2回使われているので、勾配が2倍蓄積される
         // 初期: [2, 2], 勾配合計: [2, 2], 更新後: [2 - 0.1f*2, 2 - 0.1f*2] = [1.8f, 1.8f]
-        val deltaToken1 = weightBefore[0, 0] - weightAfter[0, 0]
+        val deltaToken1 = weightBefore[0][0, 0] - weightAfter[0][0, 0]
         assertEquals(expected = 0.2f, actual = deltaToken1, absoluteTolerance = 0.01f)
 
         // Token 2は1回のみ (位置2に出現)
         // 初期: [3, 3], 勾配合計: [1, 1], 更新後: [3 - 0.1f*1, 3 - 0.1f*1] = [2.9f, 2.9f]
-        val deltaToken2 = weightBefore[2, 0] - weightAfter[2, 0]
+        val deltaToken2 = weightBefore[0][2, 0] - weightAfter[0][2, 0]
         assertEquals(expected = 0.1f, actual = deltaToken2, absoluteTolerance = 0.01f)
 
         // Token 1の変化量はToken 2の2倍
@@ -241,13 +241,13 @@ class TokenEmbeddingD1ToD2Test {
         )
 
         // 入力: [0, 1] (token 2, 3は使われない)
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(floatArrayOf(0.0f, 1.0f)),
         )
         val context = Context(input)
 
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(
                 IOType.d2(seqLen, embeddingDim) { _, _ -> 1.0f },
             )
         }
@@ -255,14 +255,13 @@ class TokenEmbeddingD1ToD2Test {
         // Token 2の初期重み (初期値: [3, 3])
         val token2BeforeValue = 3.0f // 初期化時の値
 
-        embedding._train(input, context, calcDelta)
-
+        embedding._train(input, context, calcDelta) as Batch<IOType.D1>
         // Token 2の重みをチェック (シーケンス長=2なので2要素の入力が必要)
-        val inputForToken2 = listOf(IOType.d1(floatArrayOf(2.0f, 2.0f)))
-        val token2After = embedding._expect(inputForToken2, context)[0] as IOType.D2
+        val inputForToken2 = batchOf(IOType.d1(floatArrayOf(2.0f, 2.0f)))
+        val token2After = embedding._expect(inputForToken2, context) as Batch<IOType.D2>
 
         // Token 2は使われていないので変化しない
-        assertEquals(expected = token2BeforeValue, actual = token2After[0, 0])
-        assertEquals(expected = token2BeforeValue, actual = token2After[0, 1])
+        assertEquals(expected = token2BeforeValue, actual = token2After[0][0, 0])
+        assertEquals(expected = token2BeforeValue, actual = token2After[0][0, 1])
     }
 }

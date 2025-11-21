@@ -2,7 +2,10 @@
 
 package com.wsr.layer.process.function.sigmoid
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.function.sigmoid.SigmoidD3
 import kotlin.math.exp
@@ -16,15 +19,14 @@ class SigmoidD3Test {
 
         // [[[0, 1, 2]]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d3(1, 1, 3) { _, _, z -> z.toFloat() },
             )
         val context = Context(input)
 
-        val result = sigmoid._expect(input, context)
-
+        val result = sigmoid._expect(input, context) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D3
+        val output = result[0]
         // sigmoid(x) = 1 / (1 + exp(-x))
         // sigmoid(0) = 0.5f
         // sigmoid(1) ≈ 0.731f
@@ -40,20 +42,19 @@ class SigmoidD3Test {
 
         // [[[1, 2]]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d3(1, 1, 2) { _, _, z -> (z + 1).toFloat() },
             )
         val context = Context(input)
 
         // 全て1のdelta
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d3(1, 1, 2) { _, _, _ -> 1.0f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d3(1, 1, 2) { _, _, _ -> 1.0f })
         }
 
-        val result = sigmoid._train(input, context, calcDelta)
-
+        val result = sigmoid._train(input, context, calcDelta) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D3
+        val dx = result[0]
         // sigmoid'(x) = sigmoid(x) * (1 - sigmoid(x))
         val sig1 = 1.0f / (1.0f + exp(-1.0f))
         val expected1 = sig1 * (1.0f - sig1)

@@ -2,7 +2,10 @@
 
 package com.wsr.layer.process.pool
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.pool.MaxPoolD3
 import kotlin.test.Test
@@ -19,13 +22,12 @@ class MaxPoolD3Test {
         //   [9, 10, 11, 12],
         //   [13, 14, 15, 16]]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d3(1, 4, 4) { _, y, z -> (y * 4 + z + 1).toFloat() },
             )
         val context = Context(input)
 
-        val result = maxPool._expect(input, context)
-
+        val result = maxPool._expect(input, context) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D3
 
@@ -52,18 +54,17 @@ class MaxPoolD3Test {
 
         // 1チャネル、4x4の入力
         val input =
-            listOf(
+            batchOf(
                 IOType.d3(1, 4, 4) { _, y, z -> (y * 4 + z + 1).toFloat() },
             )
         val context = Context(input)
 
         // 全て1のdelta (2x2)
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d3(1, 2, 2) { _, _, _ -> 1.0f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d3(1, 2, 2) { _, _, _ -> 1.0f })
         }
 
-        val result = maxPool._train(input, context, calcDelta)
-
+        val result = maxPool._train(input, context, calcDelta) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D3
 

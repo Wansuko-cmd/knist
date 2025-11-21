@@ -2,7 +2,10 @@
 
 package com.wsr.layer.process.function.softmax
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.function.softmax.SoftmaxD1
 import kotlin.math.exp
@@ -16,13 +19,12 @@ class SoftmaxD1Test {
 
         // [[1, 2, 3]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val context = Context(input)
 
-        val result = softmax._expect(input, context)
-
+        val result = softmax._expect(input, context) as Batch<IOType.D1>
         // max = 3
         val exp0 = exp(1.0f - 3.0f)
         val exp1 = exp(2.0f - 3.0f)
@@ -30,7 +32,7 @@ class SoftmaxD1Test {
         val sum = exp0 + exp1 + exp2
 
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D1
+        val output = result[0]
         assertEquals(
             expected = (exp0 / sum),
             actual = output[0],
@@ -54,18 +56,17 @@ class SoftmaxD1Test {
 
         // [[1, 2]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d1(listOf(1.0f, 2.0f)),
             )
         val context = Context(input)
 
         // deltaは[1, 1]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d1(listOf(1.0f, 1.0f)))
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d1(listOf(1.0f, 1.0f)))
         }
 
-        val result = softmax._train(input, context, calcDelta)
-
+        val result = softmax._train(input, context, calcDelta) as Batch<IOType.D1>
         // output = softmax(input)
         val exp0 = exp(1.0f - 2.0f)
         val exp1 = exp(2.0f - 2.0f)
@@ -78,7 +79,7 @@ class SoftmaxD1Test {
         val expected1 = 1.0f * out1 * (1 - out1)
 
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D1
+        val dx = result[0]
         assertEquals(
             expected = expected0,
             actual = dx[0],

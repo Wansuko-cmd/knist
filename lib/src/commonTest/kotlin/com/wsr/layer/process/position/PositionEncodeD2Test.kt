@@ -2,7 +2,10 @@
 
 package com.wsr.layer.process.position
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import kotlin.math.cos
 import kotlin.math.pow
@@ -17,13 +20,12 @@ class PositionEncodeD2Test {
 
         // 入力は全て1.0（位置エンコーディングの影響だけを見るため）
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 4) { _, _ -> 1.0f },
             )
         val context = Context(input)
 
-        val result = positionEncode._expect(input, context)
-
+        val result = positionEncode._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
 
@@ -61,21 +63,20 @@ class PositionEncodeD2Test {
 
         // 入力は[[1, 2, 3], [4, 5, 6]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() },
             )
         val context = Context(input)
 
         // deltaは[[0.1f, 0.2f, 0.3f], [0.4f, 0.5f, 0.6f]]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(2, 3) { x, y -> (x * 3 + y + 1) * 0.1f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d2(2, 3) { x, y -> (x * 3 + y + 1) * 0.1f })
         }
 
-        val result = positionEncode._train(input, context, calcDelta)
-
+        val result = positionEncode._train(input, context, calcDelta) as Batch<IOType.D2>
         // 位置エンコーディングの逆伝播は、加算なのでdeltaをそのまま返す
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D2
+        val dx = result[0]
         assertEquals(expected = 0.1f, actual = dx[0, 0], absoluteTolerance = 1e-6f)
         assertEquals(expected = 0.2f, actual = dx[0, 1], absoluteTolerance = 1e-6f)
         assertEquals(expected = 0.3f, actual = dx[0, 2], absoluteTolerance = 1e-6f)

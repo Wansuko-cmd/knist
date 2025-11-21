@@ -11,6 +11,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":io-type:core"))
+                api(project(":io-type:batch"))
 
                 implementation(libs.coroutine)
 

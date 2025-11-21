@@ -1,5 +1,6 @@
 package com.wsr.layer.process.norm.minmax
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.collection.sum
@@ -9,6 +10,8 @@ import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
 
@@ -19,20 +22,22 @@ class MinMaxNormD2 internal constructor(
     private val optimizer: Optimizer.D2,
     private var weight: IOType.D2,
 ) : Process.D2() {
-    override fun expect(input: List<IOType.D2>, context: Context): List<IOType.D2> {
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
+        val input = input.toList()
         val min = input.map { it.value.min() }
         val max = input.map { it.value.max() }
         return List(input.size) {
             val denominator = max[it] - min[it]
             IOType.d2(outputX, outputY) { x, y -> weight[x, y] * (input[it][x, y] - min[it]) / denominator }
-        }
+        }.toBatch()
     }
 
     override fun train(
-        input: List<IOType.D2>,
+        input: Batch<IOType.D2>,
         context: Context,
-        calcDelta: (List<IOType.D2>) -> List<IOType.D2>,
-    ): List<IOType.D2> {
+        calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
+    ): Batch<IOType.D2> {
+        val input = input.toList()
         val min = input.map { it.value.min() }
         val max = input.map { it.value.max() }
 
@@ -44,13 +49,13 @@ class MinMaxNormD2 internal constructor(
         val mean = List(input.size) { denominator[it] * numerator[it] }
         val output = mean.map { weight * it }
 
-        val delta = calcDelta(output)
+        val delta = calcDelta(output.toBatch()).toList()
 
         val dOutput = delta.map { it * weight }
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = mean * delta,
+            dw = (mean * delta).toBatch(),
         )
 
         // 分母側(dy/d[max(x) - min(x)])
@@ -76,7 +81,7 @@ class MinMaxNormD2 internal constructor(
                     else -> dNumerator[it][x, y]
                 }
             }
-        }
+        }.toBatch()
     }
 
     private operator fun IOType.D2.times(other: IOType.D2) = IOType.d2(shape) { x, y ->

@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 import okio.BufferedSink
 import okio.BufferedSource
 
-private typealias TrainLambda = (input: List<IOType>, label: List<IOType>, context: Context) -> List<IOType>
+private typealias TrainLambda = (input: Batch<IOType>, label: Batch<IOType>, context: Context) -> Batch<IOType>
 
 @Serializable(with = NetworkSerializer::class)
 class Network<I, O> internal constructor(
@@ -21,7 +21,7 @@ class Network<I, O> internal constructor(
         val initial: (TrainLambda) -> TrainLambda = { it }
         layers.foldRight(initial) { layer: Layer, acc: (TrainLambda) -> TrainLambda ->
             { final: TrainLambda ->
-                { input: List<IOType>, label: List<IOType>, context: Context ->
+                { input: Batch<IOType>, label: Batch<IOType>, context: Context ->
                     layer._train(input, context) { i -> acc(final)(i, label, context) }
                 }
             }
@@ -47,7 +47,7 @@ class Network<I, O> internal constructor(
 
     fun train(input: List<I>, label: List<O>): Float {
         var loss = 0f
-        val output: TrainLambda = { input: List<IOType>, label: List<IOType>, context: Context ->
+        val output: TrainLambda = { input: Batch<IOType>, label: Batch<IOType>, context: Context ->
             val output = output._train(input, label)
             loss = output.loss
             output.delta

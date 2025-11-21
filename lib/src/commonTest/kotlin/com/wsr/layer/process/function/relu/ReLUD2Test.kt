@@ -2,7 +2,10 @@
 
 package com.wsr.layer.process.function.relu
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.function.relu.ReLUD2
 import kotlin.test.Test
@@ -15,7 +18,7 @@ class ReLUD2Test {
 
         // [[-2, -1], [0, 1]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 2) { x, y ->
                     when {
                         x == 0 && y == 0 -> -2.0f
@@ -28,10 +31,9 @@ class ReLUD2Test {
         val context = Context(input)
 
         // [[0, 0], [0, 1]]
-        val result = relu._expect(input, context)
-
+        val result = relu._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D2
+        val output = result[0]
         assertEquals(expected = 0.0f, actual = output[0, 0])
         assertEquals(expected = 0.0f, actual = output[0, 1])
         assertEquals(expected = 0.0f, actual = output[1, 0])
@@ -44,20 +46,19 @@ class ReLUD2Test {
 
         // [[-1, 0], [1, 2]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y - 1).toFloat() },
             )
         val context = Context(input)
 
         // deltaは[[2, 3], [4, 5]]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 2).toFloat() })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 2).toFloat() })
         }
 
-        val result = relu._train(input, context, calcDelta)
-
+        val result = relu._train(input, context, calcDelta) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D2
+        val dx = result[0]
         // input[[-1, 0], [1, 2]]なので、[-1]の位置は0、[0, 1, 2]の位置はdeltaをそのまま返す
         assertEquals(expected = 0.0f, actual = dx[0, 0])
         assertEquals(expected = 3.0f, actual = dx[0, 1])

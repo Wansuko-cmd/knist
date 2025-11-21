@@ -1,10 +1,13 @@
 package dataset.mnist
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.Converter
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
+import com.wsr.toBatch
+import com.wsr.toList
 import java.io.DataInputStream
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -54,10 +57,10 @@ data class MnistDataset(val pixels: List<Float>, val label: Int, val imageSize: 
 
 @Serializable
 data class PixelConverter(override val outputX: Int, override val outputY: Int) : Converter.D2<List<Float>>() {
-    override fun encode(input: List<List<Float>>): List<IOType.D2> = input
-        .map { IOType.d2(listOf(28, 28), it) }
+    override fun encode(input: List<List<Float>>): Batch<IOType.D2> = input
+        .map { IOType.d2(listOf(28, 28), it) }.toBatch()
 
-    override fun decode(input: List<IOType.D2>): List<List<Float>> = input.map { it.value.toList() }
+    override fun decode(input: Batch<IOType.D2>): List<List<Float>> = input.toList().map { it.value.toList() }
 }
 
 fun NetworkBuilder.Companion.inputPx(x: Int, y: Int, optimizer: Optimizer, initializer: WeightInitializer) = inputD2(
@@ -68,9 +71,9 @@ fun NetworkBuilder.Companion.inputPx(x: Int, y: Int, optimizer: Optimizer, initi
 
 @Serializable
 data class LabelConverter(override val outputSize: Int) : Converter.D1<Int>() {
-    override fun encode(input: List<Int>): List<IOType.D1> = input.map { input ->
+    override fun encode(input: List<Int>): Batch<IOType.D1> = input.map { input ->
         IOType.d1(10) { if (input == it) 1f else 0f }
-    }
+    }.toBatch()
 
-    override fun decode(input: List<IOType.D1>): List<Int> = input.map { it.value.toTypedArray().maxIndex() }
+    override fun decode(input: Batch<IOType.D1>): List<Int> = input.toList().map { it.value.toTypedArray().maxIndex() }
 }

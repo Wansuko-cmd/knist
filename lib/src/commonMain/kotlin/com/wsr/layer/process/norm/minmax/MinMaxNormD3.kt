@@ -1,5 +1,6 @@
 package com.wsr.layer.process.norm.minmax
 
+import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.collection.sum
@@ -9,6 +10,8 @@ import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
+import com.wsr.toBatch
+import com.wsr.toList
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
 
@@ -20,7 +23,8 @@ class MinMaxNormD3 internal constructor(
     private val optimizer: Optimizer.D3,
     private var weight: IOType.D3,
 ) : Process.D3() {
-    override fun expect(input: List<IOType.D3>, context: Context): List<IOType.D3> {
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> {
+        val input = input.toList()
         val min = input.map { it.value.min() }
         val max = input.map { it.value.max() }
         return List(input.size) {
@@ -30,14 +34,15 @@ class MinMaxNormD3 internal constructor(
                 j = outputY,
                 k = outputZ,
             ) { x, y, z -> weight[x, y, z] * (input[it][x, y, z] - min[it]) / denominator }
-        }
+        }.toBatch()
     }
 
     override fun train(
-        input: List<IOType.D3>,
+        input: Batch<IOType.D3>,
         context: Context,
-        calcDelta: (List<IOType.D3>) -> List<IOType.D3>,
-    ): List<IOType.D3> {
+        calcDelta: (Batch<IOType.D3>) -> Batch<IOType.D3>,
+    ): Batch<IOType.D3> {
+        val input = input.toList()
         val min = input.map { it.value.min() }
         val max = input.map { it.value.max() }
 
@@ -49,13 +54,13 @@ class MinMaxNormD3 internal constructor(
         val mean = List(input.size) { denominator[it] * numerator[it] }
         val output = mean.map { weight * it }
 
-        val delta = calcDelta(output)
+        val delta = calcDelta(output.toBatch()).toList()
 
         val dOutput = delta.map { it * weight }
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = mean * delta,
+            dw = (mean * delta).toBatch(),
         )
 
         // 分母側(dy/d[max(x) - min(x)])
@@ -80,7 +85,7 @@ class MinMaxNormD3 internal constructor(
                     else -> dNumerator[it][x, y, z]
                 }
             }
-        }
+        }.toBatch()
     }
 
     private operator fun IOType.D3.times(other: IOType.D3) = IOType.d3(shape) { x, y, z ->
