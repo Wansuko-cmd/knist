@@ -2,13 +2,15 @@
 
 package com.wsr.layer.process.attention
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
 import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-
+import com.wsr.get
 class AttentionD2Test {
     @Test
     fun `AttentionD2の_expect=Multi-Head Attentionの出力形状が正しい`() {
@@ -40,22 +42,19 @@ class AttentionD2Test {
         )
 
         // 入力: [batch=2, channel=4, inputY=8]
-        val input = listOf(
-            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() },
+        val input = batchOf(IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() },
             IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 2).toFloat() },
         )
         // Contextには元の入力(ダミーのD1)を渡す
-        val originalInput = listOf(
-            IOType.d1(channel) { it.toFloat() },
+        val originalInput = batchOf(IOType.d1(channel) { it.toFloat() },
             IOType.d1(channel) { it.toFloat() },
         )
         val context = Context(originalInput)
 
-        val result = attention._expect(input, context)
-
+        val result = attention._expect(input, context) as Batch<IOType.D2>
         // 出力形状の確認
         assertEquals(expected = 2, actual = result.size)
-        val output = result[0] as IOType.D2
+        val output = result[0]
         assertEquals(expected = channel, actual = output.shape[0])
         assertEquals(expected = inputY, actual = output.shape[1])
     }
@@ -89,19 +88,17 @@ class AttentionD2Test {
             optimizerO = Sgd(0.01f).d2(numOfHeads * dim, inputY),
         )
 
-        val input = listOf(
-            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
+        val input = batchOf(IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
         )
-        val originalInput = listOf(IOType.d1(channel) { it.toFloat() })
+        val originalInput = batchOf(IOType.d1(channel) { it.toFloat() })
         val context = Context(originalInput)
 
         // deltaは全て1.0を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(channel, inputY) { _, _ -> 1.0f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d2(channel, inputY) { _, _ -> 1.0f })
         }
 
-        val result = attention._train(input, context, calcDelta)
-
+        val result = attention._train(input, context, calcDelta) as Batch<IOType.D2>
         // 入力への勾配の形状を確認
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0] as IOType.D2
@@ -138,27 +135,25 @@ class AttentionD2Test {
             optimizerO = Sgd(0.1f).d2(numOfHeads * dim, inputY),
         )
 
-        val input = listOf(
-            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.01f },
+        val input = batchOf(IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.01f },
         )
-        val originalInput = listOf(IOType.d1(channel) { it.toFloat() })
+        val originalInput = batchOf(IOType.d1(channel) { it.toFloat() })
         val context = Context(originalInput)
 
         // 更新前の出力を保存
-        val beforeOutput = attention._expect(input, context)[0] as IOType.D2
-        val beforeValue = beforeOutput[0, 0]
+        val beforeOutput = attention._expect(input, context) as Batch<IOType.D2>
+        val beforeValue = beforeOutput[0][0, 0]
 
         // deltaは全て1.0を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(channel, inputY) { _, _ -> 1.0f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d2(channel, inputY) { _, _ -> 1.0f })
         }
 
         // 訓練を実行（重みが更新される）
-        attention._train(input, context, calcDelta)
-
+        attention._train(input, context, calcDelta) as Batch<IOType.D2>
         // 更新後の出力
-        val afterOutput = attention._expect(input, context)[0] as IOType.D2
-        val afterValue = afterOutput[0, 0]
+        val afterOutput = attention._expect(input, context) as Batch<IOType.D2>
+        val afterValue = afterOutput[0][0, 0]
 
         // 重みが更新されたことを確認（出力が変わっている）
         assertTrue(
@@ -196,14 +191,12 @@ class AttentionD2Test {
             optimizerO = Sgd(0.01f).d2(numOfHeads * dim, inputY),
         )
 
-        val input = listOf(
-            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
+        val input = batchOf(IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
         )
-        val originalInput = listOf(IOType.d1(channel) { it.toFloat() })
+        val originalInput = batchOf(IOType.d1(channel) { it.toFloat() })
         val context = Context(originalInput)
 
-        val result = attention._expect(input, context)
-
+        val result = attention._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
         assertEquals(expected = channel, actual = output.shape[0])
@@ -239,16 +232,14 @@ class AttentionD2Test {
             optimizerO = Sgd(0.01f).d2(numOfHeads * dim, inputY),
         )
 
-        val input = listOf(
-            IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
+        val input = batchOf(IOType.d2(channel, inputY) { x, y -> (x * inputY + y + 1).toFloat() * 0.1f },
         )
-        val originalInput = listOf(IOType.d1(channel) { it.toFloat() })
+        val originalInput = batchOf(IOType.d1(channel) { it.toFloat() })
         val context = Context(originalInput)
 
-        val result = attention._expect(input, context)
-
+        val result = attention._expect(input, context) as Batch<IOType>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D2
+        val output = result as Batch<IOType.D2>
         assertEquals(expected = channel, actual = output.shape[0])
         assertEquals(expected = inputY, actual = output.shape[1])
     }

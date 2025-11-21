@@ -6,6 +6,8 @@ import com.wsr.IOType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+import com.wsr.get
+
 class SgdD2Test {
     @Test
     fun `SgdD2の_adapt=勾配に学習率を乗算した値を返す`() {

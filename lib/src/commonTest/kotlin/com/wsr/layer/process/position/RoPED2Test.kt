@@ -10,6 +10,11 @@ import kotlin.math.sin
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+import com.wsr.get
+
+import com.wsr.Batch
+import com.wsr.batchOf
+
 class RoPED2Test {
     @Test
     fun `RoPED2の_expect=入力に回転を適用`() {
@@ -17,15 +22,13 @@ class RoPED2Test {
 
         // 入力は[[1, 2, 3, 4], [5, 6, 7, 8]]
         val input =
-            listOf(
-                IOType.d2(2, 4) { x, y -> (x * 4 + y + 1).toFloat() },
+            batchOf(IOType.d2(2, 4) { x, y -> (x * 4 + y + 1).toFloat() },
             )
         val context = Context(input)
 
-        val result = rope._expect(input, context)
-
+        val result = rope._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D2
+        val output = result[0]
 
         // RoPEの計算を手動で検証
         // theta[i] = 1 / 10000^(2i/d)
@@ -73,20 +76,18 @@ class RoPED2Test {
 
         // 入力は[[1, 2, 3, 4], [5, 6, 7, 8]]
         val input =
-            listOf(
-                IOType.d2(2, 4) { x, y -> (x * 4 + y + 1).toFloat() },
+            batchOf(IOType.d2(2, 4) { x, y -> (x * 4 + y + 1).toFloat() },
             )
         val context = Context(input)
 
         // deltaは[[0.1f, 0.2f, 0.3f, 0.4f], [0.5f, 0.6f, 0.7f, 0.8f]]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(2, 4) { x, y -> (x * 4 + y + 1) * 0.1f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d2(2, 4) { x, y -> (x * 4 + y + 1) * 0.1f })
         }
 
-        val result = rope._train(input, context, calcDelta)
-
+        val result = rope._train(input, context, calcDelta) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D2
+        val dx = result[0]
 
         // 逆伝播でもRoPEを適用するので、deltaに回転が適用される
         val theta0 = 1.0f / 10000.0f.pow(0.0f / 4.0f)

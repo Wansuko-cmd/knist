@@ -6,6 +6,8 @@ import com.wsr.IOType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+import com.wsr.get
+
 class MomentumD3Test {
     @Test
     fun `MomentumD3の_adapt=初回呼び出し時はSGDと同じ`() {

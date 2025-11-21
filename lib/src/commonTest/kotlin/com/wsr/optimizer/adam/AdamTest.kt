@@ -4,6 +4,8 @@ package com.wsr.optimizer.adam
 
 import kotlin.test.Test
 
+import com.wsr.get
+
 class AdamTest {
     @Test
     fun `Adamの_d1=AdamD1インスタンスを返す`() {

@@ -2,16 +2,18 @@
 
 package com.wsr.layer.process.debug
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
 import com.wsr.layer.Context
 import com.wsr.layer.process.debug.DebugD1
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
+import com.wsr.get
 class DebugD1Test {
     @Test
     fun `DebugD1の_expect=入力をそのまま返し、onInputを呼び出す`() {
-        var capturedInput: List<IOType.D1>? = null
+        var capturedInput: Batch<IOType.D1>? = null
         val debug =
             DebugD1(outputSize = 3).apply {
                 onInput = { capturedInput = it }
@@ -20,13 +22,11 @@ class DebugD1Test {
 
         // [1, 2, 3]
         val input =
-            listOf(
-                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+            batchOf(IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val context = Context(input)
 
-        val result = debug._expect(input, context)
-
+        val result = debug._expect(input, context) as Batch<IOType.D1>
         // 入力をそのまま返す
         assertEquals(expected = input, actual = result)
         // onInputが呼び出される
@@ -35,8 +35,8 @@ class DebugD1Test {
 
     @Test
     fun `DebugD1の_train=deltaをそのまま返し、onInputとonDeltaを呼び出す`() {
-        var capturedInput: List<IOType.D1>? = null
-        var capturedDelta: List<IOType.D1>? = null
+        var capturedInput: Batch<IOType.D1>? = null
+        var capturedDelta: Batch<IOType.D1>? = null
         val debug =
             DebugD1(outputSize = 3).apply {
                 onInput = { capturedInput = it }
@@ -45,20 +45,18 @@ class DebugD1Test {
 
         // [1, 2, 3]
         val input =
-            listOf(
-                IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
+            batchOf(IOType.d1(listOf(1.0f, 2.0f, 3.0f)),
             )
         val context = Context(input)
 
         // deltaは[2, 4, 6]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d1(listOf(2.0f, 4.0f, 6.0f)))
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d1(listOf(2.0f, 4.0f, 6.0f)))
         }
 
-        val result = debug._train(input, context, calcDelta)
-
+        val result = debug._train(input, context, calcDelta) as Batch<IOType.D1>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D1
+        val dx = result[0]
         // deltaは[2, 4, 6]
         assertEquals(expected = 2.0f, actual = dx[0])
         assertEquals(expected = 4.0f, actual = dx[1])

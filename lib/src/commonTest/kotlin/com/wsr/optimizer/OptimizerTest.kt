@@ -6,6 +6,8 @@ import com.wsr.IOType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+import com.wsr.get
+
 class OptimizerTest {
     // D1のテスト
     @Test

@@ -3,9 +3,10 @@
 package com.wsr.converter.word
 
 import com.wsr.IOType
+import com.wsr.batchOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
+import com.wsr.get
 class WordD1Test {
     private val words = listOf("<PAD>", "<UNK>", "hello", "world", "test")
     private val unknownIndex = 1
@@ -86,7 +87,7 @@ class WordD1Test {
             unknownIndex = unknownIndex,
         )
 
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(listOf(0.0f, 0.0f, 1.0f, 0.0f, 0.0f)), // hello
             IOType.d1(listOf(0.0f, 0.0f, 0.0f, 1.0f, 0.0f)), // world
             IOType.d1(listOf(0.0f, 0.0f, 0.0f, 0.0f, 1.0f)), // test
@@ -108,7 +109,7 @@ class WordD1Test {
         )
 
         // Softmax出力のような確率分布を想定
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(listOf(0.1f, 0.2f, 0.5f, 0.15f, 0.05f)), // index 2 (hello) が最大
             IOType.d1(listOf(0.05f, 0.1f, 0.15f, 0.6f, 0.1f)), // index 3 (world) が最大
         )
@@ -144,7 +145,7 @@ class WordD1Test {
         )
 
         // 確率分布からdecode -> encode
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(listOf(0.1f, 0.2f, 0.5f, 0.15f, 0.05f)), // hello
         )
 

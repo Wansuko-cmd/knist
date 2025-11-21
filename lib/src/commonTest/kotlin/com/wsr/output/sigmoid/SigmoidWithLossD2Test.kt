@@ -2,7 +2,10 @@
 
 package com.wsr.output.sigmoid
 
+import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.get
 import com.wsr.output.sigmoid.SigmoidWithLossD2
 import kotlin.math.exp
 import kotlin.test.Test
@@ -14,7 +17,7 @@ class SigmoidWithLossD2Test {
     fun `SigmoidWithLossD2の_expect=入力をそのまま返す`() {
         // [[1, 2], [3, 4]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val sigmoid = SigmoidWithLossD2(outputX = 2, outputY = 2)
@@ -27,12 +30,12 @@ class SigmoidWithLossD2Test {
     fun `SigmoidWithLossD2の_train=sigmoid適用後にラベルを引いた値を返す`() {
         // [[0, 1], [2, 3]]
         val input =
-            listOf(
+            batchOf(
                 IOType.d2(2, 2) { x, y -> (x * 2 + y).toFloat() },
             )
         // [[1, 0], [0, 1]]
         val label =
-            listOf(
+            batchOf(
                 IOType.d2(2, 2) { x, y -> if (x == y) 1.0f else 0.0f },
             )
         val sigmoid = SigmoidWithLossD2(outputX = 2, outputY = 2)
@@ -61,16 +64,16 @@ class SigmoidWithLossD2Test {
         assertEquals(expected = expectedLoss, actual = result.loss, absoluteTolerance = 1e-5f)
 
         assertEquals(expected = 1, actual = result.delta.size)
-        val output = result.delta[0] as IOType.D2
+        val output = result.delta as Batch<IOType.D2>
         assertEquals(expected = 2, actual = output.shape[0])
         assertEquals(expected = 2, actual = output.shape[1])
 
         // output = [[sigmoid(0)-1, sigmoid(1)-0], [sigmoid(2)-0, sigmoid(3)-1]]
         //        = [[0.5f-1, 0.7311f-0], [0.8808f-0, 0.9526f-1]]
         //        = [[-0.5f, 0.7311f], [0.8808f, -0.0474f]]
-        assertEquals(expected = sig0 - 1f, actual = output[0, 0], absoluteTolerance = 1e-4f)
-        assertEquals(expected = sig1 - 0f, actual = output[0, 1], absoluteTolerance = 1e-4f)
-        assertEquals(expected = sig2 - 0f, actual = output[1, 0], absoluteTolerance = 1e-4f)
-        assertEquals(expected = sig3 - 1f, actual = output[1, 1], absoluteTolerance = 1e-4f)
+        assertEquals(expected = sig0 - 1f, actual = output[0][0, 0], absoluteTolerance = 1e-4f)
+        assertEquals(expected = sig1 - 0f, actual = output[0][0, 1], absoluteTolerance = 1e-4f)
+        assertEquals(expected = sig2 - 0f, actual = output[0][1, 0], absoluteTolerance = 1e-4f)
+        assertEquals(expected = sig3 - 1f, actual = output[0][1, 1], absoluteTolerance = 1e-4f)
     }
 }

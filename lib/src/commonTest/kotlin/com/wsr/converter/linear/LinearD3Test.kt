@@ -3,9 +3,10 @@
 package com.wsr.converter.linear
 
 import com.wsr.IOType
+import com.wsr.batchOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
+import com.wsr.get
 class LinearD3Test {
     @Test
     fun `LinearD3のencode=入力をそのまま返す`() {
@@ -29,7 +30,7 @@ class LinearD3Test {
     fun `LinearD3のdecode=入力をそのまま返す`() {
         val converter = LinearD3(outputX = 2, outputY = 3, outputZ = 4)
 
-        val input = listOf(
+        val input = batchOf(
             IOType.d3(2, 3, 4) { x, y, z -> (x * 12 + y * 4 + z).toFloat() },
             IOType.d3(2, 3, 4) { x, y, z -> (x * 12 + y * 4 + z + 100).toFloat() },
         )
@@ -71,7 +72,7 @@ class LinearD3Test {
     fun `LinearD3の往復変換=decode後にencodeしても同じ結果になる`() {
         val converter = LinearD3(outputX = 2, outputY = 3, outputZ = 4)
 
-        val input = listOf(
+        val input = batchOf(
             IOType.d3(2, 3, 4) { x, y, z -> (x * y * z).toFloat() },
         )
 
@@ -80,15 +81,7 @@ class LinearD3Test {
         val encoded = converter.encode(decoded)
 
         assertEquals(expected = input.size, actual = encoded.size)
-        for (i in input.indices) {
-            for (x in 0 until input[i].shape[0]) {
-                for (y in 0 until input[i].shape[1]) {
-                    for (z in 0 until input[i].shape[2]) {
-                        assertEquals(expected = input[i][x, y, z], actual = encoded[i][x, y, z])
-                    }
-                }
-            }
-        }
+        assertEquals(expected = input, actual = encoded)
     }
 
     @Test

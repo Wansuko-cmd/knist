@@ -8,6 +8,11 @@ import com.wsr.layer.process.pool.MaxPoolD2
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+import com.wsr.get
+
+import com.wsr.Batch
+import com.wsr.batchOf
+
 class MaxPoolD2Test {
     @Test
     fun `MaxPoolD2の_expect=poolSize毎の最大値を取る`() {
@@ -20,8 +25,7 @@ class MaxPoolD2Test {
 
         // [[1, 2, 3, 4]]
         val input =
-            listOf(
-                IOType.d2(1, 4) { _, y -> (y + 1).toFloat() },
+            batchOf(IOType.d2(1, 4) { _, y -> (y + 1).toFloat() },
             )
         val context = Context(input)
 
@@ -29,8 +33,7 @@ class MaxPoolD2Test {
         // outputY = inputSize / poolSize = 4 / 2 = 2
         // y=0のとき: max(input[0,0], input[0,1]) = max(1, 2) = 2
         // y=1のとき: max(input[0,1], input[0,2]) = max(2, 3) = 3
-        val result = maxPool._expect(input, context)
-
+        val result = maxPool._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
         val output = result[0] as IOType.D2
         assertEquals(expected = 2.0f, actual = output[0, 0])
@@ -48,8 +51,7 @@ class MaxPoolD2Test {
 
         // [[1, 3, 2, 4]]
         val input =
-            listOf(
-                IOType.d2(1, 4) { _, y ->
+            batchOf(IOType.d2(1, 4) { _, y ->
                     when (y) {
                         0 -> 1.0f
                         1 -> 3.0f
@@ -61,12 +63,11 @@ class MaxPoolD2Test {
         val context = Context(input)
 
         // deltaは[[2, 6]]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(1, 2) { _, y -> if (y == 0) 2.0f else 6.0f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d2(1, 2) { _, y -> if (y == 0) 2.0f else 6.0f })
         }
 
-        val result = maxPool._train(input, context, calcDelta)
-
+        val result = maxPool._train(input, context, calcDelta) as Batch<IOType.D2>
         // forward: y=0でmax(input[0,0], input[0,1]) = max(1, 3) = 3
         //          y=1でmax(input[0,1], input[0,2]) = max(3, 2) = 3
         // trainの実装: o = i / poolSize

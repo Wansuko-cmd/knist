@@ -3,9 +3,10 @@
 package com.wsr.converter.word
 
 import com.wsr.IOType
+import com.wsr.batchOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
+import com.wsr.get
 class WordD2Test {
     private val words = listOf("<PAD>", "<UNK>", "hello", "world", "test")
     private val length = 3
@@ -53,7 +54,7 @@ class WordD2Test {
             unknownIndex = unknownIndex,
         )
 
-        val input = listOf(
+        val input = batchOf(
             IOType.d2(3, 5) { x, y ->
                 when {
                     x == 0 && y == 2 -> 1.0f // hello
@@ -81,7 +82,7 @@ class WordD2Test {
             unknownIndex = unknownIndex,
         )
 
-        val input = listOf(
+        val input = batchOf(
             // バッチ1: hello, world, test
             IOType.d2(3, 5) { x, y ->
                 when {
@@ -148,7 +149,7 @@ class WordD2Test {
         )
 
         // 確率分布からdecode -> encode
-        val input = listOf(
+        val input = batchOf(
             IOType.d2(3, 5) { x, y ->
                 when (x) {
                     0 -> listOf(0.1f, 0.2f, 0.5f, 0.15f, 0.05f)[y] // hello

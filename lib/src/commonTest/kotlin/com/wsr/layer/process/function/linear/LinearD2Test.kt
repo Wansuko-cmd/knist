@@ -8,6 +8,11 @@ import com.wsr.layer.process.function.linear.LinearD2
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+import com.wsr.get
+
+import com.wsr.Batch
+import com.wsr.batchOf
+
 class LinearD2Test {
     @Test
     fun `LinearD2の_expect=入力をそのまま返す`() {
@@ -15,13 +20,11 @@ class LinearD2Test {
 
         // [[1, 2], [3, 4]]
         val input =
-            listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+            batchOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val context = Context(input)
 
-        val result = linear._expect(input, context)
-
+        val result = linear._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = input, actual = result)
     }
 
@@ -31,20 +34,18 @@ class LinearD2Test {
 
         // [[1, 2], [3, 4]]
         val input =
-            listOf(
-                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+            batchOf(IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val context = Context(input)
 
         // deltaは[[2, 4], [6, 8]]を返す
-        val calcDelta: (List<IOType>) -> List<IOType> = {
-            listOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0f })
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d2(2, 2) { x, y -> ((x * 2 + y) + 1) * 2.0f })
         }
 
-        val result = linear._train(input, context, calcDelta)
-
+        val result = linear._train(input, context, calcDelta) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D2
+        val dx = result[0]
         // deltaは[[2, 4], [6, 8]]
         assertEquals(expected = 2.0f, actual = dx[0, 0])
         assertEquals(expected = 4.0f, actual = dx[0, 1])

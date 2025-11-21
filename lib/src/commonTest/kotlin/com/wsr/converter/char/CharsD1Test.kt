@@ -3,6 +3,9 @@
 package com.wsr.converter.char
 
 import com.wsr.IOType
+import com.wsr.batchOf
+import com.wsr.collection.forEach
+import com.wsr.get
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -103,7 +106,7 @@ class CharsD1Test {
     fun `CharsD1のdecode=文字IDのリストを文字列に変換する`() {
         val converter = CharsD1(outputSize = 10)
 
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(listOf(8.0f, 5.0f, 12.0f, 12.0f, 15.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)),
             IOType.d1(listOf(1.0f, 2.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)),
         )
@@ -123,7 +126,7 @@ class CharsD1Test {
     fun `CharsD1のdecode=範囲外のIDは無視される`() {
         val converter = CharsD1(outputSize = 5)
 
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(listOf(1.0f, 99.0f, 2.0f, 0.0f, 0.0f)),
         )
 
@@ -156,7 +159,7 @@ class CharsD1Test {
     fun `CharsD1の往復変換=decode後にencodeしても同じ結果になる`() {
         val converter = CharsD1(outputSize = 10)
 
-        val input = listOf(
+        val input = batchOf(
             IOType.d1(listOf(8.0f, 5.0f, 12.0f, 12.0f, 15.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)),
         )
 
@@ -166,11 +169,7 @@ class CharsD1Test {
 
         // 結果は元の入力と同じになる
         assertEquals(expected = input.size, actual = encoded.size)
-        for (i in input.indices) {
-            for (j in 0 until input[i].shape[0]) {
-                assertEquals(expected = input[i][j], actual = encoded[i][j])
-            }
-        }
+        assertEquals(expected = input, actual = encoded)
     }
 
     @Test
