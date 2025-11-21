@@ -1,4 +1,4 @@
-package com.wsr.collection
+package com.wsr.batch.collection
 
 import com.wsr.Batch
 import com.wsr.IOType
