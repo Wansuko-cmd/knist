@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.layer.process.bias
 
@@ -7,10 +7,10 @@ import com.wsr.IOType
 import com.wsr.batchOf
 import com.wsr.get
 import com.wsr.layer.Context
-import com.wsr.layer.process.bias.BiasD3
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
+
 class BiasD3Test {
     @Test
     fun `BiasD3の_expect=入力にバイアスを足した値を返す`() {
@@ -80,7 +80,7 @@ class BiasD3Test {
 
         // biasが更新されていることを確認（expectで確認）
         val outputAfter = bias._expect(input, context) as Batch<IOType.D3>
-        val afterOutput = outputAfter as Batch<IOType.D3>
+        val afterOutput = outputAfter
 
         // 初期weight=1.0f, delta平均=1.0f, rate=0.1f
         // 新しいweight = 1.0f - 0.1f * 1.0f = 0.9f

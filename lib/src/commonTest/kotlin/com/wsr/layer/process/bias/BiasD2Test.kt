@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.layer.process.bias
 
@@ -7,10 +7,10 @@ import com.wsr.IOType
 import com.wsr.batchOf
 import com.wsr.get
 import com.wsr.layer.Context
-import com.wsr.layer.process.bias.BiasD2
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
+
 class BiasD2Test {
     @Test
     fun `BiasD2の_expect=入力にバイアスを足した値を返す`() {
