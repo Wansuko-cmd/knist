@@ -18,6 +18,13 @@ operator fun Batch<IOType.D3>.minus(other: FloatArray): Batch<IOType.D3> {
     return result
 }
 
+@JvmName("batchD3sMinusD0s")
+operator fun Batch<IOType.D3>.minus(other: Batch<IOType.D0>): Batch<IOType.D3> {
+    val result = copy()
+    for (i in result.indices) result[i] -= other[i].get()
+    return result
+}
+
 @JvmName("batchD3sMinusD3")
 operator fun Batch<IOType.D3>.minus(other: IOType.D3) = map { it - other }
 

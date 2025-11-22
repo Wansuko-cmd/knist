@@ -15,6 +15,13 @@ operator fun Batch<IOType.D2>.plus(other: FloatArray): Batch<IOType.D2> {
     return result
 }
 
+@JvmName("batchD2sPlusD0s")
+operator fun Batch<IOType.D2>.plus(other: Batch<IOType.D0>): Batch<IOType.D2> {
+    val result = copy()
+    for (i in result.indices) result[i] += other[i].get()
+    return result
+}
+
 @JvmName("batchD2sPlusD2")
 operator fun Batch<IOType.D2>.plus(other: IOType.D2) = map { it + other }
 
