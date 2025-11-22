@@ -7,23 +7,21 @@ import com.wsr.batch.collection.map
 import com.wsr.batch.div.div
 import com.wsr.batch.func.pow
 import com.wsr.batch.minus.minus
+import com.wsr.batch.plus.plus
+import com.wsr.batch.reshape.broadcastToD2
 import com.wsr.batch.times.times
 import com.wsr.collection.average
 import com.wsr.collection.sum
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import com.wsr.operator.div
-import com.wsr.operator.minus
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
-import com.wsr.power.pow
 import com.wsr.power.sqrt
 import com.wsr.reshape.broadcastToD2
-import com.wsr.toBatch
-import com.wsr.toList
-import kotlin.math.pow
 import kotlinx.serialization.Serializable
+import kotlin.math.pow
 
 @Serializable
 class LayerNormAxis1D2 internal constructor(
@@ -49,7 +47,6 @@ class LayerNormAxis1D2 internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
-        val input = input.toList()
         val average = input.average(axis = 1)
         val numerator = input - average
 
@@ -59,11 +56,11 @@ class LayerNormAxis1D2 internal constructor(
         val normalize = numerator / denominator
 
         val output = weight * normalize
-        val delta = calcDelta(output.toBatch()).toList()
+        val delta = calcDelta(output)
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = (normalize * delta).toBatch(),
+            dw = normalize * delta,
         )
 
         // dOutput
@@ -79,7 +76,7 @@ class LayerNormAxis1D2 internal constructor(
         val dx2 = -1f * dNumerator.average(axis = 1).broadcastToD2(axis = 0, size = outputY)
 
         // dy/x <- variance(x)のx
-        val dx3: List<IOType.D2> = List(input.size) { index ->
+        val dx3 = Batch(input.size) { index ->
             // 各行ごとの勾配を事前計算
             val dVariancePerRow = IOType.d1(outputX) { i ->
                 val dvn = -(dOutput[index][i] * normalize[index][i]).sum()
@@ -100,6 +97,6 @@ class LayerNormAxis1D2 internal constructor(
         }
 
         // dy/dx
-        return (dx1 + dx2 + dx3).toBatch()
+        return dx1 + dx2 + dx3
     }
 }

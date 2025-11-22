@@ -6,6 +6,9 @@ import com.wsr.batch.collection.map
 import com.wsr.batch.collection.mapWith
 import com.wsr.operator.times
 
+@JvmName("batchFloatTimesD3s")
+operator fun Float.times(other: Batch<IOType.D3>) = other.map { this * it }
+
 @JvmName("batchD3TimesD3s")
 operator fun IOType.D3.times(other: Batch<IOType.D3>) = other.map { this * it }
 
