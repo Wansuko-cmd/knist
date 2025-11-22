@@ -3,6 +3,8 @@ package com.wsr.layer.reshape.token
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.collection.map
+import com.wsr.get
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.reshape.Reshape
@@ -30,9 +32,9 @@ class TokenEmbeddingD1ToD2 internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D1> {
-        val input = input.toList()
-        val output = forward(input.toBatch())
-        val delta = calcDelta(output).toList()
+        val input = input
+        val output = forward(input)
+        val delta = calcDelta(output)
 
         val dw = IOType.d2(shape = listOf(vocabSize, outputY))
         repeat(input.size) {
@@ -54,15 +56,16 @@ class TokenEmbeddingD1ToD2 internal constructor(
 
         // Embedding層は離散的なので、入力への勾配は意味を持たない
         // しかし型の整合性のため、ダミーのD1を返す
-        return List(input.size) { IOType.d1(input[it].shape) }.toBatch()
+        return Batch(input.size) { IOType.d1(input.shape) }
     }
 
-    private fun forward(input: Batch<IOType.D1>): Batch<IOType.D2> = input.toList().map { tokenIds ->
+    private fun forward(input: Batch<IOType.D1>): Batch<IOType.D2> = Batch(input.size) { index ->
+        val tokenIds = input[index]
         IOType.d2(outputX, outputY) { x, y ->
             val tokenId = tokenIds[x].toInt()
             if (tokenId in 0 until vocabSize) weight[tokenId, y] else 0f
         }
-    }.toBatch()
+    }
 }
 
 fun <T> NetworkBuilder.D1<T>.tokenEmbedding(
