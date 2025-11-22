@@ -3,8 +3,16 @@ package com.wsr.layer.process.norm.layer.d3
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.average.average
+import com.wsr.batch.collection.mapValue
+import com.wsr.batch.div.div
+import com.wsr.batch.func.pow
+import com.wsr.batch.minus.minus
+import com.wsr.batch.plus.plus
+import com.wsr.batch.times.times
 import com.wsr.collection.average
 import com.wsr.collection.sum
+import com.wsr.get
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
@@ -26,18 +34,18 @@ class LayerNormD3 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
     override val outputZ: Int,
+    private val e: Float,
     private val optimizer: Optimizer.D3,
     private var weight: IOType.D3,
 ) : Process.D3() {
     override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> {
-        val input = input.toList()
         val average = input.average()
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.map { sqrt(it + 1e-10f) }
+        val denominator = variance.mapValue { sqrt(it + e) }
 
-        return (weight * (numerator / denominator)).toBatch()
+        return weight * (numerator / denominator)
     }
 
     override fun train(
@@ -45,22 +53,21 @@ class LayerNormD3 internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D3>) -> Batch<IOType.D3>,
     ): Batch<IOType.D3> {
-        val input = input.toList()
         val average = input.average()
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.map { sqrt(it + 1e-10f) }
+        val denominator = variance.mapValue { sqrt(it + e) }
 
         val normalize = numerator / denominator
         val output = weight * normalize
-        val delta = calcDelta(output.toBatch()).toList()
+        val delta = calcDelta(output)
 
         val dOutput = delta * weight
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = (normalize * delta).toBatch(),
+            dw = normalize * delta,
         )
 
         // dy/[x-average(x)]
@@ -70,10 +77,10 @@ class LayerNormD3 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx
-        val dx2 = List(input.size) { -dNumerator[it].average() }
+        val dx2 = FloatArray(input.size) { -dNumerator[it].average() }
 
         // dy/x <- variance(x)のx
-        val dx3: List<IOType.D3> = List(input.size) {
+        val dx3 = Batch(input.size) {
             /**
              * dy/[sqrt(variance(x)]
              *   = (sum(dOutput * numerator) / denominator) * (-1 / (2f * denominator^2))
@@ -101,12 +108,13 @@ class LayerNormD3 internal constructor(
             dx1 + dx2
         }
         // dy/dx
-        return (dx1 + dx2 + dx3).toBatch()
+        return dx1 + dx2 + dx3
     }
 }
 
 fun <T> NetworkBuilder.D3<T>.layerNorm(
     axis: Int? = null,
+    e: Float = 1e-6f,
     optimizer: Optimizer = this.optimizer,
     initializer: WeightInitializer = Fixed(1f),
 ): NetworkBuilder.D3<T> {
@@ -115,6 +123,7 @@ fun <T> NetworkBuilder.D3<T>.layerNorm(
             outputX = inputX,
             outputY = inputY,
             outputZ = inputZ,
+            e = e,
             optimizer = optimizer.d3(inputX, inputY, inputZ),
             weight = initializer.d3(
                 input = listOf(inputX, inputY, inputZ),
