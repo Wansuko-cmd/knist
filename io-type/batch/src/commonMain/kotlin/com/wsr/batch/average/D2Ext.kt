@@ -14,6 +14,14 @@ fun Batch<IOType.D2>.average(): FloatArray = FloatArray(size) {
     sum / value.size
 }
 
+@JvmName("batchD2sAverageBatch")
+fun Batch<IOType.D2>.averageBatch(): Batch<IOType.D0> = Batch(size) {
+    val value = this[it].value
+    var sum = 0f
+    for (element in value) sum += element
+    IOType.d0(sum / value.size)
+}
+
 @JvmName("batchD2sAverageWithAxis")
 fun Batch<IOType.D2>.average(axis: Int) = Batch(size) { this[it].average(axis) }
 
