@@ -12,11 +12,7 @@ import com.wsr.set
 operator fun Float.minus(other: Batch<IOType.D2>) = other.map { this - it }
 
 @JvmName("batchD2sMinusD0s")
-operator fun Batch<IOType.D2>.minus(other: Batch<IOType.D0>): Batch<IOType.D2> {
-    val result = copy()
-    for (i in result.indices) result[i] -= other[i].get()
-    return result
-}
+operator fun Batch<IOType.D2>.minus(other: Batch<IOType.D0>): Batch<IOType.D2> = Batch(size) { this[it] - other[it] }
 
 @JvmName("batchD2sMinusD1s")
 operator fun Batch<IOType.D2>.minus(other: Batch<IOType.D1>) = Batch(size) { this[it] - other[it] }
