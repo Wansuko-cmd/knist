@@ -3,20 +3,23 @@ package com.wsr.layer.process.norm.layer.d2
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.average.average
+import com.wsr.batch.collection.mapValue
+import com.wsr.batch.div.div
+import com.wsr.batch.func.pow
+import com.wsr.batch.minus.minus
+import com.wsr.batch.plus.plus
+import com.wsr.batch.times.times
 import com.wsr.collection.average
 import com.wsr.collection.sum
+import com.wsr.get
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import com.wsr.operator.div
-import com.wsr.operator.minus
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
-import com.wsr.power.pow
-import com.wsr.toBatch
-import com.wsr.toList
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlinx.serialization.Serializable
@@ -30,14 +33,13 @@ class LayerNormD2 internal constructor(
     private var weight: IOType.D2,
 ) : Process.D2() {
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
-        val input = input.toList()
         val average = input.average()
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.map { sqrt(it + e) }
+        val denominator = variance.mapValue { sqrt(it + e) }
 
-        return (weight * (numerator / denominator)).toBatch()
+        return weight * (numerator / denominator)
     }
 
     override fun train(
@@ -45,22 +47,21 @@ class LayerNormD2 internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
-        val input = input.toList()
         val average = input.average()
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.map { sqrt(it + e) }
+        val denominator = variance.mapValue { sqrt(it + e) }
 
         val normalize = numerator / denominator
         val output = weight * normalize
-        val delta = calcDelta(output.toBatch()).toList()
+        val delta = calcDelta(output)
 
         val dOutput = delta * weight
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = (normalize * delta).toBatch(),
+            dw = normalize * delta,
         )
 
         // dy/[x-average(x)]
@@ -70,10 +71,10 @@ class LayerNormD2 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx
-        val dx2 = List(input.size) { -dNumerator[it].average() }
+        val dx2 = FloatArray(input.size) { -dNumerator[it].average() }
 
         // dy/x <- variance(x)のx
-        val dx3: List<IOType.D2> = List(input.size) {
+        val dx3 = Batch(input.size) {
             /**
              * dy/[sqrt(variance(x)]
              *   = (sum(dOutput * numerator) / denominator) * (-1 / (2f * denominator^2))
@@ -101,7 +102,7 @@ class LayerNormD2 internal constructor(
             dx1 + dx2
         }
         // dy/dx
-        return (dx1 + dx2 + dx3).toBatch()
+        return dx1 + dx2 + dx3
     }
 }
 
