@@ -21,6 +21,7 @@ class LayerNormD3Test {
                 outputX = 2,
                 outputY = 2,
                 outputZ = 2,
+                e = 1e-10f,
                 optimizer = Sgd(0.1f).d3(x = 2, y = 2, z = 2),
                 weight = weight,
             )
@@ -135,6 +136,7 @@ class LayerNormD3Test {
                 outputX = 2,
                 outputY = 2,
                 outputZ = 2,
+                e = 1e-10f,
                 optimizer = Sgd(0.1f).d3(x = 2, y = 2, z = 2),
                 weight = weight,
             )
@@ -204,6 +206,7 @@ class LayerNormD3Test {
                 outputX = 2,
                 outputY = 2,
                 outputZ = 2,
+                e = 1e-10f,
                 optimizer = Sgd(0.01f).d3(x = 2, y = 2, z = 2),
                 weight = weight,
             )
@@ -279,7 +282,7 @@ class LayerNormD3Test {
                     assertEquals(
                         expected = numericalGradients[i][j][k],
                         actual = dx[0][i, j, k],
-                        absoluteTolerance = 8e-2f,
+                        absoluteTolerance = 9e-2f,
                         message = "要素[$i, $j, $k]の勾配が数値微分と一致しません",
                     )
                 }

@@ -62,6 +62,14 @@ operator fun List<IOType.D1>.times(other: IOType.D1) = map { it * other }
 @JvmName("timesD1sToD1s")
 operator fun List<IOType.D1>.times(other: List<IOType.D1>) = List(size) { this[it] * other[it] }
 
+// operator fun IOType.D1.times(other: IOType.D2): IOType.D2 {
+//    val result = other.value.copyOf()
+//    for (i in result.indices) {
+//        result[i] *= value[i]
+//    }
+//    return IOType.d1(result)
+// }
+
 /**
  * IOType.D2
  */

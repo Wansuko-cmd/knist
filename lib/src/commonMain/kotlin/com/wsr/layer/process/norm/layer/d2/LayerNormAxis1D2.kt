@@ -2,21 +2,19 @@ package com.wsr.layer.process.norm.layer.d2
 
 import com.wsr.Batch
 import com.wsr.IOType
-import com.wsr.collection.average
-import com.wsr.collection.sum
+import com.wsr.batch.average.average
+import com.wsr.batch.collection.map
+import com.wsr.batch.div.div
+import com.wsr.batch.func.pow
+import com.wsr.batch.minus.minus
+import com.wsr.batch.plus.plus
+import com.wsr.batch.reshape.broadcastToD2
+import com.wsr.batch.sum.sum
+import com.wsr.batch.times.times
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import com.wsr.operator.div
-import com.wsr.operator.minus
-import com.wsr.operator.plus
-import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
-import com.wsr.power.pow
 import com.wsr.power.sqrt
-import com.wsr.reshape.broadcastToD2
-import com.wsr.toBatch
-import com.wsr.toList
-import kotlin.math.pow
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -28,7 +26,6 @@ class LayerNormAxis1D2 internal constructor(
     private var weight: IOType.D2,
 ) : Process.D2() {
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
-        val input = input.toList()
         val average = input.average(axis = 1)
         val numerator = input - average
 
@@ -36,7 +33,7 @@ class LayerNormAxis1D2 internal constructor(
         val denominator = variance.map { it.sqrt(e) }
 
         val normalize = numerator / denominator
-        return (weight * normalize).toBatch()
+        return weight * normalize
     }
 
     override fun train(
@@ -44,7 +41,6 @@ class LayerNormAxis1D2 internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
-        val input = input.toList()
         val average = input.average(axis = 1)
         val numerator = input - average
 
@@ -54,11 +50,11 @@ class LayerNormAxis1D2 internal constructor(
         val normalize = numerator / denominator
 
         val output = weight * normalize
-        val delta = calcDelta(output.toBatch()).toList()
+        val delta = calcDelta(output)
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = (normalize * delta).toBatch(),
+            dw = normalize * delta,
         )
 
         // dOutput
@@ -74,27 +70,23 @@ class LayerNormAxis1D2 internal constructor(
         val dx2 = -1f * dNumerator.average(axis = 1).broadcastToD2(axis = 0, size = outputY)
 
         // dy/x <- variance(x)のx
-        val dx3: List<IOType.D2> = List(input.size) { index ->
+        val dx3 = run {
             // 各行ごとの勾配を事前計算
-            val dVariancePerRow = IOType.d1(outputX) { i ->
-                val dvn = -(dOutput[index][i] * normalize[index][i]).sum()
-                val dvd = 2f * denominator[index][i].pow(2) * outputY.toFloat()
-                dvn / dvd
-            }
+            val dvn = (dOutput * normalize).sum(axis = 1)
+            val dvd = -2f * outputY.toFloat() * denominator.pow(2)
+            val dVariancePerRow = dvn / dvd
 
             // dy/[x-average(x)]のx部分
-            val dSquared = IOType.d2(outputX, outputY) { i, j ->
-                2f * dVariancePerRow[i] * numerator[index][i, j]
-            }
+            val dSquared = 2f * dVariancePerRow.broadcastToD2(axis = 0, size = outputY) * numerator
 
             // dy/[-average(x)]のx部分 (各行で同じ値なのでbroadcast)
-            val avgGradient = -2f * dVariancePerRow * numerator[index].average()
+            val avgGradient = -2f * dVariancePerRow * numerator.average()
             val dx2Broadcast = avgGradient.broadcastToD2(axis = 0, size = outputY)
 
             dSquared + dx2Broadcast
         }
 
         // dy/dx
-        return (dx1 + dx2 + dx3).toBatch()
+        return dx1 + dx2 + dx3
     }
 }
