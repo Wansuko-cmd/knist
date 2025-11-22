@@ -3,7 +3,6 @@ package com.wsr.layer.process.norm.minmax
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.collection.map
 import com.wsr.batch.div.div
 import com.wsr.batch.func.pow
 import com.wsr.batch.minmax.max
@@ -19,8 +18,6 @@ import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
-import com.wsr.toBatch
-import com.wsr.toList
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
 

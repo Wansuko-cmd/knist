@@ -13,8 +13,6 @@ import com.wsr.operator.minus
 import com.wsr.output.Output
 import com.wsr.output.TResult
 import com.wsr.power.pow
-import com.wsr.toBatch
-import com.wsr.toList
 import kotlinx.serialization.Serializable
 
 @Serializable

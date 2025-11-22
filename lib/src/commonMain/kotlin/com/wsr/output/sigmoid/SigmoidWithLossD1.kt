@@ -18,9 +18,6 @@ import com.wsr.operator.times
 import com.wsr.output.Output
 import com.wsr.output.TResult
 import com.wsr.power.ln
-import com.wsr.toBatch
-import com.wsr.toList
-import kotlin.math.exp
 import kotlinx.serialization.Serializable
 
 @Serializable

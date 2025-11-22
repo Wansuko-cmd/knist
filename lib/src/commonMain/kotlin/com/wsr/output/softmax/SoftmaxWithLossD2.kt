@@ -20,8 +20,6 @@ import com.wsr.output.TResult
 import com.wsr.power.ln
 import com.wsr.reshape.broadcastToD2
 import com.wsr.reshape.toD2
-import com.wsr.toBatch
-import com.wsr.toList
 import kotlin.math.exp
 import kotlinx.serialization.Serializable
 
