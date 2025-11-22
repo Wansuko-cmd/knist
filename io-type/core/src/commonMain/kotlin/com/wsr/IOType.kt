@@ -17,23 +17,9 @@ sealed class IOType {
             value[0] = element
         }
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-            if (!super.equals(other)) return false
+        override fun equals(other: Any?): Boolean = super.equals(other)
 
-            other as D0
-
-            if (!value.contentEquals(other.value)) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = super.hashCode()
-            result = 31 * result + value.contentHashCode()
-            return result
-        }
+        override fun hashCode(): Int = super.hashCode()
     }
 
     @Serializable
