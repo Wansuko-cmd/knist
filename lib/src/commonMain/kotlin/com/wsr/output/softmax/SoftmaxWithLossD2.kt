@@ -3,8 +3,15 @@ package com.wsr.output.softmax
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.collection.map
+import com.wsr.batch.div.div
+import com.wsr.batch.func.ln
+import com.wsr.batch.minus.minus
+import com.wsr.batch.sum.sum
+import com.wsr.batch.times.times
 import com.wsr.collection.sum
 import com.wsr.converter.Converter
+import com.wsr.get
 import com.wsr.operator.div
 import com.wsr.operator.minus
 import com.wsr.operator.times
@@ -26,7 +33,7 @@ internal class SoftmaxWithLossD2 internal constructor(
     val maskValue: Int? = null,
 ) : Output.D2() {
     override fun expect(input: Batch<IOType.D2>): Batch<IOType.D2> {
-        val input = input.toList() / temperature
+        val input = input / temperature
         return input.map { input ->
             (0 until outputX)
                 .map { input[it] }
@@ -37,12 +44,12 @@ internal class SoftmaxWithLossD2 internal constructor(
                     IOType.d1(outputY) { exp[it] / sum }
                 }
                 .toD2()
-        }.toBatch()
+        }
     }
 
     override fun train(input: Batch<IOType.D2>, label: Batch<IOType.D2>): TResult<IOType.D2> {
-        val input = input.toList() / temperature
-        val label = label.toList()
+        val input = input / temperature
+        val label = label
         val output = input.map { input ->
             (0 until outputX)
                 .map { input[it] }
@@ -62,17 +69,17 @@ internal class SoftmaxWithLossD2 internal constructor(
         val maskedLosses = losses * maskD1
 
         // 有効値のみの平均を取る
-        val loss = maskedLosses.zip(maskD1) { maskedLoss, mask -> maskedLoss.sum() / mask.sum() }
+        val loss = List(input.size) { maskedLosses[it].sum() / maskD1[it].sum() }
             .average()
             .toFloat()
 
         val delta = (output - label) * mask
-        return TResult(loss = loss, delta = delta.toBatch())
+        return TResult(loss = loss, delta = delta)
     }
 
-    private fun List<IOType.D2>.generateMask(): List<IOType.D2> = when {
-        maskValue == null -> List(size) {
-            IOType.d2(shape = this[it].shape, value = FloatArray(this[it].value.size) { 1f })
+    private fun Batch<IOType.D2>.generateMask(): Batch<IOType.D2> = when {
+        maskValue == null -> Batch(size) {
+            IOType.d2(shape = shape, value = FloatArray(this[it].value.size) { 1f })
         }
 
         else -> map { label ->
