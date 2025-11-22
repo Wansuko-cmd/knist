@@ -16,10 +16,11 @@ import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
+import com.wsr.operator.div
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
-import kotlin.math.pow
+import com.wsr.power.pow
 import kotlin.math.sqrt
 import kotlinx.serialization.Serializable
 
@@ -69,7 +70,7 @@ class LayerNormD1 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx
-        val dx2 = FloatArray(input.size) { -dNumerator[it].sum() / outputSize.toFloat() }
+        val dx2 = Batch(input.size) { IOType.d0(-dNumerator[it].sum() / outputSize.toFloat()) }
 
         // dy/x <- variance(x)のx
         val dx3 = Batch(input.size) {
@@ -85,7 +86,7 @@ class LayerNormD1 internal constructor(
              *   = -sum(dOutput * normalize) / (denominator^2 * outputSize)
              */
             val dvn = -(dOutput[it] * normalize[it]).sum()
-            val dvd = (2f * denominator[it].pow(2) * outputSize.toFloat())
+            val dvd = 2f * denominator[it].pow(2) * outputSize.toFloat()
             val dVariance = dvn / dvd
 
             // dy/[x-average(x)]

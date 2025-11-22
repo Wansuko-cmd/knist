@@ -5,12 +5,12 @@ import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.get
 
-@JvmName("batchD3sAverage")
-fun Batch<IOType.D3>.average(): FloatArray = FloatArray(size) {
+@JvmName("batchD3sAverageBatch")
+fun Batch<IOType.D3>.average(): Batch<IOType.D0> = Batch(size) {
     val value = this[it].value
     var sum = 0f
     for (element in value) sum += element
-    sum / value.size
+    IOType.d0(sum / value.size)
 }
 
 @JvmName("batchD3sBatchAverage")

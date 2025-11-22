@@ -8,10 +8,10 @@ import com.wsr.get
 import com.wsr.operator.div
 import com.wsr.set
 
-@JvmName("batchD2sDivFloats")
-operator fun Batch<IOType.D2>.div(other: FloatArray): Batch<IOType.D2> {
+@JvmName("batchD2sDivD0s")
+operator fun Batch<IOType.D2>.div(other: Batch<IOType.D0>): Batch<IOType.D2> {
     val result = copy()
-    for (i in result.indices) result[i] /= other[i]
+    for (i in result.indices) result[i] /= other[i].get()
     return result
 }
 

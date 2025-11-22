@@ -3,6 +3,8 @@ package com.wsr.power
 import com.wsr.IOType
 import kotlin.math.pow
 
+fun IOType.D0.pow(n: Int) = IOType.d0(get().pow(n))
+
 fun IOType.D1.pow(n: Int): IOType.D1 {
     val result = this.value.copyOf()
     for (i in result.indices) {
