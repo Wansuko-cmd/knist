@@ -6,16 +6,8 @@ import com.wsr.IOType
 import com.wsr.collection.average
 import com.wsr.get
 
-@JvmName("batchD2sAverage")
-fun Batch<IOType.D2>.average(): FloatArray = FloatArray(size) {
-    val value = this[it].value
-    var sum = 0f
-    for (element in value) sum += element
-    sum / value.size
-}
-
 @JvmName("batchD2sAverageBatch")
-fun Batch<IOType.D2>.averageBatch(): Batch<IOType.D0> = Batch(size) {
+fun Batch<IOType.D2>.average(): Batch<IOType.D0> = Batch(size) {
     val value = this[it].value
     var sum = 0f
     for (element in value) sum += element

@@ -8,13 +8,6 @@ import com.wsr.get
 import com.wsr.operator.plus
 import com.wsr.set
 
-@JvmName("batchD3sPlusFloats")
-operator fun Batch<IOType.D3>.plus(other: FloatArray): Batch<IOType.D3> {
-    val result = copy()
-    for (i in result.indices) result[i] += other[i]
-    return result
-}
-
 @JvmName("batchD3sPlusD0s")
 operator fun Batch<IOType.D3>.plus(other: Batch<IOType.D0>): Batch<IOType.D3> {
     val result = copy()
