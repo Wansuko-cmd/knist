@@ -9,5 +9,3 @@ fun IOType.D1.broadcastToD2(axis: Int, size: Int) = when (axis) {
     1 -> IOType.d2(size, shape[0]) { x, y -> this[y] }
     else -> throw IllegalArgumentException("IOType.D1.broadcastToD2 axis is $axis not 0 or 1.")
 }
-
-fun List<IOType.D1>.broadcastToD2(axis: Int, size: Int) = map { it.broadcastToD2(axis, size) }
