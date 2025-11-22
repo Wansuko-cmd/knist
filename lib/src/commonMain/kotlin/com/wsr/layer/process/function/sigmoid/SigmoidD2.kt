@@ -4,6 +4,8 @@ import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.batch.collection.map
+import com.wsr.batch.minus.minus
+import com.wsr.batch.times.times
 import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
@@ -22,12 +24,7 @@ class SigmoidD2 internal constructor(override val outputX: Int, override val out
     ): Batch<IOType.D2> {
         val output = input.map(::forward)
         val delta = calcDelta(output)
-        return Batch(input.size) { i ->
-            IOType.d2(
-                outputX,
-                outputY,
-            ) { x, y -> delta[i][x, y] * output[i][x, y] * (1 - output[i][x, y]) }
-        }
+        return delta * output * (1f - output)
     }
 
     private fun forward(input: IOType.D2): IOType.D2 = IOType.d2(outputX, outputY) { x, y ->

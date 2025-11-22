@@ -4,6 +4,9 @@ import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.batch.collection.map
+import com.wsr.batch.minus.minus
+import com.wsr.batch.plus.plus
+import com.wsr.batch.times.times
 import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
@@ -24,15 +27,9 @@ class SwishD2 internal constructor(override val outputX: Int, override val outpu
         val sigmoid = input.map { input ->
             IOType.d2(outputX, outputY) { x, y -> 1 / (1 + exp(-input[x, y])) }
         }
-        val output = Batch(input.size) { i ->
-            IOType.d2(outputX, outputY) { x, y -> input[i][x, y] * sigmoid[i][x, y] }
-        }
+        val output = input * sigmoid
         val delta = calcDelta(output)
-        return Batch(input.size) { i ->
-            IOType.d2(outputX, outputY) { x, y ->
-                (output[i][x, y] + sigmoid[i][x, y] * (1 - output[i][x, y])) * delta[i][x, y]
-            }
-        }
+        return (output + sigmoid * (1f - output)) * delta
     }
 }
 
