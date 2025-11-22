@@ -3,6 +3,9 @@
 package com.wsr.reshape
 
 import com.wsr.IOType
+import com.wsr.d2
+import com.wsr.d3
+import com.wsr.get
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

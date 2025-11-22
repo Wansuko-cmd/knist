@@ -5,8 +5,10 @@ package com.wsr.output.softmax
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.d2
 import com.wsr.get
 import com.wsr.output.softmax.SoftmaxWithLossD2
+import com.wsr.set
 import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertEquals

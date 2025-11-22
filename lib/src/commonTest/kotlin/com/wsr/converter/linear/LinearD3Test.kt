@@ -4,7 +4,9 @@ package com.wsr.converter.linear
 
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.d3
 import com.wsr.get
+import com.wsr.set
 import kotlin.test.Test
 import kotlin.test.assertEquals
 class LinearD3Test {

@@ -5,7 +5,9 @@ package com.wsr.converter.char
 import com.wsr.IOType
 import com.wsr.batch.collection.forEach
 import com.wsr.batchOf
+import com.wsr.d1
 import com.wsr.get
+import com.wsr.set
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

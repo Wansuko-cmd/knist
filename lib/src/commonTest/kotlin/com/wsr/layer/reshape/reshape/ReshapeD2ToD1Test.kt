@@ -5,6 +5,8 @@ package com.wsr.layer.reshape.reshape
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.d1
+import com.wsr.d2
 import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.reshape.reshape.ReshapeD2ToD1
