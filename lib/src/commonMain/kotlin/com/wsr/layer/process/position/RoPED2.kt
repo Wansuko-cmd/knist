@@ -3,14 +3,13 @@ package com.wsr.layer.process.position
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.collection.map
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import com.wsr.toBatch
-import com.wsr.toList
+import kotlinx.serialization.Serializable
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
-import kotlinx.serialization.Serializable
 
 @Serializable
 class RoPED2 internal constructor(
@@ -42,7 +41,7 @@ class RoPED2 internal constructor(
         return delta.applyRoPE()
     }
 
-    private fun Batch<IOType.D2>.applyRoPE() = toList().map { input ->
+    private fun Batch<IOType.D2>.applyRoPE() = map { input ->
         IOType.d2(outputX, outputY) { pos, dim ->
             val pairIndex = dim / 2
             val cosVal = cosCache[pos][pairIndex]
@@ -60,7 +59,7 @@ class RoPED2 internal constructor(
                 x * sinVal + y * cosVal
             }
         }
-    }.toBatch()
+    }
 }
 
 fun <T> NetworkBuilder.D2<T>.roPE(waveLength: Float = 10000f) = addProcess(
