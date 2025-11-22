@@ -7,8 +7,8 @@ import com.wsr.batch.times.times
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.nextFloat
-import kotlinx.serialization.Serializable
 import kotlin.random.Random
+import kotlinx.serialization.Serializable
 
 @Serializable
 class DropoutD1 internal constructor(

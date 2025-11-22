@@ -30,8 +30,7 @@ class MaxPoolD3 internal constructor(val poolSize: Int, val channel: Int, val in
         }
     }
 
-    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> =
-        input.map(::forward)
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> = input.map(::forward)
 
     override fun train(
         input: Batch<IOType.D3>,
