@@ -19,6 +19,7 @@ class LayerNormD1Test {
         val norm =
             LayerNormD1(
                 outputSize = 2,
+                e = 1e-6f,
                 optimizer = Sgd(0.1f).d1(size = weight.shape[0]),
                 weight = weight,
             )
@@ -71,6 +72,7 @@ class LayerNormD1Test {
         val norm =
             LayerNormD1(
                 outputSize = 2,
+                e = 1e-6f,
                 optimizer = Sgd(0.1f).d1(size = weight.shape[0]),
                 weight = weight,
             )
@@ -123,6 +125,7 @@ class LayerNormD1Test {
         val norm =
             LayerNormD1(
                 outputSize = 3,
+                e = 1e-6f,
                 optimizer = Sgd(0.01f).d1(size = weight.shape[0]),
                 weight = weight,
             )

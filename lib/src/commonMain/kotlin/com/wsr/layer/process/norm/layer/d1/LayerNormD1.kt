@@ -26,6 +26,7 @@ import kotlin.math.sqrt
 @Serializable
 class LayerNormD1 internal constructor(
     override val outputSize: Int,
+    private val e: Float,
     private val optimizer: Optimizer.D1,
     private var weight: IOType.D1,
 ) : Process.D1() {
@@ -34,7 +35,7 @@ class LayerNormD1 internal constructor(
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.mapValue { sqrt(it + 1e-10f) }
+        val denominator = variance.mapValue { sqrt(it + e) }
 
         return weight * (numerator / denominator)
     }
@@ -48,7 +49,7 @@ class LayerNormD1 internal constructor(
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.mapValue { sqrt(it + 1e-10f) }
+        val denominator = variance.mapValue { sqrt(it + e) }
 
         val normalize = numerator / denominator
         val output = weight * normalize
@@ -104,11 +105,13 @@ class LayerNormD1 internal constructor(
 }
 
 fun <T> NetworkBuilder.D1<T>.layerNorm(
+    e: Float = 1e-6f,
     optimizer: Optimizer = this.optimizer,
     initializer: WeightInitializer = Fixed(1f),
 ) = addProcess(
     process = LayerNormD1(
         outputSize = inputSize,
+        e = e,
         optimizer = optimizer.d1(inputSize),
         weight = initializer.d1(
             input = listOf(inputSize),
