@@ -28,6 +28,20 @@ class Batch<out T : IOType>(val value: FloatArray, val size: Int, val shape: Lis
     }
 }
 
+inline fun <T : IOType> Batch(size: Int, init: (index: Int) -> T): Batch<T> {
+    val first = init(0)
+    val value = FloatArray(size * first.value.size)
+    first.value.copyInto(value)
+    for (i in 1 until size) {
+        init(i).value.copyInto(value, i * first.value.size)
+    }
+    return Batch(
+        value = value,
+        size = size,
+        shape = first.shape,
+    )
+}
+
 fun <T : IOType> batchOf(vararg elements: T): Batch<T> {
     val batchSize = elements.size
     val shape = elements.first().shape
