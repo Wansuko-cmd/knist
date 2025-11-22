@@ -5,13 +5,7 @@ import com.wsr.reshape.transpose
 
 fun IOType.D1.max() = value.max()
 
-@JvmName("maxToD1s")
-fun List<IOType.D1>.max() = map { it.max() }
-
 fun IOType.D2.max() = value.max()
-
-@JvmName("maxToD2s")
-fun List<IOType.D2>.max() = map { it.max() }
 
 fun IOType.D2.max(axis: Int) = when (axis) {
     0 -> {
@@ -23,13 +17,7 @@ fun IOType.D2.max(axis: Int) = when (axis) {
     else -> throw IllegalArgumentException("IOType.D2.max axis is $axis not 0 or 1.")
 }
 
-@JvmName("maxAxisToD2s")
-fun List<IOType.D2>.max(axis: Int) = map { it.max(axis) }
-
 fun IOType.D3.max() = value.max()
-
-@JvmName("maxToD3s")
-fun List<IOType.D3>.max() = map { it.max() }
 
 fun IOType.D3.max(axis: Int) = when (axis) {
     0 -> {
@@ -45,6 +33,3 @@ fun IOType.D3.max(axis: Int) = when (axis) {
     2 -> IOType.d2(shape[0], shape[1]) { x, y -> this[x, y].max() }
     else -> throw IllegalArgumentException("IOType.D3.max axis is $axis not 0, 1 or 2.")
 }
-
-@JvmName("maxAxisToD3s")
-fun List<IOType.D3>.max(axis: Int) = map { it.max(axis) }

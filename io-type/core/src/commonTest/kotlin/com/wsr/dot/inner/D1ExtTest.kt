@@ -33,25 +33,4 @@ class D1ExtTest {
             actual = result,
         )
     }
-
-    @Test
-    fun `List_D1·List_D1=各要素同士の内積のリスト`() {
-        val list1 =
-            listOf(
-                IOType.d1(listOf(1.0f, 2.0f)),
-                IOType.d1(listOf(3.0f, 4.0f)),
-            )
-        val list2 =
-            listOf(
-                IOType.d1(listOf(2.0f, 3.0f)),
-                IOType.d1(listOf(4.0f, 5.0f)),
-            )
-        // 1*2 + 2*3 = 8
-        // 3*4 + 4*5 = 32
-        val result = list1 inner list2
-        assertEquals(
-            expected = listOf(8.0f, 32.0f),
-            actual = result,
-        )
-    }
 }

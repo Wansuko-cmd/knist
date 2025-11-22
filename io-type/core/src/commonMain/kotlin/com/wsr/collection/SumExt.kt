@@ -5,12 +5,7 @@ import com.wsr.IOType
 
 fun IOType.D1.sum() = value.sum()
 
-fun List<IOType.D1>.sum(): List<Float> = map { it.sum() }
-
 fun IOType.D2.sum() = value.sum()
-
-@JvmName("sumD2s")
-fun List<IOType.D2>.sum(): List<Float> = map { it.sum() }
 
 fun IOType.D2.sum(axis: Int): IOType.D1 = when (axis) {
     0 -> {
@@ -55,8 +50,5 @@ fun IOType.D2.sum(axis: Int): IOType.D1 = when (axis) {
 
     else -> throw IllegalArgumentException("IOType.D2.sum axis is $axis not 0 or 1.")
 }
-
-@JvmName("sumD2sWithAxis")
-fun List<IOType.D2>.sum(axis: Int): List<IOType.D1> = map { it.sum(axis) }
 
 fun IOType.D3.sum() = value.sum()

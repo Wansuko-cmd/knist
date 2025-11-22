@@ -5,13 +5,7 @@ import com.wsr.reshape.transpose
 
 fun IOType.D1.min() = value.min()
 
-@JvmName("minToD1s")
-fun List<IOType.D1>.min() = map { it.min() }
-
 fun IOType.D2.min() = value.min()
-
-@JvmName("minToD2s")
-fun List<IOType.D2>.min() = map { it.min() }
 
 fun IOType.D2.min(axis: Int) = when (axis) {
     0 -> {
@@ -23,13 +17,7 @@ fun IOType.D2.min(axis: Int) = when (axis) {
     else -> throw IllegalArgumentException("IOType.D2.min axis is $axis not 0 or 1.")
 }
 
-@JvmName("minAxisToD2s")
-fun List<IOType.D2>.min(axis: Int) = map { it.min(axis) }
-
 fun IOType.D3.min() = value.min()
-
-@JvmName("minToD3s")
-fun List<IOType.D3>.min() = map { it.min() }
 
 fun IOType.D3.min(axis: Int) = when (axis) {
     0 -> {
@@ -45,6 +33,3 @@ fun IOType.D3.min(axis: Int) = when (axis) {
     2 -> IOType.d2(shape[0], shape[1]) { x, y -> this[x, y].min() }
     else -> throw IllegalArgumentException("IOType.D3.min axis is $axis not 0, 1 or 2.")
 }
-
-@JvmName("minAxisToD3s")
-fun List<IOType.D3>.min(axis: Int) = map { it.min(axis) }

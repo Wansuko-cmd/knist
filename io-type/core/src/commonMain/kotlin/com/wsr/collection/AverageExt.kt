@@ -6,13 +6,7 @@ import com.wsr.reshape.transpose
 
 fun IOType.D1.average(): Float = value.average().toFloat()
 
-@JvmName("averageToD1s")
-fun List<IOType.D1>.average(): List<Float> = map { it.average() }
-
 fun IOType.D2.average(): Float = value.average().toFloat()
-
-@JvmName("averageToD2s")
-fun List<IOType.D2>.average(): List<Float> = map { it.average() }
 
 fun IOType.D2.average(axis: Int) = when (axis) {
     0 -> {
@@ -62,13 +56,9 @@ fun IOType.D2.average(axis: Int) = when (axis) {
     else -> throw IllegalArgumentException("IOType.D2.max axis is $axis not 0 or 1.")
 }
 
-@JvmName("averageAxisToD2s")
 fun List<IOType.D2>.average(axis: Int) = map { it.average(axis) }
 
 fun IOType.D3.average(): Float = value.average().toFloat()
-
-@JvmName("averageToD3s")
-fun List<IOType.D3>.average(): List<Float> = map { it.average() }
 
 fun IOType.D3.average(axis: Int) = when (axis) {
     0 -> {
@@ -84,6 +74,3 @@ fun IOType.D3.average(axis: Int) = when (axis) {
     2 -> IOType.d2(shape[0], shape[1]) { x, y -> this[x, y].average() }
     else -> throw IllegalArgumentException("IOType.D3.max axis is $axis not 0, 1 or 2.")
 }
-
-@JvmName("averageAxisToD3s")
-fun List<IOType.D3>.average(axis: Int) = map { it.average(axis) }
