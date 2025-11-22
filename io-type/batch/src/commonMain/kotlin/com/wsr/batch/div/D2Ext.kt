@@ -15,6 +15,13 @@ operator fun Batch<IOType.D2>.div(other: FloatArray): Batch<IOType.D2> {
     return result
 }
 
+@JvmName("batchD2sDivD0s")
+operator fun Batch<IOType.D2>.div(other: Batch<IOType.D0>): Batch<IOType.D2> {
+    val result = copy()
+    for (i in result.indices) result[i] /= other[i].get()
+    return result
+}
+
 @JvmName("batchD2sDivD1s")
 operator fun Batch<IOType.D2>.div(other: Batch<IOType.D1>) = Batch(size) { this[it] / other[it] }
 
