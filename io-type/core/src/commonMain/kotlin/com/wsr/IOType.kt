@@ -8,6 +8,36 @@ sealed class IOType {
     abstract val shape: List<Int>
 
     @Serializable
+    data class D0(override val value: FloatArray) : IOType() {
+        override val shape = listOf(1)
+
+        fun get() = value[0]
+
+        fun set(element: Float) {
+            value[0] = element
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            if (!super.equals(other)) return false
+
+            other as D0
+
+            if (!value.contentEquals(other.value)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = super.hashCode()
+            result = 31 * result + value.contentHashCode()
+            return result
+        }
+
+    }
+
+    @Serializable
     data class D1(override val value: FloatArray) : IOType() {
         override val shape = listOf(value.size)
 
@@ -121,6 +151,8 @@ sealed class IOType {
 
     companion object {
         val enableBLAS get() = BLAS.isNative
+
+        fun d0(value: Float) = D0(floatArrayOf(value))
 
         inline fun d1(size: Int, init: (Int) -> Float = { 0f }): D1 {
             val value = FloatArray(size)
