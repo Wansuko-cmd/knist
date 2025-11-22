@@ -3,54 +3,29 @@ package com.wsr.layer.process.function.relu
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.func.sigmoid
+import com.wsr.batch.minus.minus
+import com.wsr.batch.plus.plus
+import com.wsr.batch.times.times
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import com.wsr.toBatch
-import com.wsr.toList
-import kotlin.math.exp
 import kotlinx.serialization.Serializable
 
 @Serializable
 class SwishD3 internal constructor(override val outputX: Int, override val outputY: Int, override val outputZ: Int) :
     Process.D3() {
-    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> = input.toList().map { input ->
-        IOType.d3(
-            i = outputX,
-            j = outputY,
-            k = outputZ,
-        ) { x, y, z -> input[x, y, z] / (1 + exp(-input[x, y, z])) }
-    }.toBatch()
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> = input * input.sigmoid()
 
     override fun train(
         input: Batch<IOType.D3>,
         context: Context,
         calcDelta: (Batch<IOType.D3>) -> Batch<IOType.D3>,
     ): Batch<IOType.D3> {
-        val input = input.toList()
-        val sigmoid = input.map { input ->
-            IOType.d3(
-                i = outputX,
-                j = outputY,
-                k = outputZ,
-            ) { x, y, z -> 1 / (1 + exp(-input[x, y, z])) }
-        }
-        val output = List(input.size) { i ->
-            IOType.d3(
-                i = outputX,
-                j = outputY,
-                k = outputZ,
-            ) { x, y, z -> input[i][x, y, z] * sigmoid[i][x, y, z] }
-        }
-        val delta = calcDelta(output.toBatch()).toList()
-        return List(input.size) { i ->
-            IOType.d3(
-                i = outputX,
-                j = outputY,
-                k = outputZ,
-            ) { x, y, z ->
-                (output[i][x, y, z] + sigmoid[i][x, y, z] * (1 - output[i][x, y, z])) * delta[i][x, y, z]
-            }
-        }.toBatch()
+        val sigmoid = input.sigmoid()
+        val output = input * sigmoid
+        val delta = calcDelta(output)
+        return (output + sigmoid * (1f - output)) * delta
     }
 }
 
