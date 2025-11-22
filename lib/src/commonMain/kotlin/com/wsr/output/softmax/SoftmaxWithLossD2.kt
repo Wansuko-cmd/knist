@@ -6,21 +6,16 @@ import com.wsr.NetworkBuilder
 import com.wsr.batch.collection.map
 import com.wsr.batch.div.div
 import com.wsr.batch.func.ln
+import com.wsr.batch.func.softmax
 import com.wsr.batch.minus.minus
 import com.wsr.batch.sum.sum
 import com.wsr.batch.times.times
 import com.wsr.collection.sum
 import com.wsr.converter.Converter
 import com.wsr.get
-import com.wsr.operator.div
-import com.wsr.operator.minus
-import com.wsr.operator.times
 import com.wsr.output.Output
 import com.wsr.output.TResult
-import com.wsr.power.ln
 import com.wsr.reshape.broadcastToD2
-import com.wsr.reshape.toD2
-import kotlin.math.exp
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -32,33 +27,13 @@ internal class SoftmaxWithLossD2 internal constructor(
 ) : Output.D2() {
     override fun expect(input: Batch<IOType.D2>): Batch<IOType.D2> {
         val input = input / temperature
-        return input.map { input ->
-            (0 until outputX)
-                .map { input[it] }
-                .map { (value) ->
-                    val max = value.max()
-                    val exp = value.map { exp(it - max) }
-                    val sum = exp.sum()
-                    IOType.d1(outputY) { exp[it] / sum }
-                }
-                .toD2()
-        }
+        return input.softmax(axis = 1)
     }
 
     override fun train(input: Batch<IOType.D2>, label: Batch<IOType.D2>): TResult<IOType.D2> {
         val input = input / temperature
         val label = label
-        val output = input.map { input ->
-            (0 until outputX)
-                .map { input[it] }
-                .map { (value) ->
-                    val max = value.max()
-                    val exp = value.map { exp(it - max) }
-                    val sum = exp.sum()
-                    IOType.d1(outputY) { exp[it] / sum }
-                }
-                .toD2()
-        }
+        val output = input.softmax(axis = 1)
         val mask = label.generateMask()
 
         // -log(p)
@@ -76,9 +51,7 @@ internal class SoftmaxWithLossD2 internal constructor(
     }
 
     private fun Batch<IOType.D2>.generateMask(): Batch<IOType.D2> = when {
-        maskValue == null -> Batch(size) {
-            IOType.d2(shape = shape, value = FloatArray(this[it].value.size) { 1f })
-        }
+        maskValue == null -> Batch(size) { IOType.d2(shape = shape) { _, _ -> 1f } }
 
         else -> map { label ->
             IOType
