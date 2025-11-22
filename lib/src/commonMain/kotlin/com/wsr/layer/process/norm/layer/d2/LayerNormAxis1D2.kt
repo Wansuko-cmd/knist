@@ -2,6 +2,12 @@ package com.wsr.layer.process.norm.layer.d2
 
 import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batch.average.average
+import com.wsr.batch.collection.map
+import com.wsr.batch.div.div
+import com.wsr.batch.func.pow
+import com.wsr.batch.minus.minus
+import com.wsr.batch.times.times
 import com.wsr.collection.average
 import com.wsr.collection.sum
 import com.wsr.layer.Context
@@ -28,7 +34,6 @@ class LayerNormAxis1D2 internal constructor(
     private var weight: IOType.D2,
 ) : Process.D2() {
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
-        val input = input.toList()
         val average = input.average(axis = 1)
         val numerator = input - average
 
@@ -36,7 +41,7 @@ class LayerNormAxis1D2 internal constructor(
         val denominator = variance.map { it.sqrt(e) }
 
         val normalize = numerator / denominator
-        return (weight * normalize).toBatch()
+        return weight * normalize
     }
 
     override fun train(
