@@ -41,15 +41,6 @@ infix fun IOType.D2.matMul(other: IOType.D2): IOType.D2 {
     return IOType.D2(result, listOf(shape[0], other.shape[1]))
 }
 
-@JvmName("matMulToD1s")
-infix fun IOType.D2.matMul(other: List<IOType.D1>) = List(other.size) { this matMul other[it] }
-
-@JvmName("matMulToD2s")
-infix fun IOType.D2.matMul(other: List<IOType.D2>) = List(other.size) { this matMul other[it] }
-
-@JvmName("matMulToD1s")
-infix fun List<IOType.D2>.matMul(other: List<IOType.D1>) = List(size) { this[it] matMul other[it] }
-
 @JvmName("matMulToD2s")
 infix fun List<IOType.D2>.matMul(other: IOType.D2) = List(size) { this[it] matMul other }
 
