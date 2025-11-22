@@ -13,8 +13,10 @@ import com.wsr.batch.minus.minus
 import com.wsr.batch.sum.sum
 import com.wsr.batch.times.times
 import com.wsr.converter.Converter
+import com.wsr.get
 import com.wsr.output.Output
 import com.wsr.output.TResult
+import com.wsr.set
 import kotlinx.serialization.Serializable
 
 @Serializable

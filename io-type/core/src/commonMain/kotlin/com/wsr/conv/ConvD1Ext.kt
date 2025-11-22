@@ -1,6 +1,9 @@
 package com.wsr.conv
 
 import com.wsr.IOType
+import com.wsr.d1
+import com.wsr.d2
+import com.wsr.get
 import com.wsr.reshape.toD2
 
 fun IOType.D1.convD1(filter: IOType.D1, stride: Int = 1, padding: Int = 0): IOType.D1 {

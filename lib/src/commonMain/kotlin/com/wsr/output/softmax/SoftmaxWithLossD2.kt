@@ -12,10 +12,13 @@ import com.wsr.batch.sum.sum
 import com.wsr.batch.times.times
 import com.wsr.collection.sum
 import com.wsr.converter.Converter
+import com.wsr.d1
+import com.wsr.d2
 import com.wsr.get
 import com.wsr.output.Output
 import com.wsr.output.TResult
 import com.wsr.reshape.broadcastToD2
+import com.wsr.set
 import kotlinx.serialization.Serializable
 
 @Serializable

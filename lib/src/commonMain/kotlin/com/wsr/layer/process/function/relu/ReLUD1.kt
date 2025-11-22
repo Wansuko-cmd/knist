@@ -4,11 +4,12 @@ import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.batch.collection.mapValue
+import com.wsr.d1
 import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
+import com.wsr.set
 import kotlinx.serialization.Serializable
-
 @Serializable
 class ReLUD1 internal constructor(override val outputSize: Int) : Process.D1() {
     override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D1> = forward(input)

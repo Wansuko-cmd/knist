@@ -1,6 +1,7 @@
 package com.wsr.conv
 
 import com.wsr.IOType
+import com.wsr.get
 
 fun List<IOType.D2>.toColumn(kernel: Int, stride: Int = 1, padding: Int = 0): Array<FloatArray> {
     val (channel, inputSize) = first().shape

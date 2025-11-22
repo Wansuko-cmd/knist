@@ -1,10 +1,15 @@
 package com.wsr.initializer
 
 import com.wsr.IOType
+import com.wsr.d1
+import com.wsr.d2
+import com.wsr.d3
+import com.wsr.d4
+import com.wsr.get
 import com.wsr.nextFloat
+import com.wsr.set
 import kotlin.math.sqrt
 import kotlin.random.Random
-
 class He(seed: Int? = null) : WeightInitializer {
     private val random = seed?.let { Random(it) } ?: Random
     override fun d1(input: List<Int>, output: List<Int>, size: Int): IOType.D1 {

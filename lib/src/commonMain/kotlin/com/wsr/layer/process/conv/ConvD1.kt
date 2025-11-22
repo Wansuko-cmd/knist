@@ -5,6 +5,8 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.conv.convD1
 import com.wsr.conv.deConvD1
+import com.wsr.d3
+import com.wsr.get
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
@@ -12,6 +14,7 @@ import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.toD2
 import com.wsr.reshape.toD3
 import com.wsr.reshape.transpose
+import com.wsr.set
 import com.wsr.toBatch
 import com.wsr.toList
 import kotlinx.serialization.Serializable

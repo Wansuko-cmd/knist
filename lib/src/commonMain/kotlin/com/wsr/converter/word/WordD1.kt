@@ -5,8 +5,11 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.collection.maxIndex
 import com.wsr.converter.Converter
+import com.wsr.d1
+import com.wsr.get
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
+import com.wsr.set
 import com.wsr.toBatch
 import com.wsr.toList
 import kotlinx.serialization.Serializable

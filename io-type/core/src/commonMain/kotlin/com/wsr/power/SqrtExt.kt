@@ -1,6 +1,10 @@
 package com.wsr.power
 
 import com.wsr.IOType
+import com.wsr.d1
+import com.wsr.d2
+import com.wsr.d3
+import com.wsr.get
 
 fun IOType.D1.sqrt(e: Float = 1e-7f): IOType.D1 = IOType.d1(shape) { kotlin.math.sqrt(this[it] + e) }
 

@@ -11,6 +11,8 @@ import com.wsr.batch.plus.plus
 import com.wsr.batch.reshape.transpose
 import com.wsr.batch.sum.sum
 import com.wsr.batch.times.times
+import com.wsr.d1
+import com.wsr.d2
 import com.wsr.dot.matmul.matMul
 import com.wsr.get
 import com.wsr.initializer.WeightInitializer
@@ -20,6 +22,7 @@ import com.wsr.operator.plus
 import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.broadcastToD2
 import com.wsr.reshape.transpose
+import com.wsr.set
 import com.wsr.toBatch
 import com.wsr.toList
 import kotlin.math.sqrt
