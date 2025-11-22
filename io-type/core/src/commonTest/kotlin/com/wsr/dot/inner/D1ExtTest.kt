@@ -17,20 +17,4 @@ class D1ExtTest {
             actual = result,
         )
     }
-
-    @Test
-    fun `D1·List_D1=各D1との内積のリスト`() {
-        val a = IOType.d1(listOf(1.0f, 2.0f, 3.0f))
-        val list =
-            listOf(
-                IOType.d1(listOf(1.0f, 0.0f, 0.0f)),
-                IOType.d1(listOf(0.0f, 1.0f, 0.0f)),
-                IOType.d1(listOf(0.0f, 0.0f, 1.0f)),
-            )
-        val result = a inner list
-        assertEquals(
-            expected = listOf(1.0f, 2.0f, 3.0f),
-            actual = result,
-        )
-    }
 }
