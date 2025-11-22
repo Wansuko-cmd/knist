@@ -11,6 +11,7 @@ import kotlinx.serialization.Serializable
 sealed class IOType {
     abstract val value: FloatArray
     abstract val shape: List<Int>
+    val size: Int = shape.reduce { acc, i -> acc + i }
 
     @Serializable
     data class D0(override val value: FloatArray) : IOType() {
@@ -23,7 +24,7 @@ sealed class IOType {
 
     @Serializable
     data class D1(override val value: FloatArray) : IOType() {
-        override val shape = listOf(value.size)
+        override val shape = listOf(size)
 
         override fun equals(other: Any?): Boolean = super.equals(other)
 
@@ -31,21 +32,30 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D2(override val value: FloatArray, override val shape: List<Int>) : IOType() {
+    data class D2(
+        override val value: FloatArray,
+        override val shape: List<Int>,
+    ) : IOType() {
         override fun equals(other: Any?): Boolean = super.equals(other)
 
         override fun hashCode(): Int = super.hashCode()
     }
 
     @Serializable
-    data class D3(override val value: FloatArray, override val shape: List<Int>) : IOType() {
+    data class D3(
+        override val value: FloatArray,
+        override val shape: List<Int>,
+    ) : IOType() {
         override fun equals(other: Any?): Boolean = super.equals(other)
 
         override fun hashCode(): Int = super.hashCode()
     }
 
     @Serializable
-    data class D4(override val value: FloatArray, override val shape: List<Int>) : IOType() {
+    data class D4(
+        override val value: FloatArray,
+        override val shape: List<Int>,
+    ) : IOType() {
         override fun equals(other: Any?): Boolean = super.equals(other)
 
         override fun hashCode(): Int = super.hashCode()
