@@ -1,6 +1,5 @@
 package com.wsr.batch.average
 
-import com.wsr.BLAS
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.collection.average
