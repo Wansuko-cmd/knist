@@ -4,7 +4,16 @@ import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batch.collection.map
 import com.wsr.batch.collection.mapWith
+import com.wsr.get
 import com.wsr.operator.div
+import com.wsr.set
+
+@JvmName("batchD2sDivFloats")
+operator fun Batch<IOType.D2>.div(other: FloatArray): Batch<IOType.D2> {
+    val result = copy()
+    for (i in result.indices) result[i] /= other[i]
+    return result
+}
 
 @JvmName("batchD2sDivD2")
 operator fun Batch<IOType.D2>.div(other: IOType.D2) = map { it / other }
