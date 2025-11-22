@@ -22,15 +22,6 @@ operator fun Float.plus(other: IOType.D3): IOType.D3 {
     return IOType.d3(shape = other.shape, value = result)
 }
 
-@JvmName("plusFloatsToD1s")
-operator fun List<Float>.plus(other: List<IOType.D1>): List<IOType.D1> = List(size) { this[it] + other[it] }
-
-@JvmName("plusFloatsToD2s")
-operator fun List<Float>.plus(other: List<IOType.D2>) = List(size) { this[it] + other[it] }
-
-@JvmName("plusFloatsToD3s")
-operator fun List<Float>.plus(other: List<IOType.D3>) = List(size) { this[it] + other[it] }
-
 /**
  * IOType.D1
  */
@@ -45,15 +36,6 @@ operator fun IOType.D1.plus(other: IOType.D1): IOType.D1 {
     BLAS.saxpy(n = result.size, alpha = 1f, x = other.value, incX = 1, y = result, incY = 1)
     return IOType.d1(result)
 }
-
-@JvmName("plusD1sToFloats")
-operator fun List<IOType.D1>.plus(other: List<Float>): List<IOType.D1> = other.plus(this)
-
-@JvmName("plusD1sToD1")
-operator fun List<IOType.D1>.plus(other: IOType.D1) = List(size) { this[it] + other }
-
-@JvmName("plusD1sToD1s")
-operator fun List<IOType.D1>.plus(other: List<IOType.D1>) = List(size) { this[it] + other[it] }
 
 /**
  * IOType.D2
@@ -70,17 +52,6 @@ operator fun IOType.D2.plus(other: IOType.D2): IOType.D2 {
     return IOType.d2(this.shape, result)
 }
 
-operator fun List<IOType.D2>.plus(other: Float): List<IOType.D2> = map { it + other }
-
-@JvmName("plusD2ListToFloats")
-operator fun List<IOType.D2>.plus(other: List<Float>) = List(size) { this[it] + other[it] }
-
-@JvmName("plusD2sToD2")
-operator fun List<IOType.D2>.plus(other: IOType.D2) = List(size) { this[it] + other }
-
-@JvmName("plusD2sToD2s")
-operator fun List<IOType.D2>.plus(other: List<IOType.D2>) = List(size) { this[it] + other[it] }
-
 /**
  * IOType.D3
  */
@@ -95,12 +66,3 @@ operator fun IOType.D3.plus(other: IOType.D3): IOType.D3 {
     BLAS.saxpy(n = result.size, alpha = 1f, x = other.value, incX = 1, y = result, incY = 1)
     return IOType.d3(this.shape, result)
 }
-
-@JvmName("plusD3sToFloats")
-operator fun List<IOType.D3>.plus(other: List<Float>): List<IOType.D3> = other.plus(this)
-
-@JvmName("plusD3sToD3")
-operator fun List<IOType.D3>.plus(other: IOType.D3) = List(size) { this[it] + other }
-
-@JvmName("plusD3sToD3s")
-operator fun List<IOType.D3>.plus(other: List<IOType.D3>) = List(size) { this[it] + other[it] }

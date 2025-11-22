@@ -2,8 +2,8 @@ package com.wsr.optimizer
 
 import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.batch.average.batchAverage
 import com.wsr.batchOf
-import com.wsr.collection.batchAverage
 import com.wsr.collection.sum
 import com.wsr.operator.times
 import com.wsr.power.pow
@@ -27,7 +27,7 @@ interface Optimizer {
         )
 
         fun adapt(weight: IOType.D1, dw: Batch<IOType.D1>, enableClip: Boolean = true): IOType.D1 {
-            val dw = dw.toList().batchAverage()
+            val dw = dw.batchAverage()
             val norm = sqrt(dw.pow(2).sum())
             val scaled = if (norm > _maxNorm && enableClip) {
                 val scale = _maxNorm / norm
@@ -50,7 +50,7 @@ interface Optimizer {
         )
 
         fun adapt(weight: IOType.D2, dw: Batch<IOType.D2>, enableClip: Boolean = true): IOType.D2 {
-            val dw = dw.toList().batchAverage()
+            val dw = dw.batchAverage()
             val norm = sqrt(dw.pow(2).sum())
             val scaled = if (norm > _maxNorm && enableClip) {
                 val scale = _maxNorm / norm
@@ -73,7 +73,7 @@ interface Optimizer {
         )
 
         fun adapt(weight: IOType.D3, dw: Batch<IOType.D3>, enableClip: Boolean = true): IOType.D3 {
-            val dw = dw.toList().batchAverage()
+            val dw = dw.batchAverage()
             val norm = sqrt(dw.pow(2).sum())
             val scaled = if (norm > _maxNorm && enableClip) {
                 val scale = _maxNorm / norm

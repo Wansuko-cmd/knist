@@ -13,6 +13,3 @@ infix fun IOType.D1.inner(other: IOType.D1): Float = BLAS.sdot(
 
 @JvmName("innerToD1s")
 infix fun IOType.D1.inner(other: List<IOType.D1>) = List(other.size) { this inner other[it] }
-
-@JvmName("innerToD1s")
-infix fun List<IOType.D1>.inner(other: List<IOType.D1>) = List(size) { this[it] inner other[it] }

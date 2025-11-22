@@ -27,19 +27,6 @@ operator fun IOType.D1.div(other: IOType.D1): IOType.D1 = IOType.d1(this.shape) 
     this[i] / other[i]
 }
 
-@JvmName("divD1sToFloat")
-operator fun List<IOType.D1>.div(other: Float) = map { it / other }
-
-@JvmName("divD1sToFloats")
-operator fun List<IOType.D1>.div(other: List<Float>) = List(size) { this[it] / other[it] }
-
-@JvmName("divD1sToD1")
-operator fun List<IOType.D1>.div(other: IOType.D1) = List(size) {
-    IOType.d1(this[it].shape) { i ->
-        this[it][i] / other[i]
-    }
-}
-
 /**
  * IOType.D2
  */
@@ -73,26 +60,6 @@ operator fun IOType.D2.div(other: IOType.D2): IOType.D2 = IOType.d2(this.shape) 
     this[i, j] / other[i, j]
 }
 
-@JvmName("divD2sToFloat")
-operator fun List<IOType.D2>.div(other: Float) = map { it / other }
-
-@JvmName("divD2sToFloats")
-operator fun List<IOType.D2>.div(other: List<Float>) = List(size) { this[it] / other[it] }
-
-@JvmName("divD2sToD2")
-operator fun List<IOType.D2>.div(other: IOType.D2) = List(size) {
-    IOType.d2(this[it].shape) { i, j ->
-        this[it][i, j] / other[i, j]
-    }
-}
-
-/**
- * Broadcasting: List<D2> / List<D1>
- * 各D2を対応するD1でbroadcastして割る
- */
-@JvmName("divD2sToD1s")
-operator fun List<IOType.D2>.div(other: List<IOType.D1>) = List(size) { this[it] / other[it] }
-
 /**
  * IOType.D3
  */
@@ -104,17 +71,4 @@ operator fun IOType.D3.div(other: Float): IOType.D3 {
 
 operator fun IOType.D3.div(other: IOType.D3): IOType.D3 = IOType.d3(this.shape) { i, j, k ->
     this[i, j, k] / other[i, j, k]
-}
-
-@JvmName("divD3sToFloat")
-operator fun List<IOType.D3>.div(other: Float) = map { it / other }
-
-@JvmName("divD3sToFloats")
-operator fun List<IOType.D3>.div(other: List<Float>) = List(size) { this[it] / other[it] }
-
-@JvmName("divD3sToD3")
-operator fun List<IOType.D3>.div(other: IOType.D3) = List(size) {
-    IOType.d3(this[it].shape) { i, j, k ->
-        this[it][i, j, k] / other[i, j, k]
-    }
 }
