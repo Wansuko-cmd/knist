@@ -23,8 +23,6 @@ import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
-import com.wsr.toBatch
-import com.wsr.toList
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlinx.serialization.Serializable

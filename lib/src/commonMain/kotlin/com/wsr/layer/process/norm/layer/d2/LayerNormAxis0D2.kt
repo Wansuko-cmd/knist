@@ -26,7 +26,6 @@ class LayerNormAxis0D2 internal constructor(
     private var weight: IOType.D2,
 ) : Process.D2() {
 
-
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> = input.map { data ->
         val average = data.average(axis = 0)
         val numerator = IOType.d2(outputX, outputY) { i, j ->
