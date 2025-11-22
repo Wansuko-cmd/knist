@@ -3,7 +3,7 @@ package com.wsr.layer.process.norm.layer.d1
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.average.averageBatch
+import com.wsr.batch.average.average
 import com.wsr.batch.collection.mapValue
 import com.wsr.batch.div.div
 import com.wsr.batch.func.pow
@@ -22,7 +22,6 @@ import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
 import kotlinx.serialization.Serializable
-import kotlin.math.pow
 import kotlin.math.sqrt
 
 @Serializable
@@ -33,10 +32,10 @@ class LayerNormD1 internal constructor(
     private var weight: IOType.D1,
 ) : Process.D1() {
     override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D1> {
-        val average = input.averageBatch()
+        val average = input.average()
         val numerator = input - average
 
-        val variance = numerator.pow(n = 2).averageBatch()
+        val variance = numerator.pow(n = 2).average()
         val denominator = variance.mapValue { sqrt(it + e) }
 
         return weight * (numerator / denominator)
@@ -47,10 +46,10 @@ class LayerNormD1 internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D1>) -> Batch<IOType.D1>,
     ): Batch<IOType.D1> {
-        val average = input.averageBatch()
+        val average = input.average()
         val numerator = input - average
 
-        val variance = numerator.pow(n = 2).averageBatch()
+        val variance = numerator.pow(n = 2).average()
         val denominator = variance.mapValue { sqrt(it + e) }
 
         val normalize = numerator / denominator
