@@ -3,6 +3,7 @@ package com.wsr.batch.average
 import com.wsr.BLAS
 import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.collection.average
 import com.wsr.get
 
 @JvmName("batchD3sAverageBatch")
@@ -12,6 +13,9 @@ fun Batch<IOType.D3>.average(): Batch<IOType.D0> = Batch(size) {
     for (element in value) sum += element
     IOType.d0(sum / value.size)
 }
+
+@JvmName("batchD2sAverageWithAxis")
+fun Batch<IOType.D3>.average(axis: Int): Batch<IOType.D2> = Batch(size) { this[it].average(axis) }
 
 @JvmName("batchD3sBatchAverage")
 fun Batch<IOType.D3>.batchAverage(): IOType.D3 {
