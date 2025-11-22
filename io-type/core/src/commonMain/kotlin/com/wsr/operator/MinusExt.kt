@@ -3,6 +3,24 @@ package com.wsr.operator
 import com.wsr.BLAS
 import com.wsr.IOType
 
+operator fun Float.minus(other: IOType.D1): IOType.D1 {
+    val result = other.value.copyOf()
+    for (i in result.indices) result[i] = this - result[i]
+    return IOType.d1(result)
+}
+
+operator fun Float.minus(other: IOType.D2): IOType.D2 {
+    val result = other.value.copyOf()
+    for (i in result.indices) result[i] = this - result[i]
+    return IOType.d2(other.shape, result)
+}
+
+operator fun Float.minus(other: IOType.D3): IOType.D3 {
+    val result = other.value.copyOf()
+    for (i in result.indices) result[i] = this - result[i]
+    return IOType.d3(other.shape, result)
+}
+
 /**
  * IOType.D1
  */
