@@ -1,6 +1,5 @@
 package com.wsr.operator
 
-import com.wsr.BLAS
 import com.wsr.IOType
 
 /**
@@ -42,8 +41,11 @@ operator fun IOType.D2.div(other: IOType.D2): IOType.D2 = IOType.d2(this.shape) 
 /**
  * IOType.D3
  */
-operator fun IOType.D3.div(other: Float): IOType.D3 = IOType.d3(shape){ i, j, k -> this[i, j, k] / other }
+operator fun IOType.D3.div(other: Float): IOType.D3 = IOType.d3(shape) { i, j, k -> this[i, j, k] / other }
 
-operator fun IOType.D3.div(other: IOType.D0): IOType.D3 = IOType.d3(shape){ i, j, k -> this[i, j, k] / other.get() }
+operator fun IOType.D3.div(other: IOType.D0): IOType.D3 = IOType.d3(shape) { i, j, k -> this[i, j, k] / other.get() }
 
-operator fun IOType.D3.div(other: IOType.D3): IOType.D3 = IOType.d3(this.shape) { i, j, k -> this[i, j, k] / other[i, j, k] }
+operator fun IOType.D3.div(other: IOType.D3): IOType.D3 = IOType.d3(this.shape) { i, j, k ->
+    this[i, j, k] /
+        other[i, j, k]
+}
