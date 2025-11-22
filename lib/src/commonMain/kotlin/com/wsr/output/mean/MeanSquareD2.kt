@@ -3,6 +3,9 @@ package com.wsr.output.mean
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.average.batchAverage
+import com.wsr.batch.func.pow
+import com.wsr.batch.minus.minus
 import com.wsr.collection.average
 import com.wsr.converter.Converter
 import com.wsr.operator.minus
@@ -18,14 +21,11 @@ internal class MeanSquareD2 internal constructor(val outputX: Int, val outputY: 
     override fun expect(input: Batch<IOType.D2>): Batch<IOType.D2> = input
 
     override fun train(input: Batch<IOType.D2>, label: Batch<IOType.D2>): TResult<IOType.D2> {
-        val input = input.toList()
-        val label = label.toList()
-        val delta = List(input.size) { i -> input[i] - label[i] }
+        val delta = input - label
         val loss = delta
             .pow(2)
-            .average().average()
-            .toFloat() * 0.5f
-        return TResult(loss = loss, delta = delta.toBatch())
+            .batchAverage().average() * 0.5f
+        return TResult(loss = loss, delta = delta)
     }
 }
 

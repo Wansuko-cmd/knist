@@ -4,6 +4,9 @@ import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batch.collection.mapValue
 
+@JvmName("batchD0sLn")
+fun Batch<IOType.D0>.ln(e: Float = 1e-7f): Batch<IOType.D0> = mapValue { kotlin.math.ln(it + e) }
+
 @JvmName("batchD1sLn")
 fun Batch<IOType.D1>.ln(e: Float = 1e-7f): Batch<IOType.D1> = mapValue { kotlin.math.ln(it + e) }
 
