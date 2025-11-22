@@ -6,6 +6,7 @@ import com.wsr.NetworkBuilder
 import com.wsr.batch.collection.map
 import com.wsr.batch.div.div
 import com.wsr.batch.matmul.matMul
+import com.wsr.batch.minus.minus
 import com.wsr.batch.plus.plus
 import com.wsr.batch.reshape.transpose
 import com.wsr.batch.sum.sum
@@ -111,13 +112,7 @@ class AttentionD2 internal constructor(
         val dSoftmax = List(numOfHeads) { dHeads[it].matMul(value[it].transpose()) }
 
         val sum = List(numOfHeads) { (dSoftmax[it] * softmax[it]).sum(axis = 1) }
-        val dMasked = List(numOfHeads) { im ->
-            Batch(input.size) { i ->
-                IOType.d2(outputX, outputX) { x, y ->
-                    softmax[im][i][x, y] * (dSoftmax[im][i][x, y] - sum[im][i][x])
-                }
-            }
-        }
+        val dMasked = List(numOfHeads) { im -> softmax[im] * (dSoftmax[im] - sum[im]) }
 
         val dScaled = dMasked
         val dMul = List(numOfHeads) { dScaled[it] / sqrt(dim.toFloat()) }
