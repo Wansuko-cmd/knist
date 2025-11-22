@@ -2,6 +2,11 @@
 
 package com.wsr.initializer
 
+import com.wsr.d1
+import com.wsr.d2
+import com.wsr.d3
+import com.wsr.d4
+import com.wsr.get
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

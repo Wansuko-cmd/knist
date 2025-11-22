@@ -3,6 +3,9 @@
 package com.wsr.operator
 
 import com.wsr.IOType
+import com.wsr.d1
+import com.wsr.d2
+import com.wsr.d3
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -3,7 +3,9 @@
 package com.wsr.optimizer.rms
 
 import com.wsr.IOType
+import com.wsr.d3
 import com.wsr.get
+import com.wsr.set
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

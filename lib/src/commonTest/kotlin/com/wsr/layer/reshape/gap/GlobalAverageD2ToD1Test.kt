@@ -5,9 +5,12 @@ package com.wsr.layer.reshape.gap
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.d1
+import com.wsr.d2
 import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.reshape.gad.GlobalAverageD2ToD1
+import com.wsr.set
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -5,10 +5,12 @@ package com.wsr.layer.process.dropout
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.d1
 import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.dropout.DropoutD1
 import com.wsr.nextFloat
+import com.wsr.set
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals

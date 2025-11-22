@@ -3,6 +3,7 @@
 package com.wsr.dot.inner
 
 import com.wsr.IOType
+import com.wsr.d1
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

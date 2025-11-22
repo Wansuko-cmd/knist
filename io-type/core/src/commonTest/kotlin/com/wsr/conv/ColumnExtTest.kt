@@ -3,6 +3,7 @@
 package com.wsr.conv
 
 import com.wsr.IOType
+import com.wsr.d2
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

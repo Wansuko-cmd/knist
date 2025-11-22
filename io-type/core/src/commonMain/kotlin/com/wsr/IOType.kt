@@ -11,11 +11,12 @@ import kotlinx.serialization.Serializable
 sealed class IOType {
     abstract val value: FloatArray
     abstract val shape: List<Int>
-    val size: Int = shape.reduce { acc, i -> acc + i }
+    abstract val size: Int
 
     @Serializable
     data class D0(override val value: FloatArray) : IOType() {
         override val shape = listOf(1)
+        override val size = 1
 
         override fun equals(other: Any?): Boolean = super.equals(other)
 
@@ -23,7 +24,10 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D1(override val value: FloatArray) : IOType() {
+    data class D1(
+        override val value: FloatArray,
+        override val size: Int = value.size,
+    ) : IOType() {
         override val shape = listOf(size)
 
         override fun equals(other: Any?): Boolean = super.equals(other)
@@ -36,26 +40,23 @@ sealed class IOType {
         override val value: FloatArray,
         override val shape: List<Int>,
     ) : IOType() {
+        override val size = shape.reduce { acc, i -> acc + i }
         override fun equals(other: Any?): Boolean = super.equals(other)
 
         override fun hashCode(): Int = super.hashCode()
     }
 
     @Serializable
-    data class D3(
-        override val value: FloatArray,
-        override val shape: List<Int>,
-    ) : IOType() {
+    data class D3(override val value: FloatArray, override val shape: List<Int>) : IOType() {
+        override val size = shape.reduce { acc, i -> acc + i }
         override fun equals(other: Any?): Boolean = super.equals(other)
 
         override fun hashCode(): Int = super.hashCode()
     }
 
     @Serializable
-    data class D4(
-        override val value: FloatArray,
-        override val shape: List<Int>,
-    ) : IOType() {
+    data class D4(override val value: FloatArray, override val shape: List<Int>) : IOType() {
+        override val size = shape.reduce { acc, i -> acc + i }
         override fun equals(other: Any?): Boolean = super.equals(other)
 
         override fun hashCode(): Int = super.hashCode()

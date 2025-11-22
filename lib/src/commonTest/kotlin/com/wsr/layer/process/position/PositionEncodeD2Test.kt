@@ -5,8 +5,10 @@ package com.wsr.layer.process.position
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.batchOf
+import com.wsr.d2
 import com.wsr.get
 import com.wsr.layer.Context
+import com.wsr.set
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
