@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.layer.process.debug
 
@@ -67,8 +67,8 @@ class DebugD1Test {
         // onInputが呼び出される
         assertEquals(expected = input, actual = capturedInput)
         // onDeltaが呼び出される
-        assertEquals(expected = 2.0f, actual = (capturedDelta!![0] as IOType.D1)[0])
-        assertEquals(expected = 4.0f, actual = (capturedDelta!![0] as IOType.D1)[1])
-        assertEquals(expected = 6.0f, actual = (capturedDelta!![0] as IOType.D1)[2])
+        assertEquals(expected = 2.0f, actual = capturedDelta!![0][0])
+        assertEquals(expected = 4.0f, actual = capturedDelta[0][1])
+        assertEquals(expected = 6.0f, actual = capturedDelta[0][2])
     }
 }

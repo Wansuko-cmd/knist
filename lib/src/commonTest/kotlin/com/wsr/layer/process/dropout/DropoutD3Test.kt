@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.layer.process.dropout
 
@@ -25,7 +25,7 @@ class DropoutD3Test {
 
         val result = dropout._expect(input, context) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D3
+        val output = result[0]
         // Inverted Dropoutのexpect(推論時)では入力をそのまま返す
         assertEquals(expected = 1.0f, actual = output[0, 0, 0])
         assertEquals(expected = 2.0f, actual = output[0, 0, 1])
