@@ -4,6 +4,8 @@ import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.batch.collection.map
+import com.wsr.batch.minus.minus
+import com.wsr.batch.times.times
 import com.wsr.collection.sum
 import com.wsr.get
 import com.wsr.layer.Context
@@ -23,11 +25,7 @@ class SoftmaxD3 internal constructor(override val outputX: Int, override val out
     ): Batch<IOType.D3> {
         val output = forward(input)
         val delta = calcDelta(output)
-        return Batch(input.size) { i ->
-            IOType.d3(outputX, outputY, outputZ) { x, y, z ->
-                delta[i][x, y, z] * output[i][x, y, z] * (1 - output[i][x, y, z])
-            }
-        }
+        return delta * output * (1f - output)
     }
 
     private fun forward(input: Batch<IOType.D3>) = input.map { input ->
