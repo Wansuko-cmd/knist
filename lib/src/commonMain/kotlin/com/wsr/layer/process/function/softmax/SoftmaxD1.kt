@@ -9,8 +9,6 @@ import com.wsr.batch.times.times
 import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import com.wsr.toBatch
-import com.wsr.toList
 import kotlin.math.exp
 import kotlinx.serialization.Serializable
 
