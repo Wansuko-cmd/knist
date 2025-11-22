@@ -10,8 +10,8 @@ import com.wsr.operator.times
 @JvmName("batchFloatTimesD1s")
 operator fun Float.times(other: Batch<IOType.D1>) = other.map { this * it }
 
-@JvmName("batchFloatTimesD1s")
-operator fun Batch<IOType.D1>.times(other: FloatArray) = Batch(size) { this[it] * other[it] }
+@JvmName("batchD1sTimesD0s")
+operator fun Batch<IOType.D1>.times(other: Batch<IOType.D0>) = Batch(size) { this[it] * other[it].get() }
 
 @JvmName("batchD1TimesD1s")
 operator fun IOType.D1.times(other: Batch<IOType.D1>) = other.map { this * it }
