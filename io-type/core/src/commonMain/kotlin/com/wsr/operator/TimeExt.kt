@@ -42,8 +42,14 @@ operator fun IOType.D0.times(other: Float) = IOType.d0(get() * other)
 @JvmName("timesD0ToD0")
 operator fun IOType.D0.times(other: IOType.D0) = IOType.d0(get() * other.get())
 
-@JvmName("timesD0ToD0")
+@JvmName("timesD0ToD1")
+operator fun IOType.D0.times(other: IOType.D1) = this.get() * other
+
+@JvmName("timesD0ToD2")
 operator fun IOType.D0.times(other: IOType.D2) = this.get() * other
+
+@JvmName("timesD0ToD3")
+operator fun IOType.D0.times(other: IOType.D3) = this.get() * other
 
 /**
  * IOType.D1

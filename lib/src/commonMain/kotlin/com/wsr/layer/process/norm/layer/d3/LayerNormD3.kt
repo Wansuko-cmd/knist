@@ -3,7 +3,7 @@ package com.wsr.layer.process.norm.layer.d3
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.average.average
+import com.wsr.batch.average.averageBatch
 import com.wsr.batch.collection.mapValue
 import com.wsr.batch.div.div
 import com.wsr.batch.func.pow
@@ -23,9 +23,9 @@ import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
+import kotlinx.serialization.Serializable
 import kotlin.math.pow
 import kotlin.math.sqrt
-import kotlinx.serialization.Serializable
 
 @Serializable
 class LayerNormD3 internal constructor(
@@ -37,10 +37,10 @@ class LayerNormD3 internal constructor(
     private var weight: IOType.D3,
 ) : Process.D3() {
     override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> {
-        val average = input.average()
+        val average = input.averageBatch()
         val numerator = input - average
 
-        val variance = numerator.pow(n = 2).average()
+        val variance = numerator.pow(n = 2).averageBatch()
         val denominator = variance.mapValue { sqrt(it + e) }
 
         return weight * (numerator / denominator)
@@ -51,10 +51,10 @@ class LayerNormD3 internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D3>) -> Batch<IOType.D3>,
     ): Batch<IOType.D3> {
-        val average = input.average()
+        val average = input.averageBatch()
         val numerator = input - average
 
-        val variance = numerator.pow(n = 2).average()
+        val variance = numerator.pow(n = 2).averageBatch()
         val denominator = variance.mapValue { sqrt(it + e) }
 
         val normalize = numerator / denominator
@@ -75,7 +75,7 @@ class LayerNormD3 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx
-        val dx2 = FloatArray(input.size) { -dNumerator[it].average() }
+        val dx2 = Batch(input.size) { IOType.d0(-dNumerator[it].average()) }
 
         // dy/x <- variance(x)のx
         val dx3 = Batch(input.size) {
