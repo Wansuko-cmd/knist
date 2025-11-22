@@ -3,18 +3,19 @@ package com.wsr.layer.process.norm.minmax
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.max
-import com.wsr.collection.min
-import com.wsr.dot.inner.inner
+import com.wsr.batch.div.div
+import com.wsr.batch.func.pow
+import com.wsr.batch.inner.inner
+import com.wsr.batch.minmax.max
+import com.wsr.batch.minmax.min
+import com.wsr.batch.minus.minus
+import com.wsr.batch.times.times
+import com.wsr.get
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
-import com.wsr.toBatch
-import com.wsr.toList
-import kotlin.math.pow
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -24,13 +25,10 @@ class MinMaxNormD1 internal constructor(
     private var weight: IOType.D1,
 ) : Process.D1() {
     override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D1> {
-        val input = input.toList()
         val min = input.min()
         val max = input.max()
-        return List(input.size) {
-            val denominator = max[it] - min[it]
-            IOType.d1(outputSize) { x -> weight[x] * (input[it][x] - min[it]) / denominator }
-        }.toBatch()
+        val denominator = max - min
+        return weight * (input - min) / denominator
     }
 
     override fun train(
@@ -38,51 +36,53 @@ class MinMaxNormD1 internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D1>) -> Batch<IOType.D1>,
     ): Batch<IOType.D1> {
-        val input = input.toList()
         val min = input.min()
         val max = input.max()
 
-        val numerator = List(input.size) {
-            IOType.d1(input[it].shape) { x -> input[it][x] - min[it] }
-        }
-        val denominator = List(numerator.size) { 1 / (max[it] - min[it]) }
+        val numerator = input - min
+        val denominator = 1f / (max - min)
 
-        val mean = List(input.size) { denominator[it] * numerator[it] }
-        val output = mean.map { weight * it }
+        val mean = denominator * numerator
+        val output = weight * mean
 
-        val delta = calcDelta(output.toBatch()).toList()
+        val delta = calcDelta(output)
 
-        val dOutput = delta.map { it * weight }
+        val dOutput = delta * weight
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = (mean * delta).toBatch(),
+            dw = mean * delta,
         )
 
+        numerator.inner(other = dOutput)
+
         // 分母側(dy/d[max(x) - min(x)])
-        val dDenominator = List(input.size) {
-            denominator[it].pow(2) * numerator[it].inner(dOutput[it])
-        }
+        val dDenominator = denominator.pow(2) * numerator.inner(other = dOutput)
 
         // 分子側(dy/d[x - min(x)])
-        val dNumerator = List(input.size) { denominator[it] * dOutput[it] }
+        val dNumerator = denominator * dOutput
 
-        return List(input.size) {
-            IOType.d1(input[it].shape) { x ->
+        return Batch(input.size) {
+            val input = input[it]
+            val min = min[it]
+            val max = max[it]
+            val dDenominator = dDenominator[it]
+            val dNumerator = dNumerator[it]
+            IOType.d1(input.shape) { x ->
                 /**
                  * dy/input + dy/min(x) + dy/max(x)
                  * dy/dx = dNumerator
                  * dy/min(x) = if(x == min(x)) -dNumerator + dDenominator else 0f
                  * dy/max(x) = if(x == max(x)) -dDenominator else 0f
                  */
-                val input = input[it][x]
+                val input = input[x]
                 when (input) {
-                    min[it] -> dDenominator[it]
-                    max[it] -> dNumerator[it][x] - dDenominator[it]
-                    else -> dNumerator[it][x]
+                    min.get() -> dDenominator.get()
+                    max.get() -> dNumerator[x] - dDenominator.get()
+                    else -> dNumerator[x]
                 }
             }
-        }.toBatch()
+        }
     }
 }
 

@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.wsr.layer.process.norm.layer.d3
 
 import com.wsr.Batch
@@ -83,7 +85,7 @@ class LayerNormD3Test {
 
         // バッチ2: [[[2, 4], [4, 6]], [[6, 8], [8, 10]]], mean=6, numerator=[[[-4, -2], [-2, 0]], [[0, 2], [2, 4]]]
         // variance = (16 + 4 + 4 + 0 + 0 + 4 + 4 + 16) / 8 = 48 / 8 = 6, std=sqrt(6+1e-10)
-        val output2 = result[1] as IOType.D3
+        val output2 = result[1]
         val expectedStd2 = sqrt(6.0f + 1e-10f)
         assertEquals(
             expected = (-4.0f / expectedStd2),

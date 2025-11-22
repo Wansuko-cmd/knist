@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.layer.process.attention
 
@@ -104,7 +104,7 @@ class AttentionD2Test {
         val result = attention._train(input, context, calcDelta) as Batch<IOType.D2>
         // 入力への勾配の形状を確認
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D2
+        val dx = result[0]
         assertEquals(expected = channel, actual = dx.shape[0])
         assertEquals(expected = inputY, actual = dx.shape[1])
     }
@@ -243,7 +243,7 @@ class AttentionD2Test {
         val originalInput = batchOf(IOType.d1(channel) { it.toFloat() })
         val context = Context(originalInput)
 
-        val result = attention._expect(input, context) as Batch<IOType>
+        val result = attention._expect(input, context)
         assertEquals(expected = 1, actual = result.size)
         val output = result as Batch<IOType.D2>
         assertEquals(expected = channel, actual = output.shape[0])

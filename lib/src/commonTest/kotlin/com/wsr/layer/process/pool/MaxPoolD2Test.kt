@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.layer.process.pool
 
@@ -34,7 +34,7 @@ class MaxPoolD2Test {
         // y=1のとき: max(input[0,1], input[0,2]) = max(2, 3) = 3
         val result = maxPool._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D2
+        val output = result[0]
         assertEquals(expected = 2.0f, actual = output[0, 0])
         assertEquals(expected = 3.0f, actual = output[0, 1])
     }
@@ -76,7 +76,7 @@ class MaxPoolD2Test {
         //   i=2: o=1, input[0,2]=2 != output[0,1]=3 → 0
         //   i=3: o=1, input[0,3]=4 != output[0,1]=3 → 0
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D2
+        val dx = result[0]
         assertEquals(expected = 0.0f, actual = dx[0, 0])
         assertEquals(expected = 2.0f, actual = dx[0, 1])
         assertEquals(expected = 0.0f, actual = dx[0, 2])

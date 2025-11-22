@@ -7,4 +7,10 @@ import com.wsr.reshape.transpose
 
 fun Batch<IOType.D2>.transpose() = map { it.transpose() }
 
-fun Batch<IOType.D1>.toD2(): IOType.D2 = IOType.d2(listOf(size, shape[0]), value)
+fun Batch<IOType.D2>.flatten() = Batch<IOType.D1>(
+    shape = listOf(step),
+    size = size,
+    value = value,
+)
+
+fun Batch<IOType.D2>.reshapeToD3(shape: List<Int>) = Batch<IOType.D3>(size = size, shape = shape, value = value)
