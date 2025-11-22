@@ -11,8 +11,6 @@ import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.optimizer.Optimizer
 import com.wsr.reshape.transpose
-import com.wsr.toBatch
-import com.wsr.toList
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -36,7 +34,7 @@ class AffineD1 internal constructor(
         return dx
     }
 
-    private fun forward(input: Batch<IOType.D1>): Batch<IOType.D1> = weight.transpose().matMul(input.toList()).toBatch()
+    private fun forward(input: Batch<IOType.D1>): Batch<IOType.D1> = weight.transpose().matMul(input)
 }
 
 fun <T> NetworkBuilder.D1<T>.affine(

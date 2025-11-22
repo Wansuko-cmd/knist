@@ -14,8 +14,6 @@ operator fun Float.plus(other: IOType.D1): IOType.D1 {
 
 operator fun Float.plus(other: IOType.D2): IOType.D2 = other + this
 
-operator fun Float.plus(other: List<IOType.D2>): List<IOType.D2> = other.map { this + it }
-
 operator fun Float.plus(other: IOType.D3): IOType.D3 {
     val result = other.value.copyOf()
     for (i in result.indices) result[i] += this

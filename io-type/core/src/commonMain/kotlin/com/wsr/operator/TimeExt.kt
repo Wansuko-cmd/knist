@@ -33,9 +33,6 @@ operator fun Float.times(other: IOType.D3): IOType.D3 {
     return IOType.d3(other.shape, result)
 }
 
-@JvmName("timesFloatToD3s")
-operator fun Float.times(other: List<IOType.D3>) = other.map { this * it }
-
 @JvmName("timesD0ToFloat")
 operator fun IOType.D0.times(other: Float) = IOType.d0(get() * other)
 
@@ -68,18 +65,6 @@ operator fun IOType.D1.times(other: IOType.D1): IOType.D1 {
     return IOType.d1(result)
 }
 
-@JvmName("timesD1ToD1s")
-operator fun IOType.D1.times(other: List<IOType.D1>) = other.map { this * it }
-
-@JvmName("timesD1sToFloat")
-operator fun List<IOType.D1>.times(other: Float) = map { it * other }
-
-@JvmName("timesD1sToD1")
-operator fun List<IOType.D1>.times(other: IOType.D1) = map { it * other }
-
-@JvmName("timesD1sToD1s")
-operator fun List<IOType.D1>.times(other: List<IOType.D1>) = List(size) { this[it] * other[it] }
-
 // operator fun IOType.D1.times(other: IOType.D2): IOType.D2 {
 //    val result = other.value.copyOf()
 //    for (i in result.indices) {
@@ -103,18 +88,6 @@ operator fun IOType.D2.times(other: IOType.D2): IOType.D2 {
     return IOType.d2(shape, result)
 }
 
-@JvmName("timesD2ToD2s")
-operator fun IOType.D2.times(other: List<IOType.D2>) = other.map { this * it }
-
-@JvmName("timesD2sToFloat")
-operator fun List<IOType.D2>.times(other: Float) = map { it * other }
-
-@JvmName("timesD2sToD2")
-operator fun List<IOType.D2>.times(other: IOType.D2) = map { it * other }
-
-@JvmName("timesD2sToD2s")
-operator fun List<IOType.D2>.times(other: List<IOType.D2>) = List(size) { this[it] * other[it] }
-
 /**
  * IOType.D3
  */
@@ -129,15 +102,3 @@ operator fun IOType.D3.times(other: IOType.D3): IOType.D3 {
     for (i in result.indices) result[i] *= other.value[i]
     return IOType.d3(shape, result)
 }
-
-@JvmName("timesD3ToD3s")
-operator fun IOType.D3.times(other: List<IOType.D3>) = other.map { this * it }
-
-@JvmName("timesD3sToFloat")
-operator fun List<IOType.D3>.times(other: Float) = map { it * other }
-
-@JvmName("timesD3sToD3")
-operator fun List<IOType.D3>.times(other: IOType.D3) = map { it * other }
-
-@JvmName("timesD3sToD3s")
-operator fun List<IOType.D3>.times(other: List<IOType.D3>) = List(size) { this[it] * other[it] }

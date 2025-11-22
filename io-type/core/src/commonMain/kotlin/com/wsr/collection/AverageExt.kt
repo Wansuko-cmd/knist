@@ -56,8 +56,6 @@ fun IOType.D2.average(axis: Int) = when (axis) {
     else -> throw IllegalArgumentException("IOType.D2.max axis is $axis not 0 or 1.")
 }
 
-fun List<IOType.D2>.average(axis: Int) = map { it.average(axis) }
-
 fun IOType.D3.average(): Float = value.average().toFloat()
 
 fun IOType.D3.average(axis: Int) = when (axis) {
