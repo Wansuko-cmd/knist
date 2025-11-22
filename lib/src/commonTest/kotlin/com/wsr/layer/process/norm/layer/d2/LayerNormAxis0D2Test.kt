@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.wsr.layer.process.norm.layer.d2
 
 import com.wsr.Batch
@@ -43,7 +45,7 @@ class LayerNormAxis0D2Test {
 
         val result = norm._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D2
+        val output = result[0]
         val expectedStd = sqrt(1.0f + 1e-10f)
 
         // 列0の正規化: [-1, 1] / sqrt(1+1e-10)

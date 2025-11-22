@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.layer.process.position
 
@@ -38,7 +38,7 @@ class PositionEmbeddingD2Test {
         // [[5, 6], [7, 8]] + [[1, 2], [3, 4]] = [[6, 8], [10, 12]]
         val result = positionEmbedding._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D2
+        val output = result[0]
         assertEquals(expected = 6.0f, actual = output[0, 0])
         assertEquals(expected = 8.0f, actual = output[0, 1])
         assertEquals(expected = 10.0f, actual = output[1, 0])
@@ -75,7 +75,7 @@ class PositionEmbeddingD2Test {
         val result = positionEmbedding._train(input, context, calcDelta) as Batch<IOType.D2>
         // 位置埋め込みの逆伝播は、加算なのでdeltaをそのまま返す
         assertEquals(expected = 1, actual = result.size)
-        val delta = result[0] as IOType.D2
+        val delta = result[0]
         assertEquals(expected = 0.1f, actual = delta[0, 0], absoluteTolerance = 1e-6f)
         assertEquals(expected = 0.2f, actual = delta[0, 1], absoluteTolerance = 1e-6f)
         assertEquals(expected = 0.3f, actual = delta[1, 0], absoluteTolerance = 1e-6f)

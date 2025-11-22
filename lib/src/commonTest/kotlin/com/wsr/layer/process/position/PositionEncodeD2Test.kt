@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.layer.process.position
 
@@ -27,7 +27,7 @@ class PositionEncodeD2Test {
 
         val result = positionEncode._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D2
+        val output = result[0]
 
         // 位置エンコーディングの計算
         // PE(pos, 2i) = sin(pos / 10000^(2i/d_model))
