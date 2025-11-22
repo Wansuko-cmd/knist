@@ -3,16 +3,14 @@ package com.wsr.layer.process.attention
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.collection.map
 import com.wsr.batch.div.div
+import com.wsr.batch.func.softmax
 import com.wsr.batch.matmul.matMul
 import com.wsr.batch.minus.minus
 import com.wsr.batch.plus.plus
 import com.wsr.batch.reshape.transpose
 import com.wsr.batch.sum.sum
 import com.wsr.batch.times.times
-import com.wsr.collection.max
-import com.wsr.collection.sum
 import com.wsr.dot.matmul.matMul
 import com.wsr.get
 import com.wsr.initializer.WeightInitializer
@@ -24,7 +22,6 @@ import com.wsr.reshape.broadcastToD2
 import com.wsr.reshape.transpose
 import com.wsr.toBatch
 import com.wsr.toList
-import kotlin.math.exp
 import kotlin.math.sqrt
 import kotlinx.serialization.Serializable
 
@@ -54,7 +51,7 @@ class AttentionD2 internal constructor(
             val mul = query.matMul(key.transpose())
             val scaled = mul / sqrt(dim.toFloat())
             val masked = scaled + mask + context.generatePaddingMask()
-            val softmax = softmax(masked)
+            val softmax = masked.softmax(axis = 1)
             softmax.matMul(value)
         }
         val concat = List(input.size) {
@@ -78,7 +75,7 @@ class AttentionD2 internal constructor(
             val mul = query[it].matMul(key[it].transpose())
             val scaled = mul / sqrt(dim.toFloat())
             val masked = scaled + mask + context.generatePaddingMask()
-            softmax(masked)
+            masked.softmax(axis = 1)
         }
 
         val heads = List(numOfHeads) { softmax[it].matMul(value[it]) }
@@ -145,20 +142,13 @@ class AttentionD2 internal constructor(
         }
     }
 
-    private fun softmax(input: Batch<IOType.D2>): Batch<IOType.D2> = input.map { input ->
-        val max = input.max(axis = 1)
-        val exp = IOType.d2(shape = input.shape) { x, y -> exp(input[x, y] - max[x]) }
-        val sum = exp.sum(axis = 1)
-        IOType.d2(input.shape) { x, y -> exp[x, y] / sum[x] }
-    }
-
     private fun Context.generatePaddingMask(): Batch<IOType.D2> = if (maskValue == null) {
         Batch(input.size) { IOType.d2(outputX, outputX) { _, _ -> 0f } }
     } else {
         @Suppress("UNCHECKED_CAST")
         val input = input as Batch<IOType.D1>
-        Batch(input.size) {
-            val input = input[it]
+        Batch(input.size) { index ->
+            val input = input[index]
             IOType
                 .d1(outputX) { if (input[it] == maskValue.toFloat()) -1e9f else 0f }
                 .broadcastToD2(axis = 0, outputX)
