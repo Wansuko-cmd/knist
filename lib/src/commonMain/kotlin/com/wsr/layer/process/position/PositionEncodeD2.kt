@@ -3,6 +3,8 @@ package com.wsr.layer.process.position
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.collection.map
+import com.wsr.batch.plus.plus
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.operator.plus
@@ -29,16 +31,14 @@ class PositionEncodeD2 internal constructor(
         }
     }
 
-    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> = input.toList().map { input ->
-        input + position
-    }.toBatch()
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> = input + position
 
     override fun train(
         input: Batch<IOType.D2>,
         context: Context,
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
-        val output = input.toList().map { input -> input + position }.toBatch()
+        val output = input + position
         return calcDelta(output)
     }
 }
