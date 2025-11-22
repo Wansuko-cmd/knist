@@ -21,6 +21,8 @@ operator fun Float.minus(other: IOType.D3): IOType.D3 {
     return IOType.d3(other.shape, result)
 }
 
+operator fun IOType.D0.minus(other: IOType.D0) = IOType.d0(get() - other.get())
+
 /**
  * IOType.D1
  */

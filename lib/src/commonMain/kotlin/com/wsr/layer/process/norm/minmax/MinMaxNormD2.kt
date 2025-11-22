@@ -3,7 +3,15 @@ package com.wsr.layer.process.norm.minmax
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.div.div
+import com.wsr.batch.func.pow
+import com.wsr.batch.minmax.max
+import com.wsr.batch.minmax.min
+import com.wsr.batch.minus.minus
+import com.wsr.batch.sum.sum
+import com.wsr.batch.times.times
 import com.wsr.collection.sum
+import com.wsr.get
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
@@ -23,13 +31,10 @@ class MinMaxNormD2 internal constructor(
     private var weight: IOType.D2,
 ) : Process.D2() {
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
-        val input = input.toList()
-        val min = input.map { it.value.min() }
-        val max = input.map { it.value.max() }
-        return List(input.size) {
-            val denominator = max[it] - min[it]
-            IOType.d2(outputX, outputY) { x, y -> weight[x, y] * (input[it][x, y] - min[it]) / denominator }
-        }.toBatch()
+        val min = input.min()
+        val max = input.max()
+        val denominator = max - min
+        return weight * (input - min) / denominator
     }
 
     override fun train(
@@ -37,55 +42,50 @@ class MinMaxNormD2 internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
-        val input = input.toList()
-        val min = input.map { it.value.min() }
-        val max = input.map { it.value.max() }
+        val min = input.min()
+        val max = input.max()
+        val numerator = input - min
+        val denominator = 1f / (max - min)
 
-        val numerator = List(input.size) {
-            IOType.d2(input[it].shape) { x, y -> input[it][x, y] - min[it] }
-        }
-        val denominator = List(numerator.size) { 1 / (max[it] - min[it]) }
+        val mean = denominator * numerator
+        val output = weight * mean
 
-        val mean = List(input.size) { denominator[it] * numerator[it] }
-        val output = mean.map { weight * it }
+        val delta = calcDelta(output)
 
-        val delta = calcDelta(output.toBatch()).toList()
-
-        val dOutput = delta.map { it * weight }
+        val dOutput = delta * weight
 
         weight = optimizer.adapt(
             weight = weight,
-            dw = (mean * delta).toBatch(),
+            dw = mean * delta,
         )
 
         // 分母側(dy/d[max(x) - min(x)])
-        val dDenominator = List(input.size) {
-            denominator[it].pow(2) * (numerator[it] * dOutput[it]).sum()
-        }
+        val dDenominator = denominator.pow(2) * (numerator * dOutput).sum()
 
         // 分子側(dy/d[x - min(x)])
-        val dNumerator = List(input.size) { denominator[it] * dOutput[it] }
+        val dNumerator = denominator * dOutput
 
-        return List(input.size) {
-            IOType.d2(input[it].shape) { x, y ->
+        return Batch(input.size) {
+            val input = input[it]
+            val min = min[it]
+            val max = max[it]
+            val dDenominator = dDenominator[it]
+            val dNumerator = dNumerator[it]
+            IOType.d2(input.shape) { x, y ->
                 /**
                  * dy/input + dy/min(x) + dy/max(x)
                  * dy/dx = dNumerator
                  * dy/min(x) = if(x == min(x)) -dNumerator + dDenominator else 0f
                  * dy/max(x) = if(x == max(x)) -dDenominator else 0f
                  */
-                val inputValue = input[it][x, y]
+                val inputValue = input[x, y]
                 when (inputValue) {
-                    min[it] -> dDenominator[it]
-                    max[it] -> dNumerator[it][x, y] - dDenominator[it]
-                    else -> dNumerator[it][x, y]
+                    min.get() -> dDenominator.get()
+                    max.get() -> dNumerator[x, y] - dDenominator.get()
+                    else -> dNumerator[x, y]
                 }
             }
-        }.toBatch()
-    }
-
-    private operator fun IOType.D2.times(other: IOType.D2) = IOType.d2(shape) { x, y ->
-        this[x, y] * other[x, y]
+        }
     }
 }
 
