@@ -10,8 +10,8 @@ import com.wsr.collection.sum
 import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import kotlinx.serialization.Serializable
 import kotlin.math.exp
+import kotlinx.serialization.Serializable
 
 @Serializable
 class SoftmaxD3 internal constructor(override val outputX: Int, override val outputY: Int, override val outputZ: Int) :

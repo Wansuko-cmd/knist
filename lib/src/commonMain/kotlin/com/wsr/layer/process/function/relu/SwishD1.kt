@@ -3,7 +3,6 @@ package com.wsr.layer.process.function.relu
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.collection.map
 import com.wsr.batch.func.sigmoid
 import com.wsr.batch.minus.minus
 import com.wsr.batch.plus.plus
@@ -15,7 +14,6 @@ import com.wsr.operator.minus
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import kotlinx.serialization.Serializable
-import kotlin.math.exp
 
 @Serializable
 class SwishD1 internal constructor(override val outputSize: Int) : Process.D1() {
