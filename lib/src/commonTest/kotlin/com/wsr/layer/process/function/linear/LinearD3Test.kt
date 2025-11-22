@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.layer.process.function.linear
 
@@ -7,7 +7,6 @@ import com.wsr.IOType
 import com.wsr.batchOf
 import com.wsr.get
 import com.wsr.layer.Context
-import com.wsr.layer.process.function.linear.LinearD3
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

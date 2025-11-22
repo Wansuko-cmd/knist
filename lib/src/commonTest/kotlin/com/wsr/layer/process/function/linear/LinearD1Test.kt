@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.layer.process.function.linear
 
@@ -44,7 +44,7 @@ class LinearD1Test {
 
         val result = linear._train(input, context, calcDelta) as Batch<IOType.D1>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D1
+        val dx = result[0]
         assertEquals(expected = 2.0f, actual = dx[0])
         assertEquals(expected = 4.0f, actual = dx[1])
         assertEquals(expected = 6.0f, actual = dx[2])
