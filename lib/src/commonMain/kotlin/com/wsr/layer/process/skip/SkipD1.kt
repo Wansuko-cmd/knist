@@ -24,7 +24,11 @@ class SkipD1 internal constructor(
     private val resizeToOutput: (IOType.D1) -> IOType.D1 by lazy {
         when {
             inputSize == outputSize -> { it: IOType.D1 -> it }
-            inputSize < outputSize -> { it: IOType.D1 -> IOType.d1(it.value.copyOf(outputSize)) }
+            inputSize < outputSize -> { it: IOType.D1 ->
+                val result = IOType.d1(outputSize)
+                for (i in 0 until inputSize) result[i] = it[i]
+                result
+            }
             inputSize % outputSize == 0 -> { it: IOType.D1 ->
                 val stride = inputSize / outputSize
                 val result = FloatArray(outputSize) { i ->
@@ -40,7 +44,11 @@ class SkipD1 internal constructor(
     private val resizeToInput: (IOType.D1) -> IOType.D1 by lazy {
         when {
             inputSize == outputSize -> { it: IOType.D1 -> it }
-            inputSize < outputSize -> { it: IOType.D1 -> IOType.d1(it.value.copyOf(inputSize)) }
+            inputSize < outputSize -> { it: IOType.D1 ->
+                val result = IOType.d1(inputSize)
+                for (i in 0 until inputSize) result[i] = it[i]
+                result
+            }
             inputSize % outputSize == 0 -> { it: IOType.D1 ->
                 val stride = inputSize / outputSize
                 val result = FloatArray(inputSize) { i -> it.value[i / stride] / stride }
