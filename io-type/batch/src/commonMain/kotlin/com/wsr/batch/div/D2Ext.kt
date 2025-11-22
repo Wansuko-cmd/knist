@@ -15,6 +15,9 @@ operator fun Batch<IOType.D2>.div(other: FloatArray): Batch<IOType.D2> {
     return result
 }
 
+@JvmName("batchD2sDivD1s")
+operator fun Batch<IOType.D2>.div(other: Batch<IOType.D1>) = Batch(size) { this[it] / other[it] }
+
 @JvmName("batchD2sDivD2")
 operator fun Batch<IOType.D2>.div(other: IOType.D2) = map { it / other }
 

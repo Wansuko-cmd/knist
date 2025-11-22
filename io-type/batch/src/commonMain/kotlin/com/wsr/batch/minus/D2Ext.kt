@@ -18,6 +18,9 @@ operator fun Batch<IOType.D2>.minus(other: FloatArray): Batch<IOType.D2> {
     return result
 }
 
+@JvmName("batchD2sMinusD1s")
+operator fun Batch<IOType.D2>.minus(other: Batch<IOType.D1>) = Batch(size) { this[it] - other[it] }
+
 @JvmName("batchD2sMinusD2")
 operator fun Batch<IOType.D2>.minus(other: IOType.D2) = map { it - other }
 
