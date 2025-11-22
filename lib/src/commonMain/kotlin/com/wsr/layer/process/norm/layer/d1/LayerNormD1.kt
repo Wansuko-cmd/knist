@@ -3,7 +3,7 @@ package com.wsr.layer.process.norm.layer.d1
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.average.average
+import com.wsr.batch.average.averageBatch
 import com.wsr.batch.collection.mapValue
 import com.wsr.batch.div.div
 import com.wsr.batch.func.pow
@@ -16,12 +16,14 @@ import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
+import com.wsr.operator.div
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
+import com.wsr.power.pow
+import kotlinx.serialization.Serializable
 import kotlin.math.pow
 import kotlin.math.sqrt
-import kotlinx.serialization.Serializable
 
 @Serializable
 class LayerNormD1 internal constructor(
@@ -31,10 +33,10 @@ class LayerNormD1 internal constructor(
     private var weight: IOType.D1,
 ) : Process.D1() {
     override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D1> {
-        val average = input.average()
+        val average = input.averageBatch()
         val numerator = input - average
 
-        val variance = numerator.pow(n = 2).average()
+        val variance = numerator.pow(n = 2).averageBatch()
         val denominator = variance.mapValue { sqrt(it + e) }
 
         return weight * (numerator / denominator)
@@ -45,10 +47,10 @@ class LayerNormD1 internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D1>) -> Batch<IOType.D1>,
     ): Batch<IOType.D1> {
-        val average = input.average()
+        val average = input.averageBatch()
         val numerator = input - average
 
-        val variance = numerator.pow(n = 2).average()
+        val variance = numerator.pow(n = 2).averageBatch()
         val denominator = variance.mapValue { sqrt(it + e) }
 
         val normalize = numerator / denominator
@@ -69,7 +71,7 @@ class LayerNormD1 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx
-        val dx2 = FloatArray(input.size) { -dNumerator[it].sum() / outputSize.toFloat() }
+        val dx2 = Batch(input.size) { IOType.d0(-dNumerator[it].sum() / outputSize.toFloat()) }
 
         // dy/x <- variance(x)のx
         val dx3 = Batch(input.size) {
@@ -85,7 +87,7 @@ class LayerNormD1 internal constructor(
              *   = -sum(dOutput * normalize) / (denominator^2 * outputSize)
              */
             val dvn = -(dOutput[it] * normalize[it]).sum()
-            val dvd = (2f * denominator[it].pow(2) * outputSize.toFloat())
+            val dvd = 2f * denominator[it].pow(2) * outputSize.toFloat()
             val dVariance = dvn / dvd
 
             // dy/[x-average(x)]
