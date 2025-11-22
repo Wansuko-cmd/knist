@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.layer.process.skip
 
@@ -267,114 +267,85 @@ class SkipD2Test {
 
     @Test
     fun `SkipD2の_expect=inputSizeがoutputSizeより大きい場合にaverage poolingで縮小される`() {
-        // inputSize=(4,4), outputSize=(2,2), stride=(2,2)
-        val bias = BiasD2(
-            outputX = 2,
-            outputY = 2,
-            optimizer = Sgd(0.1f).d2(2, 2),
-            weight = IOType.d2(2, 2) { _, _ -> 0.0f },
+        // inputSize=(2,6), outputSize=(2,3), stride=(1,2)
+        // サブ層: Affine - Y方向のサイズ変換 (最初の3要素のみ取る)
+        val affine = AffineD2(
+            channel = 2,
+            outputSize = 3,
+            optimizer = Sgd(0.1f).d2(6, 3),
+            weight = IOType.d2(6, 3) { y, out -> if (y == out) 1.0f else 0.0f },
         )
 
         val skip = SkipD2(
-            layers = listOf(bias),
-            inputX = 4,
-            inputY = 4,
-            outputX = 2,
-            outputY = 2,
-        )
-
-        // input = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]]
-        val input = batchOf(
-            IOType.d2(4, 4) { x, y ->
-                (x * 4 + y + 1).toFloat()
-            },
-        )
-
-        // skip path (average pooling with stride 2x2):
-        //   [1,2,5,6]の平均 = (1+2+5+6)/4 = 3.5f
-        //   [3,4,7,8]の平均 = (3+4+7+8)/4 = 5.5f
-        //   [9,10,13,14]の平均 = (9+10+13+14)/4 = 11.5f
-        //   [11,12,15,16]の平均 = (11+12+15+16)/4 = 13.5f
-        //   -> [[3.5f, 5.5f], [11.5f, 13.5f]]
-        // main path: bias([[0,0],[0,0]]) -> [[3.5f, 5.5f], [11.5f, 13.5f]] (サイズが合わないのでエラー)
-        //
-        // 実際には、mainは4x4の入力を受け取りますが、bias層は2x2を期待しています
-        // これは矛盾しています
-        //
-        // 正しくは、layersで4x4 -> 2x2に変換する層が必要です
-        // しかし、そのような層はないので、input自体を2x2にします
-
-        val skip2 = SkipD2(
-            layers = listOf(bias),
+            layers = listOf(affine),
             inputX = 2,
-            inputY = 2,
+            inputY = 6,
             outputX = 2,
-            outputY = 2,
+            outputY = 3,
         )
 
-        // input = [[3.5f, 5.5f], [11.5f, 13.5f]] (既にaverage poolingされている想定)
-        val input2 = batchOf(
-            IOType.d2(2, 2) { x, y ->
-                when {
-                    x == 0 && y == 0 -> 3.5f
-                    x == 0 && y == 1 -> 5.5f
-                    x == 1 && y == 0 -> 11.5f
-                    x == 1 && y == 1 -> 13.5f
-                    else -> 0.0f
-                }
+        // input = [[1, 2, 3, 4, 5, 6], [7, 8, 9, 10, 11, 12]]
+        val input = batchOf(
+            IOType.d2(2, 6) { x, y ->
+                (x * 6 + y + 1).toFloat()
             },
         )
         val context = Context(input)
 
-        // main path: [[3.5f, 5.5f], [11.5f, 13.5f]]
-        // skip path: [[3.5f, 5.5f], [11.5f, 13.5f]]
-        // 出力: [[7.0f, 11.0f], [23.0f, 27.0f]]
-        val result = skip2._expect(input2, context) as Batch<IOType.D2>
+        // main path: Affine -> [[1, 2, 3], [7, 8, 9]]
+        // skip path (average pooling):
+        //   [1, 2]の平均 = 1.5f
+        //   [3, 4]の平均 = 3.5f
+        //   [5, 6]の平均 = 5.5f
+        //   [7, 8]の平均 = 7.5f
+        //   [9, 10]の平均 = 9.5f
+        //   [11, 12]の平均 = 11.5f
+        //   -> [[1.5f, 3.5f, 5.5f], [7.5f, 9.5f, 11.5f]]
+        // 出力: [[1, 2, 3], [7, 8, 9]] + [[1.5f, 3.5f, 5.5f], [7.5f, 9.5f, 11.5f]]
+        //     = [[2.5f, 5.5f, 8.5f], [14.5f, 17.5f, 20.5f]]
+        val result = skip._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
         val output = result[0]
-        assertEquals(expected = 7.0f, actual = output[0, 0])
-        assertEquals(expected = 11.0f, actual = output[0, 1])
-        assertEquals(expected = 23.0f, actual = output[1, 0])
-        assertEquals(expected = 27.0f, actual = output[1, 1])
+        assertEquals(expected = 2.5f, actual = output[0, 0])
+        assertEquals(expected = 5.5f, actual = output[0, 1])
+        assertEquals(expected = 8.5f, actual = output[0, 2])
+        assertEquals(expected = 14.5f, actual = output[1, 0])
+        assertEquals(expected = 17.5f, actual = output[1, 1])
+        assertEquals(expected = 20.5f, actual = output[1, 2])
     }
 
     @Test
     fun `SkipD2の_train=inputSizeがoutputSizeより大きい場合に勾配が正しく分配される`() {
-        // inputSize=(2,2), outputSize=(2,2) だが、内部的にaverage poolingをシミュレート
-        val bias = BiasD2(
-            outputX = 2,
-            outputY = 2,
-            optimizer = Sgd(0.1f).d2(2, 2),
-            weight = IOType.d2(2, 2) { _, _ -> 0.0f },
+        // inputSize=(2,6), outputSize=(2,3), stride=(1,2)
+        // サブ層: Affine - Y方向のサイズ変換 (最初の3要素のみ取る)
+        val affine = AffineD2(
+            channel = 2,
+            outputSize = 3,
+            optimizer = Sgd(0.1f).d2(6, 3),
+            weight = IOType.d2(6, 3) { y, out -> if (y == out) 1.0f else 0.0f },
         )
 
         val skip = SkipD2(
-            layers = listOf(bias),
+            layers = listOf(affine),
             inputX = 2,
-            inputY = 2,
+            inputY = 6,
             outputX = 2,
-            outputY = 2,
+            outputY = 3,
         )
 
-        // input = [[3.5f, 5.5f], [11.5f, 13.5f]] (既にaverage poolingされている想定)
+        // input = [[1, 2, 3, 4, 5, 6], [7, 8, 9, 10, 11, 12]]
         val input = batchOf(
-            IOType.d2(2, 2) { x, y ->
-                when {
-                    x == 0 && y == 0 -> 3.5f
-                    x == 0 && y == 1 -> 5.5f
-                    x == 1 && y == 0 -> 11.5f
-                    x == 1 && y == 1 -> 13.5f
-                    else -> 0.0f
-                }
+            IOType.d2(2, 6) { x, y ->
+                (x * 6 + y + 1).toFloat()
             },
         )
         val context = Context(input)
 
-        // 次の層からのdelta = [[40, 80], [120, 160]]
+        // 次の層からのdelta = [[12, 24, 36], [48, 60, 72]]
         val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
             batchOf(
-                IOType.d2(2, 2) { x, y ->
-                    ((x * 2 + y + 1) * 40).toFloat()
+                IOType.d2(2, 3) { x, y ->
+                    ((x * 3 + y + 1) * 12).toFloat()
                 },
             )
         }
@@ -383,12 +354,30 @@ class SkipD2Test {
         assertEquals(expected = 1, actual = result.size)
         val dx = result[0]
 
-        // skip pathの勾配: [[40, 80], [120, 160]]
-        // main pathの勾配: [[40, 80], [120, 160]] (biasは勾配をそのまま返す)
-        // 合計: [[80, 160], [240, 320]]
-        assertEquals(expected = 80.0f, actual = dx[0, 0])
-        assertEquals(expected = 160.0f, actual = dx[0, 1])
-        assertEquals(expected = 240.0f, actual = dx[1, 0])
-        assertEquals(expected = 320.0f, actual = dx[1, 1])
+        // skip pathの勾配 (average poolingの逆伝播):
+        //   delta[0,0] = 12 -> [12/2, 12/2] = [6, 6]
+        //   delta[0,1] = 24 -> [24/2, 24/2] = [12, 12]
+        //   delta[0,2] = 36 -> [36/2, 36/2] = [18, 18]
+        //   delta[1,0] = 48 -> [48/2, 48/2] = [24, 24]
+        //   delta[1,1] = 60 -> [60/2, 60/2] = [30, 30]
+        //   delta[1,2] = 72 -> [72/2, 72/2] = [36, 36]
+        //   -> [[6, 6, 12, 12, 18, 18], [24, 24, 30, 30, 36, 36]]
+        // main pathの勾配: Affine^Tを通過
+        //   [[1,0,0,0,0,0],[0,1,0,0,0,0],[0,0,1,0,0,0]] dot [[12, 24, 36], [48, 60, 72]]
+        //   = [[12, 24, 36, 0, 0, 0], [48, 60, 72, 0, 0, 0]]
+        // 合計: [[6+12, 6+24, 12+36, 12+0, 18+0, 18+0], [24+48, 24+60, 30+72, 30+0, 36+0, 36+0]]
+        //     = [[18, 30, 48, 12, 18, 18], [72, 84, 102, 30, 36, 36]]
+        assertEquals(expected = 18.0f, actual = dx[0, 0])
+        assertEquals(expected = 30.0f, actual = dx[0, 1])
+        assertEquals(expected = 48.0f, actual = dx[0, 2])
+        assertEquals(expected = 12.0f, actual = dx[0, 3])
+        assertEquals(expected = 18.0f, actual = dx[0, 4])
+        assertEquals(expected = 18.0f, actual = dx[0, 5])
+        assertEquals(expected = 72.0f, actual = dx[1, 0])
+        assertEquals(expected = 84.0f, actual = dx[1, 1])
+        assertEquals(expected = 102.0f, actual = dx[1, 2])
+        assertEquals(expected = 30.0f, actual = dx[1, 3])
+        assertEquals(expected = 36.0f, actual = dx[1, 4])
+        assertEquals(expected = 36.0f, actual = dx[1, 5])
     }
 }
