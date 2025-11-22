@@ -4,6 +4,7 @@ import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.batch.collection.map
+import com.wsr.batch.collection.mapValue
 import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
@@ -17,15 +18,14 @@ class LeakyReLUD3 internal constructor(
     override val outputY: Int,
     override val outputZ: Int,
 ) : Process.D3() {
-    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> =
-        input.map(::forward)
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> = forward(input)
 
     override fun train(
         input: Batch<IOType.D3>,
         context: Context,
         calcDelta: (Batch<IOType.D3>) -> Batch<IOType.D3>,
     ): Batch<IOType.D3> {
-        val output = input.map(::forward)
+        val output = forward(input)
         val delta = calcDelta(output)
         return Batch(input.size) { i ->
             IOType.d3(
@@ -38,13 +38,7 @@ class LeakyReLUD3 internal constructor(
         }
     }
 
-    private fun forward(input: IOType.D3): IOType.D3 = IOType.d3(
-        i = outputX,
-        j = outputY,
-        k = outputZ,
-    ) { x, y, z ->
-        if (input[x, y, z] >= 0f) input[x, y, z] else 0.01f
-    }
+    private fun forward(input: Batch<IOType.D3>): Batch<IOType.D3> = input.mapValue { if (it >= 0f) it else 0.01f }
 }
 
 fun <T> NetworkBuilder.D3<T>.leakyReLU() = addProcess(
