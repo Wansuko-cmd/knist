@@ -5,12 +5,11 @@ package com.wsr.layer.process.skip
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.collection.map
+import com.wsr.batch.plus.plus
 import com.wsr.layer.Context
 import com.wsr.layer.Layer
 import com.wsr.layer.process.Process
-import com.wsr.operator.plus
-import com.wsr.toBatch
-import com.wsr.toList
 import kotlinx.serialization.Serializable
 
 private typealias CALC_DELTA_D1 = (input: Batch<IOType.D1>, context: Context) -> Batch<IOType.D1>
@@ -53,8 +52,8 @@ class SkipD1 internal constructor(
 
     override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D1> {
         val main = layers.fold(input) { acc, layer -> layer._expect(acc, context) as Batch<IOType.D1> }
-        val skip = input.toList().map(resizeToOutput)
-        return (main.toList() + skip).toBatch()
+        val skip = input.map(resizeToOutput)
+        return main + skip
     }
 
     private val trainChain: (CALC_DELTA_D1) -> CALC_DELTA_D1 by lazy {
@@ -74,15 +73,15 @@ class SkipD1 internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D1>) -> Batch<IOType.D1>,
     ): Batch<IOType.D1> {
-        var skipDelta: List<IOType.D1> = emptyList()
+        var skipDelta: Batch<IOType.D1>? = null
 
         val final: CALC_DELTA_D1 = { acc, context ->
-            val output = input.toList().map(resizeToOutput) + acc.toList()
-            calcDelta(output.toBatch()).also { skipDelta = it.toList() }
+            val output = input.map(resizeToOutput) + acc
+            calcDelta(output).also { skipDelta = it }
         }
-        val mainDelta = trainChain(final)(input, context).toList()
+        val mainDelta = trainChain(final)(input, context)
 
-        return (mainDelta + skipDelta.map(resizeToInput)).toBatch()
+        return mainDelta + skipDelta!!.map(resizeToInput)
     }
 }
 
