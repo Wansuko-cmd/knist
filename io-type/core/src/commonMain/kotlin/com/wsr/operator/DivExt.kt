@@ -6,6 +6,8 @@ import com.wsr.IOType
 /**
  * Float
  */
+operator fun Float.div(other: IOType.D0) = IOType.d0(this / other.get())
+
 operator fun Float.div(other: IOType.D1) = IOType.d1(other.shape) { i -> this / other[i] }
 
 operator fun Float.div(other: IOType.D2) = IOType.d2(other.shape) { i, j -> this / other[i, j] }

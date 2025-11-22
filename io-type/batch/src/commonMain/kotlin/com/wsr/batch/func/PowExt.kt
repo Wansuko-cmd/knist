@@ -5,6 +5,9 @@ import com.wsr.IOType
 import com.wsr.batch.collection.mapValue
 import kotlin.math.pow
 
+@JvmName("batchD0sPow")
+fun Batch<IOType.D0>.pow(n: Int): Batch<IOType.D0> = mapValue { it.pow(n) }
+
 @JvmName("batchD1sPow")
 fun Batch<IOType.D1>.pow(n: Int): Batch<IOType.D1> = mapValue { it.pow(n) }
 

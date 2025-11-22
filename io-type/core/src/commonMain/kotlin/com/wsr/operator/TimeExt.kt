@@ -6,6 +6,9 @@ import com.wsr.IOType
 /**
  * Float
  */
+@JvmName("timesFloatToD0")
+operator fun Float.times(other: IOType.D0) = IOType.d0(this * other.get())
+
 operator fun Float.times(other: IOType.D1): IOType.D1 {
     val result = other.value.copyOf()
     BLAS.sscal(n = result.size, alpha = this, x = result, incX = 1)
@@ -32,6 +35,15 @@ operator fun Float.times(other: IOType.D3): IOType.D3 {
 
 @JvmName("timesFloatToD3s")
 operator fun Float.times(other: List<IOType.D3>) = other.map { this * it }
+
+@JvmName("timesD0ToFloat")
+operator fun IOType.D0.times(other: Float) = IOType.d0(get() * other)
+
+@JvmName("timesD0ToD0")
+operator fun IOType.D0.times(other: IOType.D0) = IOType.d0(get() * other.get())
+
+@JvmName("timesD0ToD0")
+operator fun IOType.D0.times(other: IOType.D2) = this.get() * other
 
 /**
  * IOType.D1
