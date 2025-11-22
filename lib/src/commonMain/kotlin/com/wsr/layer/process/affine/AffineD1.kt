@@ -3,13 +3,13 @@ package com.wsr.layer.process.affine
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.matmul.matMul
+import com.wsr.batch.reshape.toD2
 import com.wsr.dot.matmul.matMul
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import com.wsr.operator.div
 import com.wsr.optimizer.Optimizer
-import com.wsr.reshape.toD2
 import com.wsr.reshape.transpose
 import com.wsr.toBatch
 import com.wsr.toList
@@ -29,11 +29,11 @@ class AffineD1 internal constructor(
         calcDelta: (Batch<IOType.D1>) -> Batch<IOType.D1>,
     ): Batch<IOType.D1> {
         val output = forward(input)
-        val delta = calcDelta(output).toList()
+        val delta = calcDelta(output)
         val dx = weight.matMul(delta)
-        val dw = input.toList().toD2().transpose().matMul(delta.toD2())
+        val dw = input.toD2().transpose().matMul(delta.toD2())
         weight = optimizer.adapt(weight = weight, dw = dw)
-        return dx.toBatch()
+        return dx
     }
 
     private fun forward(input: Batch<IOType.D1>): Batch<IOType.D1> = weight.transpose().matMul(input.toList()).toBatch()

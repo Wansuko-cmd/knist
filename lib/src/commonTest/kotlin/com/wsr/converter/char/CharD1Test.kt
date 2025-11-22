@@ -3,8 +3,8 @@
 package com.wsr.converter.char
 
 import com.wsr.IOType
+import com.wsr.batch.collection.forEach
 import com.wsr.batchOf
-import com.wsr.collection.forEach
 import com.wsr.get
 import kotlin.test.Test
 import kotlin.test.assertEquals
