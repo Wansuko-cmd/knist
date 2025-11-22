@@ -34,7 +34,6 @@ sealed class IOType {
             result = 31 * result + value.contentHashCode()
             return result
         }
-
     }
 
     @Serializable

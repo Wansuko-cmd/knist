@@ -21,8 +21,8 @@ import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
-import kotlinx.serialization.Serializable
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
 
 @Serializable
 class LayerNormD1 internal constructor(
