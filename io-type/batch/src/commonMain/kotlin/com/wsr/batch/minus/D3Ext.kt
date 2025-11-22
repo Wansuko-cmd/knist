@@ -8,7 +8,7 @@ import com.wsr.get
 import com.wsr.operator.minus
 import com.wsr.set
 
-@JvmName("floatMinusD3s")
+@JvmName("batchFloatMinusD3s")
 operator fun Float.minus(other: Batch<IOType.D3>) = other.map { this - it }
 
 @JvmName("batchD3sMinusFloats")
