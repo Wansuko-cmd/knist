@@ -4,9 +4,11 @@ import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.batch.collection.mapValue
+import com.wsr.d3
 import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
+import com.wsr.set
 import kotlinx.serialization.Serializable
 
 @Serializable

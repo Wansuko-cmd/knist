@@ -7,9 +7,12 @@ import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.batch.collection.map
 import com.wsr.batch.plus.plus
+import com.wsr.d3
+import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.Layer
 import com.wsr.layer.process.Process
+import com.wsr.set
 import kotlinx.serialization.Serializable
 
 private typealias CALC_DELTA_D3 = (input: Batch<IOType.D3>, context: Context) -> Batch<IOType.D3>

@@ -11,6 +11,8 @@ import com.wsr.batch.minus.minus
 import com.wsr.batch.plus.plus
 import com.wsr.batch.times.times
 import com.wsr.collection.sum
+import com.wsr.d0
+import com.wsr.d1
 import com.wsr.get
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
@@ -21,6 +23,7 @@ import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
+import com.wsr.set
 import kotlin.math.sqrt
 import kotlinx.serialization.Serializable
 

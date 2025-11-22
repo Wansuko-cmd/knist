@@ -2,6 +2,7 @@ package com.wsr.batch.reshape
 
 import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.d2
 import com.wsr.get
 import com.wsr.reshape.broadcastToD2
 

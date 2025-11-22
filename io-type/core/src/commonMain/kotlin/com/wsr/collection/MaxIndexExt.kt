@@ -1,6 +1,7 @@
 package com.wsr.collection
 
 import com.wsr.IOType
+import com.wsr.get
 
 fun IOType.D1.maxIndex(): Int {
     var index = 0

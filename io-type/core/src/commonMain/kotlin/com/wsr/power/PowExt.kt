@@ -1,6 +1,11 @@
 package com.wsr.power
 
 import com.wsr.IOType
+import com.wsr.d0
+import com.wsr.d1
+import com.wsr.d2
+import com.wsr.d3
+import com.wsr.get
 import kotlin.math.pow
 
 fun IOType.D0.pow(n: Int) = IOType.d0(get().pow(n))

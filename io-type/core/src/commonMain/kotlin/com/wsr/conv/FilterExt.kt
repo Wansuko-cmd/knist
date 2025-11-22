@@ -1,6 +1,7 @@
 package com.wsr.conv
 
 import com.wsr.IOType
+import com.wsr.get
 
 fun IOType.D3.toFilter(): Array<FloatArray> {
     val filterCount = shape[0]

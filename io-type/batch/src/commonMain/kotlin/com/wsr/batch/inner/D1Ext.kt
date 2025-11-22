@@ -2,6 +2,7 @@ package com.wsr.batch.inner
 
 import com.wsr.Batch
 import com.wsr.IOType
+import com.wsr.d0
 import com.wsr.dot.inner.inner
 import com.wsr.get
 

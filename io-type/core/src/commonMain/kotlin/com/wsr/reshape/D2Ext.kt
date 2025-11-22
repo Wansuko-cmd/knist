@@ -1,6 +1,9 @@
 package com.wsr.reshape
 
 import com.wsr.IOType
+import com.wsr.d2
+import com.wsr.d3
+import com.wsr.get
 
 fun List<IOType.D2>.toD3(): IOType.D3 = IOType.d3(
     i = size,

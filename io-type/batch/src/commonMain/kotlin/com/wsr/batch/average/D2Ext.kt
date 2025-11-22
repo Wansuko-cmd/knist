@@ -3,6 +3,7 @@ package com.wsr.batch.average
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.collection.average
+import com.wsr.d0
 import com.wsr.get
 import com.wsr.operator.div
 import com.wsr.operator.plus

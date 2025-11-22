@@ -1,6 +1,9 @@
 package com.wsr.collection
 
 import com.wsr.IOType
+import com.wsr.d1
+import com.wsr.d2
+import com.wsr.get
 import com.wsr.reshape.transpose
 
 fun IOType.D1.sum() = value.sum()

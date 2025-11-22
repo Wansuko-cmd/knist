@@ -1,6 +1,10 @@
 package com.wsr.optimizer.adam
 
 import com.wsr.IOType
+import com.wsr.d1
+import com.wsr.d2
+import com.wsr.d3
+import com.wsr.get
 import com.wsr.operator.div
 import com.wsr.operator.minus
 import com.wsr.operator.plus
@@ -8,6 +12,7 @@ import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.power.pow
 import com.wsr.power.sqrt
+import com.wsr.set
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
 

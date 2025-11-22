@@ -4,10 +4,12 @@ import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.batch.average.average
+import com.wsr.d3
 import com.wsr.get
 import com.wsr.layer.Context
 import com.wsr.layer.reshape.Reshape
 import com.wsr.operator.div
+import com.wsr.set
 import kotlinx.serialization.Serializable
 
 @Serializable

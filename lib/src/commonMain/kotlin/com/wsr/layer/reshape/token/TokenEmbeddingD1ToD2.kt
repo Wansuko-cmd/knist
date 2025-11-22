@@ -3,6 +3,8 @@ package com.wsr.layer.reshape.token
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.d1
+import com.wsr.d2
 import com.wsr.get
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
@@ -10,6 +12,7 @@ import com.wsr.layer.reshape.Reshape
 import com.wsr.operator.div
 import com.wsr.operator.plus
 import com.wsr.optimizer.Optimizer
+import com.wsr.set
 import kotlin.repeat
 import kotlinx.serialization.Serializable
 
