@@ -20,9 +20,9 @@ import com.wsr.layer.process.Process
 import com.wsr.operator.plus
 import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
-import kotlinx.serialization.Serializable
 import kotlin.math.pow
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
 
 @Serializable
 class LayerNormD2 internal constructor(

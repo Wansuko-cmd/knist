@@ -22,5 +22,5 @@ operator fun Batch<IOType.D1>.times(other: IOType.D1) = map { it * other }
 @JvmName("batchD1sTimesD1s")
 operator fun Batch<IOType.D1>.times(other: Batch<IOType.D1>) = mapWith(other) { a, b -> a * b }
 
-//@JvmName("batchD1sTimesD2")
-//operator fun Batch<IOType.D1>.times(other: IOType.D2) = map { it * other }
+// @JvmName("batchD1sTimesD2")
+// operator fun Batch<IOType.D1>.times(other: IOType.D2) = map { it * other }
