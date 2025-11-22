@@ -2,26 +2,8 @@ package com.wsr.power
 
 import com.wsr.IOType
 
-fun IOType.D1.sqrt(e: Float = 1e-7f): IOType.D1 {
-    val result = this.value.copyOf()
-    for (i in result.indices) {
-        result[i] = kotlin.math.sqrt(result[i] + e)
-    }
-    return IOType.d1(result)
-}
+fun IOType.D1.sqrt(e: Float = 1e-7f): IOType.D1 = IOType.d1(shape) { kotlin.math.sqrt(this[it] + e) }
 
-fun IOType.D2.sqrt(e: Float = 1e-7f): IOType.D2 {
-    val result = this.value.copyOf()
-    for (i in result.indices) {
-        result[i] = kotlin.math.sqrt(result[i] + e)
-    }
-    return IOType.d2(shape, result)
-}
+fun IOType.D2.sqrt(e: Float = 1e-7f): IOType.D2 = IOType.d2(shape) { i, j -> kotlin.math.sqrt(this[i, j] + e) }
 
-fun IOType.D3.sqrt(e: Float = 1e-7f): IOType.D3 {
-    val result = this.value.copyOf()
-    for (i in result.indices) {
-        result[i] = kotlin.math.sqrt(result[i] + e)
-    }
-    return IOType.d3(shape, result)
-}
+fun IOType.D3.sqrt(e: Float = 1e-7f): IOType.D3 = IOType.d3(shape) { i, j, k -> kotlin.math.sqrt(this[i, j, k] + e) }

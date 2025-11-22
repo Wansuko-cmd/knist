@@ -9,11 +9,7 @@ import com.wsr.operator.plus
 import com.wsr.set
 
 @JvmName("batchD3sPlusD0s")
-operator fun Batch<IOType.D3>.plus(other: Batch<IOType.D0>): Batch<IOType.D3> {
-    val result = copy()
-    for (i in result.indices) result[i] += other[i].get()
-    return result
-}
+operator fun Batch<IOType.D3>.plus(other: Batch<IOType.D0>): Batch<IOType.D3> = Batch(size) { this[it] + other[it] }
 
 @JvmName("batchD3sPlusD3")
 operator fun Batch<IOType.D3>.plus(other: IOType.D3) = map { it + other }
