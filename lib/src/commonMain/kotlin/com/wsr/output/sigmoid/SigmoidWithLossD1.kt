@@ -3,6 +3,13 @@ package com.wsr.output.sigmoid
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.average.batchAverage
+import com.wsr.batch.func.ln
+import com.wsr.batch.func.sigmoid
+import com.wsr.batch.minus.minus
+import com.wsr.batch.plus.plus
+import com.wsr.batch.sum.sum
+import com.wsr.batch.times.times
 import com.wsr.collection.sum
 import com.wsr.converter.Converter
 import com.wsr.operator.minus
@@ -11,9 +18,6 @@ import com.wsr.operator.times
 import com.wsr.output.Output
 import com.wsr.output.TResult
 import com.wsr.power.ln
-import com.wsr.toBatch
-import com.wsr.toList
-import kotlin.math.exp
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,19 +25,15 @@ internal class SigmoidWithLossD1 internal constructor(val outputSize: Int) : Out
     override fun expect(input: Batch<IOType.D1>): Batch<IOType.D1> = input
 
     override fun train(input: Batch<IOType.D1>, label: Batch<IOType.D1>): TResult<IOType.D1> {
-        val input = input.toList()
-        val label = label.toList()
-        val output = input.map { (value) ->
-            IOType.d1(outputSize) { 1 / (1 + exp(-value[it])) }
-        }
-        val one = List(label.size) { IOType.d1(FloatArray(outputSize) { 1f }) }
+        val output = input.sigmoid()
+        val one = Batch(label.size) { IOType.d1(outputSize) { 1f } }
         val loss = run {
             val y = label * output.ln(1e-7f)
             val p = (one - label) * (one - output).ln(1e-7f)
-            -(y + p).sum().average().toFloat()
+            -(y + p).sum().batchAverage().get()
         }
         val delta = output - label
-        return TResult(loss = loss, delta = delta.toBatch())
+        return TResult(loss = loss, delta = delta)
     }
 }
 

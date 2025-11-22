@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.layer.process.debug
 
@@ -65,7 +65,7 @@ class DebugD2Test {
 
         val result = debug._train(input, context, calcDelta) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D2
+        val dx = result[0]
         // deltaは[[2, 4], [6, 8]]
         assertEquals(expected = 2.0f, actual = dx[0, 0])
         assertEquals(expected = 4.0f, actual = dx[0, 1])
@@ -75,9 +75,9 @@ class DebugD2Test {
         // onInputが呼び出される
         assertEquals(expected = input, actual = capturedInput)
         // onDeltaが呼び出される
-        assertEquals(expected = 2.0f, actual = (capturedDelta!![0] as IOType.D2)[0, 0])
-        assertEquals(expected = 4.0f, actual = (capturedDelta!![0] as IOType.D2)[0, 1])
-        assertEquals(expected = 6.0f, actual = (capturedDelta!![0] as IOType.D2)[1, 0])
-        assertEquals(expected = 8.0f, actual = (capturedDelta!![0] as IOType.D2)[1, 1])
+        assertEquals(expected = 2.0f, actual = capturedDelta!![0][0, 0])
+        assertEquals(expected = 4.0f, actual = capturedDelta[0][0, 1])
+        assertEquals(expected = 6.0f, actual = capturedDelta[0][1, 0])
+        assertEquals(expected = 8.0f, actual = capturedDelta[0][1, 1])
     }
 }

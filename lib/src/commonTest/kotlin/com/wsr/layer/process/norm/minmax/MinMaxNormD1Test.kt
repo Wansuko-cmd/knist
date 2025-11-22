@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.layer.process.norm.minmax
 
@@ -36,7 +36,7 @@ class MinMaxNormD1Test {
         // output = alpha * (input - min) / denominator
         // [(1-1)/4, (2-1)/4, (5-1)/4] = [0, 0.25f, 1]
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D1
+        val output = result[0]
         assertEquals(expected = 0.0f, actual = output[0], absoluteTolerance = 1e-4f)
         assertEquals(expected = 0.25f, actual = output[1], absoluteTolerance = 1e-4f)
         assertEquals(expected = 1.0f, actual = output[2], absoluteTolerance = 1e-4f)

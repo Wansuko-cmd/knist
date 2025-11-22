@@ -9,6 +9,9 @@ import com.wsr.operator.div
 import com.wsr.set
 
 @JvmName("batchD1sDivD0s")
+operator fun Batch<IOType.D1>.div(other: Float): Batch<IOType.D1> = map { it / other }
+
+@JvmName("batchD1sDivD0s")
 operator fun Batch<IOType.D1>.div(other: Batch<IOType.D0>): Batch<IOType.D1> {
     val result = copy()
     for (i in result.indices) result[i] /= other[i].get()

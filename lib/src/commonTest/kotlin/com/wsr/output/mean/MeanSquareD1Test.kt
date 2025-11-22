@@ -1,4 +1,4 @@
-@file:Suppress("NonAsciiCharacters")
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
 
 package com.wsr.output.mean
 
@@ -47,6 +47,6 @@ class MeanSquareD1Test {
         assertEquals(expected = 0.5f, actual = result.loss)
         assertEquals(expected = 2, actual = result.delta.size)
         assertEquals(expected = IOType.d1(listOf(1.0f, 1.0f, 1.0f)), actual = (result.delta as Batch<IOType.D1>)[0])
-        assertEquals(expected = IOType.d1(listOf(1.0f, 1.0f, 1.0f)), actual = (result.delta as Batch<IOType.D1>)[1])
+        assertEquals(expected = IOType.d1(listOf(1.0f, 1.0f, 1.0f)), actual = result.delta[1])
     }
 }

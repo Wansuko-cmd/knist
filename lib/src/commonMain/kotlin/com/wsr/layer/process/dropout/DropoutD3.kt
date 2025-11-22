@@ -3,12 +3,11 @@ package com.wsr.layer.process.dropout
 import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.times.times
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.nextFloat
 import com.wsr.operator.times
-import com.wsr.toBatch
-import com.wsr.toList
 import kotlin.random.Random
 import kotlinx.serialization.Serializable
 
@@ -35,9 +34,9 @@ class DropoutD3 internal constructor(
             j = outputY,
             k = outputZ,
         ) { _, _, _ -> if (random.nextFloat(0f, 1f) <= ratio) q else 0f }
-        val output = input.toList() * mask
-        val delta = calcDelta(output.toBatch())
-        return (delta.toList() * mask).toBatch()
+        val output = input * mask
+        val delta = calcDelta(output)
+        return delta * mask
     }
 }
 
