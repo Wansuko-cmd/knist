@@ -22,8 +22,8 @@ import com.wsr.reshape.broadcastToD2
 import com.wsr.reshape.transpose
 import com.wsr.toBatch
 import com.wsr.toList
-import kotlinx.serialization.Serializable
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
 
 @Serializable
 class AttentionD2 internal constructor(
