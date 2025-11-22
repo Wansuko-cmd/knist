@@ -19,12 +19,16 @@ operator fun IOType.D0.minus(other: IOType.D0) = IOType.d0(get() - other.get())
  */
 operator fun IOType.D1.minus(other: Float): IOType.D1 = IOType.d1(shape) { this[it] - other }
 
+operator fun IOType.D1.minus(other: IOType.D0): IOType.D1 = IOType.d1(shape) { this[it] - other.get() }
+
 operator fun IOType.D1.minus(other: IOType.D1): IOType.D1 = IOType.d1(shape) { this[it] - other[it] }
 
 /**
  * IOType.D2
  */
 operator fun IOType.D2.minus(other: Float): IOType.D2 = IOType.d2(shape) { i, j -> this[i, j] - other }
+
+operator fun IOType.D2.minus(other: IOType.D0): IOType.D2 = IOType.d2(shape) { i, j -> this[i, j] - other.get() }
 
 operator fun IOType.D2.minus(other: IOType.D1): IOType.D2 = IOType.d2(shape) { i, j -> this[i, j] - other[i] }
 
@@ -34,5 +38,7 @@ operator fun IOType.D2.minus(other: IOType.D2): IOType.D2 = IOType.d2(shape) { i
  * IOType.D3
  */
 operator fun IOType.D3.minus(other: Float): IOType.D3 = IOType.d3(shape) { i, j, k -> this[i, j, k] - other }
+
+operator fun IOType.D3.minus(other: IOType.D0): IOType.D3 = IOType.d3(shape) { i, j, k -> this[i, j, k] - other.get() }
 
 operator fun IOType.D3.minus(other: IOType.D3): IOType.D3 = IOType.d3(shape) { i, j, k -> this[i, j, k] - other[i, j, k] }

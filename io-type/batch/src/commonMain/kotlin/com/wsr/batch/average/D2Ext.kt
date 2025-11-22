@@ -5,24 +5,18 @@ import com.wsr.Batch
 import com.wsr.IOType
 import com.wsr.collection.average
 import com.wsr.get
+import com.wsr.operator.div
+import com.wsr.operator.plus
 
 @JvmName("batchD2sAverageBatch")
-fun Batch<IOType.D2>.average(): Batch<IOType.D0> = Batch(size) {
-    val value = this[it].value
-    var sum = 0f
-    for (element in value) sum += element
-    IOType.d0(sum / value.size)
-}
+fun Batch<IOType.D2>.average(): Batch<IOType.D0> = Batch(size) { IOType.d0(this[it].average()) }
 
 @JvmName("batchD2sAverageWithAxis")
 fun Batch<IOType.D2>.average(axis: Int) = Batch(size) { this[it].average(axis) }
 
 @JvmName("batchD2sBatchAverage")
 fun Batch<IOType.D2>.batchAverage(): IOType.D2 {
-    val result = value.sliceArray(0 until step)
-    for (i in 1 until size) {
-        BLAS.saxpy(n = result.size, alpha = 1f, x = this[i].value, incX = 1, y = result, incY = 1)
-    }
-    BLAS.sscal(n = result.size, alpha = 1f / size, x = result, incX = 1)
-    return IOType.d2(shape, result)
+    var sum = this[0]
+    for (i in 1 until size) sum += this[i]
+    return sum / size.toFloat()
 }
