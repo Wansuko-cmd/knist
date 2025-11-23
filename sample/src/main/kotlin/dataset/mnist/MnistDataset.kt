@@ -1,13 +1,15 @@
 package dataset.mnist
 
-import com.wsr.Batch
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.Batch
+import com.wsr.batch.toBatch
+import com.wsr.batch.toList
 import com.wsr.converter.Converter
+import com.wsr.core.IOType
+import com.wsr.core.d1
+import com.wsr.core.d2
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
-import com.wsr.toBatch
-import com.wsr.toList
 import java.io.DataInputStream
 import java.nio.file.Files
 import java.nio.file.Paths

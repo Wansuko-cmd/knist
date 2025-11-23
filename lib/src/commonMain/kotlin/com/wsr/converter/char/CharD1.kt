@@ -1,14 +1,16 @@
 package com.wsr.converter.char
 
-import com.wsr.Batch
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.collection.maxIndex
+import com.wsr.batch.Batch
+import com.wsr.batch.toBatch
+import com.wsr.batch.toList
 import com.wsr.converter.Converter
+import com.wsr.core.IOType
+import com.wsr.core.collection.index.maxIndex
+import com.wsr.core.d1
+import com.wsr.core.set
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
-import com.wsr.toBatch
-import com.wsr.toList
 import kotlinx.serialization.Serializable
 
 @Serializable

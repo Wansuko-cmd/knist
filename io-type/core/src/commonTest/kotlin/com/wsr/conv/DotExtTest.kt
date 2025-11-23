@@ -2,6 +2,7 @@
 
 package com.wsr.conv
 
+import com.wsr.core.operation.conv.dot
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

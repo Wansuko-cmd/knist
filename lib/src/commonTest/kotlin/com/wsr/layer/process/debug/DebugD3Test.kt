@@ -2,10 +2,11 @@
 
 package com.wsr.layer.process.debug
 
-import com.wsr.Batch
-import com.wsr.IOType
-import com.wsr.batchOf
-import com.wsr.get
+import com.wsr.batch.Batch
+import com.wsr.batch.batchOf
+import com.wsr.core.IOType
+import com.wsr.core.d3
+import com.wsr.core.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.debug.DebugD3
 import kotlin.test.Test

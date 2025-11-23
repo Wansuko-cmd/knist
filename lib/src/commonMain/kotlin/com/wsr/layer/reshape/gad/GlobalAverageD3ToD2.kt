@@ -1,14 +1,17 @@
 package com.wsr.layer.reshape.gad
 
-import com.wsr.Batch
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.Batch
+import com.wsr.batch.toBatch
+import com.wsr.batch.toList
+import com.wsr.core.IOType
+import com.wsr.core.d2
+import com.wsr.core.d3
+import com.wsr.core.get
+import com.wsr.core.operation.div
+import com.wsr.core.reshape.transpose
 import com.wsr.layer.Context
 import com.wsr.layer.reshape.Reshape
-import com.wsr.operator.div
-import com.wsr.reshape.transpose
-import com.wsr.toBatch
-import com.wsr.toList
 import kotlinx.serialization.Serializable
 
 @Serializable

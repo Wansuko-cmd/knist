@@ -1,16 +1,16 @@
 package com.wsr.layer.process.affine
 
-import com.wsr.Batch
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.matmul.matMul
+import com.wsr.batch.Batch
+import com.wsr.batch.operation.matmul.matMul
 import com.wsr.batch.reshape.toD2
-import com.wsr.dot.matmul.matMul
+import com.wsr.core.IOType
+import com.wsr.core.operation.matmul.matMul
+import com.wsr.core.reshape.transpose
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.optimizer.Optimizer
-import com.wsr.reshape.transpose
 import kotlinx.serialization.Serializable
 
 @Serializable

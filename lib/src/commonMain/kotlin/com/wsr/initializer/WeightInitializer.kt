@@ -1,6 +1,6 @@
 package com.wsr.initializer
 
-import com.wsr.IOType
+import com.wsr.core.IOType
 
 interface WeightInitializer {
     fun d1(input: List<Int>, output: List<Int>, size: Int): IOType.D1

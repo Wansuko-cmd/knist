@@ -1,10 +1,10 @@
 package com.wsr.layer.reshape.reshape
 
-import com.wsr.Batch
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.Batch
 import com.wsr.batch.reshape.flatten
 import com.wsr.batch.reshape.reshapeToD2
+import com.wsr.core.IOType
 import com.wsr.layer.Context
 import com.wsr.layer.reshape.Reshape
 import kotlinx.serialization.Serializable

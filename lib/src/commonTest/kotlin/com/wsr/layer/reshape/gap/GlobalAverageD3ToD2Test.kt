@@ -2,10 +2,14 @@
 
 package com.wsr.layer.reshape.gap
 
-import com.wsr.Batch
-import com.wsr.IOType
-import com.wsr.batchOf
-import com.wsr.get
+import com.wsr.batch.Batch
+import com.wsr.batch.batchOf
+import com.wsr.batch.get
+import com.wsr.core.IOType
+import com.wsr.core.d2
+import com.wsr.core.d3
+import com.wsr.core.get
+import com.wsr.core.set
 import com.wsr.layer.Context
 import com.wsr.layer.reshape.gad.GlobalAverageD3ToD2
 import kotlin.test.Test

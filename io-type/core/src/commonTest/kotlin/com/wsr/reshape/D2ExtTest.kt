@@ -2,7 +2,11 @@
 
 package com.wsr.reshape
 
-import com.wsr.IOType
+import com.wsr.core.IOType
+import com.wsr.core.d2
+import com.wsr.core.d3
+import com.wsr.core.reshape.toD3
+import com.wsr.core.reshape.transpose
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

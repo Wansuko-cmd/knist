@@ -1,13 +1,9 @@
 package com.wsr.layer.process.norm.layer.d3
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import com.wsr.operator.div
-import com.wsr.operator.minus
-import com.wsr.operator.plus
-import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 

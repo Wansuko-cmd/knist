@@ -2,7 +2,7 @@
 
 package com.wsr.optimizer.sgd
 
-import com.wsr.get
+import com.wsr.core.get
 import kotlin.test.Test
 
 class SgdTest {

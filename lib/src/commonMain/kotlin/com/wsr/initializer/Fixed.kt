@@ -1,6 +1,10 @@
 package com.wsr.initializer
 
-import com.wsr.IOType
+import com.wsr.core.IOType
+import com.wsr.core.d1
+import com.wsr.core.d2
+import com.wsr.core.d3
+import com.wsr.core.d4
 
 class Fixed(private val value: Float) : WeightInitializer {
     override fun d1(input: List<Int>, output: List<Int>, size: Int): IOType.D1 = IOType.d1(size) { value }

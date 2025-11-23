@@ -1,13 +1,16 @@
 package com.wsr.optimizer.adam
 
-import com.wsr.IOType
-import com.wsr.operator.div
-import com.wsr.operator.minus
-import com.wsr.operator.plus
-import com.wsr.operator.times
+import com.wsr.core.IOType
+import com.wsr.core.d1
+import com.wsr.core.d2
+import com.wsr.core.d3
+import com.wsr.core.math.pow
+import com.wsr.core.math.sqrt
+import com.wsr.core.operation.div
+import com.wsr.core.operation.minus
+import com.wsr.core.operation.plus
+import com.wsr.core.operation.times
 import com.wsr.optimizer.Optimizer
-import com.wsr.power.pow
-import com.wsr.power.sqrt
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
 
