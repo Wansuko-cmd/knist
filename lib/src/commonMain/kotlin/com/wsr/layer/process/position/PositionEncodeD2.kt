@@ -1,16 +1,16 @@
 package com.wsr.layer.process.position
 
-import com.wsr.batch.Batch
-import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.Batch
+import com.wsr.batch.operation.plus.plus
+import com.wsr.core.IOType
 import com.wsr.core.d2
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import com.wsr.batch.operation.plus.plus
-import kotlinx.serialization.Serializable
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
+import kotlinx.serialization.Serializable
 
 @Serializable
 class PositionEncodeD2 internal constructor(

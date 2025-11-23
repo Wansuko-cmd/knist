@@ -1,11 +1,11 @@
 package com.wsr.converter.linear
 
-import com.wsr.batch.Batch
-import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.Batch
 import com.wsr.batch.toBatch
 import com.wsr.batch.toList
 import com.wsr.converter.Converter
+import com.wsr.core.IOType
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable

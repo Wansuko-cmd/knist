@@ -25,8 +25,8 @@ import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.optimizer.Optimizer
-import kotlinx.serialization.Serializable
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
 
 @Serializable
 class AttentionD2 internal constructor(

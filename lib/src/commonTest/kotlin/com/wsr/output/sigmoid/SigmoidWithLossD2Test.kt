@@ -6,11 +6,10 @@ import com.wsr.batch.Batch
 import com.wsr.batch.batchOf
 import com.wsr.batch.get
 import com.wsr.core.IOType
-import com.wsr.batch.batchOf
 import com.wsr.core.d2
 import com.wsr.core.get
-import com.wsr.output.sigmoid.SigmoidWithLossD2
 import com.wsr.core.set
+import com.wsr.output.sigmoid.SigmoidWithLossD2
 import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertEquals

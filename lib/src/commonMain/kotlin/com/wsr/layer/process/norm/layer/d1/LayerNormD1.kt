@@ -1,28 +1,28 @@
 package com.wsr.layer.process.norm.layer.d1
 
-import com.wsr.batch.Batch
-import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.Batch
 import com.wsr.batch.collecction.average.average
 import com.wsr.batch.collecction.sum.sum
 import com.wsr.batch.get
 import com.wsr.batch.math.pow
 import com.wsr.batch.math.sqrt
-import com.wsr.core.d0
-import com.wsr.core.get
-import com.wsr.initializer.Fixed
-import com.wsr.initializer.WeightInitializer
-import com.wsr.layer.Context
-import com.wsr.layer.process.Process
 import com.wsr.batch.operation.div.div
 import com.wsr.batch.operation.minus.minus
 import com.wsr.batch.operation.plus.plus
 import com.wsr.batch.operation.times.times
+import com.wsr.core.IOType
 import com.wsr.core.collection.sum.sum
+import com.wsr.core.d0
+import com.wsr.core.get
 import com.wsr.core.math.pow
 import com.wsr.core.operation.div
 import com.wsr.core.operation.plus
 import com.wsr.core.operation.times
+import com.wsr.initializer.Fixed
+import com.wsr.initializer.WeightInitializer
+import com.wsr.layer.Context
+import com.wsr.layer.process.Process
 import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 

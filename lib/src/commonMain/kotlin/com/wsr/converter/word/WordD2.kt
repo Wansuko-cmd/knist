@@ -1,18 +1,18 @@
 package com.wsr.converter.word
 
-import com.wsr.batch.Batch
-import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.Batch
+import com.wsr.batch.toBatch
+import com.wsr.batch.toList
 import com.wsr.converter.Converter
+import com.wsr.core.IOType
+import com.wsr.core.collection.index.maxIndex
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.get
+import com.wsr.core.set
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
-import com.wsr.core.set
-import com.wsr.batch.toBatch
-import com.wsr.batch.toList
-import com.wsr.core.collection.index.maxIndex
 import kotlinx.serialization.Serializable
 
 @Serializable

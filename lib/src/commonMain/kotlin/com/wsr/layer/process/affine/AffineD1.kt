@@ -1,10 +1,10 @@
 package com.wsr.layer.process.affine
 
-import com.wsr.batch.Batch
-import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.Batch
 import com.wsr.batch.operation.matmul.matMul
 import com.wsr.batch.reshape.toD2
+import com.wsr.core.IOType
 import com.wsr.core.operation.matmul.matMul
 import com.wsr.core.reshape.transpose
 import com.wsr.initializer.WeightInitializer

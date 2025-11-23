@@ -4,7 +4,6 @@ import com.wsr.core.IOType
 import com.wsr.core.d3
 import com.wsr.core.get
 
-
 fun IOType.D3.transpose(axisI: Int, axisJ: Int, axisK: Int): IOType.D3 {
     val shape = listOf(shape[axisI], shape[axisJ], shape[axisK])
     return when {

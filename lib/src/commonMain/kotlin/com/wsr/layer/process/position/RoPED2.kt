@@ -1,18 +1,18 @@
 package com.wsr.layer.process.position
 
-import com.wsr.batch.Batch
-import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.Batch
 import com.wsr.batch.collecction.map.map
+import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import kotlinx.serialization.Serializable
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
+import kotlinx.serialization.Serializable
 
 @Serializable
 class RoPED2 internal constructor(
