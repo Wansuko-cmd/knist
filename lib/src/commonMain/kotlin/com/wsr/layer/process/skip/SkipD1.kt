@@ -37,7 +37,7 @@ class SkipD1 internal constructor(
                 val stride = inputSize / outputSize
                 IOType.d1(outputSize) { i ->
                     val index = i * stride
-                    it.value.sliceArray(index until index + stride).average().toFloat()
+                    it.copyOfArray().sliceArray(index until index + stride).average().toFloat()
                 }
             }
 
