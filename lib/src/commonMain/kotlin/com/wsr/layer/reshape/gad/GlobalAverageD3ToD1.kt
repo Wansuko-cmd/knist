@@ -7,7 +7,7 @@ import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.d3
 import com.wsr.core.get
-import com.wsr.core.operation.div
+import com.wsr.core.operation.div.div
 import com.wsr.layer.Context
 import com.wsr.layer.reshape.Reshape
 import kotlinx.serialization.Serializable

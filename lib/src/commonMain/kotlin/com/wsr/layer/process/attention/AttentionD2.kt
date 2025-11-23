@@ -18,7 +18,7 @@ import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.get
 import com.wsr.core.operation.matmul.matMul
-import com.wsr.core.operation.plus
+import com.wsr.core.operation.plus.plus
 import com.wsr.core.reshape.broadcastToD2
 import com.wsr.core.reshape.transpose
 import com.wsr.initializer.WeightInitializer

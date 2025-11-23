@@ -6,7 +6,7 @@ import com.wsr.batch.collecction.average.batchAverage
 import com.wsr.core.IOType
 import com.wsr.core.collection.sum.sum
 import com.wsr.core.math.pow
-import com.wsr.core.operation.times
+import com.wsr.core.operation.times.times
 import kotlin.math.sqrt
 import kotlinx.serialization.Serializable
 
