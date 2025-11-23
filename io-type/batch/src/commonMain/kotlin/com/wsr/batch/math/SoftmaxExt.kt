@@ -16,3 +16,6 @@ fun Batch<IOType.D2>.softmax(axis: Int): Batch<IOType.D2> = map { it.softmax(axi
 
 @JvmName("batchD3sSoftmax")
 fun Batch<IOType.D3>.softmax(): Batch<IOType.D3> = map { it.softmax() }
+
+@JvmName("batchD3sSoftmaxWithAxis")
+fun Batch<IOType.D3>.softmax(axis: Int): Batch<IOType.D3> = map { it.softmax(axis = axis) }
