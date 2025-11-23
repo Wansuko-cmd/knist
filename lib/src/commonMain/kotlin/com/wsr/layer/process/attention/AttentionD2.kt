@@ -1,5 +1,6 @@
 package com.wsr.layer.process.attention
 
+import com.wsr.NetworkBuilder
 import com.wsr.batch.Batch
 import com.wsr.batch.collecction.sum.sum
 import com.wsr.batch.get
@@ -20,6 +21,7 @@ import com.wsr.core.d3
 import com.wsr.core.get
 import com.wsr.core.reshape.broadcastToD2
 import com.wsr.core.reshape.transpose
+import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.optimizer.Optimizer
@@ -27,7 +29,7 @@ import kotlinx.serialization.Serializable
 import kotlin.math.sqrt
 
 @Serializable
-class AttentionD2T internal constructor(
+class AttentionD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
     private val numOfHeads: Int,
@@ -95,10 +97,11 @@ class AttentionD2T internal constructor(
         val softmax = masked.softmax(axis = 2)
         val heads = softmax.matMul(value)
         val concat = Batch(input.size) { batchIndex ->
+            val heads = heads[batchIndex]
             IOType.d2(outputX, numOfHeads * dim) { x, y ->
                 val headIndex = y / dim
                 val dimIndex = y % dim
-                heads[batchIndex][headIndex, x, dimIndex]
+                heads[headIndex, x, dimIndex]
             }
         }
 
@@ -173,3 +176,47 @@ class AttentionD2T internal constructor(
         }
     }
 }
+
+fun <T> NetworkBuilder.D2<T>.attention(
+    numOfHeads: Int,
+    dim: Int = inputY / numOfHeads,
+    maskValue: Int? = null,
+    optimizer: Optimizer = this.optimizer,
+    initializer: WeightInitializer = this.initializer,
+): NetworkBuilder.D2<T> = addProcess(
+    process = AttentionD2(
+        outputX = inputX,
+        outputY = inputY,
+        numOfHeads = numOfHeads,
+        dim = dim,
+        maskValue = maskValue,
+        weightQ = initializer.d2(
+            input = listOf(inputY),
+            output = listOf(numOfHeads * dim),
+            x = inputY,
+            y = numOfHeads * dim,
+        ),
+        weightK = initializer.d2(
+            input = listOf(inputY),
+            output = listOf(numOfHeads * dim),
+            x = inputY,
+            y = numOfHeads * dim,
+        ),
+        weightV = initializer.d2(
+            input = listOf(inputY),
+            output = listOf(numOfHeads * dim),
+            x = inputY,
+            y = numOfHeads * dim,
+        ),
+        weightO = initializer.d2(
+            input = listOf(numOfHeads * dim),
+            output = listOf(inputY),
+            x = numOfHeads * dim,
+            y = inputY,
+        ),
+        optimizerQ = optimizer.d2(inputY, numOfHeads * dim),
+        optimizerK = optimizer.d2(inputY, numOfHeads * dim),
+        optimizerV = optimizer.d2(inputY, numOfHeads * dim),
+        optimizerO = optimizer.d2(numOfHeads * dim, inputY),
+    ),
+)
