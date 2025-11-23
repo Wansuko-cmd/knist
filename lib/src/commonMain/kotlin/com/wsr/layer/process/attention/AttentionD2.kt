@@ -34,7 +34,7 @@ class AttentionD2 internal constructor(
     override val outputY: Int,
     private val numOfHeads: Int,
     private val dim: Int,
-    val maskValue: Int? = null,
+    private val maskValue: Int? = null,
     private var weightQ: IOType.D2,
     private var weightK: IOType.D2,
     private var weightV: IOType.D2,
