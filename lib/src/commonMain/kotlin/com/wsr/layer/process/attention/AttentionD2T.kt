@@ -9,6 +9,7 @@ import com.wsr.batch.operation.matmul.matMul
 import com.wsr.batch.operation.minus.minus
 import com.wsr.batch.operation.plus.plus
 import com.wsr.batch.operation.times.times
+import com.wsr.batch.reshape.broadcastToD3
 import com.wsr.batch.reshape.reshapeToD2
 import com.wsr.batch.reshape.reshapeToD3
 import com.wsr.batch.reshape.transpose
@@ -61,10 +62,11 @@ class AttentionD2T internal constructor(
         val softmax = masked.softmax(axis = 2)
         val heads = softmax.matMul(value)
         val concat = Batch(input.size) { batchIndex ->
+            val heads = heads[batchIndex]
             IOType.d2(outputX, numOfHeads * dim) { x, y ->
                 val headIndex = y / dim
                 val dimIndex = y % dim
-                heads[batchIndex][headIndex, x, dimIndex]
+                heads[headIndex, x, dimIndex]
             }
         }
         return concat.matMul(weightO)
@@ -121,26 +123,33 @@ class AttentionD2T internal constructor(
         val dValue = softmax.transpose(axisI = 0, axisJ = 2, axisK = 1).matMul(dHeads)
         val dSoftmax = dHeads.matMul(value.transpose(axisI = 0, axisJ = 2, axisK = 1))
 
-        val sum = (dSoftmax * softmax).sum(axis = 2)
+        val sum = (dSoftmax * softmax).sum(axis = 2).broadcastToD3(axis = 1, size = outputX)
         val dMasked = softmax * (dSoftmax - sum)
 
         val dScaled = dMasked
         val dMul = dScaled / sqrt(dim.toFloat())
 
-        val dQuery = dMul.matMul(key)
-        val dKey = dMul.transpose(axisI = 0, axisJ = 2, axisK = 1).matMul(query)
+        val dQuery = dMul.matMul(key.transpose(axisI = 0, axisJ = 2, axisK = 1))
+        val dKey = query.transpose(axisI = 0, axisJ = 2, axisK = 1).matMul(dMul)
 
         // Affineの逆伝播（各ヘッドのQ, K, V）
         val inputT = input.transpose()
-        val dQueryD2 = dQuery.reshapeToD2(listOf(outputX, numOfHeads * dim))
+
+        val dQueryD2 = dQuery
+            .transpose(axisI = 1, axisJ = 0, axisK = 2)
+            .reshapeToD2(listOf(outputX, numOfHeads * dim))
         val dxq = dQueryD2.matMul(weightQ.transpose())
         val dwq = inputT.matMul(dQueryD2)
 
-        val dKeyD2 = dKey.reshapeToD2(listOf(outputX, numOfHeads * dim))
+        val dKeyD2 = dKey
+            .transpose(axisI = 2, axisJ = 0, axisK = 1)
+            .reshapeToD2(listOf(outputX, numOfHeads * dim))
         val dxk = dKeyD2.matMul(weightK.transpose())
         val dwk = inputT.matMul(dKeyD2)
 
-        val dValueD2 = dValue.reshapeToD2(listOf(outputX, numOfHeads * dim))
+        val dValueD2 = dValue
+            .transpose(axisI = 1, axisJ = 0, axisK = 2)
+            .reshapeToD2(listOf(outputX, numOfHeads * dim))
         val dxv = dValueD2.matMul(weightV.transpose())
         val dwv = inputT.matMul(dValueD2)
 
