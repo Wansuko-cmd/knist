@@ -26,12 +26,12 @@ class LayerNormAxis1D2 internal constructor(
 ) : Process.D2() {
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
         val average = input.average(axis = 1)
-        val numerator = input - average
+        val numerator = input.minus(other = average, axis = 1)
 
         val variance = numerator.pow(2).average(axis = 1)
         val denominator = variance.sqrt(e = e)
 
-        val normalize = numerator / denominator
+        val normalize = numerator.div(other = denominator, axis = 1)
         return weight * normalize
     }
 
@@ -41,12 +41,12 @@ class LayerNormAxis1D2 internal constructor(
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
         val average = input.average(axis = 1)
-        val numerator = input - average
+        val numerator = input.minus(other = average, axis = 1)
 
         val variance = numerator.pow(2).average(axis = 1)
         val denominator = variance.sqrt(e = e)
 
-        val normalize = numerator / denominator
+        val normalize = numerator.div(other = denominator, axis = 1)
 
         val output = weight * normalize
         val delta = calcDelta(output)
