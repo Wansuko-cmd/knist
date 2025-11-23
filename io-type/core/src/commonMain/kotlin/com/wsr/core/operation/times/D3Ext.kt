@@ -8,7 +8,7 @@ operator fun IOType.D3.times(other: Float): IOType.D3 = IOType.d3(shape) { i, j,
 
 operator fun IOType.D3.minus(other: IOType.D2): IOType.D3 = this.minus(other = other, axis = 2)
 
-fun IOType.D3.minus(other: IOType.D2, axis: Int): IOType.D3 = when(axis) {
+fun IOType.D3.minus(other: IOType.D2, axis: Int): IOType.D3 = when (axis) {
     0 -> IOType.d3(shape) { i, j, k -> this[i, j, k] - other[j, k] }
     1 -> IOType.d3(shape) { i, j, k -> this[i, j, k] - other[i, k] }
     2 -> IOType.d3(shape) { i, j, k -> this[i, j, k] - other[i, j] }

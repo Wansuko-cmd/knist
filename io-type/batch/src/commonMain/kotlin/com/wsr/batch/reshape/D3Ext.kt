@@ -6,11 +6,8 @@ import com.wsr.core.IOType
 import com.wsr.core.reshape.slice
 import com.wsr.core.reshape.transpose
 
-fun Batch<IOType.D3>.transpose(
-    axisI: Int,
-    axisJ: Int,
-    axisK: Int,
-) = map { it.transpose(axisI = axisI, axisJ = axisJ, axisK = axisK) }
+fun Batch<IOType.D3>.transpose(axisI: Int, axisJ: Int, axisK: Int) =
+    map { it.transpose(axisI = axisI, axisJ = axisJ, axisK = axisK) }
 
 fun Batch<IOType.D3>.slice(
     i: IntRange = 0 until shape[0],

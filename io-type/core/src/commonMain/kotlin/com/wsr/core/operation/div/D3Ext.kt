@@ -11,9 +11,9 @@ operator fun IOType.D3.div(other: IOType.D0): IOType.D3 = IOType.d3(shape) { i, 
 operator fun IOType.D3.div(other: IOType.D2): IOType.D3 = this.div(other = other, axis = 2)
 
 fun IOType.D3.div(other: IOType.D2, axis: Int): IOType.D3 = when (axis) {
-    0 -> IOType.d3(shape) { i, j, k  -> this[i, j, k] / other[j, i] }
-    1 -> IOType.d3(shape) { i, j, k  -> this[i, j, k] / other[i, k] }
-    2 -> IOType.d3(shape) { i, j, k  -> this[i, j, k] / other[i, j] }
+    0 -> IOType.d3(shape) { i, j, k -> this[i, j, k] / other[j, i] }
+    1 -> IOType.d3(shape) { i, j, k -> this[i, j, k] / other[i, k] }
+    2 -> IOType.d3(shape) { i, j, k -> this[i, j, k] / other[i, j] }
     else -> throw IllegalArgumentException("IOType.D2.div axis is $axis not 0 or 1.")
 }
 
