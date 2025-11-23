@@ -4,7 +4,6 @@ import com.wsr.batch.Batch
 import com.wsr.batch.collecction.map.map
 import com.wsr.batch.get
 import com.wsr.core.IOType
-import com.wsr.core.reshape.broadcastToD2
 import com.wsr.core.reshape.broadcastToD3
 import com.wsr.core.reshape.slice
 import com.wsr.core.reshape.transpose
