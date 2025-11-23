@@ -12,14 +12,11 @@ import com.wsr.batch.operation.times.times
 import com.wsr.batch.reshape.reshapeToD2
 import com.wsr.batch.reshape.reshapeToD3
 import com.wsr.batch.reshape.transpose
-import com.wsr.batch.toBatch
 import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.d3
 import com.wsr.core.get
-import com.wsr.core.operation.matmul.matMul
-import com.wsr.core.operation.plus.plus
 import com.wsr.core.reshape.broadcastToD2
 import com.wsr.core.reshape.transpose
 import com.wsr.layer.Context
@@ -35,35 +32,26 @@ class AttentionD2T internal constructor(
     private val numOfHeads: Int,
     private val dim: Int,
     val maskValue: Int? = null,
-
-    private var weightQ2: IOType.D2,
-    private var weightK2: IOType.D2,
-    private var weightV2: IOType.D2,
-
-    private val optimizerQ2: Optimizer.D2,
-    private val optimizerK2: Optimizer.D2,
-    private val optimizerV2: Optimizer.D2,
-
-    private var weightQ: List<IOType.D2>,
-    private var weightK: List<IOType.D2>,
-    private var weightV: List<IOType.D2>,
+    private var weightQ: IOType.D2,
+    private var weightK: IOType.D2,
+    private var weightV: IOType.D2,
+    private val optimizerQ: Optimizer.D2,
+    private val optimizerK: Optimizer.D2,
+    private val optimizerV: Optimizer.D2,
     private var weightO: IOType.D2,
-    private val optimizerQ: List<Optimizer.D2>,
-    private val optimizerK: List<Optimizer.D2>,
-    private val optimizerV: List<Optimizer.D2>,
     private val optimizerO: Optimizer.D2,
 ) : Process.D2() {
     private val mask by lazy { IOType.d2(outputX, outputX) { x, y -> if (x < y) -1e9f else 0f } }
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
-        val query = input.matMul(weightQ2)
+        val query = input.matMul(weightQ)
             .reshapeToD3(listOf(outputX, numOfHeads, dim))
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
 
-        val key = input.matMul(weightK2)
+        val key = input.matMul(weightK)
             .reshapeToD3(listOf(outputX, numOfHeads, dim))
             .transpose(axisI = 1, axisJ = 2, axisK = 0)
 
-        val value = input.matMul(weightV2)
+        val value = input.matMul(weightV)
             .reshapeToD3(listOf(outputX, numOfHeads, dim))
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
 
@@ -87,15 +75,15 @@ class AttentionD2T internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
-        val query = input.matMul(weightQ2)
+        val query = input.matMul(weightQ)
             .reshapeToD3(listOf(outputX, numOfHeads, dim))
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
 
-        val key = input.matMul(weightK2)
+        val key = input.matMul(weightK)
             .reshapeToD3(listOf(outputX, numOfHeads, dim))
             .transpose(axisI = 1, axisJ = 2, axisK = 0)
 
-        val value = input.matMul(weightV2)
+        val value = input.matMul(weightV)
             .reshapeToD3(listOf(outputX, numOfHeads, dim))
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
 
@@ -145,20 +133,20 @@ class AttentionD2T internal constructor(
         // Affineの逆伝播（各ヘッドのQ, K, V）
         val inputT = input.transpose()
         val dQueryD2 = dQuery.reshapeToD2(listOf(outputX, numOfHeads * dim))
-        val dxq = dQueryD2.matMul(weightQ2.transpose())
+        val dxq = dQueryD2.matMul(weightQ.transpose())
         val dwq = inputT.matMul(dQueryD2)
 
         val dKeyD2 = dKey.reshapeToD2(listOf(outputX, numOfHeads * dim))
-        val dxk = dKeyD2.matMul(weightK2.transpose())
+        val dxk = dKeyD2.matMul(weightK.transpose())
         val dwk = inputT.matMul(dKeyD2)
 
         val dValueD2 = dValue.reshapeToD2(listOf(outputX, numOfHeads * dim))
-        val dxv = dValueD2.matMul(weightV2.transpose())
+        val dxv = dValueD2.matMul(weightV.transpose())
         val dwv = inputT.matMul(dValueD2)
 
-        weightQ2 = optimizerQ2.adapt(weightQ2, dwq)
-        weightK2 = optimizerK2.adapt(weightK2, dwk)
-        weightV2 = optimizerV2.adapt(weightV2, dwv)
+        weightQ = optimizerQ.adapt(weightQ, dwq)
+        weightK = optimizerK.adapt(weightK, dwk)
+        weightV = optimizerV.adapt(weightV, dwv)
 
         return dxq + dxk + dxv
     }
