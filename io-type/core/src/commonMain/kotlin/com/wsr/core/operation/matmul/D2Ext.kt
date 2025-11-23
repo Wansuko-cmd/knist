@@ -2,6 +2,8 @@ package com.wsr.core.operation.matmul
 
 import com.wsr.BLAS
 import com.wsr.core.IOType
+import com.wsr.core.get
+import com.wsr.core.set
 
 infix fun IOType.D2.matMul(other: IOType.D1): IOType.D1 {
     val result = FloatArray(shape[0])

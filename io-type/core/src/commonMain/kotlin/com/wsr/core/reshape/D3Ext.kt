@@ -57,10 +57,7 @@ fun IOType.D3.transpose(axisI: Int, axisJ: Int, axisK: Int): IOType.D3 {
     }
 }
 
-fun IOType.D3.slice(
-    i: IntRange = 0 until shape[0],
-    j: IntRange = 0 until shape[1],
-    k: IntRange = 0 until shape[2],
-) = IOType.d3(shape = listOf(i.count(), j.count(), k.count())) { x, y, z ->
-    this[i.start + x, j.start + y, k.start + z]
-}
+fun IOType.D3.slice(i: IntRange = 0 until shape[0], j: IntRange = 0 until shape[1], k: IntRange = 0 until shape[2]) =
+    IOType.d3(shape = listOf(i.count(), j.count(), k.count())) { x, y, z ->
+        this[i.start + x, j.start + y, k.start + z]
+    }

@@ -269,7 +269,7 @@ operator fun IOType.D3.set(i: Int, j: Int, element: IOType.D1) {
     )
 }
 
-operator fun IOType.D3.set(i: Int, element: IOType.D3) {
+operator fun IOType.D3.set(i: Int, element: IOType.D2) {
     element.value.copyInto(
         destination = value,
         destinationOffset = i * shape[1] * shape[2],

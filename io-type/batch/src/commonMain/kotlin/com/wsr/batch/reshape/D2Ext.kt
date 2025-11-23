@@ -8,10 +8,8 @@ import com.wsr.core.reshape.transpose
 
 fun Batch<IOType.D2>.transpose() = map { it.transpose() }
 
-fun Batch<IOType.D2>.slice(
-    i: IntRange = 0 until shape[0],
-    j: IntRange = 0 until shape[1],
-) = map { it.slice(i = i, j = j) }
+fun Batch<IOType.D2>.slice(i: IntRange = 0 until shape[0], j: IntRange = 0 until shape[1]) =
+    map { it.slice(i = i, j = j) }
 
 fun Batch<IOType.D2>.flatten() = Batch<IOType.D1>(
     shape = listOf(step),

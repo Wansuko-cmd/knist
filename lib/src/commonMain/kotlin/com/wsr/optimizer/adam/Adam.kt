@@ -6,10 +6,10 @@ import com.wsr.core.d2
 import com.wsr.core.d3
 import com.wsr.core.math.pow
 import com.wsr.core.math.sqrt
-import com.wsr.core.operation.div
-import com.wsr.core.operation.minus
-import com.wsr.core.operation.plus
-import com.wsr.core.operation.times
+import com.wsr.core.operation.div.div
+import com.wsr.core.operation.minus.minus
+import com.wsr.core.operation.plus.plus
+import com.wsr.core.operation.times.times
 import com.wsr.optimizer.Optimizer
 import kotlin.math.pow
 import kotlinx.serialization.Serializable

@@ -6,7 +6,7 @@ import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.d3
-import com.wsr.core.operation.times
+import com.wsr.core.operation.times.times
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
