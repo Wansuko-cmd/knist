@@ -10,7 +10,8 @@ sealed class IOType {
     abstract val size: Int
 
     @Serializable
-    data class D0(override val value: FloatArray) : IOType() {
+    data class D0(private val _value: FloatArray) : IOType() {
+        override val value get() = _value
         override val shape = listOf(1)
         override val size = 1
 
@@ -20,7 +21,8 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D1(override val value: FloatArray, override val size: Int = value.size) : IOType() {
+    data class D1(private val _value: FloatArray, override val size: Int = _value.size) : IOType() {
+        override val value: FloatArray = _value
         override val shape = listOf(size)
 
         override fun equals(other: Any?): Boolean = super.equals(other)
@@ -29,7 +31,8 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D2(override val value: FloatArray, override val shape: List<Int>) : IOType() {
+    data class D2(private val _value: FloatArray, override val shape: List<Int>) : IOType() {
+        override val value get() = _value
         override val size = shape.reduce { acc, i -> acc + i }
         override fun equals(other: Any?): Boolean = super.equals(other)
 
@@ -37,7 +40,8 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D3(override val value: FloatArray, override val shape: List<Int>) : IOType() {
+    data class D3(private val _value: FloatArray, override val shape: List<Int>) : IOType() {
+        override val value get() = _value
         override val size = shape.reduce { acc, i -> acc + i }
         override fun equals(other: Any?): Boolean = super.equals(other)
 
@@ -45,7 +49,8 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D4(override val value: FloatArray, override val shape: List<Int>) : IOType() {
+    data class D4(private val _value: FloatArray, override val shape: List<Int>) : IOType() {
+        override val value get() = _value
         override val size = shape.reduce { acc, i -> acc + i }
         override fun equals(other: Any?): Boolean = super.equals(other)
 
@@ -80,14 +85,14 @@ fun IOType.Companion.d0(value: Float) = IOType.D0(floatArrayOf(value))
 inline fun IOType.Companion.d1(size: Int, init: (Int) -> Float = { 0f }): IOType.D1 {
     val value = FloatArray(size)
     for (i in 0 until size) value[i] = init(i)
-    return IOType.D1(value = value)
+    return IOType.D1(_value = value)
 }
 
 inline fun IOType.Companion.d1(shape: List<Int>, init: (Int) -> Float = { 0f }) = d1(shape[0], init)
 
-fun IOType.Companion.d1(value: List<Float>) = IOType.D1(value = value.toFloatArray())
+fun IOType.Companion.d1(value: List<Float>) = IOType.D1(_value = value.toFloatArray())
 
-fun IOType.Companion.d1(value: FloatArray) = IOType.D1(value = value)
+fun IOType.Companion.d1(value: FloatArray) = IOType.D1(_value = value)
 
 inline fun IOType.Companion.d2(i: Int, j: Int, init: (Int, Int) -> Float = { _, _ -> 0f }): IOType.D2 {
     val value = FloatArray(i * j)
@@ -96,7 +101,7 @@ inline fun IOType.Companion.d2(i: Int, j: Int, init: (Int, Int) -> Float = { _, 
             value[_i * j + _j] = init(_i, _j)
         }
     }
-    return IOType.D2(shape = listOf(i, j), value = value)
+    return IOType.D2(shape = listOf(i, j), _value = value)
 }
 
 inline fun IOType.Companion.d2(shape: List<Int>, init: (Int, Int) -> Float = { _, _ -> 0f }) = d2(
@@ -106,11 +111,11 @@ inline fun IOType.Companion.d2(shape: List<Int>, init: (Int, Int) -> Float = { _
 )
 
 fun IOType.Companion.d2(shape: List<Int>, value: List<Float>) = IOType.D2(
-    value = value.toFloatArray(),
+    _value = value.toFloatArray(),
     shape = shape,
 )
 
-fun IOType.Companion.d2(shape: List<Int>, value: FloatArray) = IOType.D2(shape = shape, value = value)
+fun IOType.Companion.d2(shape: List<Int>, value: FloatArray) = IOType.D2(shape = shape, _value = value)
 
 inline fun IOType.Companion.d3(i: Int, j: Int, k: Int, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): IOType.D3 {
     val value = FloatArray(i * j * k)
@@ -121,7 +126,7 @@ inline fun IOType.Companion.d3(i: Int, j: Int, k: Int, init: (Int, Int, Int) -> 
             }
         }
     }
-    return IOType.D3(shape = listOf(i, j, k), value = value)
+    return IOType.D3(shape = listOf(i, j, k), _value = value)
 }
 
 inline fun IOType.Companion.d3(shape: List<Int>, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }) = d3(
@@ -132,11 +137,11 @@ inline fun IOType.Companion.d3(shape: List<Int>, init: (Int, Int, Int) -> Float 
 )
 
 fun IOType.Companion.d3(shape: List<Int>, value: List<Float>) = IOType.D3(
-    value = value.toFloatArray(),
+    _value = value.toFloatArray(),
     shape = shape,
 )
 
-fun IOType.Companion.d3(shape: List<Int>, value: FloatArray) = IOType.D3(shape = shape, value = value)
+fun IOType.Companion.d3(shape: List<Int>, value: FloatArray) = IOType.D3(shape = shape, _value = value)
 
 inline fun IOType.Companion.d4(
     i: Int,
@@ -157,7 +162,7 @@ inline fun IOType.Companion.d4(
             }
         }
     }
-    return IOType.D4(shape = listOf(i, j, k, l), value = value)
+    return IOType.D4(shape = listOf(i, j, k, l), _value = value)
 }
 
 inline fun IOType.Companion.d4(shape: List<Int>, init: (Int, Int, Int, Int) -> Float = { _, _, _, _ -> 0f }) = d4(
@@ -169,11 +174,11 @@ inline fun IOType.Companion.d4(shape: List<Int>, init: (Int, Int, Int, Int) -> F
 )
 
 fun IOType.Companion.d4(shape: List<Int>, value: List<Float>) = IOType.D4(
-    value = value.toFloatArray(),
+    _value = value.toFloatArray(),
     shape = shape,
 )
 
-fun IOType.Companion.d4(shape: List<Int>, value: FloatArray) = IOType.D4(shape = shape, value = value)
+fun IOType.Companion.d4(shape: List<Int>, value: FloatArray) = IOType.D4(shape = shape, _value = value)
 
 /**
  * get

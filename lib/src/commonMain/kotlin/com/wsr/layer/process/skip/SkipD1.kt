@@ -35,11 +35,10 @@ class SkipD1 internal constructor(
 
             inputSize % outputSize == 0 -> { it: IOType.D1 ->
                 val stride = inputSize / outputSize
-                val result = FloatArray(outputSize) { i ->
+                IOType.d1(outputSize) { i ->
                     val index = i * stride
                     it.value.sliceArray(index until index + stride).average().toFloat()
                 }
-                IOType.d1(result)
             }
 
             else -> throw IllegalArgumentException()
@@ -55,10 +54,9 @@ class SkipD1 internal constructor(
                 result
             }
 
-            inputSize % outputSize == 0 -> { it: IOType.D1 ->
+            inputSize % outputSize == 0 -> { output: IOType.D1 ->
                 val stride = inputSize / outputSize
-                val result = FloatArray(inputSize) { i -> it.value[i / stride] / stride }
-                IOType.d1(result)
+                IOType.d1(inputSize) { i -> output[i / stride] / stride }
             }
 
             else -> throw IllegalArgumentException()
