@@ -7,8 +7,10 @@ import com.wsr.batch.Batch
 import com.wsr.batch.collecction.map.map
 import com.wsr.batch.operation.plus.plus
 import com.wsr.core.IOType
+import com.wsr.core.collection.average.average
 import com.wsr.core.d1
 import com.wsr.core.get
+import com.wsr.core.reshape.slice
 import com.wsr.core.set
 import com.wsr.layer.Context
 import com.wsr.layer.Layer
@@ -35,9 +37,10 @@ class SkipD1 internal constructor(
 
             inputSize % outputSize == 0 -> { it: IOType.D1 ->
                 val stride = inputSize / outputSize
+
                 IOType.d1(outputSize) { i ->
                     val index = i * stride
-                    it.copyOfArray().sliceArray(index until index + stride).average().toFloat()
+                    it.slice(index until index + stride).average()
                 }
             }
 
