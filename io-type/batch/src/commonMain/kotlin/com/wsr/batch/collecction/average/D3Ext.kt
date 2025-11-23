@@ -5,8 +5,8 @@ import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.collection.average.average
 import com.wsr.core.d0
-import com.wsr.core.operation.div
-import com.wsr.core.operation.plus
+import com.wsr.core.operation.div.div
+import com.wsr.core.operation.plus.plus
 @JvmName("batchD3sAverageBatch")
 fun Batch<IOType.D3>.average(): Batch<IOType.D0> = Batch(size) { IOType.d0(this[it].average()) }
 
