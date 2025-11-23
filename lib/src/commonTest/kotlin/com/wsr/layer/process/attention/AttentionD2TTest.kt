@@ -33,6 +33,10 @@ class AttentionD2TTest {
             weightK2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightV2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
 
+            optimizerQ2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
+            optimizerK2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
+            optimizerV2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
+
             weightQ = List(numOfHeads) {
                 IOType.d2(inputY, dim) { _, _ -> 0.1f }
             },
@@ -87,6 +91,10 @@ class AttentionD2TTest {
             weightK2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightV2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
 
+            optimizerQ2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
+            optimizerK2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
+            optimizerV2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
+
             weightQ = List(numOfHeads) {
                 IOType.d2(inputY, dim) { _, _ -> 0.1f }
             },
@@ -139,6 +147,10 @@ class AttentionD2TTest {
             weightQ2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightK2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightV2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+
+            optimizerQ2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
+            optimizerK2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
+            optimizerV2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
 
             weightQ = List(numOfHeads) {
                 IOType.d2(inputY, dim) { _, _ -> 1.0f }
@@ -202,6 +214,10 @@ class AttentionD2TTest {
             weightK2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightV2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
 
+            optimizerQ2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
+            optimizerK2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
+            optimizerV2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
+
             weightQ = List(numOfHeads) {
                 IOType.d2(inputY, dim) { _, _ -> 0.1f }
             },
@@ -248,6 +264,10 @@ class AttentionD2TTest {
             weightQ2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightK2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightV2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+
+            optimizerQ2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
+            optimizerK2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
+            optimizerV2 = Sgd(0.01f).d2(inputY, numOfHeads * dim),
 
             weightQ = List(numOfHeads) {
                 IOType.d2(inputY, dim) { _, _ -> 0.1f }

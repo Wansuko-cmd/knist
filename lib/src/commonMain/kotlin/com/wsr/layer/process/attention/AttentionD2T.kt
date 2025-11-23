@@ -9,10 +9,10 @@ import com.wsr.batch.operation.matmul.matMul
 import com.wsr.batch.operation.minus.minus
 import com.wsr.batch.operation.plus.plus
 import com.wsr.batch.operation.times.times
+import com.wsr.batch.reshape.reshapeToD2
 import com.wsr.batch.reshape.reshapeToD3
 import com.wsr.batch.reshape.transpose
 import com.wsr.batch.toBatch
-import com.wsr.batch.toList
 import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.d2
@@ -39,6 +39,10 @@ class AttentionD2T internal constructor(
     private var weightQ2: IOType.D2,
     private var weightK2: IOType.D2,
     private var weightV2: IOType.D2,
+
+    private val optimizerQ2: Optimizer.D2,
+    private val optimizerK2: Optimizer.D2,
+    private val optimizerV2: Optimizer.D2,
 
     private var weightQ: List<IOType.D2>,
     private var weightK: List<IOType.D2>,
@@ -83,79 +87,80 @@ class AttentionD2T internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
-        val query = List(numOfHeads) { input.matMul(weightQ[it]) }
-        val key = List(numOfHeads) { input.matMul(weightK[it]) }
-        val value = List(numOfHeads) { input.matMul(weightV[it]) }
+        val query = input.matMul(weightQ2)
+            .reshapeToD3(listOf(outputX, numOfHeads, dim))
+            .transpose(axisI = 1, axisJ = 0, axisK = 2)
 
-        val softmax = List(numOfHeads) {
-            val mul = query[it].matMul(key[it].transpose())
-            val scaled = mul / sqrt(dim.toFloat())
-            val masked = scaled + mask + context.generatePaddingMask()
-            masked.softmax(axis = 1)
-        }
+        val key = input.matMul(weightK2)
+            .reshapeToD3(listOf(outputX, numOfHeads, dim))
+            .transpose(axisI = 1, axisJ = 2, axisK = 0)
 
-        val heads = List(numOfHeads) { softmax[it].matMul(value[it]) }
+        val value = input.matMul(weightV2)
+            .reshapeToD3(listOf(outputX, numOfHeads, dim))
+            .transpose(axisI = 1, axisJ = 0, axisK = 2)
 
-        val concat = List(input.size) {
+        val mul = query.matMul(key)
+        val scaled = mul / sqrt(dim.toFloat())
+        val masked = scaled + mask + context.generatePaddingMask()
+        val softmax = masked.softmax(axis = 2)
+        val heads = softmax.matMul(value)
+        val concat = Batch(input.size) { batchIndex ->
             IOType.d2(outputX, numOfHeads * dim) { x, y ->
-                heads[y / dim][it][x, y % dim]
+                val headIndex = y / dim
+                val dimIndex = y % dim
+                heads[batchIndex][headIndex, x, dimIndex]
             }
         }
-        val output = concat.matMul(weightO)
 
-        val delta = calcDelta(output.toBatch()).toList()
+        val output = concat.matMul(weightO)
+        val delta = calcDelta(output)
 
         // 出力変換（weightO）の逆伝播
         val dConcat = delta.matMul(weightO.transpose())
         val dwo = concat.transpose().matMul(delta)
-        weightO = optimizerO.adapt(weightO, dwo.toBatch())
+        weightO = optimizerO.adapt(weightO, dwo)
 
         // Concatの逆伝播（各ヘッドへの勾配に分割）
-        val dHeads = List(numOfHeads) { headIndex ->
-            Batch(input.size) { batchIndex ->
-                IOType.d2(outputX, dim) { x, y ->
-                    val index = headIndex * dim + y
-                    dConcat[batchIndex][x, index]
-                }
+        val dHeads = Batch(input.size) { batchIndex ->
+            val dConcat = dConcat[batchIndex]
+            IOType.d3(numOfHeads, outputX, dim) { x, y, z ->
+                val index = x * dim + z
+                dConcat[y, index]
             }
         }
 
         // 各ヘッドのScaled-Dot-Attentionの逆伝播
-        val dValue = List(numOfHeads) { softmax[it].transpose().matMul(dHeads[it]) }
-        val dSoftmax = List(numOfHeads) { dHeads[it].matMul(value[it].transpose()) }
+        val dValue = softmax.transpose(axisI = 0, axisJ = 2, axisK = 1).matMul(dHeads)
+        val dSoftmax = dHeads.matMul(value.transpose(axisI = 0, axisJ = 2, axisK = 1))
 
-        val sum = List(numOfHeads) { (dSoftmax[it] * softmax[it]).sum(axis = 1) }
-        val dMasked = List(numOfHeads) { im -> softmax[im] * (dSoftmax[im] - sum[im]) }
+        val sum = (dSoftmax * softmax).sum(axis = 2)
+        val dMasked = softmax * (dSoftmax - sum)
 
         val dScaled = dMasked
-        val dMul = List(numOfHeads) { dScaled[it] / sqrt(dim.toFloat()) }
+        val dMul = dScaled / sqrt(dim.toFloat())
 
-        val dQuery = List(numOfHeads) { dMul[it].matMul(key[it]) }
-        val dKey = List(numOfHeads) { dMul[it].transpose().matMul(query[it]) }
+        val dQuery = dMul.matMul(key)
+        val dKey = dMul.transpose(axisI = 0, axisJ = 2, axisK = 1).matMul(query)
 
         // Affineの逆伝播（各ヘッドのQ, K, V）
         val inputT = input.transpose()
-        val dxq = List(numOfHeads) { n -> dQuery[n].matMul(weightQ[n].transpose()) }
-        val dwq = List(numOfHeads) { n -> inputT.matMul(dQuery[n]) }
+        val dQueryD2 = dQuery.reshapeToD2(listOf(outputX, numOfHeads * dim))
+        val dxq = dQueryD2.matMul(weightQ2.transpose())
+        val dwq = inputT.matMul(dQueryD2)
 
-        val dxk = List(numOfHeads) { n -> dKey[n].matMul(weightK[n].transpose()) }
-        val dwk = List(numOfHeads) { n -> inputT.matMul(dKey[n]) }
+        val dKeyD2 = dKey.reshapeToD2(listOf(outputX, numOfHeads * dim))
+        val dxk = dKeyD2.matMul(weightK2.transpose())
+        val dwk = inputT.matMul(dKeyD2)
 
-        val dxv = List(numOfHeads) { n -> dValue[n].matMul(weightV[n].transpose()) }
-        val dwv = List(numOfHeads) { n -> inputT.matMul(dValue[n]) }
+        val dValueD2 = dValue.reshapeToD2(listOf(outputX, numOfHeads * dim))
+        val dxv = dValueD2.matMul(weightV2.transpose())
+        val dwv = inputT.matMul(dValueD2)
 
-        // 重みの更新
-        weightQ = List(numOfHeads) { optimizerQ[it].adapt(weightQ[it], dwq[it]) }
-        weightK = List(numOfHeads) { optimizerK[it].adapt(weightK[it], dwk[it]) }
-        weightV = List(numOfHeads) { optimizerV[it].adapt(weightV[it], dwv[it]) }
+        weightQ2 = optimizerQ2.adapt(weightQ2, dwq)
+        weightK2 = optimizerK2.adapt(weightK2, dwk)
+        weightV2 = optimizerV2.adapt(weightV2, dwv)
 
-        // dx
-        return Batch(input.size) { batchIndex ->
-            (0 until numOfHeads)
-                .fold(IOType.d2(outputX, outputY) { _, _ -> 0f }) { acc, headIndex ->
-                    acc + dxq[headIndex][batchIndex] + dxk[headIndex][batchIndex] + dxv[headIndex][batchIndex]
-                }
-        }
+        return dxq + dxk + dxv
     }
 
     private fun Context.generatePaddingMask(): Batch<IOType.D2> = if (maskValue == null) {
