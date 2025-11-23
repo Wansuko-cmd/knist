@@ -7,7 +7,7 @@ import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.d3
 import com.wsr.core.get
-import com.wsr.math.sqrt
+import com.wsr.core.math.sqrt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

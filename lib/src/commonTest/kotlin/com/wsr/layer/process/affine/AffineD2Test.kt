@@ -4,7 +4,8 @@ package com.wsr.layer.process.affine
 
 import com.wsr.batch.Batch
 import com.wsr.core.IOType
-import com.wsr.batchOf
+import com.wsr.batch.batchOf
+import com.wsr.batch.get
 import com.wsr.core.d2
 import com.wsr.core.get
 import com.wsr.layer.Context

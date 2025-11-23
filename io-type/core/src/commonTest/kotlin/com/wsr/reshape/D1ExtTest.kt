@@ -5,6 +5,7 @@ package com.wsr.reshape
 import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.d2
+import com.wsr.core.reshape.toD2
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

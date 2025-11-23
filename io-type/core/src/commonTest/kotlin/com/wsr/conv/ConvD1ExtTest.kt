@@ -7,8 +7,8 @@ import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.d3
 import com.wsr.core.get
-import com.wsr.operation.conv.convD1
-import com.wsr.operation.conv.deConvD1
+import com.wsr.core.operation.conv.convD1
+import com.wsr.core.operation.conv.deConvD1
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -4,7 +4,7 @@ package com.wsr.conv
 
 import com.wsr.core.IOType
 import com.wsr.core.d2
-import com.wsr.operation.conv.toColumn
+import com.wsr.core.operation.conv.toColumn
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

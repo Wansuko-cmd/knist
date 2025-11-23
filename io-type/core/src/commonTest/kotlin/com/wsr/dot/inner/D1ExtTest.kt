@@ -4,7 +4,7 @@ package com.wsr.dot.inner
 
 import com.wsr.core.IOType
 import com.wsr.core.d1
-import com.wsr.operation.inner.inner
+import com.wsr.core.operation.inner.inner
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

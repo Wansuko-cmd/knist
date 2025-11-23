@@ -4,7 +4,8 @@ package com.wsr.layer.process.attention
 
 import com.wsr.batch.Batch
 import com.wsr.core.IOType
-import com.wsr.batchOf
+import com.wsr.batch.batchOf
+import com.wsr.batch.get
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.get
@@ -205,7 +206,7 @@ class AttentionD2Test {
 
         val result = attention._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val output = result[0] as IOType.D2
+        val output = result[0]
         assertEquals(expected = channel, actual = output.shape[0])
         assertEquals(expected = inputY, actual = output.shape[1])
     }
