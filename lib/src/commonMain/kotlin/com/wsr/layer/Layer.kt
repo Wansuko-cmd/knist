@@ -1,7 +1,7 @@
 package com.wsr.layer
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 
 interface Layer {
     @Suppress("FunctionName")

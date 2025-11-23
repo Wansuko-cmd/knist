@@ -1,26 +1,20 @@
 package com.wsr.output.sigmoid
 
-import com.wsr.Batch
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.average.batchAverage
-import com.wsr.batch.func.ln
-import com.wsr.batch.func.sigmoid
-import com.wsr.batch.minus.minus
-import com.wsr.batch.plus.plus
-import com.wsr.batch.sum.sum
-import com.wsr.batch.times.times
-import com.wsr.collection.sum
+import com.wsr.batch.Batch
+import com.wsr.batch.collecction.average.batchAverage
+import com.wsr.batch.collecction.sum.sum
+import com.wsr.batch.math.ln
+import com.wsr.batch.math.sigmoid
+import com.wsr.batch.operation.minus.minus
+import com.wsr.batch.operation.plus.plus
+import com.wsr.batch.operation.times.times
 import com.wsr.converter.Converter
-import com.wsr.d1
-import com.wsr.get
-import com.wsr.operator.minus
-import com.wsr.operator.plus
-import com.wsr.operator.times
+import com.wsr.core.IOType
+import com.wsr.core.d1
+import com.wsr.core.get
 import com.wsr.output.Output
 import com.wsr.output.TResult
-import com.wsr.power.ln
-import com.wsr.set
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,18 +1,15 @@
 package com.wsr.layer.process.dropout
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.times.times
-import com.wsr.d2
-import com.wsr.get
+import com.wsr.core.d2
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.nextFloat
-import com.wsr.operator.times
-import com.wsr.set
-import kotlin.random.Random
+import com.wsr.batch.operation.times.times
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 @Serializable
 class DropoutD2 internal constructor(

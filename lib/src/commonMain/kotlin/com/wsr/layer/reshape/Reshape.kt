@@ -1,7 +1,7 @@
 package com.wsr.layer.reshape
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 import com.wsr.layer.Context
 import com.wsr.layer.Layer
 import kotlinx.serialization.Serializable

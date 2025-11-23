@@ -1,14 +1,14 @@
 package com.wsr.layer.process.function.relu
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.collection.mapValue
-import com.wsr.d3
-import com.wsr.get
+import com.wsr.batch.collecction.map.mapValue
+import com.wsr.batch.get
+import com.wsr.core.d3
+import com.wsr.core.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import com.wsr.set
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -2,7 +2,7 @@
 
 package com.wsr.optimizer.adam
 
-import com.wsr.get
+import com.wsr.core.get
 import kotlin.test.Test
 
 class AdamWTest {

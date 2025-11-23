@@ -1,7 +1,7 @@
 package com.wsr.converter
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 
 @Suppress("UNCHECKED_CAST")
 sealed interface Converter {

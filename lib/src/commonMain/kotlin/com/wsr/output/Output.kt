@@ -1,7 +1,7 @@
 package com.wsr.output
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 import kotlinx.serialization.Serializable
 
 data class TResult<T : IOType>(val loss: Float, val delta: Batch<T>)

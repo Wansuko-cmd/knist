@@ -3,6 +3,7 @@ package com.wsr
 import com.wsr.converter.Converter
 import com.wsr.converter.linear.LinearD1
 import com.wsr.converter.linear.LinearD2
+import com.wsr.core.IOType
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Layer
 import com.wsr.layer.process.Process
