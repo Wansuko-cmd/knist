@@ -1,28 +1,28 @@
 package com.wsr.layer.process.norm.layer.d3
 
-import com.wsr.Batch
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.average.average
-import com.wsr.batch.collection.mapValue
-import com.wsr.batch.div.div
-import com.wsr.batch.func.pow
-import com.wsr.batch.minus.minus
-import com.wsr.batch.plus.plus
-import com.wsr.batch.times.times
-import com.wsr.collection.average
-import com.wsr.collection.sum
-import com.wsr.get
+import com.wsr.batch.Batch
+import com.wsr.batch.collecction.average.average
+import com.wsr.batch.get
+import com.wsr.batch.math.pow
+import com.wsr.batch.math.sqrt
+import com.wsr.batch.operation.div.div
+import com.wsr.batch.operation.minus.minus
+import com.wsr.batch.operation.plus.plus
+import com.wsr.batch.operation.times.times
+import com.wsr.core.IOType
+import com.wsr.core.collection.average.average
+import com.wsr.core.collection.sum.sum
+import com.wsr.core.d0
+import com.wsr.core.math.pow
+import com.wsr.core.operation.div
+import com.wsr.core.operation.plus
+import com.wsr.core.operation.times
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import com.wsr.operator.div
-import com.wsr.operator.plus
-import com.wsr.operator.times
 import com.wsr.optimizer.Optimizer
-import com.wsr.power.pow
-import kotlin.math.sqrt
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -39,7 +39,7 @@ class LayerNormD3 internal constructor(
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.mapValue { sqrt(it + e) }
+        val denominator = variance.sqrt(e = e)
 
         return weight * (numerator / denominator)
     }
@@ -53,7 +53,7 @@ class LayerNormD3 internal constructor(
         val numerator = input - average
 
         val variance = numerator.pow(n = 2).average()
-        val denominator = variance.mapValue { sqrt(it + e) }
+        val denominator = variance.sqrt(e = e)
 
         val normalize = numerator / denominator
         val output = weight * normalize

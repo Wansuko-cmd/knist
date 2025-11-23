@@ -1,6 +1,8 @@
 package com.wsr
 
+import com.wsr.batch.Batch
 import com.wsr.converter.Converter
+import com.wsr.core.IOType
 import com.wsr.layer.Context
 import com.wsr.layer.Layer
 import com.wsr.output.Output

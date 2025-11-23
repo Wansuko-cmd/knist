@@ -1,12 +1,12 @@
 package com.wsr.optimizer
 
-import com.wsr.Batch
-import com.wsr.IOType
-import com.wsr.batch.average.batchAverage
-import com.wsr.batchOf
-import com.wsr.collection.sum
-import com.wsr.operator.times
-import com.wsr.power.pow
+import com.wsr.batch.Batch
+import com.wsr.batch.batchOf
+import com.wsr.batch.collecction.average.batchAverage
+import com.wsr.core.IOType
+import com.wsr.core.collection.sum.sum
+import com.wsr.core.math.pow
+import com.wsr.core.operation.times
 import kotlin.math.sqrt
 import kotlinx.serialization.Serializable
 

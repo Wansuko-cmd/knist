@@ -1,9 +1,9 @@
 package com.wsr.batch.reshape
 
-import com.wsr.Batch
-import com.wsr.IOType
-import com.wsr.batch.collection.map
-import com.wsr.reshape.transpose
+import com.wsr.batch.Batch
+import com.wsr.batch.collecction.map.map
+import com.wsr.core.IOType
+import com.wsr.core.reshape.transpose
 
 fun Batch<IOType.D2>.transpose() = map { it.transpose() }
 

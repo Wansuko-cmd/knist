@@ -1,13 +1,15 @@
 package com.wsr.layer.reshape.gad
 
-import com.wsr.Batch
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.average.average
-import com.wsr.get
+import com.wsr.batch.Batch
+import com.wsr.batch.collecction.average.average
+import com.wsr.batch.get
+import com.wsr.core.IOType
+import com.wsr.core.d3
+import com.wsr.core.get
+import com.wsr.core.operation.div
 import com.wsr.layer.Context
 import com.wsr.layer.reshape.Reshape
-import com.wsr.operator.div
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,7 +1,7 @@
 package com.wsr.batch.reshape
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 
 fun Batch<IOType.D3>.flatten() = Batch<IOType.D1>(
     shape = listOf(step),

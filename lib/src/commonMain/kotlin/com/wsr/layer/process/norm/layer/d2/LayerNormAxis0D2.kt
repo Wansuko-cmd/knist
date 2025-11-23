@@ -1,20 +1,19 @@
 package com.wsr.layer.process.norm.layer.d2
 
-import com.wsr.Batch
-import com.wsr.IOType
-import com.wsr.batch.average.average
-import com.wsr.batch.collection.map
-import com.wsr.batch.div.div
-import com.wsr.batch.func.pow
-import com.wsr.batch.minus.minus
-import com.wsr.batch.plus.plus
+import com.wsr.batch.Batch
+import com.wsr.batch.collecction.average.average
+import com.wsr.batch.collecction.sum.sum
+import com.wsr.batch.math.pow
+import com.wsr.batch.math.sqrt
+import com.wsr.batch.operation.div.div
+import com.wsr.batch.operation.minus.minus
+import com.wsr.batch.operation.plus.plus
+import com.wsr.batch.operation.times.times
 import com.wsr.batch.reshape.broadcastToD2
-import com.wsr.batch.sum.sum
-import com.wsr.batch.times.times
+import com.wsr.core.IOType
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.optimizer.Optimizer
-import com.wsr.power.sqrt
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -31,7 +30,7 @@ class LayerNormAxis0D2 internal constructor(
         val numerator = input - average.broadcastToD2(axis = 1, size = outputX)
 
         val variance = numerator.pow(2).average(axis = 0)
-        val denominator = variance.map { it.sqrt(e) }
+        val denominator = variance.sqrt(e = e)
 
         val normalize = numerator / denominator.broadcastToD2(axis = 1, size = outputX)
         return weight * normalize
@@ -46,7 +45,7 @@ class LayerNormAxis0D2 internal constructor(
         val numerator = input - average.broadcastToD2(axis = 1, size = outputX)
 
         val variance = numerator.pow(2).average(axis = 0)
-        val denominator = variance.map { it.sqrt(e) }
+        val denominator = variance.sqrt(e = e)
 
         val normalize = numerator / denominator.broadcastToD2(axis = 1, size = outputX)
 

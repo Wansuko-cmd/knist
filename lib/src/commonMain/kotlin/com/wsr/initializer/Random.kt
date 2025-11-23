@@ -1,6 +1,10 @@
 package com.wsr.initializer
 
-import com.wsr.IOType
+import com.wsr.core.IOType
+import com.wsr.core.d1
+import com.wsr.core.d2
+import com.wsr.core.d3
+import com.wsr.core.d4
 import com.wsr.nextFloat
 import kotlin.random.Random
 

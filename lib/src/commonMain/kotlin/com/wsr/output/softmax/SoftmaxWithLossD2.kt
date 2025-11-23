@@ -1,21 +1,24 @@
 package com.wsr.output.softmax
 
-import com.wsr.Batch
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.collection.map
-import com.wsr.batch.div.div
-import com.wsr.batch.func.ln
-import com.wsr.batch.func.softmax
-import com.wsr.batch.minus.minus
-import com.wsr.batch.sum.sum
-import com.wsr.batch.times.times
-import com.wsr.collection.sum
+import com.wsr.batch.Batch
+import com.wsr.batch.collecction.map.map
+import com.wsr.batch.collecction.sum.sum
+import com.wsr.batch.get
+import com.wsr.batch.math.ln
+import com.wsr.batch.math.softmax
+import com.wsr.batch.operation.div.div
+import com.wsr.batch.operation.minus.minus
+import com.wsr.batch.operation.times.times
 import com.wsr.converter.Converter
-import com.wsr.get
+import com.wsr.core.IOType
+import com.wsr.core.collection.sum.sum
+import com.wsr.core.d1
+import com.wsr.core.d2
+import com.wsr.core.get
+import com.wsr.core.reshape.broadcastToD2
 import com.wsr.output.Output
 import com.wsr.output.TResult
-import com.wsr.reshape.broadcastToD2
 import kotlinx.serialization.Serializable
 
 @Serializable

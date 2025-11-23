@@ -2,7 +2,12 @@
 
 package com.wsr.power
 
-import com.wsr.IOType
+import com.wsr.core.IOType
+import com.wsr.core.d1
+import com.wsr.core.d2
+import com.wsr.core.d3
+import com.wsr.core.get
+import com.wsr.core.math.pow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

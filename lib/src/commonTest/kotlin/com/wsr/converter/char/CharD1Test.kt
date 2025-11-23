@@ -2,10 +2,13 @@
 
 package com.wsr.converter.char
 
-import com.wsr.IOType
-import com.wsr.batch.collection.forEach
-import com.wsr.batchOf
-import com.wsr.get
+import com.wsr.batch.batchOf
+import com.wsr.batch.collecction.map.forEach
+import com.wsr.batch.get
+import com.wsr.core.IOType
+import com.wsr.core.d1
+import com.wsr.core.get
+import com.wsr.core.set
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

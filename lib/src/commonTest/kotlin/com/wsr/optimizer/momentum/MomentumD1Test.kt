@@ -2,8 +2,10 @@
 
 package com.wsr.optimizer.momentum
 
-import com.wsr.IOType
-import com.wsr.get
+import com.wsr.core.IOType
+import com.wsr.core.d1
+import com.wsr.core.get
+import com.wsr.core.set
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

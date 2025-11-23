@@ -1,9 +1,9 @@
 package com.wsr.layer.process.position
 
-import com.wsr.Batch
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.plus.plus
+import com.wsr.batch.Batch
+import com.wsr.batch.operation.plus.plus
+import com.wsr.core.IOType
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process

@@ -1,13 +1,13 @@
 package com.wsr.layer.process.dropout
 
-import com.wsr.Batch
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.times.times
+import com.wsr.batch.Batch
+import com.wsr.batch.operation.times.times
+import com.wsr.core.IOType
+import com.wsr.core.d3
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.nextFloat
-import com.wsr.operator.times
 import kotlin.random.Random
 import kotlinx.serialization.Serializable
 

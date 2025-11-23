@@ -1,8 +1,9 @@
 package dataset.iris
 
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.linear.inputD1
+import com.wsr.core.IOType
+import com.wsr.core.d1
 import com.wsr.initializer.He
 import com.wsr.layer.process.affine.affine
 import com.wsr.layer.process.bias.bias

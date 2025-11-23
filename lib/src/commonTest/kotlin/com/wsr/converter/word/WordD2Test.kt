@@ -2,9 +2,11 @@
 
 package com.wsr.converter.word
 
-import com.wsr.IOType
-import com.wsr.batchOf
-import com.wsr.get
+import com.wsr.batch.batchOf
+import com.wsr.batch.get
+import com.wsr.core.IOType
+import com.wsr.core.d2
+import com.wsr.core.get
 import kotlin.test.Test
 import kotlin.test.assertEquals
 class WordD2Test {
@@ -30,7 +32,7 @@ class WordD2Test {
         assertEquals(expected = 2, actual = result.size)
 
         // バッチ1
-        val output0 = result[0] as IOType.D2
+        val output0 = result[0]
         assertEquals(expected = 3, actual = output0.shape[0])
         assertEquals(expected = 5, actual = output0.shape[1])
         assertEquals(expected = 1.0f, actual = output0[0, 2]) // hello
@@ -38,7 +40,7 @@ class WordD2Test {
         assertEquals(expected = 1.0f, actual = output0[2, 4]) // test
 
         // バッチ2
-        val output1 = result[1] as IOType.D2
+        val output1 = result[1]
         assertEquals(expected = 3, actual = output1.shape[0])
         assertEquals(expected = 5, actual = output1.shape[1])
         assertEquals(expected = 1.0f, actual = output1[0, 4]) // test

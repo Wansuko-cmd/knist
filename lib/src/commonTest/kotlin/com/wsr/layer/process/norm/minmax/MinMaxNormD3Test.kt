@@ -2,10 +2,13 @@
 
 package com.wsr.layer.process.norm.minmax
 
-import com.wsr.Batch
-import com.wsr.IOType
-import com.wsr.batchOf
-import com.wsr.get
+import com.wsr.batch.Batch
+import com.wsr.batch.batchOf
+import com.wsr.batch.get
+import com.wsr.core.IOType
+import com.wsr.core.d3
+import com.wsr.core.get
+import com.wsr.core.set
 import com.wsr.layer.Context
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
@@ -74,7 +77,7 @@ class MinMaxNormD3Test {
 
         val result = norm._train(input, context, calcDelta) as Batch<IOType.D3>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D3
+        val dx = result[0]
         // 2x2x2のdxが返される
         assertEquals(expected = 2, actual = dx.shape[0])
         assertEquals(expected = 2, actual = dx.shape[1])

@@ -1,18 +1,15 @@
 package com.wsr.output.mean
 
-import com.wsr.Batch
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.average.average
-import com.wsr.batch.average.batchAverage
-import com.wsr.batch.func.pow
-import com.wsr.batch.minus.minus
-import com.wsr.collection.average
+import com.wsr.batch.Batch
+import com.wsr.batch.collecction.average.batchAverage
+import com.wsr.batch.math.pow
+import com.wsr.batch.operation.minus.minus
 import com.wsr.converter.Converter
-import com.wsr.operator.minus
+import com.wsr.core.IOType
+import com.wsr.core.collection.average.average
 import com.wsr.output.Output
 import com.wsr.output.TResult
-import com.wsr.power.pow
 import kotlinx.serialization.Serializable
 
 @Serializable

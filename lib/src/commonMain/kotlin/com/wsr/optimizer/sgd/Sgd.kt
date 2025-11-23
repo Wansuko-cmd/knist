@@ -1,8 +1,8 @@
 package com.wsr.optimizer.sgd
 
-import com.wsr.IOType
-import com.wsr.operator.minus
-import com.wsr.operator.times
+import com.wsr.core.IOType
+import com.wsr.core.operation.minus
+import com.wsr.core.operation.times
 import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 
