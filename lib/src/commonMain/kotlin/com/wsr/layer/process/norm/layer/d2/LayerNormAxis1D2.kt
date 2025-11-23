@@ -60,7 +60,7 @@ class LayerNormAxis1D2 internal constructor(
         val dOutput = delta * weight
 
         // dy/[x-average(x)] (分子に関する勾配)
-        val dNumerator = dOutput / denominator
+        val dNumerator = dOutput.div(other = denominator, axis = 1)
 
         // dy/x <- (x-average(x)のx)
         val dx1 = dNumerator
