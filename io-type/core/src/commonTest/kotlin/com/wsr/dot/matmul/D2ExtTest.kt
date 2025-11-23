@@ -5,7 +5,7 @@ package com.wsr.dot.matmul
 import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.d2
-import com.wsr.operation.matmul.matMul
+import com.wsr.core.operation.matmul.matMul
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

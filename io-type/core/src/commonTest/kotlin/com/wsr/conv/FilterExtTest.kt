@@ -4,7 +4,7 @@ package com.wsr.conv
 
 import com.wsr.core.IOType
 import com.wsr.core.d3
-import com.wsr.operation.conv.toFilter
+import com.wsr.core.operation.conv.toFilter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

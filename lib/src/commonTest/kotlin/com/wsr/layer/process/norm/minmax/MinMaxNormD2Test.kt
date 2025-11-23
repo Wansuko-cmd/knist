@@ -4,7 +4,8 @@ package com.wsr.layer.process.norm.minmax
 
 import com.wsr.batch.Batch
 import com.wsr.core.IOType
-import com.wsr.batchOf
+import com.wsr.batch.batchOf
+import com.wsr.batch.get
 import com.wsr.core.d2
 import com.wsr.core.get
 import com.wsr.layer.Context
@@ -71,7 +72,7 @@ class MinMaxNormD2Test {
 
         val result = norm._train(input, context, calcDelta) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = result.size)
-        val dx = result[0] as IOType.D2
+        val dx = result[0]
         // 2x2のdxが返される
         assertEquals(expected = 2, actual = dx.shape[0])
         assertEquals(expected = 2, actual = dx.shape[1])

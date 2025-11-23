@@ -2,10 +2,6 @@
 
 package com.wsr.initializer
 
-import com.wsr.core.d1
-import com.wsr.core.d2
-import com.wsr.core.d3
-import com.wsr.d4
 import com.wsr.core.get
 import kotlin.math.sqrt
 import kotlin.test.Test
