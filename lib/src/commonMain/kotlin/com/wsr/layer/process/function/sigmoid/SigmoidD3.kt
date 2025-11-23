@@ -1,11 +1,11 @@
 package com.wsr.layer.process.function.sigmoid
 
-import com.wsr.batch.Batch
-import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.Batch
 import com.wsr.batch.math.sigmoid
 import com.wsr.batch.operation.minus.minus
 import com.wsr.batch.operation.times.times
+import com.wsr.core.IOType
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import kotlinx.serialization.Serializable

@@ -4,7 +4,6 @@ import com.wsr.core.IOType
 import com.wsr.core.collection.sum.sum
 import com.wsr.core.operation.div
 
-
 fun IOType.D1.average(): Float = sum() / shape[0]
 
 fun IOType.D2.average(): Float = sum() / (shape[0] * shape[1])

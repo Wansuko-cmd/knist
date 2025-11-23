@@ -7,8 +7,8 @@ import com.wsr.core.IOType
 import com.wsr.core.collection.sum.sum
 import com.wsr.core.math.pow
 import com.wsr.core.operation.times
-import kotlinx.serialization.Serializable
 import kotlin.math.sqrt
+import kotlinx.serialization.Serializable
 
 interface Optimizer {
     fun d1(size: Int): D1

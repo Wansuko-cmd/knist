@@ -3,14 +3,14 @@
 package com.wsr.layer.process.pool
 
 import com.wsr.batch.Batch
-import com.wsr.core.IOType
 import com.wsr.batch.batchOf
 import com.wsr.batch.get
+import com.wsr.core.IOType
 import com.wsr.core.d3
 import com.wsr.core.get
+import com.wsr.core.set
 import com.wsr.layer.Context
 import com.wsr.layer.process.pool.MaxPoolD3
-import com.wsr.core.set
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

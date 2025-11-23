@@ -1,15 +1,15 @@
 package com.wsr.layer.process.pool
 
-import com.wsr.batch.Batch
-import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
+import com.wsr.batch.Batch
 import com.wsr.batch.collecction.map.map
 import com.wsr.batch.get
+import com.wsr.batch.toBatch
+import com.wsr.core.IOType
 import com.wsr.core.d3
 import com.wsr.core.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
-import com.wsr.batch.toBatch
 import kotlinx.serialization.Serializable
 
 @Serializable

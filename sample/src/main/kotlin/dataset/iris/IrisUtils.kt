@@ -1,8 +1,8 @@
 package dataset.iris
 
-import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.linear.inputD1
+import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.initializer.He
 import com.wsr.layer.process.affine.affine
@@ -27,14 +27,14 @@ fun createIrisModel(epoc: Int) {
         train.forEach { data ->
             network.train(
                 input =
-                    IOType.d1(
-                        listOf(
-                            data.petalLength,
-                            data.petalWidth,
-                            data.sepalLength,
-                            data.sepalWidth,
-                        ),
+                IOType.d1(
+                    listOf(
+                        data.petalLength,
+                        data.petalWidth,
+                        data.sepalLength,
+                        data.sepalWidth,
                     ),
+                ),
                 label = IOType.d1(3) { if (data.label == it) 1f else 0f },
             )
         }
@@ -44,14 +44,14 @@ fun createIrisModel(epoc: Int) {
             network
                 .expect(
                     input =
-                        IOType.d1(
-                            listOf(
-                                data.petalLength,
-                                data.petalWidth,
-                                data.sepalLength,
-                                data.sepalWidth,
-                            ),
+                    IOType.d1(
+                        listOf(
+                            data.petalLength,
+                            data.petalWidth,
+                            data.sepalLength,
+                            data.sepalWidth,
                         ),
+                    ),
                 ).value
                 .toTypedArray()
                 .maxIndex() == data.label

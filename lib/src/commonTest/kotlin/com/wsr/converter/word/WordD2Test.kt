@@ -2,9 +2,9 @@
 
 package com.wsr.converter.word
 
-import com.wsr.core.IOType
 import com.wsr.batch.batchOf
 import com.wsr.batch.get
+import com.wsr.core.IOType
 import com.wsr.core.d2
 import com.wsr.core.get
 import kotlin.test.Test
