@@ -2,7 +2,6 @@ package com.wsr.core.operation.matmul
 
 import com.wsr.BLAS
 import com.wsr.core.IOType
-import com.wsr.core.d3
 import com.wsr.core.get
 import com.wsr.core.set
 
