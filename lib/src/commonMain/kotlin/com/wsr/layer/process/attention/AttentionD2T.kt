@@ -9,12 +9,14 @@ import com.wsr.batch.operation.matmul.matMul
 import com.wsr.batch.operation.minus.minus
 import com.wsr.batch.operation.plus.plus
 import com.wsr.batch.operation.times.times
+import com.wsr.batch.reshape.reshapeToD3
 import com.wsr.batch.reshape.transpose
 import com.wsr.batch.toBatch
 import com.wsr.batch.toList
 import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.d2
+import com.wsr.core.d3
 import com.wsr.core.get
 import com.wsr.core.operation.matmul.matMul
 import com.wsr.core.operation.plus.plus
@@ -33,6 +35,11 @@ class AttentionD2T internal constructor(
     private val numOfHeads: Int,
     private val dim: Int,
     val maskValue: Int? = null,
+
+    private var weightQ2: IOType.D2,
+    private var weightK2: IOType.D2,
+    private var weightV2: IOType.D2,
+
     private var weightQ: List<IOType.D2>,
     private var weightK: List<IOType.D2>,
     private var weightV: List<IOType.D2>,
@@ -44,23 +51,31 @@ class AttentionD2T internal constructor(
 ) : Process.D2() {
     private val mask by lazy { IOType.d2(outputX, outputX) { x, y -> if (x < y) -1e9f else 0f } }
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
-        val heads = List(numOfHeads) {
-            val query = input.matMul(weightQ[it])
-            val key = input.matMul(weightK[it])
-            val value = input.matMul(weightV[it])
+        val query = input.matMul(weightQ2)
+            .reshapeToD3(listOf(outputX, numOfHeads, dim))
+            .transpose(axisI = 1, axisJ = 0, axisK = 2)
 
-            val mul = query.matMul(key.transpose())
-            val scaled = mul / sqrt(dim.toFloat())
-            val masked = scaled + mask + context.generatePaddingMask()
-            val softmax = masked.softmax(axis = 1)
-            softmax.matMul(value)
-        }
-        val concat = List(input.size) {
+        val key = input.matMul(weightK2)
+            .reshapeToD3(listOf(outputX, numOfHeads, dim))
+            .transpose(axisI = 1, axisJ = 2, axisK = 0)
+
+        val value = input.matMul(weightV2)
+            .reshapeToD3(listOf(outputX, numOfHeads, dim))
+            .transpose(axisI = 1, axisJ = 0, axisK = 2)
+
+        val mul = query.matMul(key)
+        val scaled = mul / sqrt(dim.toFloat())
+        val masked = scaled + mask + context.generatePaddingMask()
+        val softmax = masked.softmax(axis = 2)
+        val heads = softmax.matMul(value)
+        val concat = Batch(input.size) { batchIndex ->
             IOType.d2(outputX, numOfHeads * dim) { x, y ->
-                heads[y / dim][it][x, y % dim]
+                val headIndex = y / dim
+                val dimIndex = y % dim
+                heads[batchIndex][headIndex, x, dimIndex]
             }
         }
-        return concat.matMul(weightO).toBatch()
+        return concat.matMul(weightO)
     }
 
     override fun train(

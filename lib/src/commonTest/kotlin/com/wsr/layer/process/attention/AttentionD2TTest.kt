@@ -28,6 +28,11 @@ class AttentionD2TTest {
             outputY = inputY,
             numOfHeads = numOfHeads,
             dim = dim,
+
+            weightQ2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+            weightK2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+            weightV2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+
             weightQ = List(numOfHeads) {
                 IOType.d2(inputY, dim) { _, _ -> 0.1f }
             },
@@ -77,6 +82,11 @@ class AttentionD2TTest {
             outputY = inputY,
             numOfHeads = numOfHeads,
             dim = dim,
+
+            weightQ2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+            weightK2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+            weightV2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+
             weightQ = List(numOfHeads) {
                 IOType.d2(inputY, dim) { _, _ -> 0.1f }
             },
@@ -125,6 +135,11 @@ class AttentionD2TTest {
             outputY = inputY,
             dim = dim,
             numOfHeads = numOfHeads,
+
+            weightQ2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+            weightK2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+            weightV2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+
             weightQ = List(numOfHeads) {
                 IOType.d2(inputY, dim) { _, _ -> 1.0f }
             },
@@ -182,6 +197,11 @@ class AttentionD2TTest {
             outputY = inputY,
             numOfHeads = numOfHeads,
             dim = dim,
+
+            weightQ2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+            weightK2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+            weightV2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+
             weightQ = List(numOfHeads) {
                 IOType.d2(inputY, dim) { _, _ -> 0.1f }
             },
@@ -224,6 +244,11 @@ class AttentionD2TTest {
             outputY = inputY,
             numOfHeads = numOfHeads,
             dim = dim,
+
+            weightQ2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+            weightK2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+            weightV2 = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
+
             weightQ = List(numOfHeads) {
                 IOType.d2(inputY, dim) { _, _ -> 0.1f }
             },
