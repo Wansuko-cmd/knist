@@ -2,11 +2,11 @@
 
 package com.wsr.layer.process.function.relu
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 import com.wsr.batchOf
-import com.wsr.d2
-import com.wsr.get
+import com.wsr.core.d2
+import com.wsr.core.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.function.relu.ReLUD2
 import kotlin.test.Test

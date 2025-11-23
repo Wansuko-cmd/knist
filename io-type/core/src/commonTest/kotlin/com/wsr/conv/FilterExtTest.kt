@@ -2,9 +2,9 @@
 
 package com.wsr.conv
 
-import com.wsr.IOType
-import com.wsr.d3
-import com.wsr.get
+import com.wsr.core.IOType
+import com.wsr.core.d3
+import com.wsr.operation.conv.toFilter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

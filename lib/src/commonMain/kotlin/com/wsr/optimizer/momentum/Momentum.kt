@@ -1,15 +1,13 @@
 package com.wsr.optimizer.momentum
 
-import com.wsr.IOType
-import com.wsr.d1
-import com.wsr.d2
-import com.wsr.d3
-import com.wsr.get
-import com.wsr.operator.minus
-import com.wsr.operator.plus
-import com.wsr.operator.times
+import com.wsr.core.IOType
+import com.wsr.core.d1
+import com.wsr.core.d2
+import com.wsr.core.d3
+import com.wsr.core.operation.minus
+import com.wsr.core.operation.plus
+import com.wsr.core.operation.times
 import com.wsr.optimizer.Optimizer
-import com.wsr.set
 import kotlinx.serialization.Serializable
 
 @Serializable

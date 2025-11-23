@@ -2,17 +2,17 @@
 
 package com.wsr.layer.process.skip
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.collection.map
-import com.wsr.batch.plus.plus
-import com.wsr.d3
-import com.wsr.get
+import com.wsr.batch.collecction.map.map
+import com.wsr.core.d3
+import com.wsr.core.get
 import com.wsr.layer.Context
 import com.wsr.layer.Layer
 import com.wsr.layer.process.Process
-import com.wsr.set
+import com.wsr.batch.operation.plus.plus
+import com.wsr.core.set
 import kotlinx.serialization.Serializable
 
 private typealias CALC_DELTA_D3 = (input: Batch<IOType.D3>, context: Context) -> Batch<IOType.D3>

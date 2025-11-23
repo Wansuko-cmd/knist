@@ -1,17 +1,16 @@
 package com.wsr.converter.word
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.Converter
-import com.wsr.d1
-import com.wsr.get
+import com.wsr.core.d1
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
-import com.wsr.set
-import com.wsr.toBatch
-import com.wsr.toList
+import com.wsr.batch.toBatch
+import com.wsr.batch.toList
 import kotlinx.serialization.Serializable
+
 @Serializable
 class WordsD1(
     override val outputSize: Int,

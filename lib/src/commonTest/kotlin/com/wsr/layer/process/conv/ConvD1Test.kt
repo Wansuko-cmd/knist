@@ -2,16 +2,16 @@
 
 package com.wsr.layer.process.conv
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 import com.wsr.batchOf
-import com.wsr.d2
-import com.wsr.d3
-import com.wsr.get
+import com.wsr.core.d2
+import com.wsr.core.d3
+import com.wsr.core.get
 import com.wsr.layer.Context
 import com.wsr.layer.process.conv.ConvD1
 import com.wsr.optimizer.sgd.Sgd
-import com.wsr.set
+import com.wsr.core.set
 import kotlin.test.Test
 import kotlin.test.assertEquals
 class ConvD1Test {

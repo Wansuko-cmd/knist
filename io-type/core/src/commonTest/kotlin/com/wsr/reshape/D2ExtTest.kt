@@ -2,10 +2,9 @@
 
 package com.wsr.reshape
 
-import com.wsr.IOType
-import com.wsr.d2
-import com.wsr.d3
-import com.wsr.get
+import com.wsr.core.IOType
+import com.wsr.core.d2
+import com.wsr.core.d3
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

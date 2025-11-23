@@ -1,23 +1,21 @@
 package dataset.mnist
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
 import com.wsr.converter.Converter
-import com.wsr.d1
-import com.wsr.d2
-import com.wsr.get
+import com.wsr.core.d1
+import com.wsr.core.d2
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
-import com.wsr.set
-import com.wsr.toBatch
-import com.wsr.toList
+import com.wsr.batch.toBatch
+import com.wsr.batch.toList
+import kotlinx.serialization.Serializable
+import maxIndex
 import java.io.DataInputStream
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.zip.GZIPInputStream
-import kotlinx.serialization.Serializable
-import maxIndex
 
 data class MnistDataset(val pixels: List<Float>, val label: Int, val imageSize: Int) {
     override fun toString(): String = pixels

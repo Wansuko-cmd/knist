@@ -1,23 +1,23 @@
 package com.wsr.layer.process.norm.minmax
 
-import com.wsr.Batch
-import com.wsr.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.div.div
-import com.wsr.batch.func.pow
-import com.wsr.batch.inner.inner
-import com.wsr.batch.minmax.max
-import com.wsr.batch.minmax.min
-import com.wsr.batch.minus.minus
-import com.wsr.batch.times.times
-import com.wsr.d1
-import com.wsr.get
+import com.wsr.batch.Batch
+import com.wsr.batch.collecction.minmax.max
+import com.wsr.batch.collecction.minmax.min
+import com.wsr.batch.get
+import com.wsr.batch.math.pow
+import com.wsr.batch.operation.div.div
+import com.wsr.batch.operation.inner.inner
+import com.wsr.batch.operation.minus.minus
+import com.wsr.batch.operation.times.times
+import com.wsr.core.IOType
+import com.wsr.core.d1
+import com.wsr.core.get
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
 import com.wsr.optimizer.Optimizer
-import com.wsr.set
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -2,17 +2,17 @@
 
 package com.wsr.layer.process.skip
 
-import com.wsr.Batch
-import com.wsr.IOType
+import com.wsr.batch.Batch
+import com.wsr.core.IOType
 import com.wsr.NetworkBuilder
-import com.wsr.batch.collection.map
-import com.wsr.batch.plus.plus
-import com.wsr.d1
-import com.wsr.get
+import com.wsr.batch.collecction.map.map
+import com.wsr.core.d1
+import com.wsr.core.get
 import com.wsr.layer.Context
 import com.wsr.layer.Layer
 import com.wsr.layer.process.Process
-import com.wsr.set
+import com.wsr.batch.operation.plus.plus
+import com.wsr.core.set
 import kotlinx.serialization.Serializable
 
 private typealias CALC_DELTA_D1 = (input: Batch<IOType.D1>, context: Context) -> Batch<IOType.D1>
@@ -32,6 +32,7 @@ class SkipD1 internal constructor(
                 for (i in 0 until inputSize) result[i] = it[i]
                 result
             }
+
             inputSize % outputSize == 0 -> { it: IOType.D1 ->
                 val stride = inputSize / outputSize
                 val result = FloatArray(outputSize) { i ->
@@ -40,6 +41,7 @@ class SkipD1 internal constructor(
                 }
                 IOType.d1(result)
             }
+
             else -> throw IllegalArgumentException()
         }
     }
@@ -52,11 +54,13 @@ class SkipD1 internal constructor(
                 for (i in 0 until inputSize) result[i] = it[i]
                 result
             }
+
             inputSize % outputSize == 0 -> { it: IOType.D1 ->
                 val stride = inputSize / outputSize
                 val result = FloatArray(inputSize) { i -> it.value[i / stride] / stride }
                 IOType.d1(result)
             }
+
             else -> throw IllegalArgumentException()
         }
     }
