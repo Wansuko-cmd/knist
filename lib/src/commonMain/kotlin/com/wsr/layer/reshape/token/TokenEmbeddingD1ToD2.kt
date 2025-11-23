@@ -7,8 +7,8 @@ import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.get
-import com.wsr.core.operation.div
-import com.wsr.core.operation.plus
+import com.wsr.core.operation.div.div
+import com.wsr.core.operation.plus.plus
 import com.wsr.core.set
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context

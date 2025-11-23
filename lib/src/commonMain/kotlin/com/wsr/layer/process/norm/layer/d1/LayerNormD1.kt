@@ -16,9 +16,9 @@ import com.wsr.core.collection.sum.sum
 import com.wsr.core.d0
 import com.wsr.core.get
 import com.wsr.core.math.pow
-import com.wsr.core.operation.div
-import com.wsr.core.operation.plus
-import com.wsr.core.operation.times
+import com.wsr.core.operation.div.div
+import com.wsr.core.operation.plus.plus
+import com.wsr.core.operation.times.times
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context

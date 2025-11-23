@@ -2,7 +2,7 @@ package com.wsr.core.collection.average
 
 import com.wsr.core.IOType
 import com.wsr.core.collection.sum.sum
-import com.wsr.core.operation.div
+import com.wsr.core.operation.div.div
 
 fun IOType.D1.average(): Float = sum() / shape[0]
 
