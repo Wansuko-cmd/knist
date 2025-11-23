@@ -21,10 +21,7 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D1(
-        private val _value: FloatArray,
-        override val size: Int = _value.size,
-    ) : IOType() {
+    data class D1(private val _value: FloatArray, override val size: Int = _value.size) : IOType() {
         override val value: FloatArray = _value
         override val shape = listOf(size)
 
@@ -34,10 +31,7 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D2(
-        private val _value: FloatArray,
-        override val shape: List<Int>,
-    ) : IOType() {
+    data class D2(private val _value: FloatArray, override val shape: List<Int>) : IOType() {
         override val value get() = _value
         override val size = shape.reduce { acc, i -> acc + i }
         override fun equals(other: Any?): Boolean = super.equals(other)
@@ -46,10 +40,7 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D3(
-        private val _value: FloatArray,
-        override val shape: List<Int>,
-    ) : IOType() {
+    data class D3(private val _value: FloatArray, override val shape: List<Int>) : IOType() {
         override val value get() = _value
         override val size = shape.reduce { acc, i -> acc + i }
         override fun equals(other: Any?): Boolean = super.equals(other)
@@ -58,10 +49,7 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D4(
-        private val _value: FloatArray,
-        override val shape: List<Int>,
-    ) : IOType() {
+    data class D4(private val _value: FloatArray, override val shape: List<Int>) : IOType() {
         override val value get() = _value
         override val size = shape.reduce { acc, i -> acc + i }
         override fun equals(other: Any?): Boolean = super.equals(other)
