@@ -13,6 +13,12 @@ operator fun Float.minus(other: Batch<IOType.D2>) = other.map { this - it }
 @JvmName("batchD2sMinusD0s")
 operator fun Batch<IOType.D2>.minus(other: Batch<IOType.D0>): Batch<IOType.D2> = Batch(size) { this[it] - other[it] }
 
+@JvmName("batchD2sMinusD1")
+operator fun Batch<IOType.D2>.minus(other: IOType.D1) = map { it - other }
+
+@JvmName("batchD2sMinusD1WithAxis")
+fun Batch<IOType.D2>.minus(other: IOType.D1, axis: Int) = map { it.minus(other = other, axis = axis) }
+
 @JvmName("batchD2sMinusD1s")
 operator fun Batch<IOType.D2>.minus(other: Batch<IOType.D1>) = Batch(size) { this[it] - other[it] }
 
