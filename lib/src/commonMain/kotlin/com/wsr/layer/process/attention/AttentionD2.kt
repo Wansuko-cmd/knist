@@ -126,7 +126,7 @@ class AttentionD2 internal constructor(
         val dValue = softmax.transpose(axisI = 0, axisJ = 2, axisK = 1).matMul(dHeads)
         val dSoftmax = dHeads.matMul(value.transpose(axisI = 0, axisJ = 2, axisK = 1))
 
-        val sum = (dSoftmax * softmax).sum(axis = 2).broadcastToD3(axis = 1, size = outputX)
+        val sum = (dSoftmax * softmax).sum(axis = 2).broadcastToD3(axis = 2, size = outputX)
         val dMasked = softmax * (dSoftmax - sum)
 
         val dScaled = dMasked
