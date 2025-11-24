@@ -2,7 +2,6 @@ package com.wsr.converter.word
 
 import com.wsr.NetworkBuilder
 import com.wsr.batch.Batch
-import com.wsr.batch.toBatch
 import com.wsr.batch.toList
 import com.wsr.converter.Converter
 import com.wsr.core.IOType
@@ -22,17 +21,20 @@ class WordD2(private val words: List<String>, private val length: Int, private v
     override val outputY = words.size
     private val wordToId = words.mapIndexed { index, word -> word to index }.toMap()
 
-    override fun encode(input: List<List<String>>): Batch<IOType.D2> = input.toList().map { text ->
-        val result = IOType.d2(outputX, outputY)
-        text.forEachIndexed { index, word ->
-            val id = wordToId[word] ?: unknownIndex
-            result[index] = IOType.d1(outputY).also { it[id] = 1f }
+    override fun encode(input: List<List<String>>): Batch<IOType.D2> = input.let { input ->
+        Batch(input.size) {
+            val text = input[it]
+            val result = IOType.d2(outputX, outputY)
+            text.forEachIndexed { index, word ->
+                val id = wordToId[word] ?: unknownIndex
+                result[index] = IOType.d1(outputY).also { it[id] = 1f }
+            }
+            for (index in text.size until outputX) {
+                result[index] = IOType.d1(outputY).also { it[0] = 1f }
+            }
+            result
         }
-        for (index in text.size until outputX) {
-            result[index] = IOType.d1(outputY).also { it[0] = 1f }
-        }
-        result
-    }.toBatch()
+    }
 
     override fun decode(input: Batch<IOType.D2>): List<List<String>> = input.toList().map { input ->
         (0 until length).map { words[input[it].maxIndex()] }
