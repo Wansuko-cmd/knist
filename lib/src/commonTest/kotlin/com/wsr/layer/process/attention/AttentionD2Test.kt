@@ -154,15 +154,15 @@ class AttentionD2Test {
         assertEquals(expected = 1, actual = result.size)
         val delta = result[0]
 
-        // Test Case 1 trainからの期待値
-        assertEquals(expected = 0.23764744f, actual = delta[0, 0], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.23764744f, actual = delta[0, 1], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.23764744f, actual = delta[0, 2], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.23764744f, actual = delta[0, 3], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.087055005f, actual = delta[1, 0], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.087055005f, actual = delta[1, 1], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.087055005f, actual = delta[1, 2], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.087055005f, actual = delta[1, 3], absoluteTolerance = 1e-5f)
+        // 修正後の正しい期待値
+        assertEquals(expected = 0.23529622f, actual = delta[0, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.23529622f, actual = delta[0, 1], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.23529622f, actual = delta[0, 2], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.23529622f, actual = delta[0, 3], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.08615069f, actual = delta[1, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.08615069f, actual = delta[1, 1], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.08615069f, actual = delta[1, 2], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.08615069f, actual = delta[1, 3], absoluteTolerance = 1e-5f)
     }
 
     @Test
@@ -204,25 +204,25 @@ class AttentionD2Test {
         assertEquals(expected = 1, actual = result.size)
         val delta = result[0]
 
-        // Test Case 2 trainからの期待値
-        assertEquals(expected = 0.5384127f, actual = delta[0, 0], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.5384127f, actual = delta[0, 1], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.5384127f, actual = delta[0, 2], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.5384127f, actual = delta[0, 3], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.5384127f, actual = delta[0, 4], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.5384127f, actual = delta[0, 5], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.4362925f, actual = delta[1, 0], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.4362925f, actual = delta[1, 1], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.4362925f, actual = delta[1, 2], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.4362925f, actual = delta[1, 3], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.4362925f, actual = delta[1, 4], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.4362925f, actual = delta[1, 5], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.4217512f, actual = delta[2, 0], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.4217512f, actual = delta[2, 1], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.4217512f, actual = delta[2, 2], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.4217512f, actual = delta[2, 3], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.4217512f, actual = delta[2, 4], absoluteTolerance = 1e-5f)
-        assertEquals(expected = 0.4217512f, actual = delta[2, 5], absoluteTolerance = 1e-5f)
+        // 修正後の正しい期待値
+        assertEquals(expected = 0.44360238f, actual = delta[0, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.44360238f, actual = delta[0, 1], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.44360238f, actual = delta[0, 2], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.44360238f, actual = delta[0, 3], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.44360238f, actual = delta[0, 4], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.44360238f, actual = delta[0, 5], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.35141447f, actual = delta[1, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.35141447f, actual = delta[1, 1], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.35141447f, actual = delta[1, 2], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.35141447f, actual = delta[1, 3], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.35141447f, actual = delta[1, 4], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.35141447f, actual = delta[1, 5], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.36751217f, actual = delta[2, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.36751217f, actual = delta[2, 1], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.36751217f, actual = delta[2, 2], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.36751217f, actual = delta[2, 3], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.36751217f, actual = delta[2, 4], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.36751217f, actual = delta[2, 5], absoluteTolerance = 1e-5f)
     }
 
     @Test
@@ -267,15 +267,16 @@ class AttentionD2Test {
         val afterOutput = attention._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = afterOutput.size)
 
-        // 重みが更新されているため、初回のexpectとは異なる値になる
-        // ここでは実際に期待される値と比較することでテストする
-        // (期待値は手計算またはリファレンス実装から取得)
         val output = afterOutput[0]
-        // 更新後の値を確認 (初回: 0.040000003f, 0.07294103f から変化している)
+        // 修正後の正しい期待値
         assertEquals(expected = 0.03761759f, actual = output[0, 0], absoluteTolerance = 1e-5f)
         assertEquals(expected = 0.03761759f, actual = output[0, 1], absoluteTolerance = 1e-5f)
         assertEquals(expected = 0.03761759f, actual = output[0, 2], absoluteTolerance = 1e-5f)
         assertEquals(expected = 0.03761759f, actual = output[0, 3], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.06872426f, actual = output[1, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.06872426f, actual = output[1, 1], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.06872426f, actual = output[1, 2], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.06872426f, actual = output[1, 3], absoluteTolerance = 1e-5f)
     }
 
     @Test
@@ -320,12 +321,31 @@ class AttentionD2Test {
         val afterOutput = attention._expect(input, context) as Batch<IOType.D2>
         assertEquals(expected = 1, actual = afterOutput.size)
 
-        // 重みが更新されているため、初回のexpectとは異なる値になる
-        // (初回: 0.28800002f から変化している)
         val output = afterOutput[0]
+        // 修正後の正しい期待値
         assertEquals(expected = 0.14962749f, actual = output[0, 0], absoluteTolerance = 1e-5f)
         assertEquals(expected = 0.14962749f, actual = output[0, 1], absoluteTolerance = 1e-5f)
         assertEquals(expected = 0.14962749f, actual = output[0, 2], absoluteTolerance = 1e-5f)
         assertEquals(expected = 0.14962749f, actual = output[0, 3], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.14962749f, actual = output[0, 4], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.14962749f, actual = output[0, 5], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.14962749f, actual = output[0, 6], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.14962749f, actual = output[0, 7], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.34262684f, actual = output[1, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.34262684f, actual = output[1, 1], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.34262684f, actual = output[1, 2], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.34262684f, actual = output[1, 3], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.34262684f, actual = output[1, 4], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.34262684f, actual = output[1, 5], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.34262684f, actual = output[1, 6], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.34262684f, actual = output[1, 7], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.6226538f, actual = output[2, 0], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.6226538f, actual = output[2, 1], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.6226538f, actual = output[2, 2], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.6226538f, actual = output[2, 3], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.6226538f, actual = output[2, 4], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.6226538f, actual = output[2, 5], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.6226538f, actual = output[2, 6], absoluteTolerance = 1e-5f)
+        assertEquals(expected = 0.6226538f, actual = output[2, 7], absoluteTolerance = 1e-5f)
     }
 }
