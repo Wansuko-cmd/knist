@@ -27,12 +27,12 @@ class LayerNormAxis0D2 internal constructor(
 
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
         val average = input.average(axis = 0)
-        val numerator = input - average.broadcastToD2(axis = 1, size = outputX)
+        val numerator = input - average.broadcastToD2(axis = 0, size = outputX)
 
         val variance = numerator.pow(2).average(axis = 0)
         val denominator = variance.sqrt(e = e)
 
-        val normalize = numerator / denominator.broadcastToD2(axis = 1, size = outputX)
+        val normalize = numerator / denominator.broadcastToD2(axis = 0, size = outputX)
         return weight * normalize
     }
 
@@ -42,12 +42,12 @@ class LayerNormAxis0D2 internal constructor(
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
         val average = input.average(axis = 0)
-        val numerator = input - average.broadcastToD2(axis = 1, size = outputX)
+        val numerator = input - average.broadcastToD2(axis = 0, size = outputX)
 
         val variance = numerator.pow(2).average(axis = 0)
         val denominator = variance.sqrt(e = e)
 
-        val normalize = numerator / denominator.broadcastToD2(axis = 1, size = outputX)
+        val normalize = numerator / denominator.broadcastToD2(axis = 0, size = outputX)
 
         val output = weight * normalize
         val delta = calcDelta(output)
@@ -61,13 +61,13 @@ class LayerNormAxis0D2 internal constructor(
         val dOutput = delta * weight
 
         // dy/[x-average(x)] (分子に関する勾配)
-        val dNumerator = dOutput / denominator.broadcastToD2(axis = 1, size = outputX)
+        val dNumerator = dOutput / denominator.broadcastToD2(axis = 0, size = outputX)
 
         // dy/x <- (x-average(x)のx)
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx - axis=0なので各列で平均
-        val dx2 = -1f * dNumerator.average(axis = 0).broadcastToD2(axis = 1, size = outputX)
+        val dx2 = -1f * dNumerator.average(axis = 0).broadcastToD2(axis = 0, size = outputX)
 
         // dy/x <- variance(x)のx
         val dx3 = run {
@@ -77,11 +77,11 @@ class LayerNormAxis0D2 internal constructor(
             val dVariancePerCol = dvn / dvd
 
             // dy/[x-average(x)]のx部分
-            val dSquared = 2f * dVariancePerCol.broadcastToD2(axis = 1, size = outputX) * numerator
+            val dSquared = 2f * dVariancePerCol.broadcastToD2(axis = 0, size = outputX) * numerator
 
             // dy/[-average(x)]のx部分 (各列で同じ値なのでbroadcast)
             val avgGradient = -2f * dVariancePerCol * numerator.average(axis = 0)
-            val dx2Broadcast = avgGradient.broadcastToD2(axis = 1, size = outputX)
+            val dx2Broadcast = avgGradient.broadcastToD2(axis = 0, size = outputX)
 
             dSquared + dx2Broadcast
         }

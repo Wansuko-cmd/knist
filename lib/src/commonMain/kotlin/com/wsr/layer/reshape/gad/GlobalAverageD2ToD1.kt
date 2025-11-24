@@ -23,7 +23,7 @@ internal class GlobalAverageD2ToD1(private val inputX: Int, private val inputY: 
     ): Batch<IOType.D2> {
         val output = input.average(axis = 1)
         val delta = calcDelta(output)
-        return (delta / inputY.toFloat()).broadcastToD2(0, inputY)
+        return (delta / inputY.toFloat()).broadcastToD2(1, inputY)
     }
 }
 

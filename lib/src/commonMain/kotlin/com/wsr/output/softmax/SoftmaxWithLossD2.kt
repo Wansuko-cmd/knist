@@ -62,7 +62,7 @@ internal class SoftmaxWithLossD2 internal constructor(
                     val isPadding = label[seqId, maskValue] == 1f
                     if (isPadding) 0f else 1f
                 }
-                .broadcastToD2(0, outputY)
+                .broadcastToD2(1, outputY)
         }
     }
 }
