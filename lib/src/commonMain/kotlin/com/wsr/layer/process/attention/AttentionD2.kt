@@ -172,7 +172,7 @@ class AttentionD2 internal constructor(
             val input = input[index]
             IOType
                 .d1(outputX) { if (input[it] == maskValue.toFloat()) -1e9f else 0f }
-                .broadcastToD2(axis = 0, outputX)
+                .broadcastToD2(axis = 1, outputX)
         }
     }
 }
