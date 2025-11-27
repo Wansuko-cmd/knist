@@ -21,7 +21,8 @@ include(":lib")
 include(":io-type:core")
 include(":io-type:batch")
 
-include(":io-type:blas:core")
+include(":io-type:blas")
+
 include(":io-type:blas:base")
 include(":io-type:blas:open")
 include(":io-type:blas:open:cpp")
