@@ -9,8 +9,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":io-type:core"))
-
+                api(project(":io-type:blas:base"))
+                api(project(":io-type:blas:open"))
             }
         }
 

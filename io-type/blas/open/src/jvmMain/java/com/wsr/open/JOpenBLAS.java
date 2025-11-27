@@ -1,4 +1,6 @@
-package com.wsr;
+package com.wsr.open;
+
+import com.wsr.blas.base.IBLAS;
 
 public class JOpenBLAS implements IBLAS {
     @Override
