@@ -10,7 +10,6 @@ import com.wsr.batch.operation.matmul.matMul
 import com.wsr.batch.operation.minus.minus
 import com.wsr.batch.operation.plus.plus
 import com.wsr.batch.operation.times.times
-import com.wsr.batch.reshape.broadcastToD3
 import com.wsr.batch.reshape.reshapeToD2
 import com.wsr.batch.reshape.reshapeToD3
 import com.wsr.batch.reshape.transpose
