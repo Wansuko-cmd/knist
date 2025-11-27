@@ -1,0 +1,76 @@
+name: 'BLASネイティブライブラリのビルド'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # macOS
+          - os: macos-latest
+            os_name: macos
+            arch: Arm64
+          - os: macos-13
+            os_name: macos
+            arch: X64
+          # Linux
+          - os: ubuntu-latest
+            os_name: linux
+            arch: X64
+          - os: ubuntu-24.04-arm
+            os_name: linux
+            arch: Arm64
+          # Windows
+          - os: windows-latest
+            os_name: mingw
+            arch: X64
+
+    runs-on: ${{ matrix.os }}
+    name: Build (${{ matrix.os_name }}/${{ matrix.arch }})
+
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+
+      - name: Javaのセットアップ
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          cache: 'gradle'
+
+      - name: CMakeのセットアップ (Windows)
+        if: runner.os == 'Windows'
+        uses: lukka/get-cmake@latest
+
+      - name: Fortranのセットアップ (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gfortran
+
+      - name: gradlewに権限を付与 (Unix)
+        if: runner.os != 'Windows'
+        run: chmod 777 ./gradlew
+
+      - name: ネイティブライブラリをビルド
+        run: ./gradlew :io-type:blas:cpp:cmakeBuild
+        shell: bash
+
+      - name: ビルド成果物を確認
+        run: |
+          echo "=== Build output ==="
+          ls -la io-type/blas/cpp/build/
+        shell: bash
+
+      - name: 成果物をアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: blas-native-${{ matrix.os_name }}-${{ matrix.arch }}
+          path: |
+            io-type/blas/cpp/build/libopen_blas.*
+            io-type/blas/cpp/build/open_blas.*
+          if-no-files-found: error
