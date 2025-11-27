@@ -2,6 +2,7 @@ name: 'BLASネイティブライブラリのビルド'
 
 on:
   workflow_dispatch:
+  push:
 
 jobs:
   build:
