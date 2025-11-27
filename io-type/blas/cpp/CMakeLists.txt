@@ -46,29 +46,29 @@ else()
     set(OPENBLAS_LIB ${OPENBLAS_INSTALL_DIR}/lib/libopenblas.a)
 endif()
 
-add_library(JBLAS SHARED ${SRC_DIR}/com_wsr_JBLAS.cpp)
-add_dependencies(JBLAS OpenBLAS)
+add_library(JOpenBLAS SHARED ${SRC_DIR}/com_wsr_JOpenBLAS.cpp)
+add_dependencies(JOpenBLAS OpenBLAS)
 
-target_include_directories(JBLAS PRIVATE
+target_include_directories(JOpenBLAS PRIVATE
         ${OPENBLAS_INCLUDE_DIR}
         ${OPENBLAS_INSTALL_DIR}/include
 )
 
 # OpenBLASをリンク
-target_link_libraries(JBLAS PRIVATE ${OPENBLAS_LIB})
+target_link_libraries(JOpenBLAS PRIVATE ${OPENBLAS_LIB})
 if(UNIX AND NOT APPLE AND NOT ANDROID)
     # Linux: pthreadとgfortranが必要
-    target_link_libraries(JBLAS PRIVATE pthread m gfortran)
+    target_link_libraries(JOpenBLAS PRIVATE pthread m gfortran)
 elseif(APPLE)
     # macOS: Accelerateフレームワークを使用可能
-    target_link_libraries(JBLAS PRIVATE pthread m)
+    target_link_libraries(JOpenBLAS PRIVATE pthread m)
 elseif(MINGW)
     # MinGW: gfortranとpthreadが必要
-    target_link_libraries(JBLAS PRIVATE pthread gfortran)
+    target_link_libraries(JOpenBLAS PRIVATE pthread gfortran)
 endif()
 
 # ライブラリ名とサフィックスを設定
-set_target_properties(JBLAS PROPERTIES
+set_target_properties(JOpenBLAS PROPERTIES
         OUTPUT_NAME "${OUTPUT_NAME}"
         PREFIX "lib"
         SUFFIX ".dylib"
