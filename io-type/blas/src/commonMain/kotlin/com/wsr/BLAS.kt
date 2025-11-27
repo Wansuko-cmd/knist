@@ -1,4 +1,4 @@
-package com.wsr.core
+package com.wsr
 
 import com.wsr.blas.base.IBLAS
 import com.wsr.open.openBLAS
