@@ -79,7 +79,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: blas-native-${{ matrix.os_name }}-${{ matrix.arch }}
-          path: io-type/blas/cpp/build/libopen_blas.${{ matrix.lib_extension }}
+          path: |
+            io-type/blas/cpp/build/libopen_blas.${{ matrix.lib_extension }}
+            io-type/blas/cpp/build/Release/open_blas.${{ matrix.lib_extension }}
           if-no-files-found: error
 
   commit:
@@ -114,9 +116,10 @@ jobs:
           mkdir -p io-type/blas/src/jvmMain/resources/open/linux/Arm64
           cp artifacts/blas-native-linux-Arm64/libopen_blas.so io-type/blas/src/jvmMain/resources/open/linux/Arm64/
 
-          # Windows/X64
+          # Windows/X64 (MSVCはRelease/に出力、ファイル名もlibプレフィックスなしの場合あり)
           mkdir -p io-type/blas/src/jvmMain/resources/open/mingw/X64
-          cp artifacts/blas-native-mingw-X64/libopen_blas.dll io-type/blas/src/jvmMain/resources/open/mingw/X64/
+          cp artifacts/blas-native-mingw-X64/libopen_blas.dll io-type/blas/src/jvmMain/resources/open/mingw/X64/ 2>/dev/null || \
+          cp artifacts/blas-native-mingw-X64/open_blas.dll io-type/blas/src/jvmMain/resources/open/mingw/X64/libopen_blas.dll
 
           echo "=== Resources structure ==="
           find io-type/blas/src/jvmMain/resources -type f
