@@ -51,10 +51,6 @@ jobs:
           java-version: 17
           cache: 'gradle'
 
-      - name: CMakeのセットアップ (Windows)
-        if: runner.os == 'Windows'
-        uses: lukka/get-cmake@latest
-
       - name: Fortranのセットアップ (Linux)
         if: runner.os == 'Linux'
         run: |
