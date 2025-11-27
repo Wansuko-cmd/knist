@@ -94,27 +94,32 @@ jobs:
         with:
           path: artifacts
 
+      - name: アーティファクト構造を確認
+        run: |
+          echo "=== Artifacts structure ==="
+          find artifacts -type f
+
       - name: 成果物をresourcesに配置
         run: |
           # macOS/Arm64
           mkdir -p io-type/blas/src/jvmMain/resources/open/macos/Arm64
-          cp artifacts/blas-native-macos-Arm64/libopen_blas.dylib io-type/blas/src/jvmMain/resources/open/macos/Arm64/
+          find artifacts/blas-native-macos-Arm64 -name "libopen_blas.dylib" -exec cp {} io-type/blas/src/jvmMain/resources/open/macos/Arm64/ \;
 
           # macOS/X64
           mkdir -p io-type/blas/src/jvmMain/resources/open/macos/X64
-          cp artifacts/blas-native-macos-X64/libopen_blas.dylib io-type/blas/src/jvmMain/resources/open/macos/X64/
+          find artifacts/blas-native-macos-X64 -name "libopen_blas.dylib" -exec cp {} io-type/blas/src/jvmMain/resources/open/macos/X64/ \;
 
           # Linux/X64
           mkdir -p io-type/blas/src/jvmMain/resources/open/linux/X64
-          cp artifacts/blas-native-linux-X64/libopen_blas.so io-type/blas/src/jvmMain/resources/open/linux/X64/
+          find artifacts/blas-native-linux-X64 -name "libopen_blas.so" -exec cp {} io-type/blas/src/jvmMain/resources/open/linux/X64/ \;
 
           # Linux/Arm64
           mkdir -p io-type/blas/src/jvmMain/resources/open/linux/Arm64
-          cp artifacts/blas-native-linux-Arm64/libopen_blas.so io-type/blas/src/jvmMain/resources/open/linux/Arm64/
+          find artifacts/blas-native-linux-Arm64 -name "libopen_blas.so" -exec cp {} io-type/blas/src/jvmMain/resources/open/linux/Arm64/ \;
 
-          # Windows/X64 (MSVCはRelease/に出力)
+          # Windows/X64
           mkdir -p io-type/blas/src/jvmMain/resources/open/mingw/X64
-          cp artifacts/blas-native-mingw-X64/libopen_blas.dll io-type/blas/src/jvmMain/resources/open/mingw/X64/
+          find artifacts/blas-native-mingw-X64 -name "libopen_blas.dll" -exec cp {} io-type/blas/src/jvmMain/resources/open/mingw/X64/ \;
 
           echo "=== Resources structure ==="
           find io-type/blas/src/jvmMain/resources -type f
