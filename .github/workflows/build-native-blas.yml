@@ -71,29 +71,8 @@ jobs:
           path: io-type/blas/cpp/build/openblas
           key: openblas-${{ hashFiles('io-type/blas/cpp/CMakeLists.txt') }}-${{ matrix.os_name }}-${{ matrix.arch }}
 
-      - name: CMakeキャッシュをクリア (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          rm -rf io-type/blas/cpp/build/CMakeCache.txt
-          rm -rf io-type/blas/cpp/build/CMakeFiles
-        shell: bash
-
       - name: ネイティブライブラリをビルド
         run: ./gradlew :io-type:blas:cpp:cmakeBuild
-        shell: bash
-
-      - name: OpenBLASインストール内容を確認 (デバッグ)
-        run: |
-          echo "=== OpenBLAS install directory ==="
-          find io-type/blas/cpp/build/openblas/install -type f 2>/dev/null || echo "Not found"
-        shell: bash
-
-      - name: ビルド成果物を確認
-        run: |
-          echo "=== Build output ==="
-          ls -la io-type/blas/cpp/build/
-          echo "=== Build/Release (if exists) ==="
-          ls -la io-type/blas/cpp/build/Release/ 2>/dev/null || echo "No Release directory"
         shell: bash
 
       - name: 成果物をアップロード
@@ -102,7 +81,7 @@ jobs:
           name: blas-native-${{ matrix.os_name }}-${{ matrix.arch }}
           path: |
             io-type/blas/cpp/build/libopen_blas.${{ matrix.lib_extension }}
-            io-type/blas/cpp/build/Release/open_blas.${{ matrix.lib_extension }}
+            io-type/blas/cpp/build/Release/libopen_blas.${{ matrix.lib_extension }}
           if-no-files-found: error
 
   commit:
@@ -137,10 +116,9 @@ jobs:
           mkdir -p io-type/blas/src/jvmMain/resources/open/linux/Arm64
           cp artifacts/blas-native-linux-Arm64/libopen_blas.so io-type/blas/src/jvmMain/resources/open/linux/Arm64/
 
-          # Windows/X64 (MSVCはRelease/に出力、ファイル名もlibプレフィックスなしの場合あり)
+          # Windows/X64 (MSVCはRelease/に出力)
           mkdir -p io-type/blas/src/jvmMain/resources/open/mingw/X64
-          cp artifacts/blas-native-mingw-X64/libopen_blas.dll io-type/blas/src/jvmMain/resources/open/mingw/X64/ 2>/dev/null || \
-          cp artifacts/blas-native-mingw-X64/open_blas.dll io-type/blas/src/jvmMain/resources/open/mingw/X64/libopen_blas.dll
+          cp artifacts/blas-native-mingw-X64/libopen_blas.dll io-type/blas/src/jvmMain/resources/open/mingw/X64/
 
           echo "=== Resources structure ==="
           find io-type/blas/src/jvmMain/resources -type f
