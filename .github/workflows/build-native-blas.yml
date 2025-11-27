@@ -65,14 +65,35 @@ jobs:
         if: runner.os != 'Windows'
         run: chmod 777 ./gradlew
 
+      - name: OpenBLASのキャッシュを復元
+        uses: actions/cache@v4
+        with:
+          path: io-type/blas/cpp/build/openblas
+          key: openblas-${{ hashFiles('io-type/blas/cpp/CMakeLists.txt') }}-${{ matrix.os_name }}-${{ matrix.arch }}
+
+      - name: CMakeキャッシュをクリア (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          rm -rf io-type/blas/cpp/build/CMakeCache.txt
+          rm -rf io-type/blas/cpp/build/CMakeFiles
+        shell: bash
+
       - name: ネイティブライブラリをビルド
         run: ./gradlew :io-type:blas:cpp:cmakeBuild
+        shell: bash
+
+      - name: OpenBLASインストール内容を確認 (デバッグ)
+        run: |
+          echo "=== OpenBLAS install directory ==="
+          find io-type/blas/cpp/build/openblas/install -type f 2>/dev/null || echo "Not found"
         shell: bash
 
       - name: ビルド成果物を確認
         run: |
           echo "=== Build output ==="
           ls -la io-type/blas/cpp/build/
+          echo "=== Build/Release (if exists) ==="
+          ls -la io-type/blas/cpp/build/Release/ 2>/dev/null || echo "No Release directory"
         shell: bash
 
       - name: 成果物をアップロード

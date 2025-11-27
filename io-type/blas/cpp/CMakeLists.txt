@@ -40,9 +40,11 @@ ExternalProject_Add(
 )
 
 set(OPENBLAS_INCLUDE_DIR ${OPENBLAS_INSTALL_DIR}/include/openblas)
-if(WIN32 OR MINGW)
-    set(OPENBLAS_LIB ${OPENBLAS_INSTALL_DIR}/lib/libopenblas.a)
+if(WIN32)
+    # Windows (MSVC): openblas.lib
+    set(OPENBLAS_LIB ${OPENBLAS_INSTALL_DIR}/lib/openblas.lib)
 else()
+    # Unix系 (macOS, Linux): libopenblas.a
     set(OPENBLAS_LIB ${OPENBLAS_INSTALL_DIR}/lib/libopenblas.a)
 endif()
 
@@ -60,11 +62,10 @@ if(UNIX AND NOT APPLE AND NOT ANDROID)
     # Linux: pthreadとgfortranが必要
     target_link_libraries(JOpenBLAS PRIVATE pthread m gfortran)
 elseif(APPLE)
-    # macOS: Accelerateフレームワークを使用可能
+    # macOS
     target_link_libraries(JOpenBLAS PRIVATE pthread m)
-elseif(MINGW)
-    # MinGW: gfortranとpthreadが必要
-    target_link_libraries(JOpenBLAS PRIVATE pthread gfortran)
+elseif(WIN32)
+    # Windows: 追加のライブラリは不要（OpenBLASが静的リンク）
 endif()
 
 # ライブラリ名とサフィックスを設定
