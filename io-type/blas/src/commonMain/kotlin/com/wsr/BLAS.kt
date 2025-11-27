@@ -1,6 +1,6 @@
 package com.wsr
 
-expect val default : IBLAS
+expect val default: IBLAS
 
 object BLAS : IBLAS {
     private var instance: IBLAS = default
