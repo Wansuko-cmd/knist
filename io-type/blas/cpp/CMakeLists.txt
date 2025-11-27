@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 project(io-type-blas C CXX)
 
 # ソースディレクトリを設定
-set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/main)
+set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/open)
 
 # JNIのセットアップ
 find_package(JNI REQUIRED)
@@ -69,7 +69,6 @@ endif()
 
 # ライブラリ名とサフィックスを設定
 set_target_properties(JOpenBLAS PROPERTIES
-        OUTPUT_NAME "${OUTPUT_NAME}"
+        OUTPUT_NAME "open_blas"
         PREFIX "lib"
-        SUFFIX ".dylib"
 )
