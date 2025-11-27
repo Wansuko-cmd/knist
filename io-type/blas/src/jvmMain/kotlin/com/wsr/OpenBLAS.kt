@@ -3,9 +3,9 @@ package com.wsr
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-private const val LIB_NAME = "JBLAS"
+private const val LIB_NAME = "JOpenBLAS"
 
-internal fun loadJBLAS(): JBLAS? {
+val openBLAS: IBLAS? by lazy {
     val resource = System.mapLibraryName(LIB_NAME)
     val result = BLAS::class.java
         .classLoader
@@ -18,5 +18,5 @@ internal fun loadJBLAS(): JBLAS? {
             Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING)
             System.load(path.toString())
         }
-    return if (result != null) JBLAS() else null
+    if (result != null) JOpenBLAS() else null
 }

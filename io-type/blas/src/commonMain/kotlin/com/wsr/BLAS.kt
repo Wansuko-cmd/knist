@@ -1,9 +1,9 @@
 package com.wsr
 
-expect object Default : IBLAS
+expect val default : IBLAS
 
 object BLAS : IBLAS {
-    private var instance: IBLAS = Default
+    private var instance: IBLAS = default
 
     fun set(blas: IBLAS) {
         instance = blas
