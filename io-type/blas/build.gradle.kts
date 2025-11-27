@@ -2,12 +2,39 @@ plugins {
     kotlin("multiplatform")
 }
 
-val nativeLibFile = projectDir.resolve("cpp/build/libJOpenBLAS.dylib")
-val jvmResourcesDir = projectDir.resolve("src/jvmMain/resources")
+// OS検出
+val currentOs: String = System.getProperty("os.name").lowercase().let { osName ->
+    when {
+        osName.contains("mac") -> "macos"
+        osName.contains("linux") -> "linux"
+        osName.contains("win") -> "mingw"
+        else -> error("Unsupported OS: $osName")
+    }
+}
+
+// アーキテクチャ検出
+val currentArch: String = System.getProperty("os.arch").lowercase().let { arch ->
+    when (arch) {
+        "amd64", "x86_64", "x86-64", "x64" -> "X64"
+        "arm64", "aarch64", "armv8" -> "Arm64"
+        else -> error("Unsupported architecture: $arch")
+    }
+}
+
+// ライブラリのファイル名（OS依存）
+val libFileName: String = when (currentOs) {
+    "macos" -> "libopen_blas.dylib"
+    "linux" -> "libopen_blas.so"
+    "mingw" -> "open_blas.dll"
+    else -> error("Unsupported OS: $currentOs")
+}
+
+val nativeLibFile = projectDir.resolve("cpp/build/$libFileName")
+val jvmResourcesDir = projectDir.resolve("src/jvmMain/resources/open/$currentOs/$currentArch")
 
 val copyNativeToResources by tasks.registering(Copy::class) {
     group = "build"
-    description = "Copy libJOpenBLAS.dylib to JVM resources"
+    description = "Copy native library to JVM resources for current platform"
 
     dependsOn(":io-type:blas:cpp:cmakeBuild")
     from(nativeLibFile)
