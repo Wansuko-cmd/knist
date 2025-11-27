@@ -3,7 +3,11 @@ package com.wsr
 expect object Default : IBLAS
 
 object BLAS : IBLAS {
-    private val instance = Default
+    private var instance: IBLAS = Default
+
+    fun set(blas: IBLAS) {
+        instance = blas
+    }
 
     override val isNative: Boolean = instance.isNative
 
