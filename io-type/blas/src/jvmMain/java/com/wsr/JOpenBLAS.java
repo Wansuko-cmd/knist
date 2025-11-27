@@ -1,6 +1,6 @@
 package com.wsr;
 
-public class JBLAS implements IBLAS {
+public class JOpenBLAS implements IBLAS {
     @Override
     public boolean isNative() {
         return true;
