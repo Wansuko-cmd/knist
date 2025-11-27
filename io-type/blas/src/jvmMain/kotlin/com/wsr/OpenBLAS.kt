@@ -7,7 +7,7 @@ private const val LIB_NAME = "open_blas"
 private val LIB_PATH = createPath("open")
 
 val openBLAS: IBLAS? by lazy {
-    val resource = System.mapLibraryName( LIB_NAME)
+    val resource = System.mapLibraryName(LIB_NAME)
     val result = BLAS::class.java
         .classLoader
         .getResourceAsStream(LIB_PATH + resource)
