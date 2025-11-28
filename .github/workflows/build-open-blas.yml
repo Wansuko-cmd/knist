@@ -1,11 +1,11 @@
-name: 'BLASネイティブライブラリのビルド'
+name: 'Open BLASのビルド'
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - 'io-type/blas/cpp/src/**'
-      - '.github/workflows/build-native-blas.yml'
+      - 'io-type/blas/open/cpp/src/**'
+      - '.github/workflows/build-open-blas.yml'
 
 jobs:
   build:
@@ -64,8 +64,8 @@ jobs:
       - name: OpenBLASのキャッシュを復元
         uses: actions/cache@v4
         with:
-          path: io-type/blas/cpp/build/openblas
-          key: openblas-${{ hashFiles('io-type/blas/cpp/CMakeLists.txt') }}-${{ matrix.os_name }}-${{ matrix.arch }}
+          path: io-type/blas/open/cpp/build/openblas
+          key: openblas-${{ hashFiles('io-type/blas/open/cpp/CMakeLists.txt') }}-${{ matrix.os_name }}-${{ matrix.arch }}
 
       - name: ネイティブライブラリをビルド
         run: ./gradlew :io-type:blas:cpp:cmakeBuild
@@ -74,10 +74,10 @@ jobs:
       - name: 成果物をアップロード
         uses: actions/upload-artifact@v4
         with:
-          name: blas-native-${{ matrix.os_name }}-${{ matrix.arch }}
+          name: open-blas-${{ matrix.os_name }}-${{ matrix.arch }}
           path: |
-            io-type/blas/cpp/build/libopen_blas.${{ matrix.lib_extension }}
-            io-type/blas/cpp/build/Release/libopen_blas.${{ matrix.lib_extension }}
+            io-type/blas/open/cpp/build/libopen_blas.${{ matrix.lib_extension }}
+            io-type/blas/open/cpp/build/Release/libopen_blas.${{ matrix.lib_extension }}
           if-no-files-found: error
 
   commit:
@@ -102,36 +102,36 @@ jobs:
       - name: 成果物をresourcesに配置
         run: |
           # macOS/Arm64
-          mkdir -p io-type/blas/src/jvmMain/resources/open/macos/Arm64
-          find artifacts/blas-native-macos-Arm64 -name "libopen_blas.dylib" -exec cp {} io-type/blas/src/jvmMain/resources/open/macos/Arm64/ \;
+          mkdir -p io-type/blas/open/src/jvmMain/resources/open/macos/Arm64
+          find artifacts/open-blas-macos-Arm64 -name "libopen_blas.dylib" -exec cp {} io-type/blas/open/src/jvmMain/resources/open/macos/Arm64/ \;
 
           # macOS/X64
-          mkdir -p io-type/blas/src/jvmMain/resources/open/macos/X64
-          find artifacts/blas-native-macos-X64 -name "libopen_blas.dylib" -exec cp {} io-type/blas/src/jvmMain/resources/open/macos/X64/ \;
+          mkdir -p io-type/blas/open/src/jvmMain/resources/open/macos/X64
+          find artifacts/open-blas-macos-X64 -name "libopen_blas.dylib" -exec cp {} io-type/blas/open/src/jvmMain/resources/open/macos/X64/ \;
 
           # Linux/X64
-          mkdir -p io-type/blas/src/jvmMain/resources/open/linux/X64
-          find artifacts/blas-native-linux-X64 -name "libopen_blas.so" -exec cp {} io-type/blas/src/jvmMain/resources/open/linux/X64/ \;
+          mkdir -p io-type/blas/open/src/jvmMain/resources/open/linux/X64
+          find artifacts/open-blas-linux-X64 -name "libopen_blas.so" -exec cp {} io-type/blas/open/src/jvmMain/resources/open/linux/X64/ \;
 
           # Linux/Arm64
-          mkdir -p io-type/blas/src/jvmMain/resources/open/linux/Arm64
-          find artifacts/blas-native-linux-Arm64 -name "libopen_blas.so" -exec cp {} io-type/blas/src/jvmMain/resources/open/linux/Arm64/ \;
+          mkdir -p io-type/blas/open/src/jvmMain/resources/open/linux/Arm64
+          find artifacts/open-blas-linux-Arm64 -name "libopen_blas.so" -exec cp {} io-type/blas/open/src/jvmMain/resources/open/linux/Arm64/ \;
 
           # Windows/X64
-          mkdir -p io-type/blas/src/jvmMain/resources/open/mingw/X64
-          find artifacts/blas-native-mingw-X64 -name "libopen_blas.dll" -exec cp {} io-type/blas/src/jvmMain/resources/open/mingw/X64/ \;
+          mkdir -p io-type/blas/open/src/jvmMain/resources/open/mingw/X64
+          find artifacts/open-blas-mingw-X64 -name "libopen_blas.dll" -exec cp {} io-type/blas/open/src/jvmMain/resources/open/mingw/X64/ \;
 
           echo "=== Resources structure ==="
-          find io-type/blas/src/jvmMain/resources -type f
+          find io-type/blas/open/src/jvmMain/resources -type f
 
       - name: 変更をコミット
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add io-type/blas/src/jvmMain/resources/
+          git add io-type/blas/open/src/jvmMain/resources/
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "[CI] Update BLAS native libraries"
+            git commit -m "[CI] Update Open BLAS libraries"
             git push
           fi
