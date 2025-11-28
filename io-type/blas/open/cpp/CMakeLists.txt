@@ -69,7 +69,4 @@ elseif(WIN32)
 endif()
 
 # ライブラリ名とサフィックスを設定
-set_target_properties(JOpenBLAS PROPERTIES
-        OUTPUT_NAME "open_blas"
-        PREFIX "lib"
-)
+set_target_properties(JOpenBLAS PROPERTIES OUTPUT_NAME "open_blas")
