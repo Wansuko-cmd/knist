@@ -7,6 +7,9 @@ on:
       - 'io-type/blas/open/cpp/src/**'
       - '.github/workflows/build-open-blas.yml'
 
+env:
+  NDK_VERSION: "26.1.10909125"
+
 jobs:
   build:
     strategy:
@@ -91,8 +94,63 @@ jobs:
             io-type/blas/open/cpp/build/Release/open_blas.${{ matrix.lib_extension }}
           if-no-files-found: error
 
+  build-android:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: Arm64
+            abi: arm64-v8a
+          - arch: X64
+            abi: x86_64
+
+    runs-on: ubuntu-latest
+    name: Build (android/${{ matrix.arch }})
+
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+
+      - name: Javaのセットアップ
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          cache: 'gradle'
+
+      - name: Android NDKのセットアップ
+        uses: android-actions/setup-android@v3
+
+      - name: NDKのインストール
+        run: |
+          sdkmanager --install "ndk;${{ env.NDK_VERSION }}"
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/${{ env.NDK_VERSION }}" >> $GITHUB_ENV
+
+      - name: gradlewに権限を付与
+        run: chmod 777 ./gradlew
+
+      - name: OpenBLASのキャッシュを復元
+        uses: actions/cache@v4
+        with:
+          path: io-type/blas/open/cpp/build/openblas
+          key: openblas-${{ hashFiles('io-type/blas/open/cpp/CMakeLists.txt') }}-android-${{ matrix.arch }}
+
+      - name: ネイティブライブラリをビルド
+        env:
+          ANDROID_ABI: ${{ matrix.abi }}
+          ANDROID_PLATFORM: android-24
+        run: ./gradlew :io-type:blas:open:cpp:cmakeBuildAndroid
+
+      - name: 成果物をアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: open-blas-android-${{ matrix.arch }}
+          path: |
+            io-type/blas/open/cpp/build/libopen_blas.so
+          if-no-files-found: error
+
   commit:
-    needs: build
+    needs: [build, build-android]
     runs-on: ubuntu-latest
     name: Commit native libraries
 
@@ -131,6 +189,14 @@ jobs:
           # Windows/X64
           mkdir -p io-type/blas/open/src/jvmMain/resources/open/mingw/X64
           find artifacts/open-blas-mingw-X64 -name "open_blas.dll" -exec cp {} io-type/blas/open/src/jvmMain/resources/open/mingw/X64/ \;
+
+          # Android/Arm64
+          mkdir -p io-type/blas/open/src/jvmMain/resources/open/android/Arm64
+          find artifacts/open-blas-android-Arm64 -name "libopen_blas.so" -exec cp {} io-type/blas/open/src/jvmMain/resources/open/android/Arm64/ \;
+
+          # Android/X64
+          mkdir -p io-type/blas/open/src/jvmMain/resources/open/android/X64
+          find artifacts/open-blas-android-X64 -name "libopen_blas.so" -exec cp {} io-type/blas/open/src/jvmMain/resources/open/android/X64/ \;
 
           echo "=== Resources structure ==="
           find io-type/blas/open/src/jvmMain/resources -type f
