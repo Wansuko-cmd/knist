@@ -1,8 +1,8 @@
-#include "com_wsr_JOpenBLAS.h"
+#include "com_wsr_open_JOpenBLAS.h"
 #include <stdio.h>
 #include <cblas.h>
 
-JNIEXPORT jfloat JNICALL Java_com_wsr_JOpenBLAS_sdot
+JNIEXPORT jfloat JNICALL Java_com_wsr_open_JOpenBLAS_sdot
         (JNIEnv *env, jobject, jint n, jfloatArray x, jint incx, jfloatArray y, jint incy) {
     // Get array elements from Java
     jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
@@ -18,7 +18,7 @@ JNIEXPORT jfloat JNICALL Java_com_wsr_JOpenBLAS_sdot
     return result;
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_JOpenBLAS_sscal
+JNIEXPORT void JNICALL Java_com_wsr_open_JOpenBLAS_sscal
     (JNIEnv *env, jobject, jint n, jfloat alpha, jfloatArray x, jint incx) {
     // Get array elements from Java
     jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
@@ -30,7 +30,7 @@ JNIEXPORT void JNICALL Java_com_wsr_JOpenBLAS_sscal
     env->ReleaseFloatArrayElements(x, x_ptr, 0);
     }
 
-    JNIEXPORT void JNICALL Java_com_wsr_JOpenBLAS_saxpy
+    JNIEXPORT void JNICALL Java_com_wsr_open_JOpenBLAS_saxpy
     (JNIEnv *env, jobject, jint n, jfloat alpha, jfloatArray x, jint incx, jfloatArray y, jint incy) {
     // Get array elements from Java
     jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
@@ -44,7 +44,7 @@ JNIEXPORT void JNICALL Java_com_wsr_JOpenBLAS_sscal
     env->ReleaseFloatArrayElements(y, y_ptr, 0);
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_JOpenBLAS_sgemm(JNIEnv *env, jobject, jboolean transA, jboolean transB, jint m, jint n, jint k,
+JNIEXPORT void JNICALL Java_com_wsr_open_JOpenBLAS_sgemm(JNIEnv *env, jobject, jboolean transA, jboolean transB, jint m, jint n, jint k,
         jfloat alpha, jfloatArray a, jint lda, jfloatArray b, jint ldb,
 jfloat beta, jfloatArray c, jint ldc
 ) {
@@ -67,7 +67,7 @@ jfloat beta, jfloatArray c, jint ldc
     env->ReleaseFloatArrayElements(c, c_ptr, 0);
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_JOpenBLAS_sgemv
+JNIEXPORT void JNICALL Java_com_wsr_open_JOpenBLAS_sgemv
 (JNIEnv *env, jobject, jboolean trans, jint m, jint n, jfloat alpha,
 jfloatArray a, jint lda, jfloatArray x, jint incx,
 jfloat beta, jfloatArray y, jint incy) {
