@@ -75,7 +75,7 @@ internal data class AdamWD1(
         val mHat = m / (1f - momentum.pow(t.toFloat()))
         val vHat = v / (1f - rms.pow(t.toFloat()))
 
-        val rate = scheduler.calcRate()
+        val rate = scheduler.calcRate(step = step)
         return (1 - rate * decay) * weight - rate * mHat / vHat.sqrt(e = E)
     }
 }
@@ -102,7 +102,7 @@ internal data class AdamWD2(
         val mHat = m / (1f - momentum.pow(t.toFloat()))
         val vHat = v / (1f - rms.pow(t.toFloat()))
 
-        val rate = scheduler.calcRate()
+        val rate = scheduler.calcRate(step = step)
         return (1 - rate * decay) * weight - rate * mHat / vHat.sqrt(e = E)
     }
 }
@@ -129,7 +129,7 @@ internal data class AdamWD3(
         val mHat = m / (1f - momentum.pow(t.toFloat()))
         val vHat = v / (1f - rms.pow(t.toFloat()))
 
-        val rate = scheduler.calcRate()
+        val rate = scheduler.calcRate(step = step)
         return (1 - rate * decay) * weight - rate * mHat / vHat.sqrt(e = E)
     }
 }

@@ -18,15 +18,15 @@ data class Sgd(private val scheduler: Scheduler, private val maxNorm: Float = Fl
 
 @Serializable
 internal data class SgdD1(private val scheduler: Scheduler, private val maxNorm: Float) : Optimizer.D1(maxNorm) {
-    override fun adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1 = weight - scheduler.calcRate() * dw
+    override fun adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1 = weight - scheduler.calcRate(step = step) * dw
 }
 
 @Serializable
 internal data class SgdD2(private val scheduler: Scheduler, private val maxNorm: Float) : Optimizer.D2(maxNorm) {
-    override fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2 = weight - scheduler.calcRate() * dw
+    override fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2 = weight - scheduler.calcRate(step = step) * dw
 }
 
 @Serializable
 internal data class SgdD3(private val scheduler: Scheduler, private val maxNorm: Float) : Optimizer.D3(maxNorm) {
-    override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 = weight - scheduler.calcRate() * dw
+    override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 = weight - scheduler.calcRate(step = step) * dw
 }
