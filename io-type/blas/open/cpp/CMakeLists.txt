@@ -5,8 +5,15 @@ project(io-type-blas C CXX)
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/open)
 
 # JNIのセットアップ
-find_package(JNI REQUIRED)
-include_directories(${JNI_INCLUDE_DIRS})
+if(ANDROID)
+    # Android: NDKのJNIヘッダーを使用
+    include_directories(${CMAKE_SYSROOT}/usr/include)
+    include_directories(${CMAKE_SYSROOT}/usr/include/${CMAKE_ANDROID_ARCH_TRIPLE})
+else()
+    # Desktop: システムのJDKを使用
+    find_package(JNI REQUIRED)
+    include_directories(${JNI_INCLUDE_DIRS})
+endif()
 
 # OpenBLASのセットアップ
 include(ExternalProject)
@@ -14,6 +21,23 @@ include(ExternalProject)
 # OpenBLASのインストール先
 set(OPENBLAS_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/openblas)
 set(OPENBLAS_INSTALL_DIR ${OPENBLAS_PREFIX}/install)
+
+# Android向けOpenBLASビルドオプション
+if(ANDROID)
+    set(OPENBLAS_ANDROID_ARGS
+        -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+        -DANDROID_ABI=${ANDROID_ABI}
+        -DANDROID_PLATFORM=${ANDROID_PLATFORM}
+        -DNOFORTRAN=1
+        -DBUILD_WITHOUT_LAPACK=ON
+        -DC_LAPACK=OFF
+    )
+else()
+    set(OPENBLAS_ANDROID_ARGS
+        -DBUILD_WITHOUT_LAPACK=OFF
+        -DC_LAPACK=ON
+    )
+endif()
 
 ExternalProject_Add(
         OpenBLAS
@@ -26,11 +50,10 @@ ExternalProject_Add(
         -DCMAKE_BUILD_TYPE=Release
         -DBUILD_SHARED_LIBS=OFF
         -DBUILD_TESTING=OFF
-        -DBUILD_WITHOUT_LAPACK=OFF
-        -DC_LAPACK=ON
         -DUSE_THREAD=ON
         -DUSE_OPENMP=OFF
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+        ${OPENBLAS_ANDROID_ARGS}
         ${OPENBLAS_CMAKE_ARGS}
         BUILD_COMMAND ${CMAKE_COMMAND} --build . --config Release
         INSTALL_COMMAND ${CMAKE_COMMAND} --install . --config Release
@@ -58,7 +81,10 @@ target_include_directories(JOpenBLAS PRIVATE
 
 # OpenBLASをリンク
 target_link_libraries(JOpenBLAS PRIVATE ${OPENBLAS_LIB})
-if(UNIX AND NOT APPLE AND NOT ANDROID)
+if(ANDROID)
+    # Android: logライブラリのみ必要（pthreadはBionicに含まれる）
+    target_link_libraries(JOpenBLAS PRIVATE log m)
+elseif(UNIX AND NOT APPLE)
     # Linux: pthreadとgfortranが必要
     target_link_libraries(JOpenBLAS PRIVATE pthread m gfortran)
 elseif(APPLE)
