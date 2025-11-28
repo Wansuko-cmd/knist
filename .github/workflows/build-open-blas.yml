@@ -68,16 +68,27 @@ jobs:
           key: openblas-${{ hashFiles('io-type/blas/open/cpp/CMakeLists.txt') }}-${{ matrix.os_name }}-${{ matrix.arch }}
 
       - name: ネイティブライブラリをビルド
-        run: ./gradlew :io-type:blas:cpp:cmakeBuild
+        run: ./gradlew :io-type:blas:open:cpp:cmakeBuild
         shell: bash
 
-      - name: 成果物をアップロード
+      - name: 成果物をアップロード (Windows以外)
+        if: runner.os != 'Windows'
         uses: actions/upload-artifact@v4
         with:
           name: open-blas-${{ matrix.os_name }}-${{ matrix.arch }}
           path: |
             io-type/blas/open/cpp/build/libopen_blas.${{ matrix.lib_extension }}
             io-type/blas/open/cpp/build/Release/libopen_blas.${{ matrix.lib_extension }}
+          if-no-files-found: error
+
+      - name: 成果物をアップロード (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: open-blas-${{ matrix.os_name }}-${{ matrix.arch }}
+          path: |
+            io-type/blas/open/cpp/build/open_blas.${{ matrix.lib_extension }}
+            io-type/blas/open/cpp/build/Release/open_blas.${{ matrix.lib_extension }}
           if-no-files-found: error
 
   commit:
@@ -119,7 +130,7 @@ jobs:
 
           # Windows/X64
           mkdir -p io-type/blas/open/src/jvmMain/resources/open/mingw/X64
-          find artifacts/open-blas-mingw-X64 -name "libopen_blas.dll" -exec cp {} io-type/blas/open/src/jvmMain/resources/open/mingw/X64/ \;
+          find artifacts/open-blas-mingw-X64 -name "open_blas.dll" -exec cp {} io-type/blas/open/src/jvmMain/resources/open/mingw/X64/ \;
 
           echo "=== Resources structure ==="
           find io-type/blas/open/src/jvmMain/resources -type f
