@@ -56,7 +56,7 @@ internal data class RmsPropD1(
 
     override fun adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1 {
         velocity = rms * velocity + (1 - rms) * dw.pow(2)
-        return weight - scheduler.calcRate() / (velocity.sqrt() + e) * dw
+        return weight - scheduler.calcRate(step = step) / (velocity.sqrt() + e) * dw
     }
 }
 
@@ -72,7 +72,7 @@ internal data class RmsPropD2(
 
     override fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2 {
         velocity = rms * velocity + (1 - rms) * dw.pow(2)
-        return weight - scheduler.calcRate() / (velocity.sqrt() + e) * dw
+        return weight - scheduler.calcRate(step = step) / (velocity.sqrt() + e) * dw
     }
 }
 
@@ -88,6 +88,6 @@ internal data class RmsPropD3(
 
     override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 {
         velocity = rms * velocity + (1 - rms) * dw.pow(2)
-        return weight - scheduler.calcRate() / (velocity.sqrt() + e) * dw
+        return weight - scheduler.calcRate(step = step) / (velocity.sqrt() + e) * dw
     }
 }

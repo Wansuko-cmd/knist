@@ -70,7 +70,7 @@ internal data class AdamD1(
         val mHat = m / (1f - momentum.pow(t.toFloat()))
         val vHat = v / (1f - rms.pow(t.toFloat()))
 
-        return weight - scheduler.calcRate() * mHat / vHat.sqrt(e = E)
+        return weight - scheduler.calcRate(step = step) * mHat / vHat.sqrt(e = E)
     }
 }
 
@@ -95,7 +95,7 @@ internal data class AdamD2(
         val mHat = m / (1f - momentum.pow(t.toFloat()))
         val vHat = v / (1f - rms.pow(t.toFloat()))
 
-        return weight - scheduler.calcRate() * mHat / vHat.sqrt(e = E)
+        return weight - scheduler.calcRate(step = step) * mHat / vHat.sqrt(e = E)
     }
 }
 
@@ -120,6 +120,6 @@ internal data class AdamD3(
         val mHat = m / (1f - momentum.pow(t.toFloat()))
         val vHat = v / (1f - rms.pow(t.toFloat()))
 
-        return weight - scheduler.calcRate() * mHat / vHat.sqrt(e = E)
+        return weight - scheduler.calcRate(step = step) * mHat / vHat.sqrt(e = E)
     }
 }
