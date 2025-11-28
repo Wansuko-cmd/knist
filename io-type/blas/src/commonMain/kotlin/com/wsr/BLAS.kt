@@ -1,9 +1,10 @@
 package com.wsr
 
-expect val default: IBLAS
+import com.wsr.blas.base.IBLAS
+import com.wsr.open.openBLAS
 
 object BLAS : IBLAS {
-    private var instance: IBLAS = default
+    private var instance: IBLAS = openBLAS
 
     fun set(blas: IBLAS) {
         instance = blas
