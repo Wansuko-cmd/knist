@@ -11,6 +11,7 @@ import com.wsr.layer.process.norm.layer.d1.layerNorm
 import com.wsr.layer.process.norm.layer.d2.layerNorm
 import com.wsr.layer.process.skip.skip
 import com.wsr.layer.reshape.reshape.reshapeToD1
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.adam.AdamW
 import com.wsr.output.softmax.softmaxWithLoss
 import java.util.Random
@@ -24,7 +25,7 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
 
     // ニューラルネットワークを構築
     val network = NetworkBuilder
-        .inputPx(x = 28, y = 28, optimizer = AdamW(0.001f), initializer = He(seed = seed))
+        .inputPx(x = 28, y = 28, optimizer = AdamW(scheduler = Scheduler.Fix(0.001f)), initializer = He(seed = seed))
         .repeat(5) {
             skip {
                 this
