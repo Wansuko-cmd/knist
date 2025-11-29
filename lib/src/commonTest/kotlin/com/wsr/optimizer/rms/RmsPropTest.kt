@@ -2,7 +2,6 @@
 
 package com.wsr.optimizer.rms
 
-import com.wsr.core.get
 import com.wsr.optimizer.Scheduler
 import kotlin.test.Test
 
@@ -19,7 +18,7 @@ class RmsPropTest {
     @Test
     fun `RmsPropの_d2=RmsPropD2インスタンスを返す`() {
         val rmsProp = RmsProp(scheduler = Scheduler.Fix(0.001f), rms = 0.9f)
-        val rmsPropD2 = rmsProp.d2(x = 1, y = 1)
+        val rmsPropD2 = rmsProp.d2(i = 1, j = 1)
 
         // RmsPropD2インスタンスが返されることを確認
         assert(rmsPropD2 is RmsPropD2)
@@ -28,7 +27,7 @@ class RmsPropTest {
     @Test
     fun `RmsPropの_d3=RmsPropD3インスタンスを返す`() {
         val rmsProp = RmsProp(scheduler = Scheduler.Fix(0.001f), rms = 0.9f)
-        val rmsPropD3 = rmsProp.d3(x = 1, y = 1, z = 1)
+        val rmsPropD3 = rmsProp.d3(i = 1, j = 1, k = 1)
 
         // RmsPropD3インスタンスが返されることを確認
         assert(rmsPropD3 is RmsPropD3)
