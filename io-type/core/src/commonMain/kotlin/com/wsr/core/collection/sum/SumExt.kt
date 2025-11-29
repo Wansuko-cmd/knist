@@ -4,7 +4,7 @@ import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.get
-import com.wsr.core.reshape.transpose
+import com.wsr.core.reshape.transpose.transpose
 
 fun IOType.D1.sum() = value.sum()
 

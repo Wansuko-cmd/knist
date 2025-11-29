@@ -1,9 +1,11 @@
-package com.wsr.core.reshape
+package com.wsr.core.reshape.transpose
 
 import com.wsr.core.IOType
 import com.wsr.core.d2
 import com.wsr.core.d3
 import com.wsr.core.get
+
+fun IOType.D2.transpose() = IOType.d2(shape.reversed()) { x, y -> this[y, x] }
 
 fun IOType.D3.transpose(axisI: Int, axisJ: Int, axisK: Int): IOType.D3 {
     val shape = listOf(shape[axisI], shape[axisJ], shape[axisK])
@@ -57,10 +59,3 @@ fun IOType.D3.transpose(axisI: Int, axisJ: Int, axisK: Int): IOType.D3 {
         else -> throw IllegalStateException()
     }
 }
-
-fun IOType.D3.slice(i: IntRange = 0 until shape[0], j: IntRange = 0 until shape[1], k: IntRange = 0 until shape[2]) =
-    IOType.d3(shape = listOf(i.count(), j.count(), k.count())) { x, y, z ->
-        this[i.start + x, j.start + y, k.start + z]
-    }
-
-fun IOType.D3.reshapeToD2(i: Int, j: Int) = IOType.d2(shape = listOf(i, j), value = value)
