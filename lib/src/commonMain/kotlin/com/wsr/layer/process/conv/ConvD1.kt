@@ -53,7 +53,7 @@ class ConvD1 internal constructor(
         val col = input.unfold(windowSize = kernel, stride = stride, padding = padding)
         return (weight.reshapeToD2(listOf(outputX, channel * kernel)) matMul col)
             .reshapeToD3(listOf(filter, input.size, outputY))
-            .transpose(axisI = 1, axisJ =  0, axisK = 2)
+            .transpose(axisI = 1, axisJ = 0, axisK = 2)
             .toBatch()
     }
 
@@ -65,7 +65,7 @@ class ConvD1 internal constructor(
         val col = input.unfold(windowSize = kernel, stride = stride, padding = padding)
         val output = (weight.reshapeToD2(listOf(outputX, channel * kernel)) matMul col)
             .reshapeToD3(listOf(filter, input.size, outputY))
-            .transpose(axisI = 1, axisJ =  0, axisK = 2)
+            .transpose(axisI = 1, axisJ = 0, axisK = 2)
             .toBatch()
 
         val delta = calcDelta(output)

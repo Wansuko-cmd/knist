@@ -36,11 +36,7 @@ fun Batch<IOType.D2>.broadcastToD3(axis: Int, size: Int) = Batch(this.size) { th
  * 入力: [batchSize] x [channel, inputSize]
  * 出力: [windowSize * channel, outputSize * batchSize]
  */
-fun Batch<IOType.D2>.unfold(
-    windowSize: Int,
-    stride: Int,
-    padding: Int,
-): IOType.D2 {
+fun Batch<IOType.D2>.unfold(windowSize: Int, stride: Int, padding: Int): IOType.D2 {
     val channel = shape[0]
     val inputSize = shape[1]
     val outputSize = (inputSize - windowSize + 2 * padding) / stride + 1
@@ -71,13 +67,7 @@ fun Batch<IOType.D2>.unfold(
  * 出力: [batchSize] x [channel, inputSize]
  * 注意: 重複部分は加算される
  */
-fun IOType.D2.fold(
-    batchSize: Int,
-    channel: Int,
-    inputSize: Int,
-    stride: Int,
-    padding: Int,
-): Batch<IOType.D2> {
+fun IOType.D2.fold(batchSize: Int, channel: Int, inputSize: Int, stride: Int, padding: Int): Batch<IOType.D2> {
     val windowSize = shape[0] / channel
     val outputSize = shape[1] / batchSize
     return Batch(batchSize) { b ->
