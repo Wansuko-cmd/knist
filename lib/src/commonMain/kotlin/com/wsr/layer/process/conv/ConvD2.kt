@@ -72,8 +72,8 @@ class ConvD2 internal constructor(
         val dx = (reversed matMul deltaCol).fold(
             batchSize = input.size,
             channel = channel,
-            inputSizeX = inputX,
-            inputSizeY = inputY,
+            inputX = inputX,
+            inputY = inputY,
             stride = stride,
             padding = padding,
         )
