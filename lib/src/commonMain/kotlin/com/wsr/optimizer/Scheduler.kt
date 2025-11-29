@@ -53,7 +53,8 @@ sealed interface Scheduler {
             return if (t < warmUp) {
                 initialRate + (maxRate - initialRate) * (t / warmUp.toFloat())
             } else {
-                val angle = (t - warmUp) / stepSize.toFloat()
+                val elapsed = t - warmUp
+                val angle = (elapsed % stepSize) / stepSize.toFloat()
                 minRate + 0.5f * (maxRate - minRate) * (1 + cos(angle * PI.toFloat()))
             }
         }
