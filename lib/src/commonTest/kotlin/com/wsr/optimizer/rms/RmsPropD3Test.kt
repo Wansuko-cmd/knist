@@ -14,7 +14,13 @@ class RmsPropD3Test {
     @Test
     fun `RmsPropD3の_adapt=初回呼び出し時の動作`() {
         val rmsPropD3 =
-            RmsPropD3(scheduler = Scheduler.Fix(0.1f), rms = 0.9f, maxNorm = Float.MAX_VALUE, shape = listOf(1, 1, 2))
+            RmsPropD3(
+                scheduler = Scheduler.Fix(0.1f),
+                rms = 0.9f,
+                maxNorm = Float.MAX_VALUE,
+                stepUnit = 1,
+                shape = listOf(1, 1, 2),
+            )
 
         // weight = [[[10, 20]]]
         val weight = IOType.d3(1, 1, 2) { _, _, z -> (z + 1) * 10.0f }
@@ -31,7 +37,13 @@ class RmsPropD3Test {
     @Test
     fun `RmsPropD3の_adapt=2回目以降はvelocityが蓄積される`() {
         val rmsPropD3 =
-            RmsPropD3(scheduler = Scheduler.Fix(0.1f), rms = 0.9f, maxNorm = Float.MAX_VALUE, shape = listOf(1, 1, 2))
+            RmsPropD3(
+                scheduler = Scheduler.Fix(0.1f),
+                rms = 0.9f,
+                maxNorm = Float.MAX_VALUE,
+                stepUnit = 1,
+                shape = listOf(1, 1, 2),
+            )
 
         // 1回目
         var weight = IOType.d3(1, 1, 2) { _, _, _ -> 10.0f }
