@@ -11,6 +11,7 @@ import com.wsr.core.d2
 import com.wsr.core.get
 import com.wsr.core.set
 import com.wsr.layer.Context
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -25,7 +26,7 @@ class AffineD1Test {
         val affine =
             AffineD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1f).d2(
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d2(
                     x = weight.shape[0],
                     y = weight.shape[1],
                 ),
@@ -60,7 +61,7 @@ class AffineD1Test {
         val affine =
             AffineD1(
                 outputSize = 2,
-                optimizer = Sgd(0.1f).d2(
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d2(
                     x = weight.shape[0],
                     y = weight.shape[1],
                 ),
@@ -96,7 +97,7 @@ class AffineD1Test {
         val affine =
             AffineD1(
                 outputSize = 2,
-                optimizer = Sgd(0.1f).d2(
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d2(
                     x = weight.shape[0],
                     y = weight.shape[1],
                 ),

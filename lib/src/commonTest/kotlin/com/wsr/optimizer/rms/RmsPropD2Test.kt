@@ -6,13 +6,15 @@ import com.wsr.core.IOType
 import com.wsr.core.d2
 import com.wsr.core.get
 import com.wsr.core.set
+import com.wsr.optimizer.Scheduler
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class RmsPropD2Test {
     @Test
     fun `RmsPropD2の_adapt=初回呼び出し時の動作`() {
-        val rmsPropD2 = RmsPropD2(rate = 0.1f, rms = 0.9f, maxNorm = Float.MAX_VALUE, shape = listOf(1, 2))
+        val rmsPropD2 =
+            RmsPropD2(scheduler = Scheduler.Fix(0.1f), rms = 0.9f, maxNorm = Float.MAX_VALUE, shape = listOf(1, 2))
 
         // weight = [[10, 20]]
         val weight = IOType.d2(1, 2) { _, y -> (y + 1) * 10.0f }
@@ -28,7 +30,8 @@ class RmsPropD2Test {
 
     @Test
     fun `RmsPropD2の_adapt=2回目以降はvelocityが蓄積される`() {
-        val rmsPropD2 = RmsPropD2(rate = 0.1f, rms = 0.9f, maxNorm = Float.MAX_VALUE, shape = listOf(2, 2))
+        val rmsPropD2 =
+            RmsPropD2(scheduler = Scheduler.Fix(0.1f), rms = 0.9f, maxNorm = Float.MAX_VALUE, shape = listOf(2, 2))
 
         // 1回目
         var weight = IOType.d2(2, 2) { _, _ -> 10.0f }

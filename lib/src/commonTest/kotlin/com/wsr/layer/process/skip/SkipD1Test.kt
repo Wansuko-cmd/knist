@@ -14,6 +14,7 @@ import com.wsr.layer.Context
 import com.wsr.layer.process.affine.AffineD1
 import com.wsr.layer.process.bias.BiasD1
 import com.wsr.layer.process.skip.SkipD1
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -24,14 +25,14 @@ class SkipD1Test {
         // サブ層1: Bias([1, 2])
         val bias = BiasD1(
             outputSize = 2,
-            optimizer = Sgd(0.1f).d1(size = 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d1(size = 2),
             weight = IOType.d1(listOf(1.0f, 2.0f)),
         )
 
         // サブ層2: Affine([[1, 0], [0, 1]]) (恒等行列)
         val affine = AffineD1(
             outputSize = 2,
-            optimizer = Sgd(0.1f).d2(2, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(2, 2),
             weight = IOType.d2(2, 2) { x, y -> if (x == y) 1.0f else 0.0f },
         )
 
@@ -61,7 +62,7 @@ class SkipD1Test {
         val biasWeight = IOType.d1(listOf(0.0f, 0.0f, 0.0f))
         val biasLayer = BiasD1(
             outputSize = 3,
-            optimizer = Sgd(0.1f).d1(size = 3),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d1(size = 3),
             weight = biasWeight,
         )
 
@@ -98,7 +99,7 @@ class SkipD1Test {
         val affineWeight = IOType.d2(2, 2) { x, y -> if (x == y) 1.0f else 0.0f }
         val affineLayer = AffineD1(
             outputSize = 2,
-            optimizer = Sgd(0.1f).d2(2, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(2, 2),
             weight = affineWeight,
         )
 
@@ -106,7 +107,7 @@ class SkipD1Test {
         val biasWeight = IOType.d1(listOf(1.0f, 1.0f))
         val biasLayer = BiasD1(
             outputSize = 2,
-            optimizer = Sgd(0.1f).d1(size = 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d1(size = 2),
             weight = biasWeight,
         )
 
@@ -161,7 +162,7 @@ class SkipD1Test {
         // サブ層: Affine([[1, 0], [0, 1], [0, 0]]) - 2次元を3次元に変換
         val affine = AffineD1(
             outputSize = 3,
-            optimizer = Sgd(0.1f).d2(2, 3),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(2, 3),
             weight = IOType.d2(2, 3) { x, y -> if (x == y) 1.0f else 0.0f },
         )
 
@@ -192,7 +193,7 @@ class SkipD1Test {
         // サブ層: Affine([[1, 0], [0, 1], [0, 0]]) - 恒等変換的に2->3次元変換
         val affine = AffineD1(
             outputSize = 3,
-            optimizer = Sgd(0.1f).d2(2, 3),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(2, 3),
             weight = IOType.d2(2, 3) { x, y -> if (x == y) 1.0f else 0.0f },
         )
 
@@ -229,7 +230,7 @@ class SkipD1Test {
         // サブ層: Affine([[1,0,0,0,0,0],[0,1,0,0,0,0],[0,0,1,0,0,0]]) - 最初の3要素のみ取る
         val affine = AffineD1(
             outputSize = 3,
-            optimizer = Sgd(0.1f).d2(6, 3),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(6, 3),
             weight = IOType.d2(6, 3) { x, y -> if (x == y) 1.0f else 0.0f },
         )
 
@@ -264,7 +265,7 @@ class SkipD1Test {
         // サブ層: Affine([[1,0,0,0,0,0],[0,1,0,0,0,0],[0,0,1,0,0,0]]) - 最初の3要素のみ取る
         val affine = AffineD1(
             outputSize = 3,
-            optimizer = Sgd(0.1f).d2(6, 3),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(6, 3),
             weight = IOType.d2(6, 3) { x, y -> if (x == y) 1.0f else 0.0f },
         )
 

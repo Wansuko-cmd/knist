@@ -12,6 +12,7 @@ import com.wsr.core.get
 import com.wsr.core.set
 import com.wsr.layer.Context
 import com.wsr.layer.process.conv.ConvD1
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -36,7 +37,7 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                optimizer = Sgd(0.1f).d3(
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d3(
                     x = weight.shape[0],
                     y = weight.shape[1],
                     z = weight.shape[2],
@@ -73,7 +74,7 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                optimizer = Sgd(0.1f).d3(
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d3(
                     x = weight.shape[0],
                     y = weight.shape[1],
                     z = weight.shape[2],
@@ -113,7 +114,7 @@ class ConvD1Test {
                 stride = 1,
                 padding = 0,
                 inputSize = 3,
-                optimizer = Sgd(0.1f).d3(
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d3(
                     x = weight.shape[0],
                     y = weight.shape[1],
                     z = weight.shape[2],
