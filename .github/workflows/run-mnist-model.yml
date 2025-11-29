@@ -1,4 +1,4 @@
-name: 'テストを実行'
+name: 'Mnistモデルの精度を確認'
 
 on:
   workflow_dispatch:
