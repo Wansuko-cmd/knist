@@ -1,6 +1,8 @@
 package com.wsr.optimizer
 
 import kotlinx.serialization.Serializable
+import kotlin.math.PI
+import kotlin.math.cos
 import kotlin.math.pow
 
 sealed interface Scheduler {
@@ -15,12 +17,12 @@ sealed interface Scheduler {
     data class Step(
         val rate: Float,
         val gamma: Float,
-        val stepSize: Int,
+        val stepCount: Int,
         val stepUnit: Int = 1,
     ) : Scheduler {
         override fun calcRate(step: Int): Float {
             val count = step / stepUnit
-            return rate * gamma.pow(count / stepSize)
+            return rate * gamma.pow(count / stepCount)
         }
     }
 
@@ -34,6 +36,26 @@ sealed interface Scheduler {
         override fun calcRate(step: Int): Float {
             val count = step / stepUnit
             return rate * gamma.pow(milestones.count { it < count })
+        }
+    }
+
+    @Serializable
+    data class CosineAnnealing(
+        val minRate: Float,
+        val maxRate: Float,
+        val stepSize: Int,
+        val stepUnit: Int = 1,
+        val warmUp: Int = 0,
+        val initialRate: Float = minRate,
+    ) : Scheduler {
+        override fun calcRate(step: Int): Float {
+            val t = step / stepUnit
+            return if (t < warmUp) {
+                initialRate + (maxRate - initialRate) * (t / warmUp.toFloat())
+            } else {
+                val angle = (t - warmUp) / stepSize.toFloat()
+                minRate + 0.5f * (maxRate - minRate) * (1 + cos(angle * PI.toFloat()))
+            }
         }
     }
 }
