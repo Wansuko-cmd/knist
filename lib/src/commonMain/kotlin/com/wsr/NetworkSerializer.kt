@@ -23,9 +23,6 @@ import com.wsr.layer.process.debug.DebugD3
 import com.wsr.layer.process.dropout.DropoutD1
 import com.wsr.layer.process.dropout.DropoutD2
 import com.wsr.layer.process.dropout.DropoutD3
-import com.wsr.layer.process.function.linear.LinearD1 as ProcessLinearD1
-import com.wsr.layer.process.function.linear.LinearD2 as ProcessLinearD2
-import com.wsr.layer.process.function.linear.LinearD3 as ProcessLinearD3
 import com.wsr.layer.process.function.relu.LeakyReLUD1
 import com.wsr.layer.process.function.relu.LeakyReLUD2
 import com.wsr.layer.process.function.relu.LeakyReLUD3
@@ -72,18 +69,23 @@ import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.adam.AdamD1
 import com.wsr.optimizer.adam.AdamD2
 import com.wsr.optimizer.adam.AdamD3
+import com.wsr.optimizer.adam.AdamD4
 import com.wsr.optimizer.adam.AdamWD1
 import com.wsr.optimizer.adam.AdamWD2
 import com.wsr.optimizer.adam.AdamWD3
+import com.wsr.optimizer.adam.AdamWD4
 import com.wsr.optimizer.momentum.MomentumD1
 import com.wsr.optimizer.momentum.MomentumD2
 import com.wsr.optimizer.momentum.MomentumD3
+import com.wsr.optimizer.momentum.MomentumD4
 import com.wsr.optimizer.rms.RmsPropD1
 import com.wsr.optimizer.rms.RmsPropD2
 import com.wsr.optimizer.rms.RmsPropD3
+import com.wsr.optimizer.rms.RmsPropD4
 import com.wsr.optimizer.sgd.SgdD1
 import com.wsr.optimizer.sgd.SgdD2
 import com.wsr.optimizer.sgd.SgdD3
+import com.wsr.optimizer.sgd.SgdD4
 import com.wsr.output.Output
 import com.wsr.output.mean.MeanSquareD1
 import com.wsr.output.mean.MeanSquareD2
@@ -91,7 +93,6 @@ import com.wsr.output.sigmoid.SigmoidWithLossD1
 import com.wsr.output.sigmoid.SigmoidWithLossD2
 import com.wsr.output.softmax.SoftmaxWithLossD1
 import com.wsr.output.softmax.SoftmaxWithLossD2
-import kotlin.reflect.KClass
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -108,6 +109,10 @@ import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.serializer
 import okio.BufferedSink
 import okio.BufferedSource
+import kotlin.reflect.KClass
+import com.wsr.layer.process.function.linear.LinearD1 as ProcessLinearD1
+import com.wsr.layer.process.function.linear.LinearD2 as ProcessLinearD2
+import com.wsr.layer.process.function.linear.LinearD3 as ProcessLinearD3
 
 class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
     private val converterSerializer = json.serializersModule.serializer<Converter>()
@@ -358,6 +363,14 @@ private val buildInSerializersModule = SerializersModule {
         subclass(RmsPropD3::class)
         subclass(AdamD3::class)
         subclass(AdamWD3::class)
+    }
+
+    polymorphic(Optimizer.D4::class) {
+        subclass(SgdD4::class)
+        subclass(MomentumD4::class)
+        subclass(RmsPropD4::class)
+        subclass(AdamD4::class)
+        subclass(AdamWD4::class)
     }
 
     polymorphic(Scheduler::class) {
