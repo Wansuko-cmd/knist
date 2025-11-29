@@ -46,15 +46,15 @@ class AttentionD2 internal constructor(
     private val mask by lazy { IOType.d2(outputX, outputX) { x, y -> if (x < y) -1e9f else 0f } }
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
         val query = input.matMul(weightQ)
-            .reshapeToD3(listOf(outputX, numOfHeads, dim))
+            .reshapeToD3(i = outputX, j = numOfHeads, k = dim)
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
 
         val key = input.matMul(weightK)
-            .reshapeToD3(listOf(outputX, numOfHeads, dim))
+            .reshapeToD3(i = outputX, j = numOfHeads, k = dim)
             .transpose(axisI = 1, axisJ = 2, axisK = 0)
 
         val value = input.matMul(weightV)
-            .reshapeToD3(listOf(outputX, numOfHeads, dim))
+            .reshapeToD3(i = outputX, j = numOfHeads, k = dim)
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
 
         val mul = query.matMul(key)
@@ -79,15 +79,15 @@ class AttentionD2 internal constructor(
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
         val query = input.matMul(weightQ)
-            .reshapeToD3(listOf(outputX, numOfHeads, dim))
+            .reshapeToD3(i = outputX, j = numOfHeads, k = dim)
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
 
         val key = input.matMul(weightK)
-            .reshapeToD3(listOf(outputX, numOfHeads, dim))
+            .reshapeToD3(i = outputX, j = numOfHeads, k = dim)
             .transpose(axisI = 1, axisJ = 2, axisK = 0)
 
         val value = input.matMul(weightV)
-            .reshapeToD3(listOf(outputX, numOfHeads, dim))
+            .reshapeToD3(i = outputX, j = numOfHeads, k = dim)
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
 
         val mul = query.matMul(key)
@@ -139,19 +139,19 @@ class AttentionD2 internal constructor(
 
         val dQueryD2 = dQuery
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
-            .reshapeToD2(listOf(outputX, numOfHeads * dim))
+            .reshapeToD2(i = outputX, j = numOfHeads * dim)
         val dxq = dQueryD2.matMul(weightQ.transpose())
         val dwq = inputT.matMul(dQueryD2)
 
         val dKeyD2 = dKey
             .transpose(axisI = 2, axisJ = 0, axisK = 1)
-            .reshapeToD2(listOf(outputX, numOfHeads * dim))
+            .reshapeToD2(i = outputX, j = numOfHeads * dim)
         val dxk = dKeyD2.matMul(weightK.transpose())
         val dwk = inputT.matMul(dKeyD2)
 
         val dValueD2 = dValue
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
-            .reshapeToD2(listOf(outputX, numOfHeads * dim))
+            .reshapeToD2(i = outputX, j = numOfHeads * dim)
         val dxv = dValueD2.matMul(weightV.transpose())
         val dwv = inputT.matMul(dValueD2)
 

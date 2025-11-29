@@ -12,7 +12,6 @@ import com.wsr.core.d2
 import com.wsr.core.d3
 import com.wsr.core.get
 import com.wsr.core.operation.matmul.matMul
-import com.wsr.core.reshape.reshapeToD2
 import com.wsr.core.reshape.reshapeToD3
 import com.wsr.core.reshape.transpose
 import com.wsr.initializer.WeightInitializer
@@ -51,8 +50,8 @@ class ConvD1 internal constructor(
 
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
         val col = input.unfold(windowSize = kernel, stride = stride, padding = padding)
-        return (weight.reshapeToD2(listOf(outputX, channel * kernel)) matMul col)
-            .reshapeToD3(listOf(filter, input.size, outputY))
+        return (weight.reshapeToD2(outputX, channel * kernel) matMul col)
+            .reshapeToD3(i = filter, j = input.size, k = outputY)
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
             .toBatch()
     }
@@ -63,21 +62,21 @@ class ConvD1 internal constructor(
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
         val col = input.unfold(windowSize = kernel, stride = stride, padding = padding)
-        val output = (weight.reshapeToD2(listOf(outputX, channel * kernel)) matMul col)
-            .reshapeToD3(listOf(filter, input.size, outputY))
+        val output = (weight.reshapeToD2(i = outputX, j = channel * kernel) matMul col)
+            .reshapeToD3(i = filter, j = input.size, k = outputY)
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
             .toBatch()
 
         val delta = calcDelta(output)
 
-        val reversed = IOType.d2(channel * kernel, filter) { i, f ->
+        val reversed = IOType.d2(i = channel * kernel, j = filter) { i, f ->
             val c = i / kernel
             val k = i % kernel
             weight[f, c, kernel - k - 1]
         }
         val deltaCol = delta.toD3()
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
-            .reshapeToD2(listOf(filter, input.size * outputY))
+            .reshapeToD2(i = filter, j = input.size * outputY)
         val dx = (reversed matMul deltaCol).fold(
             channel = channel,
             batchSize = input.size,

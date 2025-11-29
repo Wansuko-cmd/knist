@@ -13,14 +13,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal class ReshapeD3ToD2(override val outputX: Int, override val outputY: Int) : Reshape.D3ToD2() {
     override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D2> =
-        input.reshapeToD2(listOf(outputX, outputY))
+        input.reshapeToD2(i = outputX, j = outputY)
 
     override fun train(
         input: Batch<IOType.D3>,
         context: Context,
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D3> {
-        val output = input.reshapeToD2(listOf(outputX, outputY))
+        val output = input.reshapeToD2(i = outputX, j = outputY)
         val delta = calcDelta(output)
         return delta.reshapeToD3(input.shape)
     }

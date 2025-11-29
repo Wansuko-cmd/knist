@@ -20,6 +20,8 @@ fun IOType.D2.transpose() = IOType.d2(shape.reversed()) { x, y -> this[y, x] }
 
 fun List<IOType.D2>.transpose() = this.map { it.transpose() }
 
+fun IOType.D2.reshapeToD3(i: Int, j: Int, k: Int) = reshapeToD3(shape = listOf(i, j, k))
+
 fun IOType.D2.reshapeToD3(shape: List<Int>) = IOType.d3(shape = shape, value = value)
 
 fun IOType.D2.broadcastToD3(axis: Int, size: Int) = when (axis) {

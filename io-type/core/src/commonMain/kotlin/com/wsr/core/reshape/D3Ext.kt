@@ -63,4 +63,4 @@ fun IOType.D3.slice(i: IntRange = 0 until shape[0], j: IntRange = 0 until shape[
         this[i.start + x, j.start + y, k.start + z]
     }
 
-fun IOType.D3.reshapeToD2(shape: List<Int>) = IOType.d2(shape = shape, value = value)
+fun IOType.D3.reshapeToD2(i: Int, j: Int) = IOType.d2(shape = listOf(i, j), value = value)
