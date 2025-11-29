@@ -28,8 +28,8 @@ data class MnistDataset(val pixels: List<Float>, val label: Int, val imageSize: 
         }
 
     companion object {
-        private const val LABEL_PATH = "train-labels-idx1-ubyte.gz"
-        private const val IMAGE_PATH = "train-images-idx3-ubyte.gz"
+        private const val LABEL_PATH = "../train-labels-idx1-ubyte.gz"
+        private const val IMAGE_PATH = "../train-images-idx3-ubyte.gz"
         private const val PIXEL_DEPTH = 255
 
         fun read(): List<MnistDataset> {

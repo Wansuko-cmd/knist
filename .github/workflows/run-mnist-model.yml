@@ -1,0 +1,45 @@
+name: 'テストを実行'
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 仮想ブランチにチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Javaのセットアップ
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          cache: 'gradle'
+
+      - name: ./gradlewに権限を付与
+        run: |
+          chmod 777 ${{ github.workspace }}/gradlew
+
+      - name: MNISTデータセットのキャッシュを復元
+        id: cache-mnist
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.mnist
+          key: mnist-dataset-v1
+
+      - name: MNISTデータセットをダウンロード
+        if: steps.cache-mnist.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ${{ github.workspace }}/.mnist
+          curl -L -o ${{ github.workspace }}/.mnist/train-images-idx3-ubyte.gz https://ossci-datasets.s3.amazonaws.com/mnist/train-images-idx3-ubyte.gz
+          curl -L -o ${{ github.workspace }}/.mnist/train-labels-idx1-ubyte.gz https://ossci-datasets.s3.amazonaws.com/mnist/train-labels-idx1-ubyte.gz
+          curl -L -o ${{ github.workspace }}/.mnist/t10k-images-idx3-ubyte.gz https://ossci-datasets.s3.amazonaws.com/mnist/t10k-images-idx3-ubyte.gz
+          curl -L -o ${{ github.workspace }}/.mnist/t10k-labels-idx1-ubyte.gz https://ossci-datasets.s3.amazonaws.com/mnist/t10k-labels-idx1-ubyte.gz
+
+      - name: MNISTテストを実行
+        env:
+          MNIST_DATA_DIR: ${{ github.workspace }}/.mnist
+        run: |
+          ${{ github.workspace }}/gradlew sample:test --tests "mnist.MnistTest" --info
