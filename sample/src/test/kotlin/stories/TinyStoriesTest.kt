@@ -7,8 +7,8 @@ import com.wsr.Network
 import dataset.storeis.MAX_LENGTH
 import dataset.storeis.createTinyStoriesModel
 import dataset.storeis.tokenize
-import org.junit.Before
 import kotlin.test.Test
+import org.junit.Before
 
 private const val SEED = 0
 

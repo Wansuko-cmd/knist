@@ -107,7 +107,9 @@ fun createTinyStoriesModel(seed: Int? = null): Network<List<String>, List<String
                     val labels = trainData.map { it.second }
 
                     val random = Random.nextInt(inputs.indices)
-                    println("train line: $lineIndex, batch size: ${inputs.size}, input: ${inputs[random]}, label: ${labels[random]}")
+                    println(
+                        "train line: $lineIndex, batch size: ${inputs.size}, input: ${inputs[random]}, label: ${labels[random]}",
+                    )
                     network.train(inputs, labels).also { println("loss: $it") }
                 }
         }
