@@ -21,8 +21,8 @@ import java.io.File
 import kotlin.random.Random
 import kotlin.random.nextInt
 
-private const val TRAIN_PATH = "stories/TinyStories-train.txt"
-private const val VALID_PATH = "stories/TinyStories-valid.txt"
+private const val TRAIN_PATH = "src/main/resources/stories/TinyStories-train.txt"
+private const val VALID_PATH = "src/main/resources/stories/TinyStories-valid.txt"
 
 private const val VOCAB_SIZE = 3000
 private const val EMBEDDING_DIM = 256
