@@ -6,13 +6,14 @@ import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.get
 import com.wsr.core.set
+import com.wsr.optimizer.Scheduler
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SgdD1Test {
     @Test
     fun `SgdD1の_adapt=勾配に学習率を乗算した値を返す`() {
-        val sgdD1 = SgdD1(rate = 0.1f, maxNorm = Float.MAX_VALUE)
+        val sgdD1 = SgdD1(scheduler = Scheduler.Fix(0.1f), maxNorm = Float.MAX_VALUE)
 
         // weight = [10, 20, 30]
         val weight = IOType.d1(listOf(10.0f, 20.0f, 30.0f))

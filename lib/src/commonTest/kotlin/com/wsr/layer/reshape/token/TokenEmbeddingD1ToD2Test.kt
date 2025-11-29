@@ -10,6 +10,7 @@ import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.get
 import com.wsr.layer.Context
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.math.abs
 import kotlin.test.Test
@@ -38,7 +39,7 @@ class TokenEmbeddingD1ToD2Test {
             outputX = seqLen,
             outputY = embeddingDim,
             vocabSize = vocabSize,
-            optimizer = Sgd(0.1f).d2(vocabSize, embeddingDim),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(vocabSize, embeddingDim),
             weight = weight,
         )
 
@@ -88,7 +89,7 @@ class TokenEmbeddingD1ToD2Test {
             outputX = seqLen,
             outputY = embeddingDim,
             vocabSize = vocabSize,
-            optimizer = Sgd(0.1f).d2(vocabSize, embeddingDim),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(vocabSize, embeddingDim),
             weight = weight,
         )
 
@@ -118,7 +119,6 @@ class TokenEmbeddingD1ToD2Test {
         val vocabSize = 3
         val embeddingDim = 2
         val seqLen = 2
-        val learningRate = 0.1f
 
         // 初期重み:
         // token 0: [1, 1]
@@ -132,7 +132,7 @@ class TokenEmbeddingD1ToD2Test {
             outputX = seqLen,
             outputY = embeddingDim,
             vocabSize = vocabSize,
-            optimizer = Sgd(learningRate).d2(vocabSize, embeddingDim),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(vocabSize, embeddingDim),
             weight = weight,
         )
 
@@ -179,7 +179,6 @@ class TokenEmbeddingD1ToD2Test {
         val vocabSize = 3
         val embeddingDim = 2
         val seqLen = 3
-        val learningRate = 0.1f
 
         val weight = IOType.d2(vocabSize, embeddingDim) { tokenId, embIdx ->
             (tokenId + 1).toFloat()
@@ -189,7 +188,7 @@ class TokenEmbeddingD1ToD2Test {
             outputX = seqLen,
             outputY = embeddingDim,
             vocabSize = vocabSize,
-            optimizer = Sgd(learningRate).d2(vocabSize, embeddingDim),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(vocabSize, embeddingDim),
             weight = weight,
         )
 
@@ -229,7 +228,6 @@ class TokenEmbeddingD1ToD2Test {
         val vocabSize = 4
         val embeddingDim = 2
         val seqLen = 2
-        val learningRate = 0.1f
 
         val weight = IOType.d2(vocabSize, embeddingDim) { tokenId, embIdx ->
             (tokenId + 1).toFloat()
@@ -239,7 +237,7 @@ class TokenEmbeddingD1ToD2Test {
             outputX = seqLen,
             outputY = embeddingDim,
             vocabSize = vocabSize,
-            optimizer = Sgd(learningRate).d2(vocabSize, embeddingDim),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(vocabSize, embeddingDim),
             weight = weight,
         )
 

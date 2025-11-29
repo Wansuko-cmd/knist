@@ -6,6 +6,7 @@ import com.wsr.core.IOType
 import com.wsr.core.d3
 import com.wsr.core.get
 import com.wsr.core.set
+import com.wsr.optimizer.Scheduler
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,7 +15,7 @@ class AdamWD3Test {
     fun `AdamWD3の_adapt=初回呼び出し時の動作`() {
         val adamWD3 =
             AdamWD3(
-                rate = 0.001f,
+                scheduler = Scheduler.Fix(0.001f),
                 momentum = 0.9f,
                 rms = 0.999f,
                 decay = 0.01f,
@@ -41,7 +42,7 @@ class AdamWD3Test {
     fun `AdamWD3の_adapt=2回目以降はモーメントが蓄積される`() {
         val adamWD3 =
             AdamWD3(
-                rate = 0.001f,
+                scheduler = Scheduler.Fix(0.001f),
                 momentum = 0.9f,
                 rms = 0.999f,
                 decay = 0.01f,

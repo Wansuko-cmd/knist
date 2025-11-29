@@ -6,13 +6,20 @@ import com.wsr.core.IOType
 import com.wsr.core.d3
 import com.wsr.core.get
 import com.wsr.core.set
+import com.wsr.optimizer.Scheduler
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MomentumD3Test {
     @Test
     fun `MomentumD3の_adapt=初回呼び出し時はSGDと同じ`() {
-        val momentumD3 = MomentumD3(rate = 0.1f, momentum = 0.9f, maxNorm = Float.MAX_VALUE, shape = listOf(1, 1, 2))
+        val momentumD3 =
+            MomentumD3(
+                scheduler = Scheduler.Fix(0.1f),
+                momentum = 0.9f,
+                maxNorm = Float.MAX_VALUE,
+                shape = listOf(1, 1, 2),
+            )
 
         // weight = [[[10, 20]]]
         val weight = IOType.d3(1, 1, 2) { _, _, z -> (z + 1) * 10.0f }
@@ -28,7 +35,13 @@ class MomentumD3Test {
 
     @Test
     fun `MomentumD3の_adapt=2回目以降はvelocityが蓄積される`() {
-        val momentumD3 = MomentumD3(rate = 0.1f, momentum = 0.9f, maxNorm = Float.MAX_VALUE, shape = listOf(1, 1, 2))
+        val momentumD3 =
+            MomentumD3(
+                scheduler = Scheduler.Fix(0.1f),
+                momentum = 0.9f,
+                maxNorm = Float.MAX_VALUE,
+                shape = listOf(1, 1, 2),
+            )
 
         // 1回目
         var weight = IOType.d3(1, 1, 2) { _, _, z -> (z + 1) * 10.0f }

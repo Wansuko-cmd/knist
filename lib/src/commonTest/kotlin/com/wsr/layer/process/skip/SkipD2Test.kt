@@ -13,6 +13,7 @@ import com.wsr.layer.Context
 import com.wsr.layer.process.affine.AffineD2
 import com.wsr.layer.process.bias.BiasD2
 import com.wsr.layer.process.skip.SkipD2
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -24,7 +25,7 @@ class SkipD2Test {
         val bias = BiasD2(
             outputX = 1,
             outputY = 2,
-            optimizer = Sgd(0.1f).d2(1, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(1, 2),
             weight = IOType.d2(1, 2) { x, y -> if (x == 0 && y == 0) 1.0f else 2.0f },
         )
 
@@ -32,7 +33,7 @@ class SkipD2Test {
         val affine = AffineD2(
             channel = 1,
             outputSize = 2,
-            optimizer = Sgd(0.1f).d2(2, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(2, 2),
             weight = IOType.d2(2, 2) { y, out -> if (y == out) 1.0f else 0.0f },
         )
 
@@ -65,7 +66,7 @@ class SkipD2Test {
         val biasLayer = BiasD2(
             outputX = 1,
             outputY = 3,
-            optimizer = Sgd(0.1f).d2(1, 3),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(1, 3),
             weight = biasWeight,
         )
 
@@ -105,7 +106,7 @@ class SkipD2Test {
         val affineLayer = AffineD2(
             channel = 1,
             outputSize = 2,
-            optimizer = Sgd(0.1f).d2(2, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(2, 2),
             weight = affineWeight,
         )
 
@@ -114,7 +115,7 @@ class SkipD2Test {
         val biasLayer = BiasD2(
             outputX = 1,
             outputY = 2,
-            optimizer = Sgd(0.1f).d2(1, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(1, 2),
             weight = biasWeight,
         )
 
@@ -166,7 +167,7 @@ class SkipD2Test {
         val bias = BiasD2(
             outputX = 3,
             outputY = 3,
-            optimizer = Sgd(0.1f).d2(3, 3),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(3, 3),
             weight = IOType.d2(3, 3) { _, _ -> 0.0f },
         )
 
@@ -215,7 +216,7 @@ class SkipD2Test {
         val bias = BiasD2(
             outputX = 3,
             outputY = 3,
-            optimizer = Sgd(0.1f).d2(3, 3),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(3, 3),
             weight = IOType.d2(3, 3) { _, _ -> 0.0f },
         )
 
@@ -275,7 +276,7 @@ class SkipD2Test {
         val affine = AffineD2(
             channel = 2,
             outputSize = 3,
-            optimizer = Sgd(0.1f).d2(6, 3),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(6, 3),
             weight = IOType.d2(6, 3) { y, out -> if (y == out) 1.0f else 0.0f },
         )
 
@@ -324,7 +325,7 @@ class SkipD2Test {
         val affine = AffineD2(
             channel = 2,
             outputSize = 3,
-            optimizer = Sgd(0.1f).d2(6, 3),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d2(6, 3),
             weight = IOType.d2(6, 3) { y, out -> if (y == out) 1.0f else 0.0f },
         )
 

@@ -6,13 +6,20 @@ import com.wsr.core.IOType
 import com.wsr.core.d2
 import com.wsr.core.get
 import com.wsr.core.set
+import com.wsr.optimizer.Scheduler
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MomentumD2Test {
     @Test
     fun `MomentumD2の_adapt=初回呼び出し時はSGDと同じ`() {
-        val momentumD2 = MomentumD2(rate = 0.1f, momentum = 0.9f, maxNorm = Float.MAX_VALUE, shape = listOf(2, 2))
+        val momentumD2 =
+            MomentumD2(
+                scheduler = Scheduler.Fix(0.1f),
+                momentum = 0.9f,
+                maxNorm = Float.MAX_VALUE,
+                shape = listOf(2, 2),
+            )
 
         // weight = [[10, 20], [30, 40]]
         val weight = IOType.d2(2, 2) { x, y -> (x * 20 + y * 10 + 10).toFloat() }
@@ -30,7 +37,13 @@ class MomentumD2Test {
 
     @Test
     fun `MomentumD2の_adapt=2回目以降はvelocityが蓄積される`() {
-        val momentumD2 = MomentumD2(rate = 0.1f, momentum = 0.9f, maxNorm = Float.MAX_VALUE, shape = listOf(2, 2))
+        val momentumD2 =
+            MomentumD2(
+                scheduler = Scheduler.Fix(0.1f),
+                momentum = 0.9f,
+                maxNorm = Float.MAX_VALUE,
+                shape = listOf(2, 2),
+            )
 
         // 1回目
         var weight = IOType.d2(2, 2) { x, y -> (x * 20 + y * 10 + 10).toFloat() }

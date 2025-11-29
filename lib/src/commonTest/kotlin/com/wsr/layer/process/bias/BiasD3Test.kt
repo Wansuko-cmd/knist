@@ -10,6 +10,7 @@ import com.wsr.core.d3
 import com.wsr.core.get
 import com.wsr.core.set
 import com.wsr.layer.Context
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,7 +22,7 @@ class BiasD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 2,
-            optimizer = Sgd(rate = 0.1f).d3(2, 2, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d3(2, 2, 2),
             weight = IOType.d3(2, 2, 2) { _, _, _ -> 1.0f },
         )
 
@@ -53,7 +54,7 @@ class BiasD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 2,
-            optimizer = Sgd(rate = 0.1f).d3(2, 2, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d3(2, 2, 2),
             weight = initialWeight,
         )
 
@@ -100,7 +101,7 @@ class BiasD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 2,
-            optimizer = Sgd(rate = 0.1f).d3(2, 2, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d3(2, 2, 2),
             weight = weight,
         )
 

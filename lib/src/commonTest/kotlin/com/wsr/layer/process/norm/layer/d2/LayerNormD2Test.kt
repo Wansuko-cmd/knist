@@ -11,6 +11,7 @@ import com.wsr.core.d2
 import com.wsr.core.get
 import com.wsr.core.set
 import com.wsr.layer.Context
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.math.sqrt
 import kotlin.test.Test
@@ -26,7 +27,7 @@ class LayerNormD2Test {
                 outputX = 2,
                 outputY = 2,
                 e = 1e-10f,
-                optimizer = Sgd(0.1f).d2(x = 2, y = 2),
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d2(x = 2, y = 2),
                 weight = weight,
             )
 
@@ -100,7 +101,7 @@ class LayerNormD2Test {
                 outputX = 2,
                 outputY = 2,
                 e = 1e-10f,
-                optimizer = Sgd(0.1f).d2(x = 2, y = 2),
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d2(x = 2, y = 2),
                 weight = weight,
             )
 
@@ -174,7 +175,7 @@ class LayerNormD2Test {
                 outputX = 2,
                 outputY = 2,
                 e = 1e-10f,
-                optimizer = Sgd(0.01f).d2(x = 2, y = 2),
+                optimizer = Sgd(Scheduler.Fix(0.01f)).d2(x = 2, y = 2),
                 weight = weight,
             )
 
