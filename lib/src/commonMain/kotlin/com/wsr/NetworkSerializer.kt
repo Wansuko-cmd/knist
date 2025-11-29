@@ -68,6 +68,7 @@ import com.wsr.layer.reshape.reshape.ReshapeD3ToD1
 import com.wsr.layer.reshape.reshape.ReshapeD3ToD2
 import com.wsr.layer.reshape.token.TokenEmbeddingD1ToD2
 import com.wsr.optimizer.Optimizer
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.adam.AdamD1
 import com.wsr.optimizer.adam.AdamD2
 import com.wsr.optimizer.adam.AdamD3
@@ -357,6 +358,13 @@ private val buildInSerializersModule = SerializersModule {
         subclass(RmsPropD3::class)
         subclass(AdamD3::class)
         subclass(AdamWD3::class)
+    }
+
+    polymorphic(Scheduler::class) {
+        subclass(Scheduler.Fix::class)
+        subclass(Scheduler.Step::class)
+        subclass(Scheduler.MultiStep::class)
+        subclass(Scheduler.CosineAnnealing::class)
     }
 
     polymorphic(Converter::class) {
