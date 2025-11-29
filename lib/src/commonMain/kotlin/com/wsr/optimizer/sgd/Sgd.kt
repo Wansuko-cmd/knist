@@ -18,6 +18,8 @@ data class Sgd(
     override fun d2(x: Int, y: Int): Optimizer.D2 = SgdD2(scheduler, maxNorm, stepUnit)
 
     override fun d3(x: Int, y: Int, z: Int): Optimizer.D3 = SgdD3(scheduler, maxNorm, stepUnit)
+
+    override fun d4(i: Int, j: Int, k: Int, l: Int): Optimizer.D4 = SgdD4(scheduler, maxNorm, stepUnit)
 }
 
 @Serializable
@@ -36,4 +38,10 @@ internal data class SgdD2(private val scheduler: Scheduler, private val maxNorm:
 internal data class SgdD3(private val scheduler: Scheduler, private val maxNorm: Float, private val stepUnit: Int) :
     Optimizer.D3(maxNorm, stepUnit) {
     override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 = weight - scheduler.calcRate(step = step) * dw
+}
+
+@Serializable
+internal data class SgdD4(private val scheduler: Scheduler, private val maxNorm: Float, private val stepUnit: Int) :
+    Optimizer.D4(maxNorm, stepUnit) {
+    override fun adapt(weight: IOType.D4, dw: IOType.D4): IOType.D4 = weight - scheduler.calcRate(step = step) * dw
 }

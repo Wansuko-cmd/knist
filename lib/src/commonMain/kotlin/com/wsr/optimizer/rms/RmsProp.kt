@@ -4,6 +4,7 @@ import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.d3
+import com.wsr.core.d4
 import com.wsr.core.math.pow
 import com.wsr.core.math.sqrt
 import com.wsr.core.operation.div.div
@@ -45,6 +46,14 @@ data class RmsProp(
         maxNorm = maxNorm,
         stepUnit = stepUnit,
         shape = listOf(x, y, z),
+    )
+
+    override fun d4(i: Int, j: Int, k: Int, l: Int): Optimizer.D4 = RmsPropD4(
+        scheduler = scheduler,
+        rms = rms,
+        maxNorm = maxNorm,
+        stepUnit = stepUnit,
+        shape = listOf(i, j, k, l),
     )
 }
 
@@ -94,6 +103,23 @@ internal data class RmsPropD3(
     private val e = IOType.d3(shape) { _, _, _ -> E }
 
     override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 {
+        velocity = rms * velocity + (1 - rms) * dw.pow(2)
+        return weight - scheduler.calcRate(step = step) / (velocity.sqrt() + e) * dw
+    }
+}
+
+@Serializable
+internal data class RmsPropD4(
+    private val scheduler: Scheduler,
+    private val rms: Float,
+    private val maxNorm: Float,
+    private val stepUnit: Int,
+    private val shape: List<Int>,
+) : Optimizer.D4(maxNorm, stepUnit) {
+    private var velocity: IOType.D4 = IOType.d4(shape)
+    private val e = IOType.d4(shape) { _, _, _, _ -> E }
+
+    override fun adapt(weight: IOType.D4, dw: IOType.D4): IOType.D4 {
         velocity = rms * velocity + (1 - rms) * dw.pow(2)
         return weight - scheduler.calcRate(step = step) / (velocity.sqrt() + e) * dw
     }

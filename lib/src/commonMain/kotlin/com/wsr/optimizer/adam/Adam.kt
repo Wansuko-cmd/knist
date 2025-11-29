@@ -4,6 +4,7 @@ import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.d3
+import com.wsr.core.d4
 import com.wsr.core.math.pow
 import com.wsr.core.math.sqrt
 import com.wsr.core.operation.div.div
@@ -50,6 +51,15 @@ data class Adam(
         maxNorm = maxNorm,
         stepUnit = stepUnit,
         shape = listOf(x, y, z),
+    )
+
+    override fun d4(i: Int, j: Int, k: Int, l: Int): Optimizer.D4 = AdamD4(
+        scheduler = scheduler,
+        momentum = momentum,
+        rms = rms,
+        maxNorm = maxNorm,
+        stepUnit = stepUnit,
+        shape = listOf(i, j, k, l),
     )
 }
 
@@ -119,6 +129,32 @@ internal data class AdamD3(
     private var t: Int = 0
 
     override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 {
+        t += 1
+
+        m = momentum * m + (1 - momentum) * dw
+        v = rms * v + (1 - rms) * dw.pow(2)
+
+        val mHat = m / (1f - momentum.pow(t.toFloat()))
+        val vHat = v / (1f - rms.pow(t.toFloat()))
+
+        return weight - scheduler.calcRate(step = step) * mHat / vHat.sqrt(e = E)
+    }
+}
+
+@Serializable
+internal data class AdamD4(
+    private val scheduler: Scheduler,
+    private val momentum: Float,
+    private val rms: Float,
+    private val maxNorm: Float,
+    private val stepUnit: Int,
+    private val shape: List<Int>,
+) : Optimizer.D4(maxNorm, stepUnit) {
+    private var m: IOType.D4 = IOType.d4(shape)
+    private var v: IOType.D4 = IOType.d4(shape)
+    private var t: Int = 0
+
+    override fun adapt(weight: IOType.D4, dw: IOType.D4): IOType.D4 {
         t += 1
 
         m = momentum * m + (1 - momentum) * dw
