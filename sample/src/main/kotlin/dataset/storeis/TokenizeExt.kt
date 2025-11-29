@@ -1,6 +1,7 @@
 package dataset.storeis
 
 import java.io.File
+import java.io.FileNotFoundException
 import kotlin.sequences.forEach
 
 /**
@@ -12,13 +13,21 @@ fun createWordList(
     maxSize: Int,
 ): List<String> {
     val wordCount = mutableMapOf<String, Int>()
-    File(path)
-        .useLines { lines ->
-            lines
-                .flatMap { tokenize(it) }
-                .forEach { token ->
-                    wordCount[token] = wordCount.getOrDefault(token, 0) + 1
-                }
+    runCatching {
+        File(path)
+            .useLines { lines ->
+                lines
+                    .flatMap { tokenize(it) }
+                    .forEach { token ->
+                        wordCount[token] = wordCount.getOrDefault(token, 0) + 1
+                    }
+            }
+    }
+        .onFailure { error ->
+            if (error is FileNotFoundException) {
+               println("resource/storiesにTiny Storiesデータセットを入れてください")
+            }
+            throw error
         }
 
     // 特殊トークン（必ず語彙に含める）
