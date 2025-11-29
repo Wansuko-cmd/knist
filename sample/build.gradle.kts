@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm")
     alias(libs.plugins.serialization)
+    application
 }
 
 dependencies {
@@ -13,6 +14,10 @@ dependencies {
 
     testImplementation(libs.bundles.test)
     testImplementation(kotlin("test"))
+}
+
+application {
+    mainClass = "MainKt"
 }
 
 tasks.test {
