@@ -3,19 +3,11 @@ package com.wsr.layer.process.conv
 import com.wsr.NetworkBuilder
 import com.wsr.batch.Batch
 import com.wsr.batch.get
-import com.wsr.batch.reshape.transpose
-import com.wsr.batch.toBatch
-import com.wsr.batch.toList
 import com.wsr.core.IOType
 import com.wsr.core.d2
 import com.wsr.core.d3
 import com.wsr.core.get
-import com.wsr.core.operation.conv.convD1
-import com.wsr.core.operation.conv.deConvD1
 import com.wsr.core.operation.matmul.matMul
-import com.wsr.core.reshape.toD2
-import com.wsr.core.reshape.toD3
-import com.wsr.core.reshape.transpose
 import com.wsr.core.set
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
@@ -67,12 +59,14 @@ class ConvD1 internal constructor(
 
         for (batchIndex in 0 until size) {
             val input = this[batchIndex]
-            for (outputIndex in 0 until outputY) {
-                val rowIndex = batchIndex * outputY + outputIndex
-                for (channelIndex in 0 until channel) {
-                    for (kernelIndex in 0 until kernel) {
-                        val columnIndex = channelIndex * kernel + kernelIndex
-                        result[columnIndex, rowIndex] = input[channelIndex, outputIndex * stride + kernelIndex - padding]
+            for (rowIdx in 0 until row) {
+                val channelIndex = rowIdx / kernel
+                val kernelIndex = rowIdx % kernel
+                for (colIdx in 0 until outputY) {
+                    val columnIndex = batchIndex * outputY + colIdx
+                    val inputIdx = colIdx * stride + kernelIndex - padding
+                    if (inputIdx in 0 until inputSize) {
+                        result[rowIdx, columnIndex] = input[channelIndex, inputIdx]
                     }
                 }
             }
@@ -91,28 +85,83 @@ class ConvD1 internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
-        val input = input.toList()
-        val output = input.convD1(weight, stride, padding)
-        val delta = calcDelta(output.toBatch()).toList()
-
-        val reversed =
-            IOType
-                .d3(weight.shape) { x, y, z -> weight[x, y, kernel - z - 1] }
-                .transpose(1, 0, 2)
-        val dx = delta.deConvD1(reversed, stride, padding)
-
-        val dw = List(input.size) { index ->
-            (0 until filter)
-                .map { f ->
-                    (0 until channel)
-                        .map { c ->
-                            input[index][c].convD1(delta[index][f], stride, padding)
-                        }.toD2()
-                }.toD3()
+        // forward
+        val col = input.toColumn()
+        val filterMatrix = weight.toFilter()
+        val result = filterMatrix matMul col
+        val output = Batch(input.size) { b ->
+            IOType.d2(outputX, outputY) { f, o ->
+                result[f, b * outputY + o]
+            }
         }
-        weight = optimizer.adapt(weight = weight, dw = dw.toBatch())
 
-        return dx.toBatch()
+        val delta = calcDelta(output)
+
+        // dx (逆伝播)
+        // reversed weight: [channel, filter, kernel] で kernel を反転
+        val reversed = IOType.d2(channel * kernel, filter) { i, f ->
+            val c = i / kernel
+            val k = i % kernel
+            weight[f, c, kernel - k - 1]
+        }
+        val deltaCol = delta.toDeltaColumn()
+        val dxCol = reversed matMul deltaCol
+        val dx = dxCol.toInputGradient(input)
+
+        // dw (重み勾配)
+        val dw = Batch(input.size) { b ->
+            val deltaB = delta[b]
+            val inputB = input[b]
+            IOType.d3(filter, channel, kernel) { f, c, k ->
+                var sum = 0f
+                for (o in 0 until outputY) {
+                    val inputIdx = o * stride + k - padding
+                    if (inputIdx in 0 until inputSize) {
+                        sum += deltaB[f, o] * inputB[c, inputIdx]
+                    }
+                }
+                sum
+            }
+        }
+        weight = optimizer.adapt(weight = weight, dw = dw)
+
+        return dx
+    }
+
+    private fun Batch<IOType.D2>.toDeltaColumn(): IOType.D2 {
+        val row = filter
+        val column = outputY * size
+        val result = IOType.d2(row, column)
+
+        for (batchIndex in 0 until size) {
+            val delta = this[batchIndex]
+            for (f in 0 until filter) {
+                for (o in 0 until outputY) {
+                    val colIdx = batchIndex * outputY + o
+                    result[f, colIdx] = delta[f, o]
+                }
+            }
+        }
+        return result
+    }
+
+    private fun IOType.D2.toInputGradient(originalInput: Batch<IOType.D2>): Batch<IOType.D2> {
+        // dxCol: [channel * kernel, batchSize * outputY]
+        // 逆畳み込みの結果を元の入力形状に戻す
+        return Batch(originalInput.size) { b ->
+            IOType.d2(channel, inputSize) { c, i ->
+                var sum = 0f
+                for (o in 0 until outputY) {
+                    val k = i - o * stride + padding
+                    if (k in 0 until kernel) {
+                        val row = c * kernel + k
+                        val col = b * outputY + o
+                        sum += this[row, col]
+                    }
+                }
+                sum
+            }
+        }
     }
 }
 
