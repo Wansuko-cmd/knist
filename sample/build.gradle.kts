@@ -14,5 +14,8 @@ dependencies {
 }
 
 tasks.test {
+    minHeapSize = "256M"
+    maxHeapSize = "${1024 * 8}M"
+    jvmArgs = listOf("-XX:MaxMetaspaceSize=1024M")
     useJUnit()
 }
