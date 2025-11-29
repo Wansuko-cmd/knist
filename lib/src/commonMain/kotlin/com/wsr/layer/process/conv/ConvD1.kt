@@ -3,11 +3,14 @@ package com.wsr.layer.process.conv
 import com.wsr.NetworkBuilder
 import com.wsr.batch.Batch
 import com.wsr.batch.get
+import com.wsr.batch.reshape.toBatch
+import com.wsr.batch.reshape.toD3
 import com.wsr.core.IOType
 import com.wsr.core.d2
 import com.wsr.core.d3
 import com.wsr.core.get
 import com.wsr.core.operation.matmul.matMul
+import com.wsr.core.reshape.transpose
 import com.wsr.core.set
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
@@ -44,27 +47,37 @@ class ConvD1 internal constructor(
     }
 
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
-        val result = weight.toFilter() matMul input.toColumn()
-        return Batch(input.size) { b ->
-            IOType.d2(outputX, outputY) { f, o ->
-                result[f, b * outputY + o]
-            }
-        }
+        val col = input.unfold(windowSize = kernel, stride = stride, padding = padding, inputSize = inputSize, outputSize = outputY)
+        val result = weight.toFilter() matMul col
+        // IOType.D2 [filter, batchSize * outputY] → Batch<IOType.D2> [batchSize] x [filter, outputY]
+        // reshape to D3 [filter, batchSize, outputY] → transpose(1, 0, 2) → [batchSize, filter, outputY] → Batch<D2>
+        return IOType.d3(listOf(filter, input.size, outputY), result.value).transpose(1, 0, 2).toBatch()
     }
 
-    private fun Batch<IOType.D2>.toColumn(): IOType.D2 {
-        val row = kernel * channel
-        val column = outputY * size
+    /**
+     * Unfold: Batch<IOType.D2>を列形式に展開 (im2col)
+     * 入力: [batchSize] x [channel, inputSize]
+     * 出力: [windowSize * channel, outputSize * batchSize]
+     */
+    private fun Batch<IOType.D2>.unfold(
+        windowSize: Int,
+        stride: Int,
+        padding: Int,
+        inputSize: Int,
+        outputSize: Int,
+    ): IOType.D2 {
+        val row = windowSize * channel
+        val column = outputSize * size
         val result = IOType.d2(row, column)
 
         for (batchIndex in 0 until size) {
             val input = this[batchIndex]
             for (rowIdx in 0 until row) {
-                val channelIndex = rowIdx / kernel
-                val kernelIndex = rowIdx % kernel
-                for (colIdx in 0 until outputY) {
-                    val columnIndex = batchIndex * outputY + colIdx
-                    val inputIdx = colIdx * stride + kernelIndex - padding
+                val channelIndex = rowIdx / windowSize
+                val windowIndex = rowIdx % windowSize
+                for (colIdx in 0 until outputSize) {
+                    val columnIndex = batchIndex * outputSize + colIdx
+                    val inputIdx = colIdx * stride + windowIndex - padding
                     if (inputIdx in 0 until inputSize) {
                         result[rowIdx, columnIndex] = input[channelIndex, inputIdx]
                     }
@@ -74,11 +87,8 @@ class ConvD1 internal constructor(
         return result
     }
 
-    private fun IOType.D3.toFilter(): IOType.D2 = IOType.d2(outputX, channel * kernel) { i, j ->
-        val c = j / kernel
-        val k = j % kernel
-        this[i, c, k]
-    }
+    // IOType.D3 [filter, channel, kernel] → IOType.D2 [filter, channel * kernel]
+    private fun IOType.D3.toFilter(): IOType.D2 = IOType.d2(listOf(outputX, channel * kernel), value)
 
     override fun train(
         input: Batch<IOType.D2>,
@@ -86,14 +96,11 @@ class ConvD1 internal constructor(
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
         // forward
-        val col = input.toColumn()
+        val col = input.unfold(windowSize = kernel, stride = stride, padding = padding, inputSize = inputSize, outputSize = outputY)
         val filterMatrix = weight.toFilter()
         val result = filterMatrix matMul col
-        val output = Batch(input.size) { b ->
-            IOType.d2(outputX, outputY) { f, o ->
-                result[f, b * outputY + o]
-            }
-        }
+        // IOType.D2 [filter, batchSize * outputY] → Batch<IOType.D2> [batchSize] x [filter, outputY]
+        val output = IOType.d3(listOf(filter, input.size, outputY), result.value).transpose(1, 0, 2).toBatch()
 
         val delta = calcDelta(output)
 
@@ -104,9 +111,11 @@ class ConvD1 internal constructor(
             val k = i % kernel
             weight[f, c, kernel - k - 1]
         }
-        val deltaCol = delta.toDeltaColumn()
+        // Batch<IOType.D2> [batchSize] x [filter, outputY] → IOType.D2 [filter, batchSize * outputY]
+        val deltaD3 = delta.toD3().transpose(1, 0, 2)
+        val deltaCol = IOType.d2(listOf(filter, input.size * outputY), deltaD3.value)
         val dxCol = reversed matMul deltaCol
-        val dx = dxCol.toInputGradient(input)
+        val dx = dxCol.fold(batchSize = input.size, windowSize = kernel, stride = stride, padding = padding, inputSize = inputSize, outputSize = outputY)
 
         // dw (重み勾配)
         val dw = Batch(input.size) { b ->
@@ -128,34 +137,28 @@ class ConvD1 internal constructor(
         return dx
     }
 
-    private fun Batch<IOType.D2>.toDeltaColumn(): IOType.D2 {
-        val row = filter
-        val column = outputY * size
-        val result = IOType.d2(row, column)
-
-        for (batchIndex in 0 until size) {
-            val delta = this[batchIndex]
-            for (f in 0 until filter) {
-                for (o in 0 until outputY) {
-                    val colIdx = batchIndex * outputY + o
-                    result[f, colIdx] = delta[f, o]
-                }
-            }
-        }
-        return result
-    }
-
-    private fun IOType.D2.toInputGradient(originalInput: Batch<IOType.D2>): Batch<IOType.D2> {
-        // dxCol: [channel * kernel, batchSize * outputY]
-        // 逆畳み込みの結果を元の入力形状に戻す
-        return Batch(originalInput.size) { b ->
+    /**
+     * Fold: 列形式をBatch<IOType.D2>に戻す (col2im)
+     * 入力: [windowSize * channel, outputSize * batchSize]
+     * 出力: [batchSize] x [channel, inputSize]
+     * 注意: 重複部分は加算される
+     */
+    private fun IOType.D2.fold(
+        batchSize: Int,
+        windowSize: Int,
+        stride: Int,
+        padding: Int,
+        inputSize: Int,
+        outputSize: Int,
+    ): Batch<IOType.D2> {
+        return Batch(batchSize) { b ->
             IOType.d2(channel, inputSize) { c, i ->
                 var sum = 0f
-                for (o in 0 until outputY) {
-                    val k = i - o * stride + padding
-                    if (k in 0 until kernel) {
-                        val row = c * kernel + k
-                        val col = b * outputY + o
+                for (o in 0 until outputSize) {
+                    val windowIndex = i - o * stride + padding
+                    if (windowIndex in 0 until windowSize) {
+                        val row = c * windowSize + windowIndex
+                        val col = b * outputSize + o
                         sum += this[row, col]
                     }
                 }
