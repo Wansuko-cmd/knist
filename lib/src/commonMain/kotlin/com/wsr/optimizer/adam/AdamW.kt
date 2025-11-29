@@ -24,6 +24,7 @@ data class AdamW(
     private val rms: Float = 0.999f,
     private val decay: Float = 0.01f,
     private val maxNorm: Float = Float.MAX_VALUE,
+    private val stepUnit: Int = 1,
 ) : Optimizer {
     override fun d1(size: Int): Optimizer.D1 = AdamWD1(
         scheduler = scheduler,
@@ -31,6 +32,7 @@ data class AdamW(
         rms = rms,
         decay = decay,
         maxNorm = maxNorm,
+        stepUnit = stepUnit,
         shape = listOf(size),
     )
 
@@ -40,6 +42,7 @@ data class AdamW(
         rms = rms,
         decay = decay,
         maxNorm = maxNorm,
+        stepUnit = stepUnit,
         shape = listOf(x, y),
     )
 
@@ -49,6 +52,7 @@ data class AdamW(
         rms = rms,
         decay = decay,
         maxNorm = maxNorm,
+        stepUnit = stepUnit,
         shape = listOf(x, y, z),
     )
 }
@@ -60,8 +64,9 @@ internal data class AdamWD1(
     private val rms: Float,
     private val decay: Float,
     private val maxNorm: Float,
+    private val stepUnit: Int,
     private val shape: List<Int>,
-) : Optimizer.D1(maxNorm) {
+) : Optimizer.D1(maxNorm, stepUnit) {
     private var m: IOType.D1 = IOType.d1(shape)
     private var v: IOType.D1 = IOType.d1(shape)
     private var t: Int = 0
@@ -87,8 +92,9 @@ internal data class AdamWD2(
     private val rms: Float,
     private val decay: Float,
     private val maxNorm: Float,
+    private val stepUnit: Int,
     private val shape: List<Int>,
-) : Optimizer.D2(maxNorm) {
+) : Optimizer.D2(maxNorm, stepUnit) {
     private var m: IOType.D2 = IOType.d2(shape)
     private var v: IOType.D2 = IOType.d2(shape)
     private var t: Int = 0
@@ -114,8 +120,9 @@ internal data class AdamWD3(
     private val rms: Float,
     private val decay: Float,
     private val maxNorm: Float,
+    private val stepUnit: Int,
     private val shape: List<Int>,
-) : Optimizer.D3(maxNorm) {
+) : Optimizer.D3(maxNorm, stepUnit) {
     private var m: IOType.D3 = IOType.d3(shape)
     private var v: IOType.D3 = IOType.d3(shape)
     private var t: Int = 0

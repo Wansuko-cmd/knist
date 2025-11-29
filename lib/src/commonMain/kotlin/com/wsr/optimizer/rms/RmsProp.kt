@@ -21,11 +21,13 @@ data class RmsProp(
     private val scheduler: Scheduler,
     private val rms: Float = 0.9f,
     private val maxNorm: Float = Float.MAX_VALUE,
+    private val stepUnit: Int = 1,
 ) : Optimizer {
     override fun d1(size: Int): Optimizer.D1 = RmsPropD1(
         scheduler = scheduler,
         rms = rms,
         maxNorm = maxNorm,
+        stepUnit = stepUnit,
         shape = listOf(size),
     )
 
@@ -33,6 +35,7 @@ data class RmsProp(
         scheduler = scheduler,
         rms = rms,
         maxNorm = maxNorm,
+        stepUnit = stepUnit,
         shape = listOf(x, y),
     )
 
@@ -40,6 +43,7 @@ data class RmsProp(
         scheduler = scheduler,
         rms = rms,
         maxNorm = maxNorm,
+        stepUnit = stepUnit,
         shape = listOf(x, y, z),
     )
 }
@@ -49,8 +53,9 @@ internal data class RmsPropD1(
     private val scheduler: Scheduler,
     private val rms: Float,
     private val maxNorm: Float,
+    private val stepUnit: Int,
     private val shape: List<Int>,
-) : Optimizer.D1(maxNorm) {
+) : Optimizer.D1(maxNorm, stepUnit) {
     private var velocity: IOType.D1 = IOType.d1(shape)
     private val e = IOType.d1(shape) { E }
 
@@ -65,8 +70,9 @@ internal data class RmsPropD2(
     private val scheduler: Scheduler,
     private val rms: Float,
     private val maxNorm: Float,
+    private val stepUnit: Int,
     private val shape: List<Int>,
-) : Optimizer.D2(maxNorm) {
+) : Optimizer.D2(maxNorm, stepUnit) {
     private var velocity: IOType.D2 = IOType.d2(shape)
     private val e = IOType.d2(shape) { _, _ -> E }
 
@@ -81,8 +87,9 @@ internal data class RmsPropD3(
     private val scheduler: Scheduler,
     private val rms: Float,
     private val maxNorm: Float,
+    private val stepUnit: Int,
     private val shape: List<Int>,
-) : Optimizer.D3(maxNorm) {
+) : Optimizer.D3(maxNorm, stepUnit) {
     private var velocity: IOType.D3 = IOType.d3(shape)
     private val e = IOType.d3(shape) { _, _, _ -> E }
 
