@@ -12,16 +12,28 @@ sealed interface Scheduler {
     }
 
     @Serializable
-    data class Step(val rate: Float, val stepSize: Int, val gamma: Float) : Scheduler {
-        override fun calcRate(step: Int): Float = rate * gamma.pow(step / stepSize)
+    data class Step(
+        val rate: Float,
+        val gamma: Float,
+        val stepSize: Int,
+        val stepUnit: Int = 1,
+    ) : Scheduler {
+        override fun calcRate(step: Int): Float {
+            val count = step / stepUnit
+            return rate * gamma.pow(count / stepSize)
+        }
     }
 
     @Serializable
     data class MultiStep(
         val rate: Float,
-        val milestones: List<Int>,
         val gamma: Float,
+        val milestones: List<Int>,
+        val stepUnit: Int = 1,
     ) : Scheduler {
-        override fun calcRate(step: Int): Float = rate * gamma.pow(milestones.count { it < step })
+        override fun calcRate(step: Int): Float {
+            val count = step / stepUnit
+            return rate * gamma.pow(milestones.count { it < count })
+        }
     }
 }
