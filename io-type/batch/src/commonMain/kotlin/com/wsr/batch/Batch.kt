@@ -5,6 +5,7 @@ import com.wsr.core.d0
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.d3
+import com.wsr.core.d4
 
 class Batch<out T : IOType>(val value: FloatArray, val size: Int, val shape: List<Int>) {
     val step = shape.reduce { acc, i -> acc * i }
@@ -87,6 +88,12 @@ operator fun Batch<IOType.D3>.get(i: Int): IOType.D3 {
     return IOType.d3(shape, value.sliceArray(index until index + step))
 }
 
+@JvmName("batchD3sGet")
+operator fun Batch<IOType.D4>.get(i: Int): IOType.D4 {
+    val index = i * step
+    return IOType.d4(shape, value.sliceArray(index until index + step))
+}
+
 operator fun Batch<IOType.D0>.set(i: Int, element: IOType.D0) {
     value[i] = element.value[0]
 }
@@ -100,5 +107,9 @@ operator fun Batch<IOType.D2>.set(i: Int, element: IOType.D2) {
 }
 
 operator fun Batch<IOType.D3>.set(i: Int, element: IOType.D3) {
+    element.value.copyInto(value, i * step)
+}
+
+operator fun Batch<IOType.D4>.set(i: Int, element: IOType.D4) {
     element.value.copyInto(value, i * step)
 }
