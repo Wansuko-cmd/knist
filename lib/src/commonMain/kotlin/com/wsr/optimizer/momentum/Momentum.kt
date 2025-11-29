@@ -4,6 +4,7 @@ import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.d3
+import com.wsr.core.d4
 import com.wsr.core.operation.minus.minus
 import com.wsr.core.operation.plus.plus
 import com.wsr.core.operation.times.times
@@ -40,6 +41,14 @@ data class Momentum(
         maxNorm = maxNorm,
         stepUnit = stepUnit,
         shape = listOf(x, y, z),
+    )
+
+    override fun d4(i: Int, j: Int, k: Int, l: Int): Optimizer.D4 = MomentumD4(
+        scheduler = scheduler,
+        momentum = momentum,
+        maxNorm = maxNorm,
+        stepUnit = stepUnit,
+        shape = listOf(i, j, k, l),
     )
 }
 
@@ -83,6 +92,21 @@ internal data class MomentumD3(
 ) : Optimizer.D3(maxNorm, stepUnit) {
     private var velocity: IOType.D3 = IOType.d3(shape)
     override fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 {
+        velocity = momentum * velocity + dw
+        return weight - scheduler.calcRate(step = step) * velocity
+    }
+}
+
+@Serializable
+internal data class MomentumD4(
+    private val scheduler: Scheduler,
+    private val momentum: Float,
+    private val maxNorm: Float,
+    private val stepUnit: Int,
+    private val shape: List<Int>,
+) : Optimizer.D4(maxNorm, stepUnit) {
+    private var velocity: IOType.D4 = IOType.d4(shape)
+    override fun adapt(weight: IOType.D4, dw: IOType.D4): IOType.D4 {
         velocity = momentum * velocity + dw
         return weight - scheduler.calcRate(step = step) * velocity
     }
