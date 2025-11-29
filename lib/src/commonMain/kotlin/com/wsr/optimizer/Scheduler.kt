@@ -1,9 +1,9 @@
 package com.wsr.optimizer
 
-import kotlinx.serialization.Serializable
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.pow
+import kotlinx.serialization.Serializable
 
 sealed interface Scheduler {
     fun calcRate(step: Int): Float
@@ -14,12 +14,7 @@ sealed interface Scheduler {
     }
 
     @Serializable
-    data class Step(
-        val rate: Float,
-        val gamma: Float,
-        val stepCount: Int,
-        val stepUnit: Int = 1,
-    ) : Scheduler {
+    data class Step(val rate: Float, val gamma: Float, val stepCount: Int, val stepUnit: Int = 1) : Scheduler {
         override fun calcRate(step: Int): Float {
             val count = step / stepUnit
             return rate * gamma.pow(count / stepCount)
@@ -27,12 +22,8 @@ sealed interface Scheduler {
     }
 
     @Serializable
-    data class MultiStep(
-        val rate: Float,
-        val gamma: Float,
-        val milestones: List<Int>,
-        val stepUnit: Int = 1,
-    ) : Scheduler {
+    data class MultiStep(val rate: Float, val gamma: Float, val milestones: List<Int>, val stepUnit: Int = 1) :
+        Scheduler {
         override fun calcRate(step: Int): Float {
             val count = step / stepUnit
             return rate * gamma.pow(milestones.count { it < count })

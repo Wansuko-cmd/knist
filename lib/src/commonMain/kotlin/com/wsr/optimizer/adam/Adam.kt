@@ -12,8 +12,8 @@ import com.wsr.core.operation.plus.plus
 import com.wsr.core.operation.times.times
 import com.wsr.optimizer.Optimizer
 import com.wsr.optimizer.Scheduler
-import kotlinx.serialization.Serializable
 import kotlin.math.pow
+import kotlinx.serialization.Serializable
 
 private const val E = 1e-8f
 
