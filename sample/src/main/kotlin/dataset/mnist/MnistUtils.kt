@@ -1,5 +1,6 @@
 package dataset.mnist
 
+import com.wsr.Network
 import com.wsr.NetworkBuilder
 import com.wsr.NetworkSerializer
 import com.wsr.initializer.He
@@ -8,15 +9,19 @@ import com.wsr.layer.process.bias.bias
 import com.wsr.layer.process.function.relu.reLU
 import com.wsr.layer.process.function.relu.swish
 import com.wsr.layer.process.norm.layer.d1.layerNorm
-import com.wsr.layer.process.norm.layer.d2.layerNorm
 import com.wsr.layer.process.skip.skip
 import com.wsr.layer.reshape.reshape.reshapeToD1
 import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.adam.AdamW
 import com.wsr.output.softmax.softmaxWithLoss
-import java.util.Random
 
-fun createMnistModel(epoc: Int, seed: Int? = null) {
+private const val TRAIN_IMAGE_PATH = "mnist/train-images-idx3-ubyte.gz"
+private const val TRAIN_LABEL_PATH = "mnist/train-labels-idx1-ubyte.gz"
+
+private const val TEST_IMAGE_PATH = "mnist/t10k-images-idx3-ubyte.gz"
+private const val TEST_LABEL_PATH = "mnist/t10k-labels-idx1-ubyte.gz"
+
+fun createMnistModel(epoc: Int, seed: Int? = null): Network<List<Float>, Int> {
     // カスタムした層をSerializerに登録
     NetworkSerializer.apply {
         register(PixelConverter::class)
@@ -24,51 +29,53 @@ fun createMnistModel(epoc: Int, seed: Int? = null) {
     }
 
     // ニューラルネットワークを構築
-    val network = NetworkBuilder
-        .inputPx(x = 28, y = 28, optimizer = AdamW(scheduler = Scheduler.Fix(0.001f)), initializer = He(seed = seed))
-        .repeat(5) {
-            skip {
-                this
-                    .layerNorm(axis = 1).affine(neuron = 56).swish()
-                    .layerNorm(axis = 1).affine(neuron = 28).swish()
-            }
-        }
-        .reshapeToD1()
-        .affine(neuron = 512).bias().reLU()
-        .repeat(5) {
-            skip {
-                this
-                    .layerNorm().affine(neuron = 512).bias().swish()
-                    .layerNorm().affine(neuron = 512).bias().swish()
-            }
-        }
-        .skip {
-            this
-                .layerNorm().affine(neuron = 512).bias().reLU()
-                .layerNorm().affine(neuron = 128).bias().reLU()
-        }
-        .affine(neuron = 10)
-        .softmaxWithLoss(converter = { LabelConverter(inputSize) })
+    val network = createNetwork(seed)
 
-    // テストデータを用意
-    val random = seed?.let { Random(seed.toLong()) } ?: Random()
-    val dataset = MnistDataset.read().shuffled(random)
-    val (train, test) = dataset.take(50000) to dataset.takeLast(10000).take(100)
-
-    // 学習
-    (1..epoc).forEach { epoc ->
+    println("訓練開始")
+    val train = MnistDataset.read(imagePath = TRAIN_IMAGE_PATH, labelPath = TRAIN_LABEL_PATH)
+    repeat(epoc) { epoc ->
         println("epoc: $epoc")
-        train.shuffled(random).take(5000).chunked(240).mapIndexed { i, data ->
+        train.chunked(240).mapIndexed { i, data ->
+            if (i % 10 == 0) println("train: $i")
             network.train(
                 input = data.map { it.pixels },
                 label = data.map { it.label },
             )
-            println("train: $i")
         }
     }
 
-    // 予測
+    println("評価開始")
+    val test = MnistDataset
+        .read(imagePath = TEST_IMAGE_PATH, labelPath = TEST_LABEL_PATH)
+        .take(100)
+
     test
         .count { data -> network.expect(input = data.pixels) == data.label }
         .let { println(it.toFloat() / test.size.toFloat()) }
+
+    return network
 }
+
+private fun createNetwork(seed: Int?): Network<List<Float>, Int> = NetworkBuilder
+    .inputPx(
+        x = 28,
+        y = 28,
+        optimizer = AdamW(scheduler = Scheduler.Fix(0.001f)),
+        initializer = He(seed = seed),
+    )
+    .reshapeToD1()
+    .affine(neuron = 512).bias().reLU()
+    .repeat(5) {
+        skip {
+            this
+                .layerNorm().affine(neuron = 512).bias().swish()
+                .layerNorm().affine(neuron = 512).bias().swish()
+        }
+    }
+    .skip {
+        this
+            .layerNorm().affine(neuron = 512).bias().swish()
+            .layerNorm().affine(neuron = 128).bias().swish()
+    }
+    .affine(neuron = 10)
+    .softmaxWithLoss(converter = { LabelConverter(inputSize) })
