@@ -36,7 +36,7 @@ class ConvD2 internal constructor(
         context: Context,
     ): Batch<IOType.D3> {
         val col = input.unfold(windowSize = kernel, stride = stride, padding = padding)
-        return (weight.reshapeToD2(outputX, channel * kernel) matMul col)
+        return (weight.reshapeToD2(outputX, channel * kernel * kernel) matMul col)
             .reshapeToD4(i = filter, j = input.size, k = outputY, l = outputZ)
             .transpose(axisI = 1, axisJ = 0, axisK = 2, axisL = 3)
             .toBatch()
