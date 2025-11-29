@@ -16,4 +16,5 @@ fun IOType.D3.toBatch(): Batch<IOType.D2> = Batch(value = value, size = shape[0]
 
 fun Batch<IOType.D3>.toD4(): IOType.D4 = IOType.d4(listOf(size, shape[0], shape[1], shape[2]), value)
 
-fun IOType.D4.toBatch(): Batch<IOType.D3> = Batch(value = value, size = shape[0], shape = listOf(shape[1], shape[2], shape[3]))
+fun IOType.D4.toBatch(): Batch<IOType.D3> =
+    Batch(value = value, size = shape[0], shape = listOf(shape[1], shape[2], shape[3]))
