@@ -2,15 +2,18 @@ package com.wsr.layer.process.conv
 
 import com.wsr.NetworkBuilder
 import com.wsr.batch.Batch
-import com.wsr.batch.toBatch
-import com.wsr.batch.toList
+import com.wsr.batch.get
+import com.wsr.batch.reshape.fold
+import com.wsr.batch.reshape.toBatch
+import com.wsr.batch.reshape.toD3
+import com.wsr.batch.reshape.unfold
 import com.wsr.core.IOType
+import com.wsr.core.d2
 import com.wsr.core.d3
 import com.wsr.core.get
-import com.wsr.core.operation.conv.convD1
-import com.wsr.core.operation.conv.deConvD1
-import com.wsr.core.reshape.toD2
-import com.wsr.core.reshape.toD3
+import com.wsr.core.operation.matmul.matMul
+import com.wsr.core.reshape.reshapeToD2
+import com.wsr.core.reshape.reshapeToD3
 import com.wsr.core.reshape.transpose
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
@@ -46,36 +49,61 @@ class ConvD1 internal constructor(
         }
     }
 
-    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> =
-        input.toList().convD1(weight, stride, padding).toBatch()
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
+        val col = input.unfold(windowSize = kernel, stride = stride, padding = padding)
+        return (weight.reshapeToD2(listOf(outputX, channel * kernel)) matMul col)
+            .reshapeToD3(listOf(filter, input.size, outputY))
+            .transpose(axisI = 1, axisJ = 0, axisK = 2)
+            .toBatch()
+    }
 
     override fun train(
         input: Batch<IOType.D2>,
         context: Context,
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
-        val input = input.toList()
-        val output = input.convD1(weight, stride, padding)
-        val delta = calcDelta(output.toBatch()).toList()
+        val col = input.unfold(windowSize = kernel, stride = stride, padding = padding)
+        val output = (weight.reshapeToD2(listOf(outputX, channel * kernel)) matMul col)
+            .reshapeToD3(listOf(filter, input.size, outputY))
+            .transpose(axisI = 1, axisJ = 0, axisK = 2)
+            .toBatch()
 
-        val reversed =
-            IOType
-                .d3(weight.shape) { x, y, z -> weight[x, y, kernel - z - 1] }
-                .transpose(1, 0, 2)
-        val dx = delta.deConvD1(reversed, stride, padding)
+        val delta = calcDelta(output)
 
-        val dw = List(input.size) { index ->
-            (0 until filter)
-                .map { f ->
-                    (0 until channel)
-                        .map { c ->
-                            input[index][c].convD1(delta[index][f], stride, padding)
-                        }.toD2()
-                }.toD3()
+        val reversed = IOType.d2(channel * kernel, filter) { i, f ->
+            val c = i / kernel
+            val k = i % kernel
+            weight[f, c, kernel - k - 1]
         }
-        weight = optimizer.adapt(weight = weight, dw = dw.toBatch())
+        val deltaCol = delta.toD3()
+            .transpose(axisI = 1, axisJ = 0, axisK = 2)
+            .reshapeToD2(listOf(filter, input.size * outputY))
+        val dx = (reversed matMul deltaCol).fold(
+            channel = channel,
+            batchSize = input.size,
+            inputSize = inputSize,
+            stride = stride,
+            padding = padding,
+        )
 
-        return dx.toBatch()
+        // dw (重み勾配)
+        val dw = Batch(input.size) { b ->
+            val delta = delta[b]
+            val input = input[b]
+            IOType.d3(filter, channel, kernel) { f, c, k ->
+                var sum = 0f
+                for (o in 0 until outputY) {
+                    val inputIdx = o * stride + k - padding
+                    if (inputIdx in 0 until inputSize) {
+                        sum += delta[f, o] * input[c, inputIdx]
+                    }
+                }
+                sum
+            }
+        }
+        weight = optimizer.adapt(weight = weight, dw = dw)
+
+        return dx
     }
 }
 
