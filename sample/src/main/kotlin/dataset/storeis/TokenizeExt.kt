@@ -8,10 +8,7 @@ import kotlin.sequences.forEach
  * 語彙を構築
  * 特殊トークン + 頻度上位の単語で構成
  */
-fun createWordList(
-    path: String,
-    maxSize: Int,
-): List<String> {
+fun createWordList(path: String, maxSize: Int): List<String> {
     val wordCount = mutableMapOf<String, Int>()
     runCatching {
         File(path)
@@ -25,7 +22,7 @@ fun createWordList(
     }
         .onFailure { error ->
             if (error is FileNotFoundException) {
-               println("resource/storiesにTiny Storiesデータセットを入れてください")
+                println("resource/storiesにTiny Storiesデータセットを入れてください")
             }
             throw error
         }
