@@ -1,3 +1,5 @@
+@file:Suppress("NonAsciiCharacters", "RemoveRedundantBackticks")
+
 package mnist
 
 import com.wsr.BLAS
@@ -20,7 +22,8 @@ class MnistTest {
     }
 
     @Test
-    fun test() {
-        createMnistModel(epoc = EPOC, seed = SEED)
+    fun `Mnistモデルの精度が落ちていないか確認`() {
+        val actual = createMnistModel(epoc = EPOC, seed = SEED)
+        assert(actual > 0.9f) { "精度が90%を割っています" }
     }
 }

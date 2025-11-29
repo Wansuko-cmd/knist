@@ -21,7 +21,7 @@ private const val TRAIN_LABEL_PATH = "mnist/train-labels-idx1-ubyte.gz"
 private const val TEST_IMAGE_PATH = "mnist/t10k-images-idx3-ubyte.gz"
 private const val TEST_LABEL_PATH = "mnist/t10k-labels-idx1-ubyte.gz"
 
-fun createMnistModel(epoc: Int, seed: Int? = null): Network<List<Float>, Int> {
+fun createMnistModel(epoc: Int, seed: Int? = null): Float {
     // カスタムした層をSerializerに登録
     NetworkSerializer.apply {
         register(PixelConverter::class)
@@ -49,11 +49,13 @@ fun createMnistModel(epoc: Int, seed: Int? = null): Network<List<Float>, Int> {
         .read(imagePath = TEST_IMAGE_PATH, labelPath = TEST_LABEL_PATH)
         .take(100)
 
-    test
+    val accuracy = test
         .count { data -> network.expect(input = data.pixels) == data.label }
-        .let { println(it.toFloat() / test.size.toFloat()) }
+        .let { it.toFloat() / test.size.toFloat() }
 
-    return network
+    println("${accuracy * 100}%")
+
+    return accuracy
 }
 
 private fun createNetwork(seed: Int?): Network<List<Float>, Int> = NetworkBuilder
