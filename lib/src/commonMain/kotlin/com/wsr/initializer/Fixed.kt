@@ -15,6 +15,6 @@ class Fixed(private val value: Float) : WeightInitializer {
     override fun d3(input: List<Int>, output: List<Int>, x: Int, y: Int, z: Int): IOType.D3 =
         IOType.d3(shape = listOf(x, y, z)) { _, _, _ -> value }
 
-    override fun d4(input: List<Int>, output: List<Int>, i: Int, j: Int, k: Int, n: Int): IOType.D4 =
-        IOType.d4(shape = listOf(i, j, k, n)) { _, _, _, _ -> value }
+    override fun d4(input: List<Int>, output: List<Int>, i: Int, j: Int, k: Int, l: Int): IOType.D4 =
+        IOType.d4(shape = listOf(i, j, k, l)) { _, _, _, _ -> value }
 }
