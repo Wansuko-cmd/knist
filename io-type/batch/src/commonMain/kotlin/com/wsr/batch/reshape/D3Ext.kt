@@ -3,8 +3,8 @@ package com.wsr.batch.reshape
 import com.wsr.batch.Batch
 import com.wsr.batch.collecction.map.map
 import com.wsr.core.IOType
-import com.wsr.core.reshape.slice
-import com.wsr.core.reshape.transpose
+import com.wsr.core.reshape.slice.slice
+import com.wsr.core.reshape.transpose.transpose
 
 fun Batch<IOType.D3>.transpose(axisI: Int, axisJ: Int, axisK: Int) =
     map { it.transpose(axisI = axisI, axisJ = axisJ, axisK = axisK) }

@@ -4,27 +4,11 @@ package com.wsr.reshape
 
 import com.wsr.core.IOType
 import com.wsr.core.d2
-import com.wsr.core.d3
-import com.wsr.core.reshape.toD3
-import com.wsr.core.reshape.transpose
+import com.wsr.core.reshape.transpose.transpose
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class D2ExtTest {
-    @Test
-    fun `List_D2のtoD3=D2をまとめたD3`() {
-        val list =
-            listOf(
-                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() },
-                IOType.d2(2, 3) { x, y -> (x * 3 + y + 7).toFloat() },
-            )
-        val result = list.toD3()
-        assertEquals(
-            expected = IOType.d3(2, 2, 3) { x, y, z -> (y * 3 + z + 1 + x * 6).toFloat() },
-            actual = result,
-        )
-    }
-
     @Test
     fun `D2のtranspose=行と列を入れ替えたD2`() {
         // [[1, 2],
@@ -38,24 +22,6 @@ class D2ExtTest {
         assertEquals(
             expected = IOType.d2(2, 3) { x, y -> (y * 2 + x + 1).toFloat() },
             actual = result,
-        )
-    }
-
-    @Test
-    fun `List_D2のtranspose=各D2をtransposeしたList_D2`() {
-        val list =
-            listOf(
-                IOType.d2(2, 3) { x, y -> (x * 3 + y + 1).toFloat() },
-                IOType.d2(2, 3) { x, y -> (x * 3 + y + 7).toFloat() },
-            )
-        val result = list.transpose()
-        assertEquals(
-            expected = IOType.d2(3, 2) { x, y -> (y * 3 + x + 1).toFloat() },
-            actual = result[0],
-        )
-        assertEquals(
-            expected = IOType.d2(3, 2) { x, y -> (y * 3 + x + 7).toFloat() },
-            actual = result[1],
         )
     }
 }

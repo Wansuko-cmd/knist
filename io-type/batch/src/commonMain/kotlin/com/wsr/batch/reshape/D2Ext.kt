@@ -7,9 +7,9 @@ import com.wsr.core.IOType
 import com.wsr.core.d2
 import com.wsr.core.d3
 import com.wsr.core.get
-import com.wsr.core.reshape.broadcastToD3
-import com.wsr.core.reshape.slice
-import com.wsr.core.reshape.transpose
+import com.wsr.core.reshape.broadcast.broadcastToD3
+import com.wsr.core.reshape.slice.slice
+import com.wsr.core.reshape.transpose.transpose
 import com.wsr.core.set
 
 fun Batch<IOType.D2>.transpose() = map { it.transpose() }
