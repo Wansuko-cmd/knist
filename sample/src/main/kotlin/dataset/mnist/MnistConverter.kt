@@ -1,7 +1,6 @@
-package mnist
+package dataset.mnist
 
 import com.wsr.NetworkBuilder
-import com.wsr.NetworkBuilder.Companion.inputD2
 import com.wsr.batch.Batch
 import com.wsr.batch.toBatch
 import com.wsr.batch.toList
@@ -11,7 +10,6 @@ import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
-import dataset.mnist.PixelConverter
 import kotlinx.serialization.Serializable
 import maxIndex
 
