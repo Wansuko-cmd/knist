@@ -47,11 +47,20 @@ class ConvD1 internal constructor(
     }
 
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
-        val col = input.unfold(windowSize = kernel, stride = stride, padding = padding, inputSize = inputSize, outputSize = outputY)
+        val col = input.unfold(
+            windowSize = kernel,
+            stride = stride,
+            padding = padding,
+            inputSize = inputSize,
+            outputSize = outputY,
+        )
         val result = weight.toFilter() matMul col
-        // IOType.D2 [filter, batchSize * outputY] → Batch<IOType.D2> [batchSize] x [filter, outputY]
-        // reshape to D3 [filter, batchSize, outputY] → transpose(1, 0, 2) → [batchSize, filter, outputY] → Batch<D2>
-        return IOType.d3(listOf(filter, input.size, outputY), result.value).transpose(1, 0, 2).toBatch()
+        return IOType.d3(
+            shape = listOf(filter, input.size, outputY),
+            value = result.value,
+        )
+            .transpose(axisI = 1, axisJ =  0, axisK = 2)
+            .toBatch()
     }
 
     /**
@@ -95,38 +104,53 @@ class ConvD1 internal constructor(
         context: Context,
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
-        // forward
-        val col = input.unfold(windowSize = kernel, stride = stride, padding = padding, inputSize = inputSize, outputSize = outputY)
-        val filterMatrix = weight.toFilter()
-        val result = filterMatrix matMul col
-        // IOType.D2 [filter, batchSize * outputY] → Batch<IOType.D2> [batchSize] x [filter, outputY]
-        val output = IOType.d3(listOf(filter, input.size, outputY), result.value).transpose(1, 0, 2).toBatch()
+        val col = input.unfold(
+            windowSize = kernel,
+            stride = stride,
+            padding = padding,
+            inputSize = inputSize,
+            outputSize = outputY,
+        )
+        val result = weight.toFilter() matMul col
+        val output = IOType.d3(
+            shape = listOf(filter, input.size, outputY),
+            value = result.value,
+        )
+            .transpose(axisI = 1, axisJ =  0, axisK = 2)
+            .toBatch()
 
         val delta = calcDelta(output)
 
-        // dx (逆伝播)
-        // reversed weight: [channel, filter, kernel] で kernel を反転
         val reversed = IOType.d2(channel * kernel, filter) { i, f ->
             val c = i / kernel
             val k = i % kernel
             weight[f, c, kernel - k - 1]
         }
-        // Batch<IOType.D2> [batchSize] x [filter, outputY] → IOType.D2 [filter, batchSize * outputY]
         val deltaD3 = delta.toD3().transpose(1, 0, 2)
-        val deltaCol = IOType.d2(listOf(filter, input.size * outputY), deltaD3.value)
+        val deltaCol = IOType.d2(
+            shape = listOf(filter, input.size * outputY),
+            value = deltaD3.value,
+        )
         val dxCol = reversed matMul deltaCol
-        val dx = dxCol.fold(batchSize = input.size, windowSize = kernel, stride = stride, padding = padding, inputSize = inputSize, outputSize = outputY)
+        val dx = dxCol.fold(
+            batchSize = input.size,
+            windowSize = kernel,
+            stride = stride,
+            padding = padding,
+            inputSize = inputSize,
+            outputSize = outputY,
+        )
 
         // dw (重み勾配)
         val dw = Batch(input.size) { b ->
-            val deltaB = delta[b]
-            val inputB = input[b]
+            val delta = delta[b]
+            val input = input[b]
             IOType.d3(filter, channel, kernel) { f, c, k ->
                 var sum = 0f
                 for (o in 0 until outputY) {
                     val inputIdx = o * stride + k - padding
                     if (inputIdx in 0 until inputSize) {
-                        sum += deltaB[f, o] * inputB[c, inputIdx]
+                        sum += delta[f, o] * input[c, inputIdx]
                     }
                 }
                 sum
@@ -141,7 +165,6 @@ class ConvD1 internal constructor(
      * Fold: 列形式をBatch<IOType.D2>に戻す (col2im)
      * 入力: [windowSize * channel, outputSize * batchSize]
      * 出力: [batchSize] x [channel, inputSize]
-     * 注意: 重複部分は加算される
      */
     private fun IOType.D2.fold(
         batchSize: Int,
