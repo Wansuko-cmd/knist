@@ -15,12 +15,12 @@ import com.wsr.core.set
  */
 fun Batch<IOType.D3>.unfold(windowSize: Int, stride: Int, padding: Int): IOType.D2 {
     val channel = shape[0]
-    val inputSizeX = shape[1]
-    val inputSizeY = shape[2]
-    val outputSizeX = (inputSizeX - windowSize + 2 * padding) / stride + 1
-    val outputSizeY = (inputSizeY - windowSize + 2 * padding) / stride + 1
+    val inputX = shape[1]
+    val inputY = shape[2]
+    val outputX = (inputX - windowSize + 2 * padding) / stride + 1
+    val outputY = (inputY - windowSize + 2 * padding) / stride + 1
     val row = windowSize * windowSize * channel
-    val column = outputSizeX * outputSizeY * size
+    val column = outputX * outputY * size
     val result = IOType.d2(row, column)
 
     for (batchIndex in 0 until size) {
@@ -29,12 +29,12 @@ fun Batch<IOType.D3>.unfold(windowSize: Int, stride: Int, padding: Int): IOType.
             for (wy in 0 until windowSize) {
                 for (wx in 0 until windowSize) {
                     val rowIdx = c * windowSize * windowSize + wy * windowSize + wx
-                    for (oy in 0 until outputSizeY) {
-                        for (ox in 0 until outputSizeX) {
-                            val columnIndex = batchIndex * outputSizeX * outputSizeY + oy * outputSizeX + ox
+                    for (oy in 0 until outputY) {
+                        for (ox in 0 until outputX) {
+                            val columnIndex = batchIndex * outputX * outputY + oy * outputX + ox
                             val inputIdxX = ox * stride + wx - padding
                             val inputIdxY = oy * stride + wy - padding
-                            if (inputIdxX in 0 until inputSizeX && inputIdxY in 0 until inputSizeY) {
+                            if (inputIdxX in 0 until inputX && inputIdxY in 0 until inputY) {
                                 result[rowIdx, columnIndex] = input[c, inputIdxX, inputIdxY]
                             }
                         }
@@ -55,8 +55,8 @@ fun Batch<IOType.D3>.unfold(windowSize: Int, stride: Int, padding: Int): IOType.
 fun IOType.D2.fold(
     batchSize: Int,
     channel: Int,
-    inputSizeX: Int,
-    inputSizeY: Int,
+    inputX: Int,
+    inputY: Int,
     stride: Int,
     padding: Int,
 ): Batch<IOType.D3> {
@@ -66,7 +66,7 @@ fun IOType.D2.fold(
     val outputSizeY = outputSizeXY / outputSizeX
 
     return Batch(batchSize) { b ->
-        IOType.d3(channel, inputSizeX, inputSizeY) { c, ix, iy ->
+        IOType.d3(channel, inputX, inputY) { c, ix, iy ->
             var sum = 0f
             for (oy in 0 until outputSizeY) {
                 for (ox in 0 until outputSizeX) {

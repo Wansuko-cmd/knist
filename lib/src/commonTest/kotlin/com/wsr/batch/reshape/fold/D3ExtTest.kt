@@ -52,8 +52,8 @@ class D3ExtTest {
         val folded = col.fold(
             batchSize = 1,
             channel = 1,
-            inputSizeX = 3,
-            inputSizeY = 3,
+            inputX = 3,
+            inputY = 3,
             stride = 1,
             padding = 0,
         )
