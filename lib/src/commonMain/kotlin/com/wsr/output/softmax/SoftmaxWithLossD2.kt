@@ -16,7 +16,7 @@ import com.wsr.core.collection.sum.sum
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.get
-import com.wsr.core.reshape.broadcastToD2
+import com.wsr.core.reshape.broadcast.broadcastToD2
 import com.wsr.output.Output
 import com.wsr.output.TResult
 import kotlinx.serialization.Serializable
