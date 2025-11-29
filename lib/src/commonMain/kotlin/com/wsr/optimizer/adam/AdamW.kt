@@ -37,24 +37,24 @@ data class AdamW(
         shape = listOf(size),
     )
 
-    override fun d2(x: Int, y: Int): Optimizer.D2 = AdamWD2(
+    override fun d2(i: Int, j: Int): Optimizer.D2 = AdamWD2(
         scheduler = scheduler,
         momentum = momentum,
         rms = rms,
         decay = decay,
         maxNorm = maxNorm,
         stepUnit = stepUnit,
-        shape = listOf(x, y),
+        shape = listOf(i, j),
     )
 
-    override fun d3(x: Int, y: Int, z: Int): Optimizer.D3 = AdamWD3(
+    override fun d3(i: Int, j: Int, k: Int): Optimizer.D3 = AdamWD3(
         scheduler = scheduler,
         momentum = momentum,
         rms = rms,
         decay = decay,
         maxNorm = maxNorm,
         stepUnit = stepUnit,
-        shape = listOf(x, y, z),
+        shape = listOf(i, j, k),
     )
 
     override fun d4(i: Int, j: Int, k: Int, l: Int): Optimizer.D4 = AdamWD4(

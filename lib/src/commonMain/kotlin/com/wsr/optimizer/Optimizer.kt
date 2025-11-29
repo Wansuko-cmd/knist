@@ -12,8 +12,8 @@ import kotlin.math.sqrt
 
 interface Optimizer {
     fun d1(size: Int): D1
-    fun d2(x: Int, y: Int): D2
-    fun d3(x: Int, y: Int, z: Int): D3
+    fun d2(i: Int, j: Int): D2
+    fun d3(i: Int, j: Int, k: Int): D3
     fun d4(i: Int, j: Int, k: Int, l: Int): D4
 
     @Serializable

@@ -15,9 +15,9 @@ data class Sgd(
 ) : Optimizer {
     override fun d1(size: Int): Optimizer.D1 = SgdD1(scheduler, maxNorm, stepUnit)
 
-    override fun d2(x: Int, y: Int): Optimizer.D2 = SgdD2(scheduler, maxNorm, stepUnit)
+    override fun d2(i: Int, j: Int): Optimizer.D2 = SgdD2(scheduler, maxNorm, stepUnit)
 
-    override fun d3(x: Int, y: Int, z: Int): Optimizer.D3 = SgdD3(scheduler, maxNorm, stepUnit)
+    override fun d3(i: Int, j: Int, k: Int): Optimizer.D3 = SgdD3(scheduler, maxNorm, stepUnit)
 
     override fun d4(i: Int, j: Int, k: Int, l: Int): Optimizer.D4 = SgdD4(scheduler, maxNorm, stepUnit)
 }
