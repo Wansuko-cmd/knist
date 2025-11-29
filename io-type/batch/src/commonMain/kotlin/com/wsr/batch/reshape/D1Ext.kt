@@ -5,8 +5,8 @@ import com.wsr.batch.collecction.map.map
 import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.d2
-import com.wsr.core.reshape.broadcastToD2
-import com.wsr.core.reshape.slice
+import com.wsr.core.reshape.broadcast.broadcastToD2
+import com.wsr.core.reshape.slice.slice
 
 fun Batch<IOType.D1>.broadcastToD2(axis: Int, size: Int) = Batch(this.size) { this[it].broadcastToD2(axis, size) }
 
