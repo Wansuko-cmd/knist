@@ -12,7 +12,7 @@ import kotlin.test.Test
 
 private const val SEED = 0
 
-class MnistTest {
+class TinyStoriesTest {
     @Before
     fun setup() {
         println(

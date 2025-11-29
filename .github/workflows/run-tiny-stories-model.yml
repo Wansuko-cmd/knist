@@ -1,0 +1,47 @@
+name: 'TinyStoriesモデルの出力を確認'
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリにチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Javaのセットアップ
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          cache: 'gradle'
+
+      - name: TinyStoriesデータセットのキャッシュを復元
+        id: cache-tiny-stories
+        uses: actions/cache@v4
+        with:
+          path: sample/src/main/resources/stories
+          key: tiny-stories-dataset-v1
+
+      - name: TinyStoriesデータセットをダウンロード
+        if: steps.cache-tiny-stories.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p sample/src/main/resources/stories
+          echo "TinyStories-train.txtをダウンロード中..."
+          curl -L -o sample/src/main/resources/stories/TinyStories-train.txt \
+            "https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStories-train.txt"
+          echo "TinyStories-valid.txtをダウンロード中..."
+          curl -L -o sample/src/main/resources/stories/TinyStories-valid.txt \
+            "https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStories-valid.txt"
+          echo "ダウンロード完了"
+          ls -lh sample/src/main/resources/stories/
+
+      - name: ./gradlewに権限を付与
+        run: |
+          chmod 777 ${{ github.workspace }}/gradlew
+
+      - name: TinyStoriesテストを実行
+        run: |
+          ${{ github.workspace }}/gradlew sample:test --tests "stories.TinyStoriesTest" --info
