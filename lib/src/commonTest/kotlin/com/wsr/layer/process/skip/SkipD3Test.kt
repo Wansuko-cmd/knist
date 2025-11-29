@@ -13,6 +13,7 @@ import com.wsr.layer.Context
 import com.wsr.layer.process.bias.BiasD3
 import com.wsr.layer.process.function.linear.LinearD3
 import com.wsr.layer.process.skip.SkipD3
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -25,7 +26,7 @@ class SkipD3Test {
             outputX = 1,
             outputY = 2,
             outputZ = 3,
-            optimizer = Sgd(0.1f).d3(1, 2, 3),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d3(1, 2, 3),
             weight = IOType.d3(1, 2, 3) { x, y, z -> (y * 3 + z + 1).toFloat() },
         )
 
@@ -74,7 +75,7 @@ class SkipD3Test {
             outputX = 1,
             outputY = 2,
             outputZ = 2,
-            optimizer = Sgd(0.1f).d3(1, 2, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d3(1, 2, 2),
             weight = biasWeight,
         )
 
@@ -125,7 +126,7 @@ class SkipD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 1,
-            optimizer = Sgd(0.1f).d3(2, 2, 1),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d3(2, 2, 1),
             weight = biasWeight,
         )
 
@@ -181,7 +182,7 @@ class SkipD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 2,
-            optimizer = Sgd(0.1f).d3(2, 2, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d3(2, 2, 2),
             weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0f },
         )
 
@@ -226,7 +227,7 @@ class SkipD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 2,
-            optimizer = Sgd(0.1f).d3(2, 2, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d3(2, 2, 2),
             weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0f },
         )
 
@@ -281,7 +282,7 @@ class SkipD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 2,
-            optimizer = Sgd(0.1f).d3(2, 2, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d3(2, 2, 2),
             weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0f },
         )
 
@@ -326,7 +327,7 @@ class SkipD3Test {
             outputX = 2,
             outputY = 2,
             outputZ = 2,
-            optimizer = Sgd(0.1f).d3(2, 2, 2),
+            optimizer = Sgd(Scheduler.Fix(0.1f)).d3(2, 2, 2),
             weight = IOType.d3(2, 2, 2) { _, _, _ -> 0.0f },
         )
 

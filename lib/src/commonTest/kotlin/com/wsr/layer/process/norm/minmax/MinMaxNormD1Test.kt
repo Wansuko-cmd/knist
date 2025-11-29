@@ -11,6 +11,7 @@ import com.wsr.core.get
 import com.wsr.core.set
 import com.wsr.layer.Context
 import com.wsr.layer.process.norm.minmax.MinMaxNormD1
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -23,7 +24,7 @@ class MinMaxNormD1Test {
         val norm =
             MinMaxNormD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1f).d1(size = alpha.shape[0]),
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d1(size = alpha.shape[0]),
                 weight = alpha,
             )
 
@@ -51,7 +52,7 @@ class MinMaxNormD1Test {
         val norm =
             MinMaxNormD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1f).d1(size = alpha.shape[0]),
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d1(size = alpha.shape[0]),
                 weight = alpha,
             )
 
@@ -81,7 +82,7 @@ class MinMaxNormD1Test {
         val norm =
             MinMaxNormD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1f).d1(size = alpha.shape[0]),
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d1(size = alpha.shape[0]),
                 weight = alpha,
             )
 

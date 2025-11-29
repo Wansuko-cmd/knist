@@ -10,6 +10,7 @@ import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.get
 import com.wsr.layer.Context
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,10 +33,10 @@ class AttentionD2Test {
             weightK = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightV = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightO = IOType.d2(numOfHeads * dim, inputY) { _, _ -> 0.1f },
-            optimizerQ = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerK = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerV = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerO = Sgd(0.01f).d2(numOfHeads * dim, inputY),
+            optimizerQ = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerK = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerV = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerO = Sgd(Scheduler.Fix(0.01f)).d2(numOfHeads * dim, inputY),
         )
 
         // input = [[0.1, 0.2, 0.3, 0.4], [0.5, 0.6, 0.7, 0.8]]
@@ -77,10 +78,10 @@ class AttentionD2Test {
             weightK = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightV = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightO = IOType.d2(numOfHeads * dim, inputY) { _, _ -> 0.1f },
-            optimizerQ = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerK = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerV = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerO = Sgd(0.01f).d2(numOfHeads * dim, inputY),
+            optimizerQ = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerK = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerV = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerO = Sgd(Scheduler.Fix(0.01f)).d2(numOfHeads * dim, inputY),
         )
 
         // input = [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6], [0.7, 0.8, 0.9, 1.0, 1.1, 1.2], [1.3, 1.4, 1.5, 1.6, 1.7, 1.8]]
@@ -132,10 +133,10 @@ class AttentionD2Test {
             weightK = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightV = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightO = IOType.d2(numOfHeads * dim, inputY) { _, _ -> 0.1f },
-            optimizerQ = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerK = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerV = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerO = Sgd(0.01f).d2(numOfHeads * dim, inputY),
+            optimizerQ = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerK = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerV = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerO = Sgd(Scheduler.Fix(0.01f)).d2(numOfHeads * dim, inputY),
         )
 
         // input = [[0.1, 0.2, 0.3, 0.4], [0.5, 0.6, 0.7, 0.8]]
@@ -182,10 +183,10 @@ class AttentionD2Test {
             weightK = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightV = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightO = IOType.d2(numOfHeads * dim, inputY) { _, _ -> 0.1f },
-            optimizerQ = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerK = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerV = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerO = Sgd(0.01f).d2(numOfHeads * dim, inputY),
+            optimizerQ = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerK = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerV = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerO = Sgd(Scheduler.Fix(0.01f)).d2(numOfHeads * dim, inputY),
         )
 
         // input = [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6], [0.7, 0.8, 0.9, 1.0, 1.1, 1.2], [1.3, 1.4, 1.5, 1.6, 1.7, 1.8]]
@@ -242,10 +243,10 @@ class AttentionD2Test {
             weightK = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightV = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightO = IOType.d2(numOfHeads * dim, inputY) { _, _ -> 0.1f },
-            optimizerQ = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerK = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerV = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerO = Sgd(0.01f).d2(numOfHeads * dim, inputY),
+            optimizerQ = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerK = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerV = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerO = Sgd(Scheduler.Fix(0.01f)).d2(numOfHeads * dim, inputY),
         )
 
         // input = [[0.1, 0.2, 0.3, 0.4], [0.5, 0.6, 0.7, 0.8]]
@@ -296,10 +297,10 @@ class AttentionD2Test {
             weightK = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightV = IOType.d2(inputY, numOfHeads * dim) { _, _ -> 0.1f },
             weightO = IOType.d2(numOfHeads * dim, inputY) { _, _ -> 0.1f },
-            optimizerQ = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerK = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerV = Sgd(0.01f).d2(inputY, numOfHeads * dim),
-            optimizerO = Sgd(0.01f).d2(numOfHeads * dim, inputY),
+            optimizerQ = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerK = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerV = Sgd(Scheduler.Fix(0.01f)).d2(inputY, numOfHeads * dim),
+            optimizerO = Sgd(Scheduler.Fix(0.01f)).d2(numOfHeads * dim, inputY),
         )
 
         // input = [[0.1, ..., 0.8], [0.9, ..., 1.6], [1.7, ..., 2.4]]

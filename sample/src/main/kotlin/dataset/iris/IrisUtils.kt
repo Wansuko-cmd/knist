@@ -8,6 +8,7 @@ import com.wsr.initializer.He
 import com.wsr.layer.process.affine.affine
 import com.wsr.layer.process.bias.bias
 import com.wsr.layer.process.function.relu.reLU
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import com.wsr.output.softmax.softmaxWithLoss
 import maxIndex
@@ -16,7 +17,7 @@ fun createIrisModel(epoc: Int) {
     val (train, test) = irisDatasets.shuffled() to irisDatasets.shuffled()
     val network =
         NetworkBuilder
-            .inputD1(inputSize = 4, optimizer = Sgd(0.01f), initializer = He())
+            .inputD1(inputSize = 4, optimizer = Sgd(scheduler = Scheduler.Fix(0.01f)), initializer = He())
             .affine(neuron = 50)
             .bias()
             .reLU()

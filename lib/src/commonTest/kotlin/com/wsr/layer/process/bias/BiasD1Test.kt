@@ -10,6 +10,7 @@ import com.wsr.core.d1
 import com.wsr.core.get
 import com.wsr.core.set
 import com.wsr.layer.Context
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -22,7 +23,7 @@ class BiasD1Test {
         val bias =
             BiasD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1f).d1(size = weight.shape[0]),
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d1(size = weight.shape[0]),
                 weight = weight,
             )
 
@@ -55,7 +56,7 @@ class BiasD1Test {
         val bias =
             BiasD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1f).d1(size = weight.shape[0]),
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d1(size = weight.shape[0]),
                 weight = weight,
             )
 
@@ -86,7 +87,7 @@ class BiasD1Test {
         val bias =
             BiasD1(
                 outputSize = 3,
-                optimizer = Sgd(0.1f).d1(size = weight.shape[0]),
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d1(size = weight.shape[0]),
                 weight = weight,
             )
 

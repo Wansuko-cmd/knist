@@ -17,6 +17,7 @@ interface Optimizer {
 
     @Serializable
     abstract class D1(private val _maxNorm: Float = Float.MAX_VALUE) {
+        protected var step: Int = 0
         protected abstract fun adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1
 
         fun adapt(weight: IOType.D1, dw: IOType.D1, enableClip: Boolean = true): IOType.D1 = adapt(
@@ -34,12 +35,13 @@ interface Optimizer {
             } else {
                 dw
             }
-            return adapt(weight, scaled)
+            return adapt(weight, scaled).also { step++ }
         }
     }
 
     @Serializable
     abstract class D2(private val _maxNorm: Float = Float.MAX_VALUE) {
+        protected var step: Int = 0
         protected abstract fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2
 
         fun adapt(weight: IOType.D2, dw: IOType.D2, enableClip: Boolean = true): IOType.D2 = adapt(
@@ -57,12 +59,13 @@ interface Optimizer {
             } else {
                 dw
             }
-            return adapt(weight, scaled)
+            return adapt(weight, scaled).also { step++ }
         }
     }
 
     @Serializable
     abstract class D3(private val _maxNorm: Float = Float.MAX_VALUE) {
+        protected var step: Int = 0
         protected abstract fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3
 
         fun adapt(weight: IOType.D3, dw: IOType.D3, enableClip: Boolean = true): IOType.D3 = adapt(
@@ -80,7 +83,7 @@ interface Optimizer {
             } else {
                 dw
             }
-            return adapt(weight, scaled)
+            return adapt(weight, scaled).also { step++ }
         }
     }
 }

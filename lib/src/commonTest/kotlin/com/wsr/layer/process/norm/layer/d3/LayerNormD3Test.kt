@@ -11,6 +11,7 @@ import com.wsr.core.d3
 import com.wsr.core.get
 import com.wsr.core.set
 import com.wsr.layer.Context
+import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.math.sqrt
 import kotlin.test.Test
@@ -27,7 +28,7 @@ class LayerNormD3Test {
                 outputY = 2,
                 outputZ = 2,
                 e = 1e-10f,
-                optimizer = Sgd(0.1f).d3(x = 2, y = 2, z = 2),
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d3(x = 2, y = 2, z = 2),
                 weight = weight,
             )
 
@@ -142,7 +143,7 @@ class LayerNormD3Test {
                 outputY = 2,
                 outputZ = 2,
                 e = 1e-10f,
-                optimizer = Sgd(0.1f).d3(x = 2, y = 2, z = 2),
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d3(x = 2, y = 2, z = 2),
                 weight = weight,
             )
 
@@ -212,7 +213,7 @@ class LayerNormD3Test {
                 outputY = 2,
                 outputZ = 2,
                 e = 1e-10f,
-                optimizer = Sgd(0.01f).d3(x = 2, y = 2, z = 2),
+                optimizer = Sgd(Scheduler.Fix(0.01f)).d3(x = 2, y = 2, z = 2),
                 weight = weight,
             )
 

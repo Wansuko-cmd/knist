@@ -11,6 +11,7 @@ import com.wsr.core.operation.minus.minus
 import com.wsr.core.operation.plus.plus
 import com.wsr.core.operation.times.times
 import com.wsr.optimizer.Optimizer
+import com.wsr.optimizer.Scheduler
 import kotlin.math.pow
 import kotlinx.serialization.Serializable
 
@@ -18,13 +19,13 @@ private const val E = 1e-8f
 
 @Serializable
 data class Adam(
-    private val rate: Float,
+    private val scheduler: Scheduler,
     private val momentum: Float = 0.9f,
     private val rms: Float = 0.999f,
     private val maxNorm: Float = Float.MAX_VALUE,
 ) : Optimizer {
     override fun d1(size: Int): Optimizer.D1 = AdamD1(
-        rate = rate,
+        scheduler = scheduler,
         momentum = momentum,
         rms = rms,
         maxNorm = maxNorm,
@@ -32,7 +33,7 @@ data class Adam(
     )
 
     override fun d2(x: Int, y: Int): Optimizer.D2 = AdamD2(
-        rate = rate,
+        scheduler = scheduler,
         momentum = momentum,
         rms = rms,
         maxNorm = maxNorm,
@@ -40,7 +41,7 @@ data class Adam(
     )
 
     override fun d3(x: Int, y: Int, z: Int): Optimizer.D3 = AdamD3(
-        rate = rate,
+        scheduler = scheduler,
         momentum = momentum,
         rms = rms,
         maxNorm = maxNorm,
@@ -50,7 +51,7 @@ data class Adam(
 
 @Serializable
 internal data class AdamD1(
-    private val rate: Float,
+    private val scheduler: Scheduler,
     private val momentum: Float,
     private val rms: Float,
     private val maxNorm: Float,
@@ -69,13 +70,13 @@ internal data class AdamD1(
         val mHat = m / (1f - momentum.pow(t.toFloat()))
         val vHat = v / (1f - rms.pow(t.toFloat()))
 
-        return weight - rate * mHat / vHat.sqrt(e = E)
+        return weight - scheduler.calcRate(step = step) * mHat / vHat.sqrt(e = E)
     }
 }
 
 @Serializable
 internal data class AdamD2(
-    private val rate: Float,
+    private val scheduler: Scheduler,
     private val momentum: Float,
     private val rms: Float,
     private val maxNorm: Float,
@@ -94,13 +95,13 @@ internal data class AdamD2(
         val mHat = m / (1f - momentum.pow(t.toFloat()))
         val vHat = v / (1f - rms.pow(t.toFloat()))
 
-        return weight - rate * mHat / vHat.sqrt(e = E)
+        return weight - scheduler.calcRate(step = step) * mHat / vHat.sqrt(e = E)
     }
 }
 
 @Serializable
 internal data class AdamD3(
-    private val rate: Float,
+    private val scheduler: Scheduler,
     private val momentum: Float,
     private val rms: Float,
     private val maxNorm: Float,
@@ -119,6 +120,6 @@ internal data class AdamD3(
         val mHat = m / (1f - momentum.pow(t.toFloat()))
         val vHat = v / (1f - rms.pow(t.toFloat()))
 
-        return weight - rate * mHat / vHat.sqrt(e = E)
+        return weight - scheduler.calcRate(step = step) * mHat / vHat.sqrt(e = E)
     }
 }
