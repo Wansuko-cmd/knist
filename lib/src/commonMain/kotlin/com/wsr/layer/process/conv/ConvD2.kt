@@ -2,7 +2,14 @@ package com.wsr.layer.process.conv
 
 import com.wsr.NetworkBuilder
 import com.wsr.batch.Batch
+import com.wsr.batch.reshape.convert.toBatch
+import com.wsr.batch.reshape.fold.unfold
 import com.wsr.core.IOType
+import com.wsr.core.operation.matmul.matMul
+import com.wsr.core.reshape.reshape.reshapeToD2
+import com.wsr.core.reshape.reshape.reshapeToD3
+import com.wsr.core.reshape.reshape.reshapeToD4
+import com.wsr.core.reshape.transpose.transpose
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
@@ -28,7 +35,11 @@ class ConvD2 internal constructor(
         input: Batch<IOType.D3>,
         context: Context,
     ): Batch<IOType.D3> {
-        TODO("Not yet implemented")
+        val col = input.unfold(windowSize = kernel, stride = stride, padding = padding)
+        return (weight.reshapeToD2(outputX, channel * kernel) matMul col)
+            .reshapeToD4(i = filter, j = input.size, k = outputY, l = outputZ)
+            .transpose(axisI = 1, axisJ = 0, axisK = 2, axisL = 3)
+            .toBatch()
     }
 
     override fun train(
