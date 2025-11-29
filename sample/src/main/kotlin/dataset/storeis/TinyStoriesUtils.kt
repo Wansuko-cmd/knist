@@ -1,5 +1,6 @@
 package dataset.storeis
 
+import com.wsr.Network
 import com.wsr.NetworkBuilder
 import com.wsr.converter.word.WordD2
 import com.wsr.converter.word.wordsD1
@@ -25,7 +26,7 @@ private const val VALID_PATH = "stories/TinyStories-valid.txt"
 
 private const val VOCAB_SIZE = 3000
 private const val EMBEDDING_DIM = 256
-private const val MAX_LENGTH = 128
+const val MAX_LENGTH = 128
 private const val NUM_LAYERS = 3
 private const val NUM_HEADS = 8
 private const val FFN_DIM = EMBEDDING_DIM * 4
@@ -37,10 +38,7 @@ private const val PAD_INDEX = 0
 private const val UNK_INDEX = 1
 private const val EOS_INDEX = 2
 
-private const val SEED = 0
-private val RANDOM = Random(SEED)
-
-fun createTinyStoriesModel() {
+fun createTinyStoriesModel(seed: Int? = null): Network<List<String>, List<String>> {
     println("単語リスト生成開始")
     val words: List<String> = createWordList(TRAIN_PATH, VOCAB_SIZE)
 
@@ -58,7 +56,7 @@ fun createTinyStoriesModel() {
                 initialRate = 0f,
             ),
         ),
-        initializer = Xavier(seed = SEED),
+        initializer = Xavier(seed = seed),
     )
         .tokenEmbedding(
             vocabSize = words.size,
@@ -147,6 +145,8 @@ fun createTinyStoriesModel() {
         }
 
     println("テストケース数: $all, 正解数: $correct")
+
+    return network
 }
 
 private fun Sequence<String>.generateStories(): Sequence<String> = sequence {
