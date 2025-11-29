@@ -42,3 +42,5 @@ fun IOType.D3.sum(axis: Int) = when (axis) {
 
     else -> throw IllegalArgumentException("IOType.D3.sum axis is $axis not 0, 1 or 2.")
 }
+
+fun IOType.D4.sum() = value.sum()
