@@ -14,7 +14,13 @@ class MomentumD1Test {
     @Test
     fun `MomentumD1の_adapt=初回呼び出し時はSGDと同じ`() {
         val momentumD1 =
-            MomentumD1(scheduler = Scheduler.Fix(0.1f), momentum = 0.9f, maxNorm = Float.MAX_VALUE, shape = listOf(3))
+            MomentumD1(
+                scheduler = Scheduler.Fix(0.1f),
+                momentum = 0.9f,
+                maxNorm = Float.MAX_VALUE,
+                stepUnit = 1,
+                shape = listOf(3),
+            )
 
         // weight = [10, 20, 30]
         val weight = IOType.d1(listOf(10.0f, 20.0f, 30.0f))
@@ -33,7 +39,13 @@ class MomentumD1Test {
     @Test
     fun `MomentumD1の_adapt=2回目以降はvelocityが蓄積される`() {
         val momentumD1 =
-            MomentumD1(scheduler = Scheduler.Fix(0.1f), momentum = 0.9f, maxNorm = Float.MAX_VALUE, shape = listOf(3))
+            MomentumD1(
+                scheduler = Scheduler.Fix(0.1f),
+                momentum = 0.9f,
+                maxNorm = Float.MAX_VALUE,
+                stepUnit = 1,
+                shape = listOf(3),
+            )
 
         // 1回目: dw = [1, 2, 3]
         var weight = IOType.d1(listOf(10.0f, 20.0f, 30.0f))

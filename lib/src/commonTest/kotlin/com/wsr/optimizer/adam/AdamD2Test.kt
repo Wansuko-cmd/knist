@@ -19,6 +19,7 @@ class AdamD2Test {
                 momentum = 0.9f,
                 rms = 0.999f,
                 maxNorm = Float.MAX_VALUE,
+                stepUnit = 1,
                 shape = listOf(1, 2),
             )
 
@@ -42,6 +43,7 @@ class AdamD2Test {
                 momentum = 0.9f,
                 rms = 0.999f,
                 maxNorm = Float.MAX_VALUE,
+                stepUnit = 1,
                 shape = listOf(2, 2),
             )
 

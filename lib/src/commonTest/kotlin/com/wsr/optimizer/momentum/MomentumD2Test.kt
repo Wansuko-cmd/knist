@@ -18,6 +18,7 @@ class MomentumD2Test {
                 scheduler = Scheduler.Fix(0.1f),
                 momentum = 0.9f,
                 maxNorm = Float.MAX_VALUE,
+                stepUnit = 1,
                 shape = listOf(2, 2),
             )
 
@@ -42,6 +43,7 @@ class MomentumD2Test {
                 scheduler = Scheduler.Fix(0.1f),
                 momentum = 0.9f,
                 maxNorm = Float.MAX_VALUE,
+                stepUnit = 1,
                 shape = listOf(2, 2),
             )
 

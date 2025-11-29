@@ -20,6 +20,7 @@ class AdamWD2Test {
                 rms = 0.999f,
                 decay = 0.01f,
                 maxNorm = Float.MAX_VALUE,
+                stepUnit = 1,
                 shape = listOf(1, 2),
             )
 
@@ -47,6 +48,7 @@ class AdamWD2Test {
                 rms = 0.999f,
                 decay = 0.01f,
                 maxNorm = Float.MAX_VALUE,
+                stepUnit = 1,
                 shape = listOf(2, 2),
             )
 
