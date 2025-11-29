@@ -23,6 +23,9 @@ import com.wsr.layer.process.debug.DebugD3
 import com.wsr.layer.process.dropout.DropoutD1
 import com.wsr.layer.process.dropout.DropoutD2
 import com.wsr.layer.process.dropout.DropoutD3
+import com.wsr.layer.process.function.linear.LinearD1 as ProcessLinearD1
+import com.wsr.layer.process.function.linear.LinearD2 as ProcessLinearD2
+import com.wsr.layer.process.function.linear.LinearD3 as ProcessLinearD3
 import com.wsr.layer.process.function.relu.LeakyReLUD1
 import com.wsr.layer.process.function.relu.LeakyReLUD2
 import com.wsr.layer.process.function.relu.LeakyReLUD3
@@ -93,6 +96,7 @@ import com.wsr.output.sigmoid.SigmoidWithLossD1
 import com.wsr.output.sigmoid.SigmoidWithLossD2
 import com.wsr.output.softmax.SoftmaxWithLossD1
 import com.wsr.output.softmax.SoftmaxWithLossD2
+import kotlin.reflect.KClass
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -109,10 +113,6 @@ import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.serializer
 import okio.BufferedSink
 import okio.BufferedSource
-import kotlin.reflect.KClass
-import com.wsr.layer.process.function.linear.LinearD1 as ProcessLinearD1
-import com.wsr.layer.process.function.linear.LinearD2 as ProcessLinearD2
-import com.wsr.layer.process.function.linear.LinearD3 as ProcessLinearD3
 
 class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
     private val converterSerializer = json.serializersModule.serializer<Converter>()
