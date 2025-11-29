@@ -2,8 +2,8 @@
 
 package com.wsr.reshape.transpose
 
-import com.wsr.core.d4
 import com.wsr.core.IOType
+import com.wsr.core.d4
 import com.wsr.core.get
 import com.wsr.core.reshape.transpose.transpose
 import kotlin.test.Test

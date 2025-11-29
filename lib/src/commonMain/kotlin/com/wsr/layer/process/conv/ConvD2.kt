@@ -36,10 +36,7 @@ class ConvD2 internal constructor(
     override val outputX: Int = filter
     override val outputY: Int = (inputX - kernel + 2 * padding) / stride + 1
     override val outputZ: Int = (inputY - kernel + 2 * padding) / stride + 1
-    override fun expect(
-        input: Batch<IOType.D3>,
-        context: Context,
-    ): Batch<IOType.D3> {
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> {
         val col = input.unfold(windowSize = kernel, stride = stride, padding = padding)
         return (weight.reshapeToD2(outputX, channel * kernel * kernel) matMul col)
             .reshapeToD4(i = filter, j = input.size, k = outputY, l = outputZ)
@@ -111,22 +108,22 @@ fun <T> NetworkBuilder.D3<T>.convD2(
     initializer: WeightInitializer = this.initializer,
 ) = addProcess(
     process =
-        ConvD2(
-            filter = filter,
-            channel = inputX,
-            kernel = kernel,
-            stride = stride,
-            padding = padding,
-            inputX = inputY,
-            inputY = inputZ,
-            optimizer = optimizer.d4(filter, inputX, kernel, kernel),
-            weight = initializer.d4(
-                input = listOf(inputX, kernel, kernel),
-                output = listOf(filter, kernel, kernel),
-                i = filter,
-                j = inputX,
-                k = kernel,
-                l = kernel,
-            ),
+    ConvD2(
+        filter = filter,
+        channel = inputX,
+        kernel = kernel,
+        stride = stride,
+        padding = padding,
+        inputX = inputY,
+        inputY = inputZ,
+        optimizer = optimizer.d4(filter, inputX, kernel, kernel),
+        weight = initializer.d4(
+            input = listOf(inputX, kernel, kernel),
+            output = listOf(filter, kernel, kernel),
+            i = filter,
+            j = inputX,
+            k = kernel,
+            l = kernel,
         ),
+    ),
 )
