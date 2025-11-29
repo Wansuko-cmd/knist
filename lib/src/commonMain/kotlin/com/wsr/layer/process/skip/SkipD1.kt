@@ -10,7 +10,7 @@ import com.wsr.core.IOType
 import com.wsr.core.collection.average.average
 import com.wsr.core.d1
 import com.wsr.core.get
-import com.wsr.core.reshape.slice
+import com.wsr.core.reshape.slice.slice
 import com.wsr.core.set
 import com.wsr.layer.Context
 import com.wsr.layer.Layer
