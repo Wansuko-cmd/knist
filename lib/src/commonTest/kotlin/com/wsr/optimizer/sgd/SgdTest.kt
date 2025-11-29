@@ -2,7 +2,6 @@
 
 package com.wsr.optimizer.sgd
 
-import com.wsr.core.get
 import com.wsr.optimizer.Scheduler
 import kotlin.test.Test
 
@@ -19,7 +18,7 @@ class SgdTest {
     @Test
     fun `Sgdの_d2=SgdD2インスタンスを返す`() {
         val sgd = Sgd(scheduler = Scheduler.Fix(0.1f))
-        val sgdD2 = sgd.d2(x = 1, y = 1)
+        val sgdD2 = sgd.d2(i = 1, j = 1)
 
         // SgdD2インスタンスが返されることを確認
         assert(sgdD2 is SgdD2)
@@ -28,7 +27,7 @@ class SgdTest {
     @Test
     fun `Sgdの_d3=SgdD3インスタンスを返す`() {
         val sgd = Sgd(scheduler = Scheduler.Fix(0.1f))
-        val sgdD3 = sgd.d3(x = 1, y = 1, z = 1)
+        val sgdD3 = sgd.d3(i = 1, j = 1, k = 1)
 
         // SgdD3インスタンスが返されることを確認
         assert(sgdD3 is SgdD3)

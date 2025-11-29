@@ -9,9 +9,7 @@ import com.wsr.core.IOType
 import com.wsr.core.d2
 import com.wsr.core.d3
 import com.wsr.core.get
-import com.wsr.core.set
 import com.wsr.layer.Context
-import com.wsr.layer.process.conv.ConvD1
 import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
@@ -38,9 +36,9 @@ class ConvD1Test {
                 padding = 0,
                 inputSize = 3,
                 optimizer = Sgd(Scheduler.Fix(0.1f)).d3(
-                    x = weight.shape[0],
-                    y = weight.shape[1],
-                    z = weight.shape[2],
+                    i = weight.shape[0],
+                    j = weight.shape[1],
+                    k = weight.shape[2],
                 ),
                 weight = weight,
             )
@@ -75,9 +73,9 @@ class ConvD1Test {
                 padding = 0,
                 inputSize = 3,
                 optimizer = Sgd(Scheduler.Fix(0.1f)).d3(
-                    x = weight.shape[0],
-                    y = weight.shape[1],
-                    z = weight.shape[2],
+                    i = weight.shape[0],
+                    j = weight.shape[1],
+                    k = weight.shape[2],
                 ),
                 weight = weight,
             )
@@ -115,9 +113,9 @@ class ConvD1Test {
                 padding = 0,
                 inputSize = 3,
                 optimizer = Sgd(Scheduler.Fix(0.1f)).d3(
-                    x = weight.shape[0],
-                    y = weight.shape[1],
-                    z = weight.shape[2],
+                    i = weight.shape[0],
+                    j = weight.shape[1],
+                    k = weight.shape[2],
                 ),
                 weight = weight,
             )

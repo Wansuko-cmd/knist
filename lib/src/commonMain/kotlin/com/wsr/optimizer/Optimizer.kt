@@ -12,8 +12,9 @@ import kotlinx.serialization.Serializable
 
 interface Optimizer {
     fun d1(size: Int): D1
-    fun d2(x: Int, y: Int): D2
-    fun d3(x: Int, y: Int, z: Int): D3
+    fun d2(i: Int, j: Int): D2
+    fun d3(i: Int, j: Int, k: Int): D3
+    fun d4(i: Int, j: Int, k: Int, l: Int): D4
 
     @Serializable
     abstract class D1(private val _maxNorm: Float = Float.MAX_VALUE, private val _stepUnit: Int = 1) {
@@ -78,6 +79,31 @@ interface Optimizer {
         )
 
         fun adapt(weight: IOType.D3, dw: Batch<IOType.D3>, enableClip: Boolean = true): IOType.D3 {
+            val dw = dw.batchAverage()
+            val norm = sqrt(dw.pow(2).sum())
+            val scaled = if (norm > _maxNorm && enableClip) {
+                val scale = _maxNorm / norm
+                dw * scale
+            } else {
+                dw
+            }
+            return adapt(weight, scaled).also { _step++ }
+        }
+    }
+
+    @Serializable
+    abstract class D4(private val _maxNorm: Float = Float.MAX_VALUE, private val _stepUnit: Int = 1) {
+        private var _step: Int = 0
+        protected val step: Int get() = _step / _stepUnit
+        protected abstract fun adapt(weight: IOType.D4, dw: IOType.D4): IOType.D4
+
+        fun adapt(weight: IOType.D4, dw: IOType.D4, enableClip: Boolean = true): IOType.D4 = adapt(
+            weight = weight,
+            dw = batchOf(dw),
+            enableClip = enableClip,
+        )
+
+        fun adapt(weight: IOType.D4, dw: Batch<IOType.D4>, enableClip: Boolean = true): IOType.D4 {
             val dw = dw.batchAverage()
             val norm = sqrt(dw.pow(2).sum())
             val scaled = if (norm > _maxNorm && enableClip) {

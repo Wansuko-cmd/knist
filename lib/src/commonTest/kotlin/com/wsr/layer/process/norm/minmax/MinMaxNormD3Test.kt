@@ -8,7 +8,6 @@ import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.d3
 import com.wsr.core.get
-import com.wsr.core.set
 import com.wsr.layer.Context
 import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
@@ -25,7 +24,7 @@ class MinMaxNormD3Test {
                 outputX = 2,
                 outputY = 2,
                 outputZ = 2,
-                optimizer = Sgd(Scheduler.Fix(0.1f)).d3(x = 2, y = 2, z = 2),
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d3(i = 2, j = 2, k = 2),
                 weight = alpha,
             )
 
@@ -60,7 +59,7 @@ class MinMaxNormD3Test {
                 outputX = 2,
                 outputY = 2,
                 outputZ = 2,
-                optimizer = Sgd(Scheduler.Fix(0.1f)).d3(x = 2, y = 2, z = 2),
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d3(i = 2, j = 2, k = 2),
                 weight = alpha,
             )
 
@@ -94,7 +93,7 @@ class MinMaxNormD3Test {
                 outputX = 2,
                 outputY = 2,
                 outputZ = 2,
-                optimizer = Sgd(Scheduler.Fix(0.1f)).d3(x = 2, y = 2, z = 2),
+                optimizer = Sgd(Scheduler.Fix(0.1f)).d3(i = 2, j = 2, k = 2),
                 weight = alpha,
             )
 
