@@ -8,7 +8,6 @@ import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.d2
 import com.wsr.core.get
-import com.wsr.core.set
 import com.wsr.layer.Context
 import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
@@ -25,8 +24,8 @@ class PositionEmbeddingD2Test {
                 outputX = 2,
                 outputY = 2,
                 optimizer = Sgd(Scheduler.Fix(0.1f)).d2(
-                    x = weight.shape[0],
-                    y = weight.shape[1],
+                    i = weight.shape[0],
+                    j = weight.shape[1],
                 ),
                 weight = weight,
             )
@@ -58,8 +57,8 @@ class PositionEmbeddingD2Test {
                 outputX = 2,
                 outputY = 2,
                 optimizer = Sgd(Scheduler.Fix(0.1f)).d2(
-                    x = weight.shape[0],
-                    y = weight.shape[1],
+                    i = weight.shape[0],
+                    j = weight.shape[1],
                 ),
                 weight = weight,
             )
@@ -95,8 +94,8 @@ class PositionEmbeddingD2Test {
                 outputX = 2,
                 outputY = 2,
                 optimizer = Sgd(Scheduler.Fix(0.1f)).d2(
-                    x = weight.shape[0],
-                    y = weight.shape[1],
+                    i = weight.shape[0],
+                    j = weight.shape[1],
                 ),
                 weight = weight,
             )
