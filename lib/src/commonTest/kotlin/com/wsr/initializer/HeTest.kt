@@ -87,7 +87,7 @@ class HeTest {
             i = 2,
             j = 2,
             k = 2,
-            n = 2,
+            l = 2,
         )
 
         // limit = sqrt(6 / 10) ≈ 0.7746f

@@ -87,7 +87,7 @@ class XavierTest {
             i = 2,
             j = 2,
             k = 2,
-            n = 2,
+            l = 2,
         )
 
         // limit = sqrt(6 / (10 + 20)) = sqrt(6 / 30) ≈ 0.4472f

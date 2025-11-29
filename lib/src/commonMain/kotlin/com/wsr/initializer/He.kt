@@ -35,12 +35,12 @@ class He(seed: Int? = null) : WeightInitializer {
         return IOType.d3(shape = listOf(x, y, z), value = weight)
     }
 
-    override fun d4(input: List<Int>, output: List<Int>, i: Int, j: Int, k: Int, n: Int): IOType.D4 {
+    override fun d4(input: List<Int>, output: List<Int>, i: Int, j: Int, k: Int, l: Int): IOType.D4 {
         val weight = calcWeight(
             fanIn = input.reduce { acc, i -> acc * i },
-            size = i * j * k * n,
+            size = i * j * k * l,
         )
-        return IOType.d4(shape = listOf(i, j, k, n), value = weight)
+        return IOType.d4(shape = listOf(i, j, k, l), value = weight)
     }
 
     private fun calcWeight(fanIn: Int, size: Int): FloatArray {
