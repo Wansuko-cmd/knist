@@ -29,6 +29,8 @@ fun IOType.D3.toBatch(): Batch<IOType.D2> = Batch(value = value, size = shape[0]
 
 fun Batch<IOType.D2>.reshapeToD3(shape: List<Int>) = Batch<IOType.D3>(size = size, shape = shape, value = value)
 
+fun Batch<IOType.D2>.reshapeToD3(i: Int, j: Int, k: Int) = reshapeToD3(listOf(i, j, k))
+
 fun Batch<IOType.D2>.broadcastToD3(axis: Int, size: Int) = Batch(this.size) { this[it].broadcastToD3(axis, size) }
 
 /**
