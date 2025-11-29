@@ -1,11 +1,11 @@
-name: 'ビルドできるか確認'
+name: 'Mnistモデルの精度を確認'
 
 on:
   workflow_dispatch:
   push:
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: 仮想ブランチにチェックアウト
@@ -21,6 +21,7 @@ jobs:
       - name: ./gradlewに権限を付与
         run: |
           chmod 777 ${{ github.workspace }}/gradlew
-      - name: ビルドを実行
+
+      - name: MNISTテストを実行
         run: |
-          ${{ github.workspace }}/gradlew build
+          ${{ github.workspace }}/gradlew sample:test --tests "mnist.MnistTest" --info

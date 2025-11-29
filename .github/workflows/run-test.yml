@@ -6,6 +6,10 @@ on:
 
 jobs:
   test:
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [ lib, io-type:core ]
     runs-on: ubuntu-latest
     steps:
       - name: 仮想ブランチにチェックアウト
@@ -23,4 +27,4 @@ jobs:
           chmod 777 ${{ github.workspace }}/gradlew
       - name: テストを実行
         run: |
-          ${{ github.workspace }}/gradlew allTests --info
+          ${{ github.workspace }}/gradlew ${{ matrix.module }}:allTests --info
