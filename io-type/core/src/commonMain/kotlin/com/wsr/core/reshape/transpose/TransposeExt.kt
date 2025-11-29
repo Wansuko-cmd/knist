@@ -3,6 +3,7 @@ package com.wsr.core.reshape.transpose
 import com.wsr.core.IOType
 import com.wsr.core.d2
 import com.wsr.core.d3
+import com.wsr.core.d4
 import com.wsr.core.get
 
 fun IOType.D2.transpose() = IOType.d2(shape.reversed()) { x, y -> this[y, x] }
@@ -57,5 +58,18 @@ fun IOType.D3.transpose(axisI: Int, axisJ: Int, axisK: Int): IOType.D3 {
             }
 
         else -> throw IllegalStateException()
+    }
+}
+
+fun IOType.D4.transpose(axisI: Int, axisJ: Int, axisK: Int, axisL: Int): IOType.D4 {
+    val axes = listOf(axisI, axisJ, axisK, axisL)
+    return IOType.d4(i = shape[axisI], j = shape[axisJ], k = shape[axisK], l = shape[axisL]) { i, j, k, l ->
+        val indices = listOf(i, j, k, l)
+        this[
+            indices[axes.indexOf(0)],
+            indices[axes.indexOf(1)],
+            indices[axes.indexOf(2)],
+            indices[axes.indexOf(3)],
+        ]
     }
 }
