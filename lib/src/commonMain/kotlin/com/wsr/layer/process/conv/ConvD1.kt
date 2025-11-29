@@ -2,16 +2,21 @@ package com.wsr.layer.process.conv
 
 import com.wsr.NetworkBuilder
 import com.wsr.batch.Batch
+import com.wsr.batch.get
+import com.wsr.batch.reshape.transpose
 import com.wsr.batch.toBatch
 import com.wsr.batch.toList
 import com.wsr.core.IOType
+import com.wsr.core.d2
 import com.wsr.core.d3
 import com.wsr.core.get
 import com.wsr.core.operation.conv.convD1
 import com.wsr.core.operation.conv.deConvD1
+import com.wsr.core.operation.matmul.matMul
 import com.wsr.core.reshape.toD2
 import com.wsr.core.reshape.toD3
 import com.wsr.core.reshape.transpose
+import com.wsr.core.set
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Context
 import com.wsr.layer.process.Process
@@ -46,8 +51,40 @@ class ConvD1 internal constructor(
         }
     }
 
-    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> =
-        input.toList().convD1(weight, stride, padding).toBatch()
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
+        val result = weight.toFilter() matMul input.toColumn()
+        return Batch(input.size) { b ->
+            IOType.d2(outputX, outputY) { f, o ->
+                result[f, b * outputY + o]
+            }
+        }
+    }
+
+    private fun Batch<IOType.D2>.toColumn(): IOType.D2 {
+        val row = kernel * channel
+        val column = outputY * size
+        val result = IOType.d2(row, column)
+
+        for (batchIndex in 0 until size) {
+            val input = this[batchIndex]
+            for (outputIndex in 0 until outputY) {
+                val rowIndex = batchIndex * outputY + outputIndex
+                for (channelIndex in 0 until channel) {
+                    for (kernelIndex in 0 until kernel) {
+                        val columnIndex = channelIndex * kernel + kernelIndex
+                        result[columnIndex, rowIndex] = input[channelIndex, outputIndex * stride + kernelIndex - padding]
+                    }
+                }
+            }
+        }
+        return result
+    }
+
+    private fun IOType.D3.toFilter(): IOType.D2 = IOType.d2(outputX, channel * kernel) { i, j ->
+        val c = j / kernel
+        val k = j % kernel
+        this[i, c, k]
+    }
 
     override fun train(
         input: Batch<IOType.D2>,
