@@ -23,12 +23,14 @@ data class Adam(
     private val momentum: Float = 0.9f,
     private val rms: Float = 0.999f,
     private val maxNorm: Float = Float.MAX_VALUE,
+    private val stepUnit: Int = 1,
 ) : Optimizer {
     override fun d1(size: Int): Optimizer.D1 = AdamD1(
         scheduler = scheduler,
         momentum = momentum,
         rms = rms,
         maxNorm = maxNorm,
+        stepUnit = stepUnit,
         shape = listOf(size),
     )
 
@@ -37,6 +39,7 @@ data class Adam(
         momentum = momentum,
         rms = rms,
         maxNorm = maxNorm,
+        stepUnit = stepUnit,
         shape = listOf(x, y),
     )
 
@@ -45,6 +48,7 @@ data class Adam(
         momentum = momentum,
         rms = rms,
         maxNorm = maxNorm,
+        stepUnit = stepUnit,
         shape = listOf(x, y, z),
     )
 }
@@ -55,8 +59,9 @@ internal data class AdamD1(
     private val momentum: Float,
     private val rms: Float,
     private val maxNorm: Float,
+    private val stepUnit: Int,
     private val shape: List<Int>,
-) : Optimizer.D1(maxNorm) {
+) : Optimizer.D1(maxNorm, stepUnit) {
     private var m: IOType.D1 = IOType.d1(shape)
     private var v: IOType.D1 = IOType.d1(shape)
     private var t: Int = 0
@@ -80,8 +85,9 @@ internal data class AdamD2(
     private val momentum: Float,
     private val rms: Float,
     private val maxNorm: Float,
+    private val stepUnit: Int,
     private val shape: List<Int>,
-) : Optimizer.D2(maxNorm) {
+) : Optimizer.D2(maxNorm, stepUnit) {
     private var m: IOType.D2 = IOType.d2(shape)
     private var v: IOType.D2 = IOType.d2(shape)
     private var t: Int = 0
@@ -105,8 +111,9 @@ internal data class AdamD3(
     private val momentum: Float,
     private val rms: Float,
     private val maxNorm: Float,
+    private val stepUnit: Int,
     private val shape: List<Int>,
-) : Optimizer.D3(maxNorm) {
+) : Optimizer.D3(maxNorm, stepUnit) {
     private var m: IOType.D3 = IOType.d3(shape)
     private var v: IOType.D3 = IOType.d3(shape)
     private var t: Int = 0

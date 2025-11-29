@@ -14,20 +14,14 @@ sealed interface Scheduler {
     }
 
     @Serializable
-    data class Step(val rate: Float, val gamma: Float, val stepCount: Int, val stepUnit: Int = 1) : Scheduler {
-        override fun calcRate(step: Int): Float {
-            val count = step / stepUnit
-            return rate * gamma.pow(count / stepCount)
-        }
+    data class Step(val rate: Float, val gamma: Float, val stepCount: Int) : Scheduler {
+        override fun calcRate(step: Int): Float = rate * gamma.pow(step / stepCount)
     }
 
     @Serializable
-    data class MultiStep(val rate: Float, val gamma: Float, val milestones: List<Int>, val stepUnit: Int = 1) :
+    data class MultiStep(val rate: Float, val gamma: Float, val milestones: List<Int>) :
         Scheduler {
-        override fun calcRate(step: Int): Float {
-            val count = step / stepUnit
-            return rate * gamma.pow(milestones.count { it < count })
-        }
+        override fun calcRate(step: Int): Float = rate * gamma.pow(milestones.count { it < step })
     }
 
     @Serializable
@@ -39,15 +33,12 @@ sealed interface Scheduler {
         val warmUp: Int = 0,
         val initialRate: Float = minRate,
     ) : Scheduler {
-        override fun calcRate(step: Int): Float {
-            val t = step / stepUnit
-            return if (t < warmUp) {
-                initialRate + (maxRate - initialRate) * (t / warmUp.toFloat())
-            } else {
-                val elapsed = t - warmUp
-                val angle = (elapsed % stepSize) / stepSize.toFloat()
-                minRate + 0.5f * (maxRate - minRate) * (1 + cos(angle * PI.toFloat()))
-            }
+        override fun calcRate(step: Int): Float = if (step < warmUp) {
+            initialRate + (maxRate - initialRate) * (step / warmUp.toFloat())
+        } else {
+            val elapsed = step - warmUp
+            val angle = (elapsed % stepSize) / stepSize.toFloat()
+            minRate + 0.5f * (maxRate - minRate) * (1 + cos(angle * PI.toFloat()))
         }
     }
 }
