@@ -6,13 +6,21 @@ import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.get
 import com.wsr.core.set
+import com.wsr.optimizer.Scheduler
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class AdamD1Test {
     @Test
     fun `AdamD1の_adapt=初回呼び出し時の動作`() {
-        val adamD1 = AdamD1(rate = 0.001f, momentum = 0.9f, rms = 0.999f, maxNorm = Float.MAX_VALUE, shape = listOf(2))
+        val adamD1 =
+            AdamD1(
+                scheduler = Scheduler.Fix(0.001f),
+                momentum = 0.9f,
+                rms = 0.999f,
+                maxNorm = Float.MAX_VALUE,
+                shape = listOf(2),
+            )
 
         // weight = [10.0f, 20.0f]
         val weight = IOType.d1(listOf(10.0f, 20.0f))
@@ -34,7 +42,14 @@ class AdamD1Test {
 
     @Test
     fun `AdamD1の_adapt=2回目以降はモーメントが蓄積される`() {
-        val adamD1 = AdamD1(rate = 0.001f, momentum = 0.9f, rms = 0.999f, maxNorm = Float.MAX_VALUE, shape = listOf(2))
+        val adamD1 =
+            AdamD1(
+                scheduler = Scheduler.Fix(0.001f),
+                momentum = 0.9f,
+                rms = 0.999f,
+                maxNorm = Float.MAX_VALUE,
+                shape = listOf(2),
+            )
 
         // 1回目
         var weight = IOType.d1(listOf(10.0f, 10.0f))
