@@ -16,7 +16,9 @@ operator fun Float.times(other: IOType.D2): IOType.D2 = IOType.d2(other.shape) {
 
 operator fun Float.times(other: IOType.D3): IOType.D3 = IOType.d3(other.shape) { i, j, k -> this * other[i, j, k] }
 
-operator fun Float.times(other: IOType.D4): IOType.D4 = IOType.d4(other.shape) { i, j, k, l -> this * other[i, j, k, l] }
+operator fun Float.times(other: IOType.D4): IOType.D4 = IOType.d4(other.shape) { i, j, k, l ->
+    this * other[i, j, k, l]
+}
 
 operator fun IOType.D0.times(other: Float) = IOType.d0(get() * other)
 

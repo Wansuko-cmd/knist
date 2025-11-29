@@ -15,4 +15,6 @@ fun IOType.D2.sqrt(e: Float = 1e-7f): IOType.D2 = IOType.d2(shape) { i, j -> kot
 
 fun IOType.D3.sqrt(e: Float = 1e-7f): IOType.D3 = IOType.d3(shape) { i, j, k -> kotlin.math.sqrt(this[i, j, k] + e) }
 
-fun IOType.D4.sqrt(e: Float = 1e-7f): IOType.D4 = IOType.d4(shape) { i, j, k, l -> kotlin.math.sqrt(this[i, j, k, l] + e) }
+fun IOType.D4.sqrt(e: Float = 1e-7f): IOType.D4 = IOType.d4(shape) { i, j, k, l ->
+    kotlin.math.sqrt(this[i, j, k, l] + e)
+}
