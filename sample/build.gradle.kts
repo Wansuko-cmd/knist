@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":lib"))
+    implementation(projects.lib)
 
     implementation(libs.coroutine)
     implementation(libs.serialization)

@@ -48,7 +48,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":io-type:blas:base"))
+                implementation(projects.ioType.blas.base)
             }
         }
 

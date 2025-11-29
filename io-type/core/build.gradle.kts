@@ -10,7 +10,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":io-type:blas"))
+                api(projects.ioType.blas)
 
                 implementation(libs.coroutine)
                 implementation(libs.serialization)
