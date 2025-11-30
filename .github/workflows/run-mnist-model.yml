@@ -2,7 +2,7 @@ name: 'Mnistモデルの精度を確認'
 
 on:
   workflow_dispatch:
-  push:
+#  push:
 
 jobs:
   test:

@@ -2,6 +2,7 @@ name: 'TinyStoriesモデルの出力を確認'
 
 on:
   workflow_dispatch:
+  push:
 
 jobs:
   test:

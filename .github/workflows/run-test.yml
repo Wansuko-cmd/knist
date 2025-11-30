@@ -2,7 +2,7 @@ name: 'テストを実行'
 
 on:
   workflow_dispatch:
-  push:
+#  push:
 
 jobs:
   test:
