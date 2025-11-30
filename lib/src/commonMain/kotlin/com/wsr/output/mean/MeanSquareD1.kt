@@ -16,8 +16,8 @@ import kotlinx.serialization.Serializable
 internal class MeanSquareD1 internal constructor(val outputSize: Int) : Output.D1() {
     override fun expect(input: Batch<IOType.D1>): Batch<IOType.D1> = input
 
-    override fun train(input: Batch<IOType.D1>, label: Batch<IOType.D1>): TResult<IOType.D1> {
-        val delta = input - label
+    override fun train(input: Batch<IOType.D1>, label: (Batch<IOType.D1>) -> Batch<IOType.D1>): TResult<IOType.D1> {
+        val delta = input - label(input)
         val loss = delta
             .pow(2)
             .batchAverage().average() * 0.5f

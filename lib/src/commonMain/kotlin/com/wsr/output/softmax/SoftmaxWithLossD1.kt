@@ -32,14 +32,15 @@ internal class SoftmaxWithLossD1 internal constructor(
         return exp / sum
     }
 
-    override fun train(input: Batch<IOType.D1>, label: Batch<IOType.D1>): TResult<IOType.D1> {
+    override fun train(input: Batch<IOType.D1>, label: (Batch<IOType.D1>) -> Batch<IOType.D1>): TResult<IOType.D1> {
         val input = input / temperature
-        val label = label
-
         val max = input.max()
         val exp = (input - max).exp()
         val sum = exp.sum()
         val output = exp / sum
+
+        val label = label(output)
+
         val loss = -(output * label).sum()
             .ln(1e-7f)
             .batchAverage()
