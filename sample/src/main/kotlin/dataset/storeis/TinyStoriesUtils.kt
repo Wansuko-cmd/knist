@@ -24,15 +24,15 @@ import kotlin.random.nextInt
 private const val TRAIN_PATH = "src/main/resources/stories/TinyStories-train.txt"
 private const val VALID_PATH = "src/main/resources/stories/TinyStories-valid.txt"
 
-private const val VOCAB_SIZE = 3000
+private const val VOCAB_SIZE = 5000
 private const val EMBEDDING_DIM = 256
-const val MAX_LENGTH = 128
-private const val NUM_LAYERS = 2
+const val MAX_LENGTH = 256
+private const val NUM_LAYERS = 6
 private const val NUM_HEADS = 8
 private const val FFN_DIM = EMBEDDING_DIM * 4
 
 private const val BATCH_SIZE = 64
-private const val NUM_OF_STORIES = 1000
+private const val NUM_OF_STORIES = 3000
 
 private const val PAD_INDEX = 0
 private const val UNK_INDEX = 1
@@ -49,8 +49,8 @@ fun createTinyStoriesModel(seed: Int? = null): Network<List<String>, List<String
         paddingIndex = PAD_INDEX,
         optimizer = AdamW(
             scheduler = Scheduler.CosineAnnealing(
-                minRate = 0.0005f,
-                maxRate = 0.001f,
+                minRate = 5e-4f,
+                maxRate = 1e-3f,
                 stepSize = NUM_OF_STORIES,
                 warmUp = 200,
                 initialRate = 0f,
