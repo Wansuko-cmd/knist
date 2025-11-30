@@ -21,8 +21,8 @@ application {
 }
 
 tasks.test {
-    minHeapSize = "256M"
-    maxHeapSize = "${1024 * 8}M"
+    minHeapSize = "1024M"
+    maxHeapSize = "${1024 * 12}M"
     jvmArgs = listOf("-XX:MaxMetaspaceSize=1024M")
     useJUnit()
 }
