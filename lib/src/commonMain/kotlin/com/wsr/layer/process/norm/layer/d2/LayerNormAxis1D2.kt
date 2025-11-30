@@ -80,7 +80,7 @@ class LayerNormAxis1D2 internal constructor(
 
             // dy/[-average(x)]のx部分 (各行で同じ値なのでbroadcast)
             val avgGradient = -2f * dVariancePerRow * numerator.average(axis = 1)
-            val dx2Broadcast = avgGradient.broadcastToD2(axis = 0, size = outputY)
+            val dx2Broadcast = avgGradient.broadcastToD2(axis = 1, size = outputY)
 
             dSquared + dx2Broadcast
         }
