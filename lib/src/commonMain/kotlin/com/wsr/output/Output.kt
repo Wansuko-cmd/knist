@@ -25,10 +25,7 @@ sealed interface Output {
 
         final override fun _expect(input: Batch<IOType>): Batch<IOType> = expect(input = input as Batch<IOType.D1>)
 
-        final override fun _train(
-            input: Batch<IOType>,
-            label: (Batch<IOType>) -> Batch<IOType>,
-        ): TResult<*> = train(
+        final override fun _train(input: Batch<IOType>, label: (Batch<IOType>) -> Batch<IOType>): TResult<*> = train(
             input = input as Batch<IOType.D1>,
             label = label as (Batch<IOType.D1>) -> Batch<IOType.D1>,
         )
@@ -45,10 +42,7 @@ sealed interface Output {
 
         final override fun _expect(input: Batch<IOType>): Batch<IOType> = expect(input = input as Batch<IOType.D2>)
 
-        final override fun _train(
-            input: Batch<IOType>,
-            label: (Batch<IOType>) -> Batch<IOType>,
-        ): TResult<*> = train(
+        final override fun _train(input: Batch<IOType>, label: (Batch<IOType>) -> Batch<IOType>): TResult<*> = train(
             input = input as Batch<IOType.D2>,
             label = label as (Batch<IOType.D2>) -> Batch<IOType.D2>,
         )
