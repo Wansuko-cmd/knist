@@ -42,7 +42,7 @@ class MeanSquareD2Test {
             )
         val meanSquare = MeanSquareD2(outputX = 2, outputY = 2)
         // [[1-0, 2-1], [3-2, 4-3]] = [[1, 1], [1, 1]]
-        val result = meanSquare._train(input, label)
+        val result = meanSquare._train(input) { label }
 
         // loss = 0.5 * mean(delta^2) = 0.5 * mean([1^2, 1^2, 1^2, 1^2]) = 0.5 * 1.0 = 0.5
         assertEquals(expected = 0.5f, actual = result.loss)

@@ -67,7 +67,7 @@ class SoftmaxWithLossD1Test {
                 IOType.d1(listOf(0.0f, 0.0f, 1.0f)),
             )
         val softmax = SoftmaxWithLossD1(outputSize = 3, temperature = 1.0f)
-        val result = softmax._train(input, label)
+        val result = softmax._train(input) { label }
 
         // max = 3
         // exp(1-3) = exp(-2)
@@ -123,7 +123,7 @@ class SoftmaxWithLossD1Test {
                 IOType.d1(listOf(0.0f, 0.0f, -1.0f)),
             )
         val softmax = SoftmaxWithLossD1(outputSize = 3, temperature = 1.0f, maskValue = -1)
-        val result = softmax._train(input, label)
+        val result = softmax._train(input) { label }
 
         // softmax計算
         val exp0 = exp(1.0f - 3.0f)

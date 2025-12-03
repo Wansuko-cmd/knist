@@ -42,7 +42,7 @@ class SigmoidWithLossD2Test {
                 IOType.d2(2, 2) { x, y -> if (x == y) 1.0f else 0.0f },
             )
         val sigmoid = SigmoidWithLossD2(outputX = 2, outputY = 2)
-        val result = sigmoid._train(input, label)
+        val result = sigmoid._train(input) { label }
 
         // sigmoid(0) = 1/(1+e^0) = 0.5f
         val sig0 = 1 / (1 + exp(-0.0f))
