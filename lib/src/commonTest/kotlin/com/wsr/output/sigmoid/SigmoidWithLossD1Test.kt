@@ -39,7 +39,7 @@ class SigmoidWithLossD1Test {
                 IOType.d1(listOf(1.0f, 0.0f, 0.0f)),
             )
         val sigmoid = SigmoidWithLossD1(outputSize = 3)
-        val result = sigmoid._train(input, label)
+        val result = sigmoid._train(input) { label }
 
         // sigmoid(0) = 1/(1+e^0) = 0.5f
         val sig0 = 1 / (1 + exp(-0.0f))
