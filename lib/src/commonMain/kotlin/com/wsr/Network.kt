@@ -47,11 +47,22 @@ class Network<I, O> internal constructor(
         train(input = listOf(input), label = listOf(label))
     }
 
-    fun train(input: List<I>, label: List<O>): Float {
+    fun train(input: List<I>, label: List<O>): Float = _train(input) {
+        outputConverter._encode(label)
+    }
+
+    fun train(input: List<I>, label: (List<O>) -> List<O>): Float = _train(input) {
+        @Suppress("UNCHECKED_CAST")
+        val output = outputConverter._decode(it) as List<O>
+        val label = label(output)
+        outputConverter._encode(label)
+    }
+
+    @Suppress("FunctionName")
+    private inline fun _train(input: List<I>, crossinline label: (Batch<IOType>) -> Batch<IOType>): Float {
         var loss = 0f
-        val label = outputConverter._encode(label)
         val output: TrainLambda = { input: Batch<IOType>, context: Context ->
-            val output = output._train(input, label)
+            val output = output._train(input) { label(it) }
             loss = output.loss
             output.delta
         }

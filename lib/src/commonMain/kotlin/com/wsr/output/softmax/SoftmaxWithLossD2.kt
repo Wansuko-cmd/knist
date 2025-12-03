@@ -33,10 +33,11 @@ internal class SoftmaxWithLossD2 internal constructor(
         return input.softmax(axis = 1)
     }
 
-    override fun train(input: Batch<IOType.D2>, label: Batch<IOType.D2>): TResult<IOType.D2> {
+    override fun train(input: Batch<IOType.D2>, label: (Batch<IOType.D2>) -> Batch<IOType.D2>): TResult<IOType.D2> {
         val input = input / temperature
-        val label = label
         val output = input.softmax(axis = 1)
+
+        val label = label(output)
         val mask = label.generateMask()
 
         // -log(p)

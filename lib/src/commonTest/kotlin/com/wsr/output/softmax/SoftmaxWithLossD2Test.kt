@@ -66,7 +66,7 @@ class SoftmaxWithLossD2Test {
                 IOType.d2(1, 3) { _, y -> if (y == 2) 1.0f else 0.0f },
             )
         val softmax = SoftmaxWithLossD2(outputX = 1, outputY = 3, temperature = 1.0f)
-        val result = softmax._train(input, label)
+        val result = softmax._train(input) { label }
 
         // 行0に対してsoftmax:
         // max = 3
@@ -128,7 +128,7 @@ class SoftmaxWithLossD2Test {
             )
         // temperature = 2.0で分布を平滑化
         val softmax = SoftmaxWithLossD2(outputX = 1, outputY = 3, temperature = 2.0f)
-        val result = softmax._train(input, label)
+        val result = softmax._train(input) { label }
 
         // temperature適用: [1/2, 2/2, 3/2] = [0.5f, 1.0f, 1.5f]
         // max = 1.5f
@@ -195,7 +195,7 @@ class SoftmaxWithLossD2Test {
             )
         // maskValue=3: インデックス3の値が1.0ならパディング
         val softmax = SoftmaxWithLossD2(outputX = 2, outputY = 4, temperature = 1.0f, maskValue = 3)
-        val result = softmax._train(input, label)
+        val result = softmax._train(input) { label }
 
         // 行0のsoftmax計算: [1, 2, 3, 0]
         val exp00 = exp(1.0f - 3.0f)
@@ -283,7 +283,7 @@ class SoftmaxWithLossD2Test {
             )
         val softmax =
             SoftmaxWithLossD2(outputX = 2, outputY = 3, temperature = 1.0f, maskValue = null)
-        val result = softmax._train(input, label)
+        val result = softmax._train(input) { label }
 
         // 行0のsoftmax
         val exp00 = exp(1.0f - 3.0f)
