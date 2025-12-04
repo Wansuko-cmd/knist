@@ -11,15 +11,28 @@ fun IOType.D1.topK(k: Int, random: Random = Random): Int {
         .take(k)
         .toList()
 
-    val sum = target.sumOf { (value, _) -> value.toDouble() }
-    if (sum == 0.0) return target.random(random).second
-    var p = random.nextDouble(from = 0.0, until = sum)
+    return target.randomIndex(random)
+}
 
-    for (i in target.indices) {
-        p -= target[i].first
-        if (p <= 0) return target[i].second
-    }
-    return target.last().second
+fun IOType.D1.topP(p: Float, random: Random = Random): Int {
+    val total = maxWithIndex()
+        .takeWhile { it.first >= 0 }
+        .sumOf { it.first.toDouble() }
+
+    var sum = 0.0
+    val threshold = total * p
+
+    val target = maxWithIndex()
+        .takeWhile { it.first >= 0 }
+        .takeWhile { (value, _) ->
+            val shouldTake = sum < threshold
+            sum += value
+            shouldTake
+        }
+        .toList()
+        .ifEmpty { listOf(maxWithIndex().first()) }
+
+    return target.randomIndex(random)
 }
 
 private fun IOType.D1.maxWithIndex(): Sequence<Pair<Float, Int>> = sequence {
@@ -36,4 +49,16 @@ private fun IOType.D1.maxWithIndex(): Sequence<Pair<Float, Int>> = sequence {
         target[index] = Float.MIN_VALUE
         yield(max to index)
     }
+}
+
+private fun List<Pair<Float, Int>>.randomIndex(random: Random): Int {
+    val sum = sumOf { (value, _) -> value.toDouble() }
+    if (sum == 0.0) return random(random).second
+
+    var p = random.nextDouble(from = 0.0, until = sum)
+    for ((value, index) in this) {
+        p -= value
+        if (p <= 0) return index
+    }
+    return last().second
 }
