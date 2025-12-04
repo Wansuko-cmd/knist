@@ -43,9 +43,9 @@ class Network<I, O> internal constructor(
         return outputConverter._decode(output) as List<O>
     }
 
-    fun train(input: I, label: O) {
-        train(input = listOf(input), label = listOf(label))
-    }
+    fun train(input: I, label: O) = train(input = listOf(input), label = listOf(label))
+
+    fun train(input: I, label: (O) -> O) = train(input = listOf(input)) { listOf(label(it[0])) }
 
     fun train(input: List<I>, label: List<O>): Float = _train(input) {
         outputConverter._encode(label)
