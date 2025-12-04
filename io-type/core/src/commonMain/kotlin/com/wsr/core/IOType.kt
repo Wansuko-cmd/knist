@@ -25,6 +25,7 @@ sealed class IOType {
     data class D1(override val value: FloatArray, override val size: Int = value.size) : IOType() {
         override val shape = listOf(size)
 
+        fun copyOf() = D1(value.copyOf(), size)
         fun copyOfArray() = value.copyOf()
 
         override fun equals(other: Any?): Boolean = super.equals(other)
