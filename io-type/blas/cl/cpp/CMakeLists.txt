@@ -8,13 +8,6 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/cl)
 find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
 
-if (MSVC)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
-
-    string(REPLACE "/MT" "/MD" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
-    string(REPLACE "/MT" "/MD" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
-endif ()
-
 # OpenCLのセットアップ
 if(APPLE)
     # macOS: OpenCLはシステムフレームワークとして提供
@@ -32,6 +25,16 @@ include(ExternalProject)
 set(CLBLAST_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/clblast)
 set(CLBLAST_INSTALL_DIR ${CLBLAST_PREFIX}/install)
 
+# MSVC用の追加引数
+if(MSVC)
+    set(CLBLAST_MSVC_ARGS
+        -DCMAKE_C_FLAGS_RELEASE=/MD
+        -DCMAKE_CXX_FLAGS_RELEASE=/MD
+    )
+else()
+    set(CLBLAST_MSVC_ARGS "")
+endif()
+
 ExternalProject_Add(
         CLBlast
         PREFIX ${CLBLAST_PREFIX}
@@ -48,10 +51,8 @@ ExternalProject_Add(
         -DTESTS=OFF
         -DNETLIB=OFF
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-        -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-        -DCMAKE_C_FLAGS_RELEASE=/MD
-        -DCMAKE_CXX_FLAGS_RELEASE=/MD
+        ${CLBLAST_MSVC_ARGS}
         BUILD_COMMAND ${CMAKE_COMMAND} --build . --config Release
         INSTALL_COMMAND ${CMAKE_COMMAND} --install . --config Release
         LOG_DOWNLOAD ON
