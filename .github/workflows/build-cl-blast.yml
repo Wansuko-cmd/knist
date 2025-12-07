@@ -7,6 +7,9 @@ on:
       - 'io-type/blas/cl/cpp/src/**'
       - '.github/workflows/build-cl-blast.yml'
 
+env:
+  WINDOWS_OPENCL_SDK_VERSION: '2024.05.08'
+
 jobs:
   build:
     strategy:
@@ -51,11 +54,20 @@ jobs:
           java-version: 17
           cache: 'gradle'
 
-      - name: Fortranのセットアップ (Linux)
+      - name: OpenCLのセットアップ (Linux)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y gfortran
+          sudo apt-get install -y ocl-icd-opencl-dev opencl-headers
+
+      - name: OpenCLのセットアップ (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          # OpenCL SDK (Khronos) をダウンロード・インストール
+          curl -L -o opencl-sdk.zip https://github.com/KhronosGroup/OpenCL-SDK/releases/download/v${WINDOWS_OPENCL_SDK_VERSION}/OpenCL-SDK-v${WINDOWS_OPENCL_SDK_VERSION}-Win-x64.zip
+          unzip opencl-sdk.zip -d opencl-sdk
+          echo "OpenCL_ROOT=${{ github.workspace }}/opencl-sdk/OpenCL-SDK-v${WINDOWS_OPENCL_SDK_VERSION}-Win-x64" >> $GITHUB_ENV
+        shell: bash
 
       - name: gradlewに権限を付与 (Unix)
         if: runner.os != 'Windows'
@@ -64,8 +76,8 @@ jobs:
       - name: CLBlastのキャッシュを復元
         uses: actions/cache@v4
         with:
-          path: io-type/blas/cl/cpp/build/clblas
-          key: clblas-${{ hashFiles('io-type/blas/cl/cpp/CMakeLists.txt') }}-${{ matrix.os_name }}-${{ matrix.arch }}
+          path: io-type/blas/cl/cpp/build/clblast
+          key: clblast-${{ hashFiles('io-type/blas/cl/cpp/CMakeLists.txt') }}-${{ matrix.os_name }}-${{ matrix.arch }}
 
       - name: ネイティブライブラリをビルド
         run: ./gradlew :io-type:blas:cl:cpp:cmakeBuild
