@@ -28,6 +28,9 @@ include(":io-type:blas:base")
 include(":io-type:blas:open")
 include(":io-type:blas:open:cpp")
 
+include(":io-type:blas:cl")
+include(":io-type:blas:cl:cpp")
+
 // include(":deprecated:functional")
 // include(":deprecated:optimize")
 // include(":deprecated:tensor")
