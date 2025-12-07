@@ -50,6 +50,8 @@ ExternalProject_Add(
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5
         -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+        -DCMAKE_C_FLAGS_RELEASE=/MD
+        -DCMAKE_CXX_FLAGS_RELEASE=/MD
         BUILD_COMMAND ${CMAKE_COMMAND} --build . --config Release
         INSTALL_COMMAND ${CMAKE_COMMAND} --install . --config Release
         LOG_DOWNLOAD ON
