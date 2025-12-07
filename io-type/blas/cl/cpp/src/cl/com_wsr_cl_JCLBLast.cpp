@@ -2,6 +2,10 @@
 #include <stdio.h>
 #include <clblast.h>
 
+#define LOG_DEBUG(msg) { fprintf(stderr, "[JNI] %s (Line: %d)\n", msg, __LINE__); fflush(stderr); }
+#define LOG_VAL(msg, val) { fprintf(stderr, "[JNI] %s: %d (Line: %d)\n", msg, val, __LINE__); fflush(stderr); }
+
+
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #else
@@ -21,6 +25,8 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBLast_init
 
     // プラットフォームを取得
     err = clGetPlatformIDs(1, &platform, nullptr);
+    LOG_VAL("clGetPlatformIDs result", err);
+    fprintf(stderr, "start", err);
     if (err != CL_SUCCESS) {
         fprintf(stderr, "Failed to get OpenCL platform: %d\n", err);
         return;
@@ -42,6 +48,11 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBLast_init
         fprintf(stderr, "Failed to create OpenCL context: %d\n", err);
         return;
     }
+    if (context == nullptr) {
+        LOG_DEBUG("Context is NULL!");
+    } else {
+        LOG_DEBUG("Context created successfully");
+    }
 
     // コマンドキューを作成
 #ifdef CL_VERSION_2_0
@@ -55,16 +66,27 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBLast_init
         context = nullptr;
         return;
     }
+    if (queue == nullptr) {
+        LOG_DEBUG("Queue is NULL!");
+    } else {
+        LOG_DEBUG("Queue created successfully");
+    }
+
+    LOG_DEBUG("init finished");
 }
 
 JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBLast_sdot
         (JNIEnv *env, jobject, jint n, jfloatArray x, jint incx, jfloatArray y, jint incy) {
     cl_int err;
+     LOG_DEBUG("sdot start");
+     if (context == nullptr) LOG_DEBUG("ERROR: context is null in sdot");
+     if (queue == nullptr) LOG_DEBUG("ERROR: queue is null in sdot");
 
     // Get array elements from Java
     jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
     jfloat *y_ptr = env->GetFloatArrayElements(y, nullptr);
 
+    LOG_DEBUG("Creating buffers...");
     // OpenCLバッファを作成
     size_t x_size = (1 + (n - 1) * abs(incx)) * sizeof(cl_float);
     size_t y_size = (1 + (n - 1) * abs(incy)) * sizeof(cl_float);
@@ -76,6 +98,7 @@ JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBLast_sdot
     cl_mem dot_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY,
                                        sizeof(cl_float), nullptr, &err);
 
+    LOG_DEBUG("Calling clblast::Dot...");
     // CLBlast sdotを呼び出し
     clblast::StatusCode status = clblast::Dot<float>(
         n,
@@ -84,6 +107,7 @@ JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBLast_sdot
         y_buffer, 0, incy,
         &queue
     );
+    LOG_VAL("clblast::Dot status", (int)status);
 
     jfloat result = 0.0f;
     if (status == clblast::StatusCode::kSuccess) {
@@ -100,6 +124,7 @@ JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBLast_sdot
     // Release arrays back to Java
     env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
     env->ReleaseFloatArrayElements(y, y_ptr, JNI_ABORT);
+    LOG_DEBUG("sdot finished");
 
     return result;
 }
@@ -248,6 +273,11 @@ jfloatArray a, jint lda, jfloatArray x, jint incx,
 jfloat beta, jfloatArray y, jint incy) {
     cl_int err;
 
+    LOG_DEBUG("sgemv start"); // <--- 追加
+
+    if (context == nullptr) { LOG_DEBUG("ERROR: Context is null in sgemv"); return; }
+    if (queue == nullptr) { LOG_DEBUG("ERROR: Queue is null in sgemv"); return; }
+
     // Get array elements from Java
     jfloat *a_ptr = env->GetFloatArrayElements(a, nullptr);
     jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
@@ -263,31 +293,65 @@ jfloat beta, jfloatArray y, jint incy) {
     size_t x_size = (1 + (x_len - 1) * abs(incx)) * sizeof(cl_float);
     size_t y_size = (1 + (y_len - 1) * abs(incy)) * sizeof(cl_float);
 
+    LOG_DEBUG("sgemv: Creating buffers...");
+
     // OpenCLバッファを作成
     cl_mem a_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
                                      a_size, a_ptr, &err);
+    if (err != CL_SUCCESS || a_buffer == nullptr) {
+        LOG_VAL("ERROR: Failed to create A buffer! err=", err);
+        return; // 即リターン
+    }
     cl_mem x_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
                                      x_size, x_ptr, &err);
+    if (err != CL_SUCCESS || x_buffer == nullptr) {
+        LOG_VAL("ERROR: Failed to create X buffer! err=", err);
+        clReleaseMemObject(a_buffer);
+        return;
+    }
     cl_mem y_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
                                      y_size, y_ptr, &err);
+    if (err != CL_SUCCESS || y_buffer == nullptr) {
+        LOG_VAL("ERROR: Failed to create Y buffer! err=", err);
+        clReleaseMemObject(a_buffer);
+        clReleaseMemObject(x_buffer);
+        return;
+    }
 
-    // CLBlast sgemvを呼び出し（Row-major order）
-    clblast::StatusCode status = clblast::Gemv<float>(
-        clblast::Layout::kRowMajor,
-        trans_cl,
-        m, n,
-        alpha,
-        a_buffer, 0, lda,
-        x_buffer, 0, incx,
-        beta,
-        y_buffer, 0, incy,
-        &queue
-    );
+    LOG_DEBUG("sgemv: Buffers created successfully");
 
-    if (status == clblast::StatusCode::kSuccess) {
-        clEnqueueReadBuffer(queue, y_buffer, CL_TRUE, 0, y_size, y_ptr, 0, nullptr, nullptr);
-    } else {
-        fprintf(stderr, "CLBlast sgemv failed: %d\n", static_cast<int>(status));
+    try {
+        LOG_DEBUG("sgemv: Calling clblast::Gemv...");
+
+        clblast::StatusCode status = clblast::Gemv<float>(
+            clblast::Layout::kRowMajor,
+            trans ? clblast::Transpose::kYes : clblast::Transpose::kNo,
+            m, n,
+            alpha,
+            a_buffer, 0, lda,
+            x_buffer, 0, incx,
+            beta,
+            y_buffer, 0, incy,
+            &queue
+        );
+
+        LOG_VAL("sgemv: clblast status", (int)status);
+
+        if (status != clblast::StatusCode::kSuccess) {
+            fprintf(stderr, "[JNI] CLBlast Error: %d\n", (int)status);
+        } else {
+             clEnqueueReadBuffer(queue, y_buffer, CL_TRUE, 0, y_size, y_ptr, 0, nullptr, nullptr);
+        }
+
+    } catch (const std::exception& e) {
+        fprintf(stderr, "[JNI] CAUGHT EXCEPTION: %s\n", e.what());
+        fflush(stderr);
+
+        jclass exClass = env->FindClass("java/lang/RuntimeException");
+        if(exClass) env->ThrowNew(exClass, e.what());
+    } catch (...) {
+        fprintf(stderr, "[JNI] CAUGHT UNKNOWN EXCEPTION\n");
+        fflush(stderr);
     }
 
     // リソースを解放
@@ -299,4 +363,6 @@ jfloat beta, jfloatArray y, jint incy) {
     env->ReleaseFloatArrayElements(a, a_ptr, JNI_ABORT);
     env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
     env->ReleaseFloatArrayElements(y, y_ptr, 0);
+
+     LOG_DEBUG("sgemv finished");
 }
