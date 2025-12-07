@@ -8,6 +8,10 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/cl)
 find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
 
+if (MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+endif ()
+
 # OpenCLのセットアップ
 if(APPLE)
     # macOS: OpenCLはシステムフレームワークとして提供
