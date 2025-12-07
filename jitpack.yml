@@ -6,3 +6,5 @@ install:
   - ./gradlew io-type:core:publishToMavenLocal
   - ./gradlew io-type:batch:publishToMavenLocal
   - ./gradlew io-type:blas:publishToMavenLocal
+  - ./gradlew io-type:blas:open:publishToMavenLocal
+  - ./gradlew io-type:blas:base:publishToMavenLocal
