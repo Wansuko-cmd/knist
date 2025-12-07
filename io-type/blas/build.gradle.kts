@@ -11,6 +11,7 @@ kotlin {
             dependencies {
                 api(projects.ioType.blas.base)
                 api(projects.ioType.blas.open)
+                api(projects.ioType.blas.cl)
             }
         }
 

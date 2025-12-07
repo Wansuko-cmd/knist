@@ -4,7 +4,7 @@ import com.wsr.blas.base.IBLAS
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-private const val LIB_NAME = "cl_blas"
+private const val LIB_NAME = "cl_blast"
 private val LIB_PATH = createPath("cl")
 
 actual fun loadCLBlast(): IBLAS? {
@@ -20,5 +20,5 @@ actual fun loadCLBlast(): IBLAS? {
             Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING)
             System.load(path.toString())
         }
-    return if (result != null) JCLBLast() else null
+    return if (result != null) JCLBLast().apply { init() } else null
 }
