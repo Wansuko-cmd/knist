@@ -1,4 +1,4 @@
-package com.wsr.open
+package com.wsr.cl
 
 internal fun createPath(name: String) = "$name/$os/$arch/"
 

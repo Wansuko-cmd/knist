@@ -1,13 +1,13 @@
-package com.wsr.open
+package com.wsr.cl
 
 import com.wsr.blas.base.IBLAS
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-private const val LIB_NAME = "open_blas"
-private val LIB_PATH = createPath("open")
+private const val LIB_NAME = "cl_blas"
+private val LIB_PATH = createPath("cl")
 
-actual fun loadOpenBLAS(): IBLAS? {
+actual fun loadCLBlast(): IBLAS? {
     val resource = System.mapLibraryName(LIB_NAME)
     val result = IBLAS::class.java
         .classLoader
@@ -20,5 +20,5 @@ actual fun loadOpenBLAS(): IBLAS? {
             Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING)
             System.load(path.toString())
         }
-    return if (result != null) JOpenBLAS() else null
+    return if (result != null) JCLBLast() else null
 }

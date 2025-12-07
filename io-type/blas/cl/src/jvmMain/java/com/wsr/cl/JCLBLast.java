@@ -1,8 +1,8 @@
-package com.wsr.open;
+package com.wsr.cl;
 
 import com.wsr.blas.base.IBLAS;
 
-public class JOpenBLAS implements IBLAS {
+public class JCLBLast implements IBLAS {
     @Override
     public boolean isNative() {
         return true;
