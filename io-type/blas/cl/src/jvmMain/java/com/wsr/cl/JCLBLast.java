@@ -8,6 +8,8 @@ public class JCLBLast implements IBLAS {
         return true;
     }
 
+    public native void init();
+
     @Override
     public native float sdot(
             int n,

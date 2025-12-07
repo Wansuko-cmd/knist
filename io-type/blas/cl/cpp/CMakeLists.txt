@@ -1,37 +1,46 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
-project(io-type-blas C CXX)
+project(io-type-blas-cl C CXX)
 
 # ソースディレクトリを設定
-set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/open)
+set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/cl)
 
 # JNIのセットアップ
 find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
 
-# OpenBLASのセットアップ
+# OpenCLのセットアップ
+if(APPLE)
+    # macOS: OpenCLはシステムフレームワークとして提供
+    find_library(OPENCL_LIBRARY OpenCL REQUIRED)
+    set(OPENCL_INCLUDE_DIR "")
+else()
+    find_package(OpenCL REQUIRED)
+    set(OPENCL_LIBRARY OpenCL::OpenCL)
+endif()
+
+# CLBlastのセットアップ
 include(ExternalProject)
 
-# OpenBLASのインストール先
-set(OPENBLAS_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/openblas)
-set(OPENBLAS_INSTALL_DIR ${OPENBLAS_PREFIX}/install)
+# CLBlastのインストール先
+set(CLBLAST_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/clblast)
+set(CLBLAST_INSTALL_DIR ${CLBLAST_PREFIX}/install)
 
 ExternalProject_Add(
-        OpenBLAS
-        PREFIX ${OPENBLAS_PREFIX}
-        GIT_REPOSITORY https://github.com/xianyi/OpenBLAS.git
-        GIT_TAG v0.3.27
+        CLBlast
+        PREFIX ${CLBLAST_PREFIX}
+        GIT_REPOSITORY https://github.com/CNugteren/CLBlast.git
+        GIT_TAG 1.6.3
         GIT_SHALLOW TRUE
         CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX=${OPENBLAS_INSTALL_DIR}
+        -DCMAKE_INSTALL_PREFIX=${CLBLAST_INSTALL_DIR}
         -DCMAKE_BUILD_TYPE=Release
         -DBUILD_SHARED_LIBS=OFF
-        -DBUILD_TESTING=OFF
-        -DBUILD_WITHOUT_LAPACK=OFF
-        -DC_LAPACK=ON
-        -DUSE_THREAD=ON
-        -DUSE_OPENMP=OFF
+        -DSAMPLES=OFF
+        -DTUNERS=OFF
+        -DCLIENTS=OFF
+        -DTESTS=OFF
+        -DNETLIB=OFF
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-        ${OPENBLAS_CMAKE_ARGS}
         BUILD_COMMAND ${CMAKE_COMMAND} --build . --config Release
         INSTALL_COMMAND ${CMAKE_COMMAND} --install . --config Release
         LOG_DOWNLOAD ON
@@ -39,34 +48,35 @@ ExternalProject_Add(
         LOG_BUILD ON
 )
 
-set(OPENBLAS_INCLUDE_DIR ${OPENBLAS_INSTALL_DIR}/include/openblas)
+set(CLBLAST_INCLUDE_DIR ${CLBLAST_INSTALL_DIR}/include)
 if(WIN32)
-    # Windows (MSVC): openblas.lib
-    set(OPENBLAS_LIB ${OPENBLAS_INSTALL_DIR}/lib/openblas.lib)
+    # Windows (MSVC): clblast.lib
+    set(CLBLAST_LIB ${CLBLAST_INSTALL_DIR}/lib/clblast.lib)
 else()
-    # Unix系 (macOS, Linux): libopenblas.a
-    set(OPENBLAS_LIB ${OPENBLAS_INSTALL_DIR}/lib/libopenblas.a)
+    # Unix系 (macOS, Linux): libclblast.a
+    set(CLBLAST_LIB ${CLBLAST_INSTALL_DIR}/lib/libclblast.a)
 endif()
 
-add_library(JOpenBLAS SHARED ${SRC_DIR}/com_wsr_JOpenBLAS.cpp)
-add_dependencies(JOpenBLAS OpenBLAS)
+add_library(JCLBlast SHARED ${SRC_DIR}/com_wsr_cl_JCLBLast.cpp)
+add_dependencies(JCLBlast CLBlast)
 
-target_include_directories(JOpenBLAS PRIVATE
-        ${OPENBLAS_INCLUDE_DIR}
-        ${OPENBLAS_INSTALL_DIR}/include
+target_include_directories(JCLBlast PRIVATE
+        ${CLBLAST_INCLUDE_DIR}
+        ${OPENCL_INCLUDE_DIR}
 )
 
-# OpenBLASをリンク
-target_link_libraries(JOpenBLAS PRIVATE ${OPENBLAS_LIB})
+# CLBlastとOpenCLをリンク
+target_link_libraries(JCLBlast PRIVATE ${CLBLAST_LIB})
+target_link_libraries(JCLBlast PRIVATE ${OPENCL_LIBRARY})
+
 if(UNIX AND NOT APPLE AND NOT ANDROID)
-    # Linux: pthreadとgfortranが必要
-    target_link_libraries(JOpenBLAS PRIVATE pthread m gfortran)
+    # Linux: 追加のライブラリ
+    target_link_libraries(JCLBlast PRIVATE pthread m)
 elseif(APPLE)
-    # macOS
-    target_link_libraries(JOpenBLAS PRIVATE pthread m)
+    # macOS: 追加のライブラリは不要（OpenCLはフレームワーク）
 elseif(WIN32)
-    # Windows: 追加のライブラリは不要（OpenBLASが静的リンク）
+    # Windows: 追加のライブラリは不要
 endif()
 
 # ライブラリ名とサフィックスを設定
-set_target_properties(JOpenBLAS PROPERTIES OUTPUT_NAME "open_blas")
+set_target_properties(JCLBlast PROPERTIES OUTPUT_NAME "cl_blast")
