@@ -1,16 +1,30 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 project(io-type-blas-cl C CXX)
 
-# ソースディレクトリを設定
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/cl)
 
-# JNIのセットアップ
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+    add_compile_definitions(NDEBUG)
+
+    foreach(flag_var
+            CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
+            CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE)
+        if(${flag_var} MATCHES "/MT")
+            string(REPLACE "/MT" "/MD" ${flag_var} "${${flag_var}}")
+        endif()
+        if(${flag_var} MATCHES "/D_DEBUG")
+            string(REPLACE "/D_DEBUG" "" ${flag_var} "${${flag_var}}")
+        endif()
+        # 念押しで追加
+        set(${flag_var} "${${flag_var}} /MD")
+    endforeach()
+endif()
+
 find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
 
-# OpenCLのセットアップ
 if(APPLE)
-    # macOS: OpenCLはシステムフレームワークとして提供
     find_library(OPENCL_LIBRARY OpenCL REQUIRED)
     set(OPENCL_INCLUDE_DIR "")
 else()
@@ -18,77 +32,30 @@ else()
     set(OPENCL_LIBRARY OpenCL::OpenCL)
 endif()
 
-# CLBlastのセットアップ
-include(ExternalProject)
+include(FetchContent)
 
-# CLBlastのインストール先
-set(CLBLAST_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/clblast)
-set(CLBLAST_INSTALL_DIR ${CLBLAST_PREFIX}/install)
+set(CLBLAST_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(CLBLAST_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
+set(CLBLAST_BUILD_CLIENTS OFF CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
-# MSVC用の追加引数
-if(MSVC)
-    set(CLBLAST_MSVC_ARGS
-        -DCMAKE_C_FLAGS_RELEASE=/MD
-        -DCMAKE_CXX_FLAGS_RELEASE=/MD
-    )
-else()
-    set(CLBLAST_MSVC_ARGS "")
-endif()
-
-ExternalProject_Add(
-        CLBlast
-        PREFIX ${CLBLAST_PREFIX}
-        GIT_REPOSITORY https://github.com/CNugteren/CLBlast.git
-        GIT_TAG 1.6.3
-        GIT_SHALLOW TRUE
-        CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX=${CLBLAST_INSTALL_DIR}
-        -DCMAKE_BUILD_TYPE=Release
-        -DBUILD_SHARED_LIBS=OFF
-        -DSAMPLES=OFF
-        -DTUNERS=OFF
-        -DCLIENTS=OFF
-        -DTESTS=OFF
-        -DNETLIB=OFF
-        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-        -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-        ${CLBLAST_MSVC_ARGS}
-        BUILD_COMMAND ${CMAKE_COMMAND} --build . --config Release
-        INSTALL_COMMAND ${CMAKE_COMMAND} --install . --config Release
-        LOG_DOWNLOAD ON
-        LOG_CONFIGURE ON
-        LOG_BUILD ON
+FetchContent_Declare(
+    clblast
+    GIT_REPOSITORY https://github.com/CNugteren/CLBlast.git
+    GIT_TAG 1.6.3
+    GIT_SHALLOW TRUE
 )
-
-set(CLBLAST_INCLUDE_DIR ${CLBLAST_INSTALL_DIR}/include)
-if(WIN32)
-    # Windows (MSVC): clblast.lib
-    set(CLBLAST_LIB ${CLBLAST_INSTALL_DIR}/lib/clblast.lib)
-else()
-    # Unix系 (macOS, Linux): libclblast.a
-    set(CLBLAST_LIB ${CLBLAST_INSTALL_DIR}/lib/libclblast.a)
-endif()
+FetchContent_MakeAvailable(clblast)
 
 add_library(JCLBlast SHARED ${SRC_DIR}/com_wsr_cl_JCLBLast.cpp)
-add_dependencies(JCLBlast CLBlast)
 
-target_include_directories(JCLBlast PRIVATE
-        ${CLBLAST_INCLUDE_DIR}
-        ${OPENCL_INCLUDE_DIR}
-)
-
-# CLBlastとOpenCLをリンク
-target_link_libraries(JCLBlast PRIVATE ${CLBLAST_LIB})
+target_link_libraries(JCLBlast PRIVATE clblast)
 target_link_libraries(JCLBlast PRIVATE ${OPENCL_LIBRARY})
 
+target_include_directories(JCLBlast PRIVATE ${OPENCL_INCLUDE_DIR})
+
 if(UNIX AND NOT APPLE AND NOT ANDROID)
-    # Linux: 追加のライブラリ
     target_link_libraries(JCLBlast PRIVATE pthread m)
-elseif(APPLE)
-    # macOS: 追加のライブラリは不要（OpenCLはフレームワーク）
-elseif(WIN32)
-    # Windows: 追加のライブラリは不要
 endif()
 
-# ライブラリ名とサフィックスを設定
 set_target_properties(JCLBlast PROPERTIES OUTPUT_NAME "cl_blast")

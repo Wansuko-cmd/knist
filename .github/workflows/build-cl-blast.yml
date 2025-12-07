@@ -3,9 +3,6 @@ name: 'CL Blastのビルド'
 on:
   workflow_dispatch:
   push:
-#    paths:
-#      - 'io-type/blas/cl/cpp/src/**'
-#      - '.github/workflows/build-cl-blast.yml'
 
 env:
   WINDOWS_OPENCL_SDK_VERSION: '2024.05.08'
@@ -16,24 +13,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # macOS
-          - os: macos-latest
-            os_name: macos
-            arch: Arm64
-            lib_extension: dylib
-          - os: macos-13
-            os_name: macos
-            arch: X64
-            lib_extension: dylib
-          # Linux
-          - os: ubuntu-latest
-            os_name: linux
-            arch: X64
-            lib_extension: so
-          - os: ubuntu-24.04-arm
-            os_name: linux
-            arch: Arm64
-            lib_extension: so
           # Windows
           - os: windows-latest
             os_name: mingw
@@ -64,9 +43,9 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           # OpenCL SDK (Khronos) をダウンロード・インストール
-          curl -L -o opencl-sdk.zip https://github.com/KhronosGroup/OpenCL-SDK/releases/download/v${WINDOWS_OPENCL_SDK_VERSION}/OpenCL-SDK-v${WINDOWS_OPENCL_SDK_VERSION}-Win-x64.zip
+          curl -L -o opencl-sdk.zip https://github.com/KhronosGroup/OpenCL-SDK/releases/download/v2024.05.08/OpenCL-SDK-v2024.05.08-Win-x64.zip
           unzip opencl-sdk.zip -d opencl-sdk
-          echo "OpenCL_ROOT=${{ github.workspace }}/opencl-sdk/OpenCL-SDK-v${WINDOWS_OPENCL_SDK_VERSION}-Win-x64" >> $GITHUB_ENV
+          echo "OpenCL_ROOT=${{ github.workspace }}/opencl-sdk/OpenCL-SDK-v2024.05.08-Win-x64" >> $GITHUB_ENV
         shell: bash
 
       - name: gradlewに権限を付与 (Unix)
@@ -124,22 +103,6 @@ jobs:
 
       - name: 成果物をresourcesに配置
         run: |
-          # macOS/Arm64
-          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/macos/Arm64
-          find artifacts/cl-blast-macos-Arm64 -name "libcl_blast.dylib" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/macos/Arm64/ \;
-
-          # macOS/X64
-          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/macos/X64
-          find artifacts/cl-blast-macos-X64 -name "libcl_blast.dylib" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/macos/X64/ \;
-
-          # Linux/X64
-          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/linux/X64
-          find artifacts/cl-blast-linux-X64 -name "libcl_blast.so" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/linux/X64/ \;
-
-          # Linux/Arm64
-          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/linux/Arm64
-          find artifacts/cl-blast-linux-Arm64 -name "libcl_blast.so" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/linux/Arm64/ \;
-
           # Windows/X64
           mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/mingw/X64
           find artifacts/cl-blast-mingw-X64 -name "cl_blast.dll" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/mingw/X64/ \;
