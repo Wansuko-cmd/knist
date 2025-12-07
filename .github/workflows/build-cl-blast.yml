@@ -3,9 +3,9 @@ name: 'CL Blastのビルド'
 on:
   workflow_dispatch:
   push:
-#    paths:
-#      - 'io-type/blas/cl/cpp/src/**'
-#      - '.github/workflows/build-cl-blast.yml'
+    paths:
+      - 'io-type/blas/cl/cpp/src/**'
+      - '.github/workflows/build-cl-blast.yml'
 
 env:
   WINDOWS_OPENCL_SDK_VERSION: '2024.05.08'
