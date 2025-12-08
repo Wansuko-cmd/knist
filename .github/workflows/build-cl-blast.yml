@@ -1,0 +1,160 @@
+name: 'CL Blastのビルド'
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'io-type/blas/cl/cpp/src/**'
+      - '.github/workflows/build-cl-blast.yml'
+
+env:
+  WINDOWS_OPENCL_SDK_VERSION: '2024.05.08'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # macOS
+          - os: macos-latest
+            os_name: macos
+            arch: Arm64
+            lib_extension: dylib
+          - os: macos-13
+            os_name: macos
+            arch: X64
+            lib_extension: dylib
+          # Linux
+          - os: ubuntu-latest
+            os_name: linux
+            arch: X64
+            lib_extension: so
+          - os: ubuntu-24.04-arm
+            os_name: linux
+            arch: Arm64
+            lib_extension: so
+          # Windows
+          - os: windows-latest
+            os_name: mingw
+            arch: X64
+            lib_extension: dll
+
+    runs-on: ${{ matrix.os }}
+    name: Build (${{ matrix.os_name }}/${{ matrix.arch }})
+
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+
+      - name: Javaのセットアップ
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          cache: 'gradle'
+
+      - name: OpenCLのセットアップ (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ocl-icd-opencl-dev opencl-headers
+
+      - name: OpenCLのセットアップ (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          # OpenCL SDK (Khronos) をダウンロード・インストール
+          curl -L -o opencl-sdk.zip https://github.com/KhronosGroup/OpenCL-SDK/releases/download/v${WINDOWS_OPENCL_SDK_VERSION}/OpenCL-SDK-v${WINDOWS_OPENCL_SDK_VERSION}-Win-x64.zip
+          unzip opencl-sdk.zip -d opencl-sdk
+          echo "OpenCL_ROOT=${{ github.workspace }}/opencl-sdk/OpenCL-SDK-v${WINDOWS_OPENCL_SDK_VERSION}-Win-x64" >> $GITHUB_ENV
+        shell: bash
+
+      - name: gradlewに権限を付与 (Unix)
+        if: runner.os != 'Windows'
+        run: chmod 777 ./gradlew
+
+      - name: CLBlastのキャッシュを復元
+        uses: actions/cache@v4
+        with:
+          path: io-type/blas/cl/cpp/build/clblast
+          key: clblast-${{ hashFiles('io-type/blas/cl/cpp/CMakeLists.txt') }}-${{ matrix.os_name }}-${{ matrix.arch }}
+
+      - name: ネイティブライブラリをビルド
+        run: ./gradlew :io-type:blas:cl:cpp:cmakeBuild
+        shell: bash
+
+      - name: 成果物をアップロード (Windows以外)
+        if: runner.os != 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cl-blast-${{ matrix.os_name }}-${{ matrix.arch }}
+          path: |
+            io-type/blas/cl/cpp/build/libcl_blast.${{ matrix.lib_extension }}
+            io-type/blas/cl/cpp/build/Release/libcl_blast.${{ matrix.lib_extension }}
+          if-no-files-found: error
+
+      - name: 成果物をアップロード (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cl-blast-${{ matrix.os_name }}-${{ matrix.arch }}
+          path: |
+            io-type/blas/cl/cpp/build/cl_blast.${{ matrix.lib_extension }}
+            io-type/blas/cl/cpp/build/Release/cl_blast.${{ matrix.lib_extension }}
+          if-no-files-found: error
+
+  commit:
+    needs: build
+    runs-on: ubuntu-latest
+    name: Commit native libraries
+
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+
+      - name: 全成果物をダウンロード
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: アーティファクト構造を確認
+        run: |
+          echo "=== Artifacts structure ==="
+          find artifacts -type f
+
+      - name: 成果物をresourcesに配置
+        run: |
+          # macOS/Arm64
+          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/macos/Arm64
+          find artifacts/cl-blast-macos-Arm64 -name "libcl_blast.dylib" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/macos/Arm64/ \;
+
+          # macOS/X64
+          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/macos/X64
+          find artifacts/cl-blast-macos-X64 -name "libcl_blast.dylib" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/macos/X64/ \;
+
+          # Linux/X64
+          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/linux/X64
+          find artifacts/cl-blast-linux-X64 -name "libcl_blast.so" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/linux/X64/ \;
+
+          # Linux/Arm64
+          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/linux/Arm64
+          find artifacts/cl-blast-linux-Arm64 -name "libcl_blast.so" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/linux/Arm64/ \;
+
+          # Windows/X64
+          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/mingw/X64
+          find artifacts/cl-blast-mingw-X64 -name "cl_blast.dll" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/mingw/X64/ \;
+
+          echo "=== Resources structure ==="
+          find io-type/blas/cl/src/jvmMain/resources -type f
+
+      - name: 変更をコミット
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add io-type/blas/cl/src/jvmMain/resources/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "[CI] Update CL Blast libraries"
+            git push
+          fi
