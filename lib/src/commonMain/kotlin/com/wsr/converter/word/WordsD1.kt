@@ -27,12 +27,12 @@ class WordsD1(
             .map { wordToId[it] ?: unknownIndex.toFloat() }
 
         IOType.d1(outputSize) { paddingIndex.toFloat() }.also {
-            tokenIds.toFloatArray().copyInto(it.value)
+            tokenIds.toFloatArray().copyInto(it.value.toFloatArray())
         }
     }.toBatch()
 
     override fun decode(input: Batch<IOType.D1>): List<List<String>> = input.toList().map { input ->
-        input.value
+        input.value.toFloatArray()
             .toList()
             .mapNotNull { id ->
                 val index = id.toInt()

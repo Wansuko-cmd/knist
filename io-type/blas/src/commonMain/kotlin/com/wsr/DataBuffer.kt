@@ -1,9 +1,9 @@
 package com.wsr
 
-import javax.xml.crypto.Data
-
 interface DataBuffer {
     val size: Int
+
+    val indices: IntRange
 
     fun toFloatArray(): FloatArray
 
@@ -14,10 +14,11 @@ interface DataBuffer {
 
     fun slice(indices: IntRange): DataBuffer
 
-    fun copyInto(destination: DataBuffer, destinationOffset: Int)
+    fun copyInto(destination: DataBuffer, destinationOffset: Int = 0)
 
     class Default(private val value: FloatArray) : DataBuffer {
         override val size = value.size
+        override val indices: IntRange = value.indices
 
         override fun toFloatArray(): FloatArray = value
 

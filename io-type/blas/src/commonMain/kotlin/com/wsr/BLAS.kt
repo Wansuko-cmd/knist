@@ -99,6 +99,20 @@ object BLAS : IBLAS {
         c: DataBuffer,
         ldc: Int,
     ) {
-        instance.sgemm(transA, transB, m, n, k, alpha, a.toFloatArray(), lda, b.toFloatArray(), ldb, beta, c.toFloatArray(), ldc)
+        instance.sgemm(
+            transA = transA,
+            transB = transB,
+            m = m,
+            n = n,
+            k = k,
+            alpha = alpha,
+            a = a.toFloatArray(),
+            lda = lda,
+            b = b.toFloatArray(),
+            ldb = ldb,
+            beta = beta,
+            c = c.toFloatArray(),
+            ldc = ldc,
+        )
     }
 }

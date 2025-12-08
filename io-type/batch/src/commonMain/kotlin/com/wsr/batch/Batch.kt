@@ -1,17 +1,14 @@
 package com.wsr.batch
 
+import com.wsr.DataBuffer
 import com.wsr.core.IOType
 import com.wsr.core.d0
-import com.wsr.core.d1
-import com.wsr.core.d2
-import com.wsr.core.d3
-import com.wsr.core.d4
 
-class Batch<out T : IOType>(val value: FloatArray, val size: Int, val shape: List<Int>) {
+class Batch<out T : IOType>(val value: DataBuffer, val size: Int, val shape: List<Int>) {
     val step = shape.reduce { acc, i -> acc * i }
     val indices = 0 until size
 
-    fun copy(value: FloatArray = this.value.copyOf(), size: Int = this.size, shape: List<Int> = this.shape) =
+    fun copy(value: DataBuffer = this.value.copyOf(), size: Int = this.size, shape: List<Int> = this.shape) =
         Batch<T>(value = value, size = size, shape = shape)
 
     override fun equals(other: Any?): Boolean {
@@ -21,7 +18,7 @@ class Batch<out T : IOType>(val value: FloatArray, val size: Int, val shape: Lis
         other as Batch<*>
 
         if (size != other.size) return false
-        if (!value.contentEquals(other.value)) return false
+        if (value != other.value) return false
         if (shape != other.shape) return false
 
         return true
@@ -29,7 +26,7 @@ class Batch<out T : IOType>(val value: FloatArray, val size: Int, val shape: Lis
 
     override fun hashCode(): Int {
         var result = size
-        result = 31 * result + value.contentHashCode()
+        result = 31 * result + value.hashCode()
         result = 31 * result + shape.hashCode()
         return result
     }
@@ -37,7 +34,7 @@ class Batch<out T : IOType>(val value: FloatArray, val size: Int, val shape: Lis
 
 inline fun <T : IOType> Batch(size: Int, init: (index: Int) -> T): Batch<T> {
     val first = init(0)
-    val value = FloatArray(size * first.value.size)
+    val value = DataBuffer.create(size * first.value.size)
     first.value.copyInto(value)
     for (i in 1 until size) {
         init(i).value.copyInto(value, i * first.value.size)
@@ -53,7 +50,7 @@ fun <T : IOType> batchOf(vararg elements: T): Batch<T> {
     val batchSize = elements.size
     val shape = elements.first().shape
     val step = shape.reduce { acc, i -> acc * i }
-    val batchValue = FloatArray(batchSize * step)
+    val batchValue = DataBuffer.create(batchSize * step)
     elements.forEachIndexed { index, item ->
         item.value.copyInto(batchValue, index * step)
     }
@@ -73,25 +70,25 @@ operator fun Batch<IOType.D0>.get(i: Int): IOType.D0 {
 @JvmName("batchD1sGet")
 operator fun Batch<IOType.D1>.get(i: Int): IOType.D1 {
     val index = i * step
-    return IOType.d1(value.sliceArray(index until index + step))
+    return IOType.D1(value.slice(index until index + step))
 }
 
 @JvmName("batchD2sGet")
 operator fun Batch<IOType.D2>.get(i: Int): IOType.D2 {
     val index = i * step
-    return IOType.d2(shape, value.sliceArray(index until index + step))
+    return IOType.D2(shape = shape, value = value.slice(index until index + step))
 }
 
 @JvmName("batchD3sGet")
 operator fun Batch<IOType.D3>.get(i: Int): IOType.D3 {
     val index = i * step
-    return IOType.d3(shape, value.sliceArray(index until index + step))
+    return IOType.D3(shape = shape, value = value.slice(index until index + step))
 }
 
 @JvmName("batchD3sGet")
 operator fun Batch<IOType.D4>.get(i: Int): IOType.D4 {
     val index = i * step
-    return IOType.d4(shape, value.sliceArray(index until index + step))
+    return IOType.D4(shape = shape, value = value.slice(index until index + step))
 }
 
 operator fun Batch<IOType.D0>.set(i: Int, element: IOType.D0) {

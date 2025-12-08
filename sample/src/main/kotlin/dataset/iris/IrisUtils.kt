@@ -54,6 +54,7 @@ fun createIrisModel(epoc: Int) {
                         ),
                     ),
                 ).value
+                .toFloatArray()
                 .toTypedArray()
                 .maxIndex() == data.label
         }.let { println(it.toFloat() / test.size.toFloat()) }
