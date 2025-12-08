@@ -1,16 +1,17 @@
 package com.wsr.core
 
 import com.wsr.BLAS
+import com.wsr.DataBuffer
 import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class IOType {
-    abstract val value: FloatArray
+    abstract val value: DataBuffer
     abstract val shape: List<Int>
     abstract val size: Int
 
     @Serializable
-    data class D0(override val value: FloatArray) : IOType() {
+    data class D0(override val value: DataBuffer) : IOType() {
         override val shape = listOf(1)
         override val size = 1
 
@@ -22,7 +23,7 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D1(override val value: FloatArray, override val size: Int = value.size) : IOType() {
+    data class D1(override val value: DataBuffer, override val size: Int = value.size) : IOType() {
         override val shape = listOf(size)
 
         fun copyOf() = D1(value.copyOf(), size)
@@ -33,7 +34,7 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D2(override val value: FloatArray, override val shape: List<Int>) : IOType() {
+    data class D2(override val value: DataBuffer, override val shape: List<Int>) : IOType() {
         override val size = shape.reduce { acc, i -> acc * i }
 
         fun copyOfArray() = value.copyOf()
@@ -43,7 +44,7 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D3(override val value: FloatArray, override val shape: List<Int>) : IOType() {
+    data class D3(override val value: DataBuffer, override val shape: List<Int>) : IOType() {
         override val size = shape.reduce { acc, i -> acc * i }
 
         fun copyOfArray() = value.copyOf()
@@ -53,7 +54,7 @@ sealed class IOType {
     }
 
     @Serializable
-    data class D4(override val value: FloatArray, override val shape: List<Int>) : IOType() {
+    data class D4(override val value: DataBuffer, override val shape: List<Int>) : IOType() {
         override val size = shape.reduce { acc, i -> acc * i }
 
         fun copyOfArray() = value.copyOf()
@@ -68,14 +69,14 @@ sealed class IOType {
 
         other as IOType
 
-        if (!value.contentEquals(other.value)) return false
+        if (value != other.value) return false
         if (shape != other.shape) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = value.contentHashCode()
+        var result = value.hashCode()
         result = 31 * result + shape.hashCode()
         return result
     }
@@ -85,19 +86,21 @@ sealed class IOType {
     }
 }
 
-fun IOType.Companion.d0(value: Float) = IOType.D0(floatArrayOf(value))
+fun IOType.Companion.d0(value: Float) = IOType.d0(floatArrayOf(value))
+
+fun IOType.Companion.d0(value: FloatArray) = IOType.D0(DataBuffer.create(value))
 
 inline fun IOType.Companion.d1(size: Int, init: (Int) -> Float = { 0f }): IOType.D1 {
     val value = FloatArray(size)
     for (i in 0 until size) value[i] = init(i)
-    return IOType.D1(value = value)
+    return IOType.d1(value = value)
 }
 
 inline fun IOType.Companion.d1(shape: List<Int>, init: (Int) -> Float = { 0f }) = d1(shape[0], init)
 
-fun IOType.Companion.d1(value: List<Float>) = IOType.D1(value = value.toFloatArray())
+fun IOType.Companion.d1(value: List<Float>) = IOType.d1(value = value.toFloatArray())
 
-fun IOType.Companion.d1(value: FloatArray) = IOType.D1(value = value)
+fun IOType.Companion.d1(value: FloatArray) = IOType.D1(value = DataBuffer.create(value))
 
 inline fun IOType.Companion.d2(i: Int, j: Int, init: (Int, Int) -> Float = { _, _ -> 0f }): IOType.D2 {
     val value = FloatArray(i * j)
@@ -106,7 +109,7 @@ inline fun IOType.Companion.d2(i: Int, j: Int, init: (Int, Int) -> Float = { _, 
             value[_i * j + _j] = init(_i, _j)
         }
     }
-    return IOType.D2(shape = listOf(i, j), value = value)
+    return IOType.d2(shape = listOf(i, j), value = value)
 }
 
 inline fun IOType.Companion.d2(shape: List<Int>, init: (Int, Int) -> Float = { _, _ -> 0f }) = d2(
@@ -115,12 +118,13 @@ inline fun IOType.Companion.d2(shape: List<Int>, init: (Int, Int) -> Float = { _
     init = init,
 )
 
-fun IOType.Companion.d2(shape: List<Int>, value: List<Float>) = IOType.D2(
+fun IOType.Companion.d2(shape: List<Int>, value: List<Float>) = IOType.d2(
     value = value.toFloatArray(),
     shape = shape,
 )
 
-fun IOType.Companion.d2(shape: List<Int>, value: FloatArray) = IOType.D2(shape = shape, value = value)
+fun IOType.Companion.d2(shape: List<Int>, value: FloatArray) =
+    IOType.D2(shape = shape, value = DataBuffer.create(value))
 
 inline fun IOType.Companion.d3(i: Int, j: Int, k: Int, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): IOType.D3 {
     val value = FloatArray(i * j * k)
@@ -131,7 +135,7 @@ inline fun IOType.Companion.d3(i: Int, j: Int, k: Int, init: (Int, Int, Int) -> 
             }
         }
     }
-    return IOType.D3(shape = listOf(i, j, k), value = value)
+    return IOType.d3(shape = listOf(i, j, k), value = value)
 }
 
 inline fun IOType.Companion.d3(shape: List<Int>, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }) = d3(
@@ -141,12 +145,13 @@ inline fun IOType.Companion.d3(shape: List<Int>, init: (Int, Int, Int) -> Float 
     init = init,
 )
 
-fun IOType.Companion.d3(shape: List<Int>, value: List<Float>) = IOType.D3(
+fun IOType.Companion.d3(shape: List<Int>, value: List<Float>) = IOType.d3(
     value = value.toFloatArray(),
     shape = shape,
 )
 
-fun IOType.Companion.d3(shape: List<Int>, value: FloatArray) = IOType.D3(shape = shape, value = value)
+fun IOType.Companion.d3(shape: List<Int>, value: FloatArray) =
+    IOType.D3(shape = shape, value = DataBuffer.create(value))
 
 inline fun IOType.Companion.d4(
     i: Int,
@@ -167,7 +172,7 @@ inline fun IOType.Companion.d4(
             }
         }
     }
-    return IOType.D4(shape = listOf(i, j, k, l), value = value)
+    return IOType.d4(shape = listOf(i, j, k, l), value = value)
 }
 
 inline fun IOType.Companion.d4(shape: List<Int>, init: (Int, Int, Int, Int) -> Float = { _, _, _, _ -> 0f }) = d4(
@@ -178,12 +183,13 @@ inline fun IOType.Companion.d4(shape: List<Int>, init: (Int, Int, Int, Int) -> F
     init = init,
 )
 
-fun IOType.Companion.d4(shape: List<Int>, value: List<Float>) = IOType.D4(
+fun IOType.Companion.d4(shape: List<Int>, value: List<Float>) = IOType.d4(
     value = value.toFloatArray(),
     shape = shape,
 )
 
-fun IOType.Companion.d4(shape: List<Int>, value: FloatArray) = IOType.D4(shape = shape, value = value)
+fun IOType.Companion.d4(shape: List<Int>, value: FloatArray) =
+    IOType.D4(shape = shape, value = DataBuffer.create(value))
 
 /**
  * get
@@ -196,21 +202,21 @@ operator fun IOType.D2.get(i: Int, j: Int) = value[i * shape[1] + j]
 
 operator fun IOType.D2.get(i: Int): IOType.D1 {
     val offset = i * shape[1]
-    return IOType.d1(value.sliceArray(offset until offset + shape[1]))
+    return IOType.D1(value.slice(offset until offset + shape[1]))
 }
 
 operator fun IOType.D3.get(i: Int, j: Int, k: Int) = value[(i * shape[1] + j) * shape[2] + k]
 
 operator fun IOType.D3.get(i: Int, j: Int): IOType.D1 {
     val offset = (i * shape[1] + j) * shape[2]
-    return IOType.d1(value = value.sliceArray(offset until offset + shape[2]))
+    return IOType.D1(value = value.slice(offset until offset + shape[2]))
 }
 
 operator fun IOType.D3.get(i: Int): IOType.D2 {
     val offset = i * shape[1] * shape[2]
-    return IOType.d2(
+    return IOType.D2(
         shape = listOf(shape[1], shape[2]),
-        value = value.sliceArray(offset until offset + shape[1] * shape[2]),
+        value = value.slice(offset until offset + shape[1] * shape[2]),
     )
 }
 
@@ -218,22 +224,22 @@ operator fun IOType.D4.get(i: Int, j: Int, k: Int, l: Int) = value[((i * shape[1
 
 operator fun IOType.D4.get(i: Int, j: Int, k: Int): IOType.D1 {
     val offset = ((i * shape[1] + j) * shape[2] + k) * shape[3]
-    return IOType.d1(value = value.sliceArray(offset until offset + shape[3]))
+    return IOType.D1(value = value.slice(offset until offset + shape[3]))
 }
 
 operator fun IOType.D4.get(i: Int, j: Int): IOType.D2 {
     val offset = (i * shape[1] + j) * shape[2] * shape[3]
-    return IOType.d2(
+    return IOType.D2(
         shape = listOf(shape[2], shape[3]),
-        value = value.sliceArray(offset until offset + shape[2] * shape[3]),
+        value = value.slice(offset until offset + shape[2] * shape[3]),
     )
 }
 
 operator fun IOType.D4.get(i: Int): IOType.D3 {
     val offset = i * shape[1] * shape[2] * shape[3]
-    return IOType.d3(
+    return IOType.D3(
         shape = listOf(shape[1], shape[2], shape[3]),
-        value = value.sliceArray(offset until offset + shape[1] * shape[2] * shape[3]),
+        value = value.slice(offset until offset + shape[1] * shape[2] * shape[3]),
     )
 }
 

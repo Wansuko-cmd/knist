@@ -6,9 +6,9 @@ import com.wsr.core.d2
 import com.wsr.core.get
 import com.wsr.core.reshape.transpose.transpose
 
-fun IOType.D1.max() = value.max()
+fun IOType.D1.max() = value.toFloatArray().max()
 
-fun IOType.D2.max() = value.max()
+fun IOType.D2.max() = value.toFloatArray().max()
 
 fun IOType.D2.max(axis: Int) = when (axis) {
     0 -> {
@@ -20,7 +20,7 @@ fun IOType.D2.max(axis: Int) = when (axis) {
     else -> throw IllegalArgumentException("IOType.D2.max axis is $axis not 0 or 1.")
 }
 
-fun IOType.D3.max() = value.max()
+fun IOType.D3.max() = value.toFloatArray().max()
 
 fun IOType.D3.max(axis: Int) = when (axis) {
     0 -> {

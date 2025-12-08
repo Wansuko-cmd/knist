@@ -56,4 +56,63 @@ object BLAS : IBLAS {
     ) {
         instance.sgemm(transA, transB, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc)
     }
+
+    fun sdot(n: Int, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int): Float =
+        instance.sdot(n, x.toFloatArray(), incX, y.toFloatArray(), incY)
+
+    fun sscal(n: Int, alpha: Float, x: DataBuffer, incX: Int) {
+        instance.sscal(n, alpha, x.toFloatArray(), incX)
+    }
+
+    fun saxpy(n: Int, alpha: Float, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int) {
+        instance.saxpy(n, alpha, x.toFloatArray(), incX, y.toFloatArray(), incY)
+    }
+
+    fun sgemv(
+        trans: Boolean,
+        m: Int,
+        n: Int,
+        alpha: Float,
+        a: DataBuffer,
+        lda: Int,
+        x: DataBuffer,
+        incX: Int,
+        beta: Float,
+        y: DataBuffer,
+        incY: Int,
+    ) {
+        instance.sgemv(trans, m, n, alpha, a.toFloatArray(), lda, x.toFloatArray(), incX, beta, y.toFloatArray(), incY)
+    }
+
+    fun sgemm(
+        transA: Boolean,
+        transB: Boolean,
+        m: Int,
+        n: Int,
+        k: Int,
+        alpha: Float,
+        a: DataBuffer,
+        lda: Int,
+        b: DataBuffer,
+        ldb: Int,
+        beta: Float,
+        c: DataBuffer,
+        ldc: Int,
+    ) {
+        instance.sgemm(
+            transA = transA,
+            transB = transB,
+            m = m,
+            n = n,
+            k = k,
+            alpha = alpha,
+            a = a.toFloatArray(),
+            lda = lda,
+            b = b.toFloatArray(),
+            ldb = ldb,
+            beta = beta,
+            c = c.toFloatArray(),
+            ldc = ldc,
+        )
+    }
 }
