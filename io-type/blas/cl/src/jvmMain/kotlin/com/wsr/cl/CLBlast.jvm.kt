@@ -26,7 +26,7 @@ actual fun loadCLBlast(): IBLAS? {
 
 class CLBlast internal constructor() : IBLAS {
     override val isNative: Boolean = true
-    private val instance = JCLBLast()
+    private val instance = JCLBlast()
 
     init {
         instance.init()
