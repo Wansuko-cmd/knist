@@ -1,4 +1,4 @@
-#include "com_wsr_cl_JCLBLast.h"
+#include "com_wsr_cl_JCLBlast.h"
 #include <stdio.h>
 #include <clblast.h>
 
@@ -15,7 +15,7 @@ static cl_context context = nullptr;
 static cl_command_queue queue = nullptr;
 
 // Java側から呼び出される初期化関数
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBLast_init
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_init
         (JNIEnv *env, jobject) {
     cl_int err;
 
@@ -57,7 +57,7 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBLast_init
     }
 }
 
-JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBLast_sdot
+JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBlast_sdot
         (JNIEnv *env, jobject, jint n, jfloatArray x, jint incx, jfloatArray y, jint incy) {
     cl_int err;
 
@@ -104,7 +104,7 @@ JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBLast_sdot
     return result;
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBLast_sscal
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sscal
     (JNIEnv *env, jobject, jint n, jfloat alpha, jfloatArray x, jint incx) {
     cl_int err;
 
@@ -137,7 +137,7 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBLast_sscal
     env->ReleaseFloatArrayElements(x, x_ptr, 0);
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBLast_saxpy
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_saxpy
     (JNIEnv *env, jobject, jint n, jfloat alpha, jfloatArray x, jint incx, jfloatArray y, jint incy) {
     cl_int err;
 
@@ -178,7 +178,7 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBLast_saxpy
     env->ReleaseFloatArrayElements(y, y_ptr, 0);
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBLast_sgemm(
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemm(
     JNIEnv *env, jobject, jboolean transA, jboolean transB, jint m, jint n, jint k,
     jfloat alpha, jfloatArray a, jint lda, jfloatArray b, jint ldb,
     jfloat beta, jfloatArray c, jint ldc
@@ -242,7 +242,7 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBLast_sgemm(
     env->ReleaseFloatArrayElements(c, c_ptr, 0);
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBLast_sgemv
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemv
 (JNIEnv *env, jobject, jboolean trans, jint m, jint n, jfloat alpha,
 jfloatArray a, jint lda, jfloatArray x, jint incx,
 jfloat beta, jfloatArray y, jint incy) {

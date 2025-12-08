@@ -69,7 +69,7 @@ else()
     set(CLBLAST_LIB ${CLBLAST_INSTALL_DIR}/lib/libclblast.a)
 endif()
 
-add_library(JCLBlast SHARED ${SRC_DIR}/com_wsr_cl_JCLBLast.cpp)
+add_library(JCLBlast SHARED ${SRC_DIR}/com_wsr_cl_JCLBlast.cpp)
 add_dependencies(JCLBlast CLBlast)
 
 target_include_directories(JCLBlast PRIVATE
