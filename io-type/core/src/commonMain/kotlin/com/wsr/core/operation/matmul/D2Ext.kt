@@ -1,12 +1,13 @@
 package com.wsr.core.operation.matmul
 
 import com.wsr.BLAS
+import com.wsr.DataBuffer
 import com.wsr.core.IOType
 import com.wsr.core.get
 import com.wsr.core.set
 
 infix fun IOType.D2.matMul(other: IOType.D1): IOType.D1 {
-    val result = FloatArray(shape[0])
+    val result = DataBuffer.create(shape[0])
     BLAS.sgemv(
         trans = false,
         m = shape[0],
@@ -24,7 +25,7 @@ infix fun IOType.D2.matMul(other: IOType.D1): IOType.D1 {
 }
 
 infix fun IOType.D2.matMul(other: IOType.D2): IOType.D2 {
-    val result = FloatArray(shape[0] * other.shape[1])
+    val result = DataBuffer.create(shape[0] * other.shape[1])
     BLAS.sgemm(
         transA = false,
         transB = false,
