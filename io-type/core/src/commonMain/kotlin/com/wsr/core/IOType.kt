@@ -15,8 +15,6 @@ sealed class IOType {
         override val shape = listOf(1)
         override val size = 1
 
-        fun copyOfArray() = value.copyOf()
-
         override fun equals(other: Any?): Boolean = super.equals(other)
 
         override fun hashCode(): Int = super.hashCode()
@@ -26,9 +24,6 @@ sealed class IOType {
     data class D1(override val value: DataBuffer, override val size: Int = value.size) : IOType() {
         override val shape = listOf(size)
 
-        fun copyOf() = D1(value.copyOf(), size)
-        fun copyOfArray() = value.copyOf()
-
         override fun equals(other: Any?): Boolean = super.equals(other)
         override fun hashCode(): Int = super.hashCode()
     }
@@ -36,8 +31,6 @@ sealed class IOType {
     @Serializable
     data class D2(override val value: DataBuffer, override val shape: List<Int>) : IOType() {
         override val size = shape.reduce { acc, i -> acc * i }
-
-        fun copyOfArray() = value.copyOf()
 
         override fun equals(other: Any?): Boolean = super.equals(other)
         override fun hashCode(): Int = super.hashCode()
@@ -47,8 +40,6 @@ sealed class IOType {
     data class D3(override val value: DataBuffer, override val shape: List<Int>) : IOType() {
         override val size = shape.reduce { acc, i -> acc * i }
 
-        fun copyOfArray() = value.copyOf()
-
         override fun equals(other: Any?): Boolean = super.equals(other)
         override fun hashCode(): Int = super.hashCode()
     }
@@ -56,8 +47,6 @@ sealed class IOType {
     @Serializable
     data class D4(override val value: DataBuffer, override val shape: List<Int>) : IOType() {
         override val size = shape.reduce { acc, i -> acc * i }
-
-        fun copyOfArray() = value.copyOf()
 
         override fun equals(other: Any?): Boolean = super.equals(other)
         override fun hashCode(): Int = super.hashCode()

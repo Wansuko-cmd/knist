@@ -36,7 +36,7 @@ fun IOType.D1.topP(p: Float, random: Random = Random): Int {
 }
 
 private fun IOType.D1.maxWithIndex(): Sequence<Pair<Float, Int>> = sequence {
-    val target = copyOf()
+    val target = value.toFloatArray().copyOf()
     repeat(target.size) {
         var index = 0
         var max = Float.MIN_VALUE

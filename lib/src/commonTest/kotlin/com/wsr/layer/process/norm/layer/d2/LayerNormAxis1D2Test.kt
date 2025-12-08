@@ -191,7 +191,7 @@ class LayerNormAxis1D2Test {
             val row = mutableListOf<Float>()
             for (j in 0 until 2) {
                 // input[i, j]を少し増やす
-                val inputPlus = input[0].value.copyOf()
+                val inputPlus = input[0].value
                 inputPlus[i * 2 + j] += epsilon
                 val outputPlus = norm._expect(
                     batchOf(IOType.d2(listOf(2, 2), inputPlus.toFloatArray())),
@@ -200,7 +200,7 @@ class LayerNormAxis1D2Test {
                 val lossPlus = calcLoss(outputPlus, calcDelta)
 
                 // input[i, j]を少し減らす
-                val inputMinus = input[0].value.copyOf()
+                val inputMinus = input[0].value
                 inputMinus[i * 2 + j] -= epsilon
                 val outputMinus = norm._expect(
                     batchOf(IOType.d2(listOf(2, 2), inputMinus.toFloatArray())),
