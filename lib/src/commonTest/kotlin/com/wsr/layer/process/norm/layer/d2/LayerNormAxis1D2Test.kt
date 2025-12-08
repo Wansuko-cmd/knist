@@ -194,7 +194,7 @@ class LayerNormAxis1D2Test {
                 val inputPlus = input[0].value.copyOf()
                 inputPlus[i * 2 + j] += epsilon
                 val outputPlus = norm._expect(
-                    batchOf(IOType.d2(listOf(2, 2), inputPlus.toList())),
+                    batchOf(IOType.d2(listOf(2, 2), inputPlus.toFloatArray())),
                     context,
                 ) as Batch<IOType.D2>
                 val lossPlus = calcLoss(outputPlus, calcDelta)
@@ -203,7 +203,7 @@ class LayerNormAxis1D2Test {
                 val inputMinus = input[0].value.copyOf()
                 inputMinus[i * 2 + j] -= epsilon
                 val outputMinus = norm._expect(
-                    batchOf(IOType.d2(listOf(2, 2), inputMinus.toList())),
+                    batchOf(IOType.d2(listOf(2, 2), inputMinus.toFloatArray())),
                     context,
                 ) as Batch<IOType.D2>
                 val lossMinus = calcLoss(outputMinus, calcDelta)
