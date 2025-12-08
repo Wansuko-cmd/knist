@@ -22,7 +22,7 @@ class CharsD1(override val outputSize: Int) : Converter.D1<String>() {
     }.toBatch()
 
     override fun decode(input: Batch<IOType.D1>): List<String> = input.toList().map { input ->
-        input.copyOfArray().toFloatArray()
+        input.value.toFloatArray()
             .map { chars.getOrNull(it.toInt()) }
             .filterNotNull()
             .joinToString("")

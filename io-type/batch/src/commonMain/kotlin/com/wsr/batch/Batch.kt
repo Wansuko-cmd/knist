@@ -8,9 +8,6 @@ class Batch<out T : IOType>(val value: DataBuffer, val size: Int, val shape: Lis
     val step = shape.reduce { acc, i -> acc * i }
     val indices = 0 until size
 
-    fun copy(value: DataBuffer = this.value.copyOf(), size: Int = this.size, shape: List<Int> = this.shape) =
-        Batch<T>(value = value, size = size, shape = shape)
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

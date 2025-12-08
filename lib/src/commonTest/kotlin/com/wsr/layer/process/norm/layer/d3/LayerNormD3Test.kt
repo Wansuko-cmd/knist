@@ -20,7 +20,7 @@ class LayerNormD3Test {
     @Test
     fun `LayerNormD3の_expect=Layer正規化を適用`() {
         // weight = [[[1, 1], [1, 1]], [[1, 1], [1, 1]]]
-        val weight = IOType.Companion.d3(2, 2, 2) { _, _, _ -> 1.0f }
+        val weight = IOType.d3(2, 2, 2) { _, _, _ -> 1.0f }
         val norm =
             LayerNormD3(
                 outputX = 2,
@@ -34,8 +34,8 @@ class LayerNormD3Test {
         // 2つのバッチ: [[[0, 2], [2, 4]], [[4, 6], [6, 8]]], [[[2, 4], [4, 6]], [[6, 8], [8, 10]]]
         val input =
             batchOf(
-                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2).toFloat() },
-                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2 + 2).toFloat() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2).toFloat() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2 + 2).toFloat() },
             )
         val context = Context(input)
 
@@ -135,7 +135,7 @@ class LayerNormD3Test {
     @Test
     fun `LayerNormD3の_train=weightが更新される`() {
         // weight = [[[2, 2], [2, 2]], [[2, 2], [2, 2]]]
-        val weight = IOType.Companion.d3(2, 2, 2) { _, _, _ -> 2.0f }
+        val weight = IOType.d3(2, 2, 2) { _, _, _ -> 2.0f }
         val norm =
             LayerNormD3(
                 outputX = 2,
@@ -149,14 +149,14 @@ class LayerNormD3Test {
         // 2つのバッチ: [[[0, 2], [2, 4]], [[4, 6], [6, 8]]], [[[2, 4], [4, 6]], [[6, 8], [8, 10]]]
         val input =
             batchOf(
-                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2).toFloat() },
-                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2 + 2).toFloat() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2).toFloat() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z * 2 + 2).toFloat() },
             )
         val context = Context(input)
 
         // deltaは全て[[[1, 1], [1, 1]], [[1, 1], [1, 1]]]を返す
         val calcDelta: (Batch<IOType>) -> Batch<IOType> = { outputs ->
-            (0 until outputs.size).map { IOType.Companion.d3(2, 2, 2) { _, _, _ -> 1.0f } }.toBatch()
+            (0 until outputs.size).map { IOType.d3(2, 2, 2) { _, _, _ -> 1.0f } }.toBatch()
         }
 
         val expectedStd = sqrt(6.0f + 1e-10f)
@@ -194,7 +194,7 @@ class LayerNormD3Test {
     fun `LayerNormD3の数値微分テスト=dxが計算されて返される`() {
         // weight = [[[1.5f, 2.0f], [1.0f, 0.8f]], [[1.2f, 0.9f], [1.1f, 1.3f]]]
         val weight =
-            IOType.Companion.d3(2, 2, 2) { x, y, z ->
+            IOType.d3(2, 2, 2) { x, y, z ->
                 when {
                     x == 0 && y == 0 && z == 0 -> 1.5f
                     x == 0 && y == 0 && z == 1 -> 2.0f
@@ -219,14 +219,14 @@ class LayerNormD3Test {
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         val input =
             batchOf(
-                IOType.Companion.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
+                IOType.d3(2, 2, 2) { x, y, z -> (x * 4 + y * 2 + z + 1).toFloat() },
             )
         val context = Context(input)
 
         // deltaは[[[1, 0.5f], [-1, 0.8f]], [[0.7f, -0.5f], [0.9f, 1.2f]]]を返す（任意の勾配）
         val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
             batchOf(
-                IOType.Companion.d3(2, 2, 2) { x, y, z ->
+                IOType.d3(2, 2, 2) { x, y, z ->
                     when {
                         x == 0 && y == 0 && z == 0 -> 1.0f
                         x == 0 && y == 0 && z == 1 -> 0.5f
@@ -251,19 +251,19 @@ class LayerNormD3Test {
                 val row = mutableListOf<Float>()
                 for (k in 0 until 2) {
                     // input[i, j, k]を少し増やす
-                    val inputPlus = input[0].value.copyOf()
+                    val inputPlus = input[0].value
                     inputPlus[i * 4 + j * 2 + k] += epsilon
                     val outputPlus = norm._expect(
-                        batchOf(IOType.Companion.d3(listOf(2, 2, 2), inputPlus.toFloatArray())),
+                        batchOf(IOType.d3(listOf(2, 2, 2), inputPlus.toFloatArray())),
                         context,
                     )
                     val lossPlus = calcLoss(outputPlus, calcDelta)
 
                     // input[i, j, k]を少し減らす
-                    val inputMinus = input[0].value.copyOf()
+                    val inputMinus = input[0].value
                     inputMinus[i * 4 + j * 2 + k] -= epsilon
                     val outputMinus = norm._expect(
-                        batchOf(IOType.Companion.d3(listOf(2, 2, 2), inputMinus.toFloatArray())),
+                        batchOf(IOType.d3(listOf(2, 2, 2), inputMinus.toFloatArray())),
                         context,
                     )
                     val lossMinus = calcLoss(outputMinus, calcDelta)

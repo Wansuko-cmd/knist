@@ -7,8 +7,6 @@ interface DataBuffer {
 
     fun toFloatArray(): FloatArray
 
-    fun copyOf(): DataBuffer
-
     operator fun get(i: Int): Float
     operator fun set(i: Int, value: Float)
 
@@ -21,8 +19,6 @@ interface DataBuffer {
         override val indices: IntRange = value.indices
 
         override fun toFloatArray(): FloatArray = value
-
-        override fun copyOf(): DataBuffer = Default(value.copyOf())
 
         override operator fun get(i: Int): Float = value[i]
         override operator fun set(i: Int, value: Float) {
