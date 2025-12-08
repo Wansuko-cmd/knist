@@ -20,7 +20,7 @@ class LayerNormD2Test {
     @Test
     fun `LayerNormD2の_expect=Layer正規化を適用`() {
         // weight = [[1, 1], [1, 1]]
-        val weight = IOType.Companion.d2(2, 2) { _, _ -> 1.0f }
+        val weight = IOType.d2(2, 2) { _, _ -> 1.0f }
         val norm =
             LayerNormD2(
                 outputX = 2,
@@ -33,8 +33,8 @@ class LayerNormD2Test {
         // 2つのバッチ: [[0, 2], [2, 4]], [[2, 4], [4, 6]]
         val input =
             batchOf(
-                IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y * 2).toFloat() },
-                IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y * 2 + 2).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y * 2).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y * 2 + 2).toFloat() },
             )
         val context = Context(input)
 
@@ -94,7 +94,7 @@ class LayerNormD2Test {
     @Test
     fun `LayerNormD2の_train=weightが更新される`() {
         // weight = [[2, 2], [2, 2]]
-        val weight = IOType.Companion.d2(2, 2) { _, _ -> 2.0f }
+        val weight = IOType.d2(2, 2) { _, _ -> 2.0f }
         val norm =
             LayerNormD2(
                 outputX = 2,
@@ -107,14 +107,14 @@ class LayerNormD2Test {
         // 2つのバッチ: [[0, 2], [2, 4]], [[2, 4], [4, 6]]
         val input =
             batchOf(
-                IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y * 2).toFloat() },
-                IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y * 2 + 2).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y * 2).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y * 2 + 2).toFloat() },
             )
         val context = Context(input)
 
         // deltaは全て[[1, 1], [1, 1]]を返す
         val calcDelta: (Batch<IOType>) -> Batch<IOType> = { outputs ->
-            (0 until outputs.size).map { IOType.Companion.d2(2, 2) { _, _ -> 1.0f } }.toBatch()
+            (0 until outputs.size).map { IOType.d2(2, 2) { _, _ -> 1.0f } }.toBatch()
         }
 
         // バッチ1: mean=2, numerator=[[-2, 0], [0, 2]], variance=2, std=sqrt(2+1e-10)
@@ -161,7 +161,7 @@ class LayerNormD2Test {
     fun `LayerNormD2の数値微分テスト=dxが計算されて返される`() {
         // weight = [[1.5f, 2.0f], [1.0f, 0.8f]]
         val weight =
-            IOType.Companion.d2(2, 2) { x, y ->
+            IOType.d2(2, 2) { x, y ->
                 when {
                     x == 0 && y == 0 -> 1.5f
                     x == 0 && y == 1 -> 2.0f
@@ -181,14 +181,14 @@ class LayerNormD2Test {
         // [[1, 2], [3, 4]]
         val input =
             batchOf(
-                IOType.Companion.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
+                IOType.d2(2, 2) { x, y -> (x * 2 + y + 1).toFloat() },
             )
         val context = Context(input)
 
         // deltaは[[1, 0.5f], [-1, 0.8f]]を返す（任意の勾配）
         val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
             batchOf(
-                IOType.Companion.d2(2, 2) { x, y ->
+                IOType.d2(2, 2) { x, y ->
                     when {
                         x == 0 && y == 0 -> 1.0f
                         x == 0 && y == 1 -> 0.5f
@@ -207,19 +207,19 @@ class LayerNormD2Test {
             val row = mutableListOf<Float>()
             for (j in 0 until 2) {
                 // input[i, j]を少し増やす
-                val inputPlus = input[0].value.copyOf()
+                val inputPlus = input[0].value
                 inputPlus[i * 2 + j] += epsilon
                 val outputPlus = norm._expect(
-                    batchOf(IOType.Companion.d2(listOf(2, 2), inputPlus.toFloatArray())),
+                    batchOf(IOType.d2(listOf(2, 2), inputPlus.toFloatArray())),
                     context,
                 ) as Batch<IOType.D2>
                 val lossPlus = calcLoss(outputPlus, calcDelta)
 
                 // input[i, j]を少し減らす
-                val inputMinus = input[0].value.copyOf()
+                val inputMinus = input[0].value
                 inputMinus[i * 2 + j] -= epsilon
                 val outputMinus = norm._expect(
-                    batchOf(IOType.Companion.d2(listOf(2, 2), inputMinus.toFloatArray())),
+                    batchOf(IOType.d2(listOf(2, 2), inputMinus.toFloatArray())),
                     context,
                 ) as Batch<IOType.D2>
                 val lossMinus = calcLoss(outputMinus, calcDelta)
