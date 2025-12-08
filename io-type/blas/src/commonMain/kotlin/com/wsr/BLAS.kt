@@ -1,5 +1,6 @@
 package com.wsr
 
+import com.wsr.blas.base.DataBuffer
 import com.wsr.blas.base.IBLAS
 import com.wsr.open.openBLAS
 
