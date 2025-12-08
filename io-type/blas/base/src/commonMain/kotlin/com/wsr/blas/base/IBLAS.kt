@@ -16,7 +16,7 @@ interface IBLAS {
      * @param incY ベクトルyのストライド (通常は1、配列の何要素ごとにアクセスするか)
      * @return 内積の結果 sum(x[i] * y[i])
      */
-    fun sdot(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): Float {
+    fun sdot(n: Int, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int): Float {
         var result = 0f
         var xi = 0
         var yi = 0
@@ -42,7 +42,7 @@ interface IBLAS {
      * @param x ベクトルx (入出力: この配列が直接変更される)
      * @param incX ベクトルxのストライド (通常は1、配列の何要素ごとにアクセスするか)
      */
-    fun sscal(n: Int, alpha: Float, x: FloatArray, incX: Int) {
+    fun sscal(n: Int, alpha: Float, x: DataBuffer, incX: Int) {
         var xi = 0
         repeat(n) {
             x[xi] *= alpha
@@ -64,7 +64,7 @@ interface IBLAS {
      * @param y ベクトルy (入出力: この配列が直接変更される)
      * @param incY ベクトルyのストライド (通常は1、配列の何要素ごとにアクセスするか)
      */
-    fun saxpy(n: Int, alpha: Float, x: FloatArray, incX: Int, y: FloatArray, incY: Int) {
+    fun saxpy(n: Int, alpha: Float, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int) {
         var xi = 0
         var yi = 0
         repeat(n) {
@@ -98,12 +98,12 @@ interface IBLAS {
         m: Int,
         n: Int,
         alpha: Float,
-        a: FloatArray,
+        a: DataBuffer,
         lda: Int,
-        x: FloatArray,
+        x: DataBuffer,
         incX: Int,
         beta: Float,
-        y: FloatArray,
+        y: DataBuffer,
         incY: Int,
     ) {
         val rows = if (trans) n else m
@@ -151,12 +151,12 @@ interface IBLAS {
         n: Int,
         k: Int,
         alpha: Float,
-        a: FloatArray,
+        a: DataBuffer,
         lda: Int,
-        b: FloatArray,
+        b: DataBuffer,
         ldb: Int,
         beta: Float,
-        c: FloatArray,
+        c: DataBuffer,
         ldc: Int,
     ) {
         // Default implementation: naive matrix multiplication

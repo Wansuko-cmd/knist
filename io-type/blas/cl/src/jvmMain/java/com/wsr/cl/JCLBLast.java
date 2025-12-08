@@ -1,16 +1,8 @@
 package com.wsr.cl;
 
-import com.wsr.blas.base.IBLAS;
-
-public class JCLBLast implements IBLAS {
-    @Override
-    public boolean isNative() {
-        return true;
-    }
-
+public class JCLBLast {
     public native void init();
 
-    @Override
     public native float sdot(
             int n,
             float[] x,
@@ -19,7 +11,6 @@ public class JCLBLast implements IBLAS {
             int incY
     );
 
-    @Override
     public native void sscal(
             int n,
             float alpha,
@@ -27,7 +18,6 @@ public class JCLBLast implements IBLAS {
             int incX
     );
 
-    @Override
     public native void saxpy(
             int n,
             float alpha,
@@ -37,7 +27,6 @@ public class JCLBLast implements IBLAS {
             int incY
     );
 
-    @Override
     public native void sgemm(
             boolean transA,
             boolean transB,
@@ -54,7 +43,6 @@ public class JCLBLast implements IBLAS {
             int ldc
     );
 
-    @Override
     public native void sgemv(
             boolean trans,
             int m,

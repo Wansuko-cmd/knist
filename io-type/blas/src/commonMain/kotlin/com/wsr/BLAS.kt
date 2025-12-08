@@ -13,63 +13,18 @@ object BLAS : IBLAS {
 
     override val isNative: Boolean = instance.isNative
 
-    override fun sdot(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): Float =
+    override fun sdot(n: Int, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int): Float =
         instance.sdot(n, x, incX, y, incY)
 
-    override fun sscal(n: Int, alpha: Float, x: FloatArray, incX: Int) {
+    override fun sscal(n: Int, alpha: Float, x: DataBuffer, incX: Int) {
         instance.sscal(n, alpha, x, incX)
     }
 
-    override fun saxpy(n: Int, alpha: Float, x: FloatArray, incX: Int, y: FloatArray, incY: Int) {
+    override fun saxpy(n: Int, alpha: Float, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int) {
         instance.saxpy(n, alpha, x, incX, y, incY)
     }
 
     override fun sgemv(
-        trans: Boolean,
-        m: Int,
-        n: Int,
-        alpha: Float,
-        a: FloatArray,
-        lda: Int,
-        x: FloatArray,
-        incX: Int,
-        beta: Float,
-        y: FloatArray,
-        incY: Int,
-    ) {
-        instance.sgemv(trans, m, n, alpha, a, lda, x, incX, beta, y, incY)
-    }
-
-    override fun sgemm(
-        transA: Boolean,
-        transB: Boolean,
-        m: Int,
-        n: Int,
-        k: Int,
-        alpha: Float,
-        a: FloatArray,
-        lda: Int,
-        b: FloatArray,
-        ldb: Int,
-        beta: Float,
-        c: FloatArray,
-        ldc: Int,
-    ) {
-        instance.sgemm(transA, transB, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc)
-    }
-
-    fun sdot(n: Int, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int): Float =
-        instance.sdot(n, x.toFloatArray(), incX, y.toFloatArray(), incY)
-
-    fun sscal(n: Int, alpha: Float, x: DataBuffer, incX: Int) {
-        instance.sscal(n, alpha, x.toFloatArray(), incX)
-    }
-
-    fun saxpy(n: Int, alpha: Float, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int) {
-        instance.saxpy(n, alpha, x.toFloatArray(), incX, y.toFloatArray(), incY)
-    }
-
-    fun sgemv(
         trans: Boolean,
         m: Int,
         n: Int,
@@ -82,10 +37,10 @@ object BLAS : IBLAS {
         y: DataBuffer,
         incY: Int,
     ) {
-        instance.sgemv(trans, m, n, alpha, a.toFloatArray(), lda, x.toFloatArray(), incX, beta, y.toFloatArray(), incY)
+        instance.sgemv(trans, m, n, alpha, a, lda, x, incX, beta, y, incY)
     }
 
-    fun sgemm(
+    override fun sgemm(
         transA: Boolean,
         transB: Boolean,
         m: Int,
@@ -100,20 +55,6 @@ object BLAS : IBLAS {
         c: DataBuffer,
         ldc: Int,
     ) {
-        instance.sgemm(
-            transA = transA,
-            transB = transB,
-            m = m,
-            n = n,
-            k = k,
-            alpha = alpha,
-            a = a.toFloatArray(),
-            lda = lda,
-            b = b.toFloatArray(),
-            ldb = ldb,
-            beta = beta,
-            c = c.toFloatArray(),
-            ldc = ldc,
-        )
+        instance.sgemm(transA, transB, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc)
     }
 }
