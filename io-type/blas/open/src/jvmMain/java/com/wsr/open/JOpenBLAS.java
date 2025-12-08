@@ -1,14 +1,6 @@
 package com.wsr.open;
 
-import com.wsr.blas.base.IBLAS;
-
-public class JOpenBLAS implements IBLAS {
-    @Override
-    public boolean isNative() {
-        return true;
-    }
-
-    @Override
+class JOpenBLAS {
     public native float sdot(
             int n,
             float[] x,
@@ -17,7 +9,6 @@ public class JOpenBLAS implements IBLAS {
             int incY
     );
 
-    @Override
     public native void sscal(
             int n,
             float alpha,
@@ -25,7 +16,6 @@ public class JOpenBLAS implements IBLAS {
             int incX
     );
 
-    @Override
     public native void saxpy(
             int n,
             float alpha,
@@ -35,7 +25,6 @@ public class JOpenBLAS implements IBLAS {
             int incY
     );
 
-    @Override
     public native void sgemm(
             boolean transA,
             boolean transB,
@@ -52,7 +41,6 @@ public class JOpenBLAS implements IBLAS {
             int ldc
     );
 
-    @Override
     public native void sgemv(
             boolean trans,
             int m,

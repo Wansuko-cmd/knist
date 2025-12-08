@@ -1,7 +1,7 @@
 package com.wsr.core
 
 import com.wsr.BLAS
-import com.wsr.DataBuffer
+import com.wsr.blas.base.DataBuffer
 import kotlinx.serialization.Serializable
 
 @Serializable
