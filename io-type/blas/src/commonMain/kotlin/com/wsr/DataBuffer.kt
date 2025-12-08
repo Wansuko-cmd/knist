@@ -16,7 +16,7 @@ interface DataBuffer {
 
     fun copyInto(destination: DataBuffer, destinationOffset: Int = 0)
 
-    class Default(private val value: FloatArray) : DataBuffer {
+    data class Default(private val value: FloatArray) : DataBuffer {
         override val size = value.size
         override val indices: IntRange = value.indices
 
@@ -33,6 +33,26 @@ interface DataBuffer {
 
         override fun copyInto(destination: DataBuffer, destinationOffset: Int) {
             value.copyInto(destination.toFloatArray(), destinationOffset)
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as Default
+
+            if (size != other.size) return false
+            if (!value.contentEquals(other.value)) return false
+            if (indices != other.indices) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = size
+            result = 31 * result + value.contentHashCode()
+            result = 31 * result + indices.hashCode()
+            return result
         }
     }
 
