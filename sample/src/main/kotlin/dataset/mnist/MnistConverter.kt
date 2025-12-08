@@ -18,7 +18,9 @@ data class PixelConverter(override val outputX: Int, override val outputY: Int) 
     override fun encode(input: List<List<Float>>): Batch<IOType.D2> = input
         .map { IOType.d2(listOf(28, 28), it) }.toBatch()
 
-    override fun decode(input: Batch<IOType.D2>): List<List<Float>> = input.toList().map { it.value.toList() }
+    override fun decode(input: Batch<IOType.D2>): List<List<Float>> = input.toList().map {
+        it.value.toFloatArray().toList()
+    }
 }
 
 fun NetworkBuilder.Companion.inputPx(x: Int, y: Int, optimizer: Optimizer, initializer: WeightInitializer) = inputD2(
@@ -33,5 +35,7 @@ data class LabelConverter(override val outputSize: Int) : Converter.D1<Int>() {
         IOType.d1(10) { if (input == it) 1f else 0f }
     }.toBatch()
 
-    override fun decode(input: Batch<IOType.D1>): List<Int> = input.toList().map { it.value.toTypedArray().maxIndex() }
+    override fun decode(input: Batch<IOType.D1>): List<Int> = input.toList().map {
+        it.value.toFloatArray().toTypedArray().maxIndex()
+    }
 }

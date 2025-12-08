@@ -38,7 +38,7 @@ internal class GlobalAverageD3ToD2(private val inputX: Int, private val inputY: 
     private fun forward(input: Batch<IOType.D3>) = input.toList().map { input ->
         val input = input.transpose(axisI = 2, axisJ = 0, axisK = 1)
         IOType.d2(outputX, outputY) { x, y ->
-            input[x, y].value.average().toFloat()
+            input[x, y].value.toFloatArray().average().toFloat()
         }
     }.toBatch()
 }

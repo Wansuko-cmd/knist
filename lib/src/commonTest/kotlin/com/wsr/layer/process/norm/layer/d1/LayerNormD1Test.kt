@@ -154,13 +154,13 @@ class LayerNormD1Test {
 
         for (i in 0 until 3) {
             // input[i]を少し増やす
-            val inputPlus = input[0].value.toMutableList()
+            val inputPlus = input[0].value.toFloatArray()
             inputPlus[i] += epsilon
             val outputPlus = norm._expect(batchOf(IOType.d1(inputPlus)), context) as Batch<IOType.D1>
             val lossPlus = calcLoss(outputPlus, calcDelta)
 
             // input[i]を少し減らす
-            val inputMinus = input[0].value.toMutableList()
+            val inputMinus = input[0].value.toFloatArray()
             inputMinus[i] -= epsilon
             val outputMinus = norm._expect(batchOf(IOType.d1(inputMinus)), context) as Batch<IOType.D1>
             val lossMinus = calcLoss(outputMinus, calcDelta)

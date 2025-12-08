@@ -254,7 +254,7 @@ class LayerNormD3Test {
                     val inputPlus = input[0].value.copyOf()
                     inputPlus[i * 4 + j * 2 + k] += epsilon
                     val outputPlus = norm._expect(
-                        batchOf(IOType.Companion.d3(listOf(2, 2, 2), inputPlus.toList())),
+                        batchOf(IOType.Companion.d3(listOf(2, 2, 2), inputPlus.toFloatArray())),
                         context,
                     )
                     val lossPlus = calcLoss(outputPlus, calcDelta)
@@ -263,7 +263,7 @@ class LayerNormD3Test {
                     val inputMinus = input[0].value.copyOf()
                     inputMinus[i * 4 + j * 2 + k] -= epsilon
                     val outputMinus = norm._expect(
-                        batchOf(IOType.Companion.d3(listOf(2, 2, 2), inputMinus.toList())),
+                        batchOf(IOType.Companion.d3(listOf(2, 2, 2), inputMinus.toFloatArray())),
                         context,
                     )
                     val lossMinus = calcLoss(outputMinus, calcDelta)

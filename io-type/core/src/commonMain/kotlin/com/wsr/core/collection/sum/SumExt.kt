@@ -6,9 +6,9 @@ import com.wsr.core.d2
 import com.wsr.core.get
 import com.wsr.core.reshape.transpose.transpose
 
-fun IOType.D1.sum() = value.sum()
+fun IOType.D1.sum() = value.toFloatArray().sum()
 
-fun IOType.D2.sum() = value.sum()
+fun IOType.D2.sum() = value.toFloatArray().sum()
 
 fun IOType.D2.sum(axis: Int): IOType.D1 = when (axis) {
     0 -> {
@@ -23,7 +23,7 @@ fun IOType.D2.sum(axis: Int): IOType.D1 = when (axis) {
     else -> throw IllegalArgumentException("IOType.D2.sum axis is $axis not 0 or 1.")
 }
 
-fun IOType.D3.sum() = value.sum()
+fun IOType.D3.sum() = value.toFloatArray().sum()
 
 fun IOType.D3.sum(axis: Int) = when (axis) {
     0 -> {
@@ -43,4 +43,4 @@ fun IOType.D3.sum(axis: Int) = when (axis) {
     else -> throw IllegalArgumentException("IOType.D3.sum axis is $axis not 0, 1 or 2.")
 }
 
-fun IOType.D4.sum() = value.sum()
+fun IOType.D4.sum() = value.toFloatArray().sum()

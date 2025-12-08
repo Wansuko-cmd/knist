@@ -6,9 +6,9 @@ import com.wsr.core.d2
 import com.wsr.core.get
 import com.wsr.core.reshape.transpose.transpose
 
-fun IOType.D1.min() = value.min()
+fun IOType.D1.min() = value.toFloatArray().min()
 
-fun IOType.D2.min() = value.min()
+fun IOType.D2.min() = value.toFloatArray().min()
 
 fun IOType.D2.min(axis: Int) = when (axis) {
     0 -> {
@@ -20,7 +20,7 @@ fun IOType.D2.min(axis: Int) = when (axis) {
     else -> throw IllegalArgumentException("IOType.D2.min axis is $axis not 0 or 1.")
 }
 
-fun IOType.D3.min() = value.min()
+fun IOType.D3.min() = value.toFloatArray().min()
 
 fun IOType.D3.min(axis: Int) = when (axis) {
     0 -> {
