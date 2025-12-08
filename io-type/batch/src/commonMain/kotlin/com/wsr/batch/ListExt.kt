@@ -1,12 +1,13 @@
 package com.wsr.batch
 
+import com.wsr.DataBuffer
 import com.wsr.core.IOType
 
 fun <T : IOType> List<T>.toBatch(): Batch<T> {
     val batchSize = size
     val shape = first().shape
     val step = shape.reduce { acc, i -> acc * i }
-    val batchValue = FloatArray(batchSize * step)
+    val batchValue = DataBuffer.create(batchSize * step)
     forEachIndexed { index, item ->
         item.value.copyInto(batchValue, index * step)
     }

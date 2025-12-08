@@ -123,7 +123,8 @@ fun IOType.Companion.d2(shape: List<Int>, value: List<Float>) = IOType.d2(
     shape = shape,
 )
 
-fun IOType.Companion.d2(shape: List<Int>, value: FloatArray) = IOType.D2(shape = shape, value = DataBuffer.create(value))
+fun IOType.Companion.d2(shape: List<Int>, value: FloatArray) =
+    IOType.D2(shape = shape, value = DataBuffer.create(value))
 
 inline fun IOType.Companion.d3(i: Int, j: Int, k: Int, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): IOType.D3 {
     val value = FloatArray(i * j * k)
@@ -149,7 +150,8 @@ fun IOType.Companion.d3(shape: List<Int>, value: List<Float>) = IOType.d3(
     shape = shape,
 )
 
-fun IOType.Companion.d3(shape: List<Int>, value: FloatArray) = IOType.D3(shape = shape, value = DataBuffer.create(value))
+fun IOType.Companion.d3(shape: List<Int>, value: FloatArray) =
+    IOType.D3(shape = shape, value = DataBuffer.create(value))
 
 inline fun IOType.Companion.d4(
     i: Int,
@@ -186,7 +188,8 @@ fun IOType.Companion.d4(shape: List<Int>, value: List<Float>) = IOType.d4(
     shape = shape,
 )
 
-fun IOType.Companion.d4(shape: List<Int>, value: FloatArray) = IOType.D4(shape = shape, value = DataBuffer.create(value))
+fun IOType.Companion.d4(shape: List<Int>, value: FloatArray) =
+    IOType.D4(shape = shape, value = DataBuffer.create(value))
 
 /**
  * get

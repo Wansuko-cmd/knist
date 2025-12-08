@@ -1,9 +1,6 @@
 package com.wsr.core.reshape.reshape
 
 import com.wsr.core.IOType
-import com.wsr.core.d2
-import com.wsr.core.d3
-import com.wsr.core.d4
 
 fun IOType.D2.reshapeToD3(i: Int, j: Int, k: Int) = reshapeToD3(shape = listOf(i, j, k))
 
