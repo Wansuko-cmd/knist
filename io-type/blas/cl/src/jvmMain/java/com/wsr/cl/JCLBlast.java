@@ -1,6 +1,6 @@
 package com.wsr.cl;
 
-public class JCLBLast {
+public class JCLBlast {
     public native void init();
 
     public native float sdot(
