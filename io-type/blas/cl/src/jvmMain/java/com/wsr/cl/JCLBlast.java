@@ -9,6 +9,60 @@ public class JCLBlast {
 
     public native void release(long address);
 
+    public native float sdot2(
+            int n,
+            long x,
+            int incX,
+            long y,
+            int incY
+    );
+
+    public native void sscal2(
+            int n,
+            float alpha,
+            long x,
+            int incX
+    );
+
+    public native void saxpy2(
+            int n,
+            float alpha,
+            long x,
+            int incX,
+            long y,
+            int incY
+    );
+
+    public native void sgemm2(
+            boolean transA,
+            boolean transB,
+            int m,
+            int n,
+            int k,
+            float alpha,
+            long a,
+            int lda,
+            long b,
+            int ldb,
+            float beta,
+            long c,
+            int ldc
+    );
+
+    public native void sgemv2(
+            boolean trans,
+            int m,
+            int n,
+            float alpha,
+            long a,
+            int lda,
+            long x,
+            int incX,
+            float beta,
+            long y,
+            int incY
+    );
+
     public native float sdot(
             int n,
             float[] x,

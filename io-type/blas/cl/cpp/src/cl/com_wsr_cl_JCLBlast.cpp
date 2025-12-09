@@ -111,6 +111,144 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_release
     }
 }
 
+JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBlast_sdot2
+        (JNIEnv *, jobject, jint, jlong, jint, jlong, jint) {
+    cl_int err;
+    cl_mem x_buffer = (cl_mem)x_ptr;
+    cl_mem y_buffer = (cl_mem)y_ptr;
+
+    // 結果用のバッファ確保
+    cl_mem dot_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(cl_float), nullptr, &err);
+    if (err != CL_SUCCESS) {
+        fprintf(stderr, "Failed to create result buffer for sdot: %d\n", err);
+        return 0.0f;
+    }
+
+    // CLBlast呼び出し
+    clblast::StatusCode status = clblast::Dot<float>(
+        n,
+        dot_buffer, 0,
+        x_buffer, 0, incx,
+        y_buffer, 0, incy,
+        &queue
+    );
+
+    jfloat result = 0.0f;
+    if (status == clblast::StatusCode::kSuccess) {
+        err = clEnqueueReadBuffer(queue, dot_buffer, CL_TRUE, 0, sizeof(cl_float), &result, 0, nullptr, nullptr);
+        if (err != CL_SUCCESS) {
+             fprintf(stderr, "Failed to read sdot result: %d\n", err);
+        }
+    } else {
+        fprintf(stderr, "CLBlast sdot failed: %d\n", static_cast<int>(status));
+    }
+
+    // 一時バッファを解放
+    clReleaseMemObject(dot_buffer);
+
+    return result;
+}
+
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sscal2
+        (JNIEnv *env, jobject, jint n, jfloat alpha, jlong x_ptr, jint incx) {
+    cl_mem x_buffer = (cl_mem)x_ptr;
+
+    clblast::StatusCode status = clblast::Scal<float>(
+        n,
+        alpha,
+        x_buffer,
+        0,
+        incx,
+        &queue
+    );
+
+    if (status != clblast::StatusCode::kSuccess) {
+        fprintf(stderr, "CLBlast sscal failed: %d\n", static_cast<int>(status));
+    }
+}
+
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_saxpy2(
+    JNIEnv *env, jobject, jint n, jfloat alpha,
+    jlong x_ptr, jint incx, jlong y_ptr, jint incy
+) {
+    cl_mem x_buffer = (cl_mem)x_ptr;
+    cl_mem y_buffer = (cl_mem)y_ptr;
+
+    clblast::StatusCode status = clblast::Axpy<float>(
+        n,
+        alpha,
+        x_buffer, 0, incx,
+        y_buffer, 0, incy,
+        &queue
+    );
+
+    if (status != clblast::StatusCode::kSuccess) {
+        fprintf(stderr, "CLBlast saxpy failed: %d\n", static_cast<int>(status));
+    }
+}
+
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemm2(
+    JNIEnv *env, jobject,
+    jboolean transA, jboolean transB,
+    jint m, jint n, jint k,
+    jfloat alpha, jlong a_ptr, jint lda, jlong b_ptr, jint ldb,
+    jfloat beta, jlong c_ptr, jint ldc
+) {
+    cl_mem a_buffer = (cl_mem)a_ptr;
+    cl_mem b_buffer = (cl_mem)b_ptr;
+    cl_mem c_buffer = (cl_mem)c_ptr;
+
+    // 転送フラグの変換
+    auto transA_cl = transA ? clblast::Transpose::kYes : clblast::Transpose::kNo;
+    auto transB_cl = transB ? clblast::Transpose::kYes : clblast::Transpose::kNo;
+
+    clblast::StatusCode status = clblast::Gemm<float>(
+        clblast::Layout::kRowMajor,
+        transA_cl, transB_cl,
+        m, n, k,
+        alpha,
+        a_buffer, 0, lda,
+        b_buffer, 0, ldb,
+        beta,
+        c_buffer, 0, ldc,
+        &queue
+    );
+
+    if (status != clblast::StatusCode::kSuccess) {
+        fprintf(stderr, "CLBlast sgemm failed: %d\n", static_cast<int>(status));
+    }
+}
+
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemv2(
+    JNIEnv *env, jobject,
+    jboolean trans,
+    jint m, jint n,
+    jfloat alpha, jlong a_ptr, jint lda, jlong x_ptr, jint incx,
+    jfloat beta, jlong y_ptr, jint incy
+) {
+    cl_mem a_buffer = (cl_mem)a_ptr;
+    cl_mem x_buffer = (cl_mem)x_ptr;
+    cl_mem y_buffer = (cl_mem)y_ptr;
+
+    auto trans_cl = trans ? clblast::Transpose::kYes : clblast::Transpose::kNo;
+
+    clblast::StatusCode status = clblast::Gemv<float>(
+        clblast::Layout::kRowMajor,
+        trans_cl,
+        m, n,
+        alpha,
+        a_buffer, 0, lda,
+        x_buffer, 0, incx,
+        beta,
+        y_buffer, 0, incy,
+        &queue
+    );
+
+    if (status != clblast::StatusCode::kSuccess) {
+        fprintf(stderr, "CLBlast sgemv failed: %d\n", static_cast<int>(status));
+    }
+}
+
 JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBlast_sdot
         (JNIEnv *env, jobject, jint n, jfloatArray x, jint incx, jfloatArray y, jint incy) {
     cl_int err;

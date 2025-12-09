@@ -41,6 +41,46 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_release
 
 /*
  * Class:     com_wsr_cl_JCLBlast
+ * Method:    sdot2
+ * Signature: (IJIJI)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBlast_sdot2
+  (JNIEnv *, jobject, jint, jlong, jint, jlong, jint);
+
+/*
+ * Class:     com_wsr_cl_JCLBlast
+ * Method:    sscal2
+ * Signature: (IFJI)V
+ */
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sscal2
+  (JNIEnv *, jobject, jint, jfloat, jlong, jint);
+
+/*
+ * Class:     com_wsr_cl_JCLBlast
+ * Method:    saxpy2
+ * Signature: (IFJIJI)V
+ */
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_saxpy2
+  (JNIEnv *, jobject, jint, jfloat, jlong, jint, jlong, jint);
+
+/*
+ * Class:     com_wsr_cl_JCLBlast
+ * Method:    sgemm2
+ * Signature: (ZZIIIFJIJIFJI)V
+ */
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemm2
+  (JNIEnv *, jobject, jboolean, jboolean, jint, jint, jint, jfloat, jlong, jint, jlong, jint, jfloat, jlong, jint);
+
+/*
+ * Class:     com_wsr_cl_JCLBlast
+ * Method:    sgemv2
+ * Signature: (ZIIFJIJIFJI)V
+ */
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemv2
+  (JNIEnv *, jobject, jboolean, jint, jint, jfloat, jlong, jint, jlong, jint, jfloat, jlong, jint);
+
+/*
+ * Class:     com_wsr_cl_JCLBlast
  * Method:    sdot
  * Signature: (I[FI[FI)F
  */
