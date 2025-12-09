@@ -57,26 +57,74 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_init
     }
 }
 
-JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBlast_sdot
-        (JNIEnv *env, jobject, jint n, jfloatArray x, jint incx, jfloatArray y, jint incy) {
+JNIEXPORT jlong JNICALL Java_com_wsr_cl_JCLBlast_transfer
+        (JNIEnv *env, jobject, jfloatArray data, jint size) {
     cl_int err;
+    cl_mem buffer = nullptr;
 
-    // Get array elements from Java
-    jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
-    jfloat *y_ptr = env->GetFloatArrayElements(y, nullptr);
+    // 渡された配列のポインタを取得
+    jfloat *ptr = env->GetFloatArrayElements(data, nullptr);
+    size_t byte_size = size * sizeof(cl_float);
 
-    // OpenCLバッファを作成
-    size_t x_size = (1 + (n - 1) * abs(incx)) * sizeof(cl_float);
-    size_t y_size = (1 + (n - 1) * abs(incy)) * sizeof(cl_float);
+    // GPUに転送
+    buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, byte_size, ptr, &err);
 
-    cl_mem x_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                                     x_size, x_ptr, &err);
-    cl_mem y_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                                     y_size, y_ptr, &err);
-    cl_mem dot_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY,
-                                       sizeof(cl_float), nullptr, &err);
+    if (err != CL_SUCCESS) {
+        fprintf(stderr, "Failed to create buffer: %d\n", err);
+    }
 
-    // CLBlast sdotを呼び出し
+    // 配列の解放
+    env->ReleaseFloatArrayElements(data, ptr, JNI_ABORT);
+
+    return (jlong)buffer;
+}
+
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_read
+        (JNIEnv *env, jobject, jlong address, jfloatArray destination) {
+    cl_int err;
+    cl_mem buffer = (cl_mem)address;
+
+    // 渡された配列のポインタを取得
+    jfloat *ptr = env->GetFloatArrayElements(destination, nullptr);
+
+    // 配列の長さを取得
+    jsize length = env->GetArrayLength(destination);
+    size_t byte_size = length * sizeof(cl_float);
+
+    // GPU -> CPU データ転送
+    err = clEnqueueReadBuffer(queue, buffer, CL_TRUE, 0, byte_size, ptr, 0, nullptr, nullptr);
+
+    if (err != CL_SUCCESS) {
+        fprintf(stderr, "Error reading buffer: %d\n", err);
+    }
+
+    // データをJava配列に反映して解放
+    env->ReleaseFloatArrayElements(destination, ptr, 0);
+}
+
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_release
+        (JNIEnv *env, jobject, jlong address) {
+    cl_mem buffer = (cl_mem)address;
+    cl_int err = clReleaseMemObject(buffer);
+    if (err != CL_SUCCESS) {
+        fprintf(stderr, "Failed to release memory: %d\n", err);
+    }
+}
+
+JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBlast_sdot
+         (JNIEnv *env, jobject, jint n, jlong x_ptr, jint incx, jlong y_ptr, jint incy) {
+    cl_int err;
+    cl_mem x_buffer = (cl_mem)x_ptr;
+    cl_mem y_buffer = (cl_mem)y_ptr;
+
+    // 結果用のバッファ確保
+    cl_mem dot_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(cl_float), nullptr, &err);
+    if (err != CL_SUCCESS) {
+        fprintf(stderr, "Failed to create result buffer for sdot: %d\n", err);
+        return 0.0f;
+    }
+
+    // CLBlast呼び出し
     clblast::StatusCode status = clblast::Dot<float>(
         n,
         dot_buffer, 0,
@@ -87,74 +135,45 @@ JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBlast_sdot
 
     jfloat result = 0.0f;
     if (status == clblast::StatusCode::kSuccess) {
-        clEnqueueReadBuffer(queue, dot_buffer, CL_TRUE, 0, sizeof(cl_float), &result, 0, nullptr, nullptr);
+        err = clEnqueueReadBuffer(queue, dot_buffer, CL_TRUE, 0, sizeof(cl_float), &result, 0, nullptr, nullptr);
+        if (err != CL_SUCCESS) {
+             fprintf(stderr, "Failed to read sdot result: %d\n", err);
+        }
     } else {
         fprintf(stderr, "CLBlast sdot failed: %d\n", static_cast<int>(status));
     }
 
-    // リソースを解放
-    clReleaseMemObject(x_buffer);
-    clReleaseMemObject(y_buffer);
+    // 一時バッファを解放
     clReleaseMemObject(dot_buffer);
-
-    // Release arrays back to Java
-    env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
-    env->ReleaseFloatArrayElements(y, y_ptr, JNI_ABORT);
 
     return result;
 }
 
 JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sscal
-    (JNIEnv *env, jobject, jint n, jfloat alpha, jfloatArray x, jint incx) {
-    cl_int err;
+        (JNIEnv *env, jobject, jint n, jfloat alpha, jlong x_ptr, jint incx) {
+    cl_mem x_buffer = (cl_mem)x_ptr;
 
-    // Get array elements from Java
-    jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
-
-    // OpenCLバッファを作成
-    size_t x_size = (1 + (n - 1) * abs(incx)) * sizeof(cl_float);
-    cl_mem x_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
-                                     x_size, x_ptr, &err);
-
-    // CLBlast sscalを呼び出し
     clblast::StatusCode status = clblast::Scal<float>(
         n,
         alpha,
-        x_buffer, 0, incx,
+        x_buffer,
+        0,
+        incx,
         &queue
     );
 
-    if (status == clblast::StatusCode::kSuccess) {
-        clEnqueueReadBuffer(queue, x_buffer, CL_TRUE, 0, x_size, x_ptr, 0, nullptr, nullptr);
-    } else {
+    if (status != clblast::StatusCode::kSuccess) {
         fprintf(stderr, "CLBlast sscal failed: %d\n", static_cast<int>(status));
     }
-
-    // リソースを解放
-    clReleaseMemObject(x_buffer);
-
-    // Release array back to Java (mode 0 = copy back and free)
-    env->ReleaseFloatArrayElements(x, x_ptr, 0);
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_saxpy
-    (JNIEnv *env, jobject, jint n, jfloat alpha, jfloatArray x, jint incx, jfloatArray y, jint incy) {
-    cl_int err;
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_saxpy(
+    JNIEnv *env, jobject, jint n, jfloat alpha,
+    jlong x_ptr, jint incx, jlong y_ptr, jint incy
+) {
+    cl_mem x_buffer = (cl_mem)x_ptr;
+    cl_mem y_buffer = (cl_mem)y_ptr;
 
-    // Get array elements from Java
-    jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
-    jfloat *y_ptr = env->GetFloatArrayElements(y, nullptr);
-
-    // OpenCLバッファを作成
-    size_t x_size = (1 + (n - 1) * abs(incx)) * sizeof(cl_float);
-    size_t y_size = (1 + (n - 1) * abs(incy)) * sizeof(cl_float);
-
-    cl_mem x_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                                     x_size, x_ptr, &err);
-    cl_mem y_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
-                                     y_size, y_ptr, &err);
-
-    // CLBlast saxpyを呼び出し
     clblast::StatusCode status = clblast::Axpy<float>(
         n,
         alpha,
@@ -163,56 +182,26 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_saxpy
         &queue
     );
 
-    if (status == clblast::StatusCode::kSuccess) {
-        clEnqueueReadBuffer(queue, y_buffer, CL_TRUE, 0, y_size, y_ptr, 0, nullptr, nullptr);
-    } else {
+    if (status != clblast::StatusCode::kSuccess) {
         fprintf(stderr, "CLBlast saxpy failed: %d\n", static_cast<int>(status));
     }
-
-    // リソースを解放
-    clReleaseMemObject(x_buffer);
-    clReleaseMemObject(y_buffer);
-
-    // Release arrays back to Java
-    env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
-    env->ReleaseFloatArrayElements(y, y_ptr, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemm(
-    JNIEnv *env, jobject, jboolean transA, jboolean transB, jint m, jint n, jint k,
-    jfloat alpha, jfloatArray a, jint lda, jfloatArray b, jint ldb,
-    jfloat beta, jfloatArray c, jint ldc
+    JNIEnv *env, jobject,
+    jboolean transA, jboolean transB,
+    jint m, jint n, jint k,
+    jfloat alpha, jlong a_ptr, jint lda, jlong b_ptr, jint ldb,
+    jfloat beta, jlong c_ptr, jint ldc
 ) {
-    cl_int err;
+    cl_mem a_buffer = (cl_mem)a_ptr;
+    cl_mem b_buffer = (cl_mem)b_ptr;
+    cl_mem c_buffer = (cl_mem)c_ptr;
 
-    // Get array elements from Java
-    jfloat *a_ptr = env->GetFloatArrayElements(a, nullptr);
-    jfloat *b_ptr = env->GetFloatArrayElements(b, nullptr);
-    jfloat *c_ptr = env->GetFloatArrayElements(c, nullptr);
+    // 転送フラグの変換
+    auto transA_cl = transA ? clblast::Transpose::kYes : clblast::Transpose::kNo;
+    auto transB_cl = transB ? clblast::Transpose::kYes : clblast::Transpose::kNo;
 
-    // Convert transpose flags
-    clblast::Transpose transA_cl = transA ? clblast::Transpose::kYes : clblast::Transpose::kNo;
-    clblast::Transpose transB_cl = transB ? clblast::Transpose::kYes : clblast::Transpose::kNo;
-
-    // 配列サイズを計算
-    size_t a_rows = transA ? k : m;
-    size_t a_cols = transA ? m : k;
-    size_t b_rows = transB ? n : k;
-    size_t b_cols = transB ? k : n;
-
-    size_t a_size = a_rows * lda * sizeof(cl_float);
-    size_t b_size = b_rows * ldb * sizeof(cl_float);
-    size_t c_size = m * ldc * sizeof(cl_float);
-
-    // OpenCLバッファを作成
-    cl_mem a_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                                     a_size, a_ptr, &err);
-    cl_mem b_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                                     b_size, b_ptr, &err);
-    cl_mem c_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
-                                     c_size, c_ptr, &err);
-
-    // CLBlast sgemmを呼び出し（Row-major order）
     clblast::StatusCode status = clblast::Gemm<float>(
         clblast::Layout::kRowMajor,
         transA_cl, transB_cl,
@@ -225,53 +214,24 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemm(
         &queue
     );
 
-    if (status == clblast::StatusCode::kSuccess) {
-        clEnqueueReadBuffer(queue, c_buffer, CL_TRUE, 0, c_size, c_ptr, 0, nullptr, nullptr);
-    } else {
+    if (status != clblast::StatusCode::kSuccess) {
         fprintf(stderr, "CLBlast sgemm failed: %d\n", static_cast<int>(status));
     }
-
-    // リソースを解放
-    clReleaseMemObject(a_buffer);
-    clReleaseMemObject(b_buffer);
-    clReleaseMemObject(c_buffer);
-
-    // Release arrays back to Java
-    env->ReleaseFloatArrayElements(a, a_ptr, JNI_ABORT);
-    env->ReleaseFloatArrayElements(b, b_ptr, JNI_ABORT);
-    env->ReleaseFloatArrayElements(c, c_ptr, 0);
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemv
-(JNIEnv *env, jobject, jboolean trans, jint m, jint n, jfloat alpha,
-jfloatArray a, jint lda, jfloatArray x, jint incx,
-jfloat beta, jfloatArray y, jint incy) {
-    cl_int err;
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemv(
+    JNIEnv *env, jobject,
+    jboolean trans,
+    jint m, jint n,
+    jfloat alpha, jlong a_ptr, jint lda, jlong x_ptr, jint incx,
+    jfloat beta, jlong y_ptr, jint incy
+) {
+    cl_mem a_buffer = (cl_mem)a_ptr;
+    cl_mem x_buffer = (cl_mem)x_ptr;
+    cl_mem y_buffer = (cl_mem)y_ptr;
 
-    // Get array elements from Java
-    jfloat *a_ptr = env->GetFloatArrayElements(a, nullptr);
-    jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
-    jfloat *y_ptr = env->GetFloatArrayElements(y, nullptr);
+    auto trans_cl = trans ? clblast::Transpose::kYes : clblast::Transpose::kNo;
 
-    // Convert transpose flag
-    clblast::Transpose trans_cl = trans ? clblast::Transpose::kYes : clblast::Transpose::kNo;
-
-    // 配列サイズを計算
-    size_t a_size = m * lda * sizeof(cl_float);
-    size_t x_len = trans ? m : n;
-    size_t y_len = trans ? n : m;
-    size_t x_size = (1 + (x_len - 1) * abs(incx)) * sizeof(cl_float);
-    size_t y_size = (1 + (y_len - 1) * abs(incy)) * sizeof(cl_float);
-
-    // OpenCLバッファを作成
-    cl_mem a_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                                     a_size, a_ptr, &err);
-    cl_mem x_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                                     x_size, x_ptr, &err);
-    cl_mem y_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
-                                     y_size, y_ptr, &err);
-
-    // CLBlast sgemvを呼び出し（Row-major order）
     clblast::StatusCode status = clblast::Gemv<float>(
         clblast::Layout::kRowMajor,
         trans_cl,
@@ -284,19 +244,7 @@ jfloat beta, jfloatArray y, jint incy) {
         &queue
     );
 
-    if (status == clblast::StatusCode::kSuccess) {
-        clEnqueueReadBuffer(queue, y_buffer, CL_TRUE, 0, y_size, y_ptr, 0, nullptr, nullptr);
-    } else {
+    if (status != clblast::StatusCode::kSuccess) {
         fprintf(stderr, "CLBlast sgemv failed: %d\n", static_cast<int>(status));
     }
-
-    // リソースを解放
-    clReleaseMemObject(a_buffer);
-    clReleaseMemObject(x_buffer);
-    clReleaseMemObject(y_buffer);
-
-    // Release arrays back to Java
-    env->ReleaseFloatArrayElements(a, a_ptr, JNI_ABORT);
-    env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
-    env->ReleaseFloatArrayElements(y, y_ptr, 0);
 }

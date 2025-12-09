@@ -3,27 +3,33 @@ package com.wsr.cl;
 public class JCLBlast {
     public native void init();
 
+    public native long transfer(float[] data, int size);
+
+    public native void read(long address, float[] destination);
+
+    public native void release(long address);
+
     public native float sdot(
             int n,
-            float[] x,
+            long x,
             int incX,
-            float[] y,
+            long y,
             int incY
     );
 
     public native void sscal(
             int n,
             float alpha,
-            float[] x,
+            long x,
             int incX
     );
 
     public native void saxpy(
             int n,
             float alpha,
-            float[] x,
+            long x,
             int incX,
-            float[] y,
+            long y,
             int incY
     );
 
@@ -34,12 +40,12 @@ public class JCLBlast {
             int n,
             int k,
             float alpha,
-            float[] a,
+            long a,
             int lda,
-            float[] b,
+            long b,
             int ldb,
             float beta,
-            float[] c,
+            long c,
             int ldc
     );
 
@@ -48,12 +54,12 @@ public class JCLBlast {
             int m,
             int n,
             float alpha,
-            float[] a,
+            long a,
             int lda,
-            float[] x,
+            long x,
             int incX,
             float beta,
-            float[] y,
+            long y,
             int incY
     );
 }

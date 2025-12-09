@@ -32,15 +32,29 @@ class CLBlast internal constructor() : IBLAS {
         instance.init()
     }
 
-    override fun sdot(n: Int, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int): Float =
-        instance.sdot(n, x.toFloatArray(), incX, y.toFloatArray(), incY)
+    override fun sdot(n: Int, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int): Float {
+        val xAddress = instance.transfer(x.toFloatArray(), x.size)
+        val yAddress = instance.transfer(y.toFloatArray(), y.size)
+        val result = instance.sdot(n, xAddress, incX, yAddress, incY)
+        instance.release(xAddress)
+        instance.release(yAddress)
+        return result
+    }
 
     override fun sscal(n: Int, alpha: Float, x: DataBuffer, incX: Int) {
-        instance.sscal(n, alpha, x.toFloatArray(), incX)
+        val xAddress = instance.transfer(x.toFloatArray(), x.size)
+        instance.sscal(n, alpha, xAddress, incX)
+        instance.read(xAddress, x.toFloatArray())
+        instance.release(xAddress)
     }
 
     override fun saxpy(n: Int, alpha: Float, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int) {
-        instance.saxpy(n, alpha, x.toFloatArray(), incX, y.toFloatArray(), incY)
+        val xAddress = instance.transfer(x.toFloatArray(), x.size)
+        val yAddress = instance.transfer(y.toFloatArray(), y.size)
+        instance.saxpy(n, alpha, xAddress, incX, yAddress, incY)
+        instance.read(yAddress, y.toFloatArray())
+        instance.release(xAddress)
+        instance.release(yAddress)
     }
 
     override fun sgemv(
@@ -56,19 +70,26 @@ class CLBlast internal constructor() : IBLAS {
         y: DataBuffer,
         incY: Int,
     ) {
+        val aAddress = instance.transfer(a.toFloatArray(), a.size)
+        val xAddress = instance.transfer(x.toFloatArray(), x.size)
+        val yAddress = instance.transfer(y.toFloatArray(), y.size)
         instance.sgemv(
             trans,
             m,
             n,
             alpha,
-            a.toFloatArray(),
+            aAddress,
             lda,
-            x.toFloatArray(),
+            xAddress,
             incX,
             beta,
-            y.toFloatArray(),
+            yAddress,
             incY,
         )
+        instance.read(yAddress, y.toFloatArray())
+        instance.release(aAddress)
+        instance.release(xAddress)
+        instance.release(yAddress)
     }
 
     override fun sgemm(
@@ -86,6 +107,9 @@ class CLBlast internal constructor() : IBLAS {
         c: DataBuffer,
         ldc: Int,
     ) {
+        val aAddress = instance.transfer(a.toFloatArray(), a.size)
+        val bAddress = instance.transfer(b.toFloatArray(), b.size)
+        val cAddress = instance.transfer(c.toFloatArray(), c.size)
         instance.sgemm(
             transA,
             transB,
@@ -93,13 +117,17 @@ class CLBlast internal constructor() : IBLAS {
             n,
             k,
             alpha,
-            a.toFloatArray(),
+            aAddress,
             lda,
-            b.toFloatArray(),
+            bAddress,
             ldb,
             beta,
-            c.toFloatArray(),
+            cAddress,
             ldc,
         )
+        instance.read(cAddress, c.toFloatArray())
+        instance.release(aAddress)
+        instance.release(bAddress)
+        instance.release(cAddress)
     }
 }
