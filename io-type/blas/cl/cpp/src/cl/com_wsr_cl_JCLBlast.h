@@ -17,6 +17,30 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_init
 
 /*
  * Class:     com_wsr_cl_JCLBlast
+ * Method:    transfer
+ * Signature: ([FI)J
+ */
+JNIEXPORT jlong JNICALL Java_com_wsr_cl_JCLBlast_transfer
+  (JNIEnv *, jobject, jfloatArray, jint);
+
+/*
+ * Class:     com_wsr_cl_JCLBlast
+ * Method:    read
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_read
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_wsr_cl_JCLBlast
+ * Method:    release
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_release
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_wsr_cl_JCLBlast
  * Method:    sdot
  * Signature: (I[FI[FI)F
  */

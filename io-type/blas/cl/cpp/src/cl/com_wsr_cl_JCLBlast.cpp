@@ -57,6 +57,60 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_init
     }
 }
 
+JNIEXPORT jlong JNICALL Java_com_wsr_cl_JCLBlast_transfer
+        (JNIEnv *env, jobject, jfloatArray data, jint size) {
+    cl_int err;
+    cl_mem buffer = nullptr;
+
+    // 渡された配列のポインタを取得
+    jfloat *ptr = env->GetFloatArrayElements(data, nullptr);
+    size_t byte_size = size * sizeof(cl_float);
+
+    // GPUに転送
+    buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, byte_size, ptr, &err);
+
+    if (err != CL_SUCCESS) {
+        fprintf(stderr, "Failed to create buffer: %d\n", err);
+    }
+
+    // 配列の解放
+    env->ReleaseFloatArrayElements(data, ptr, JNI_ABORT);
+
+    return (jlong)buffer;
+}
+
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_read
+        (JNIEnv *env, jobject, jlong address, jfloatArray destination) {
+    cl_int err;
+    cl_mem buffer = (cl_mem)address;
+
+    // 渡された配列のポインタを取得
+    jfloat *ptr = env->GetFloatArrayElements(destination, nullptr);
+
+    // 配列の長さを取得
+    jsize length = env->GetArrayLength(destination);
+    size_t byte_size = length * sizeof(cl_float);
+
+    // GPU -> CPU データ転送
+    err = clEnqueueReadBuffer(queue, buffer, CL_TRUE, 0, byte_size, ptr, 0, nullptr, nullptr);
+
+    if (err != CL_SUCCESS) {
+        fprintf(stderr, "Error reading buffer: %d\n", err);
+    }
+
+    // データをJava配列に反映して解放
+    env->ReleaseFloatArrayElements(destination, ptr, 0);
+}
+
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_release
+        (JNIEnv *env, jobject, jlong address) {
+    cl_mem buffer = (cl_mem)address;
+    cl_int err = clReleaseMemObject(buffer);
+    if (err != CL_SUCCESS) {
+        fprintf(stderr, "Failed to release memory: %d\n", err);
+    }
+}
+
 JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBlast_sdot
         (JNIEnv *env, jobject, jint n, jfloatArray x, jint incx, jfloatArray y, jint incy) {
     cl_int err;
