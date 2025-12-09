@@ -33,14 +33,14 @@ class CLBlast internal constructor() : IBLAS {
     }
 
     override fun sdot(n: Int, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int): Float =
-        instance.sdot(n, x.toFloatArray(), incX, y.toFloatArray(), incY)
+        instance.sdot(n, x.toCLBuffer().address, incX, y.toCLBuffer().address, incY)
 
     override fun sscal(n: Int, alpha: Float, x: DataBuffer, incX: Int) {
-        instance.sscal(n, alpha, x.toFloatArray(), incX)
+        instance.sscal(n, alpha, x.toCLBuffer().address, incX)
     }
 
     override fun saxpy(n: Int, alpha: Float, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int) {
-        instance.saxpy(n, alpha, x.toFloatArray(), incX, y.toFloatArray(), incY)
+        instance.saxpy(n, alpha, x.toCLBuffer().address, incX, y.toCLBuffer().address, incY)
     }
 
     override fun sgemv(
@@ -61,12 +61,12 @@ class CLBlast internal constructor() : IBLAS {
             m,
             n,
             alpha,
-            a.toFloatArray(),
+            a.toCLBuffer().address,
             lda,
-            x.toFloatArray(),
+            x.toCLBuffer().address,
             incX,
             beta,
-            y.toFloatArray(),
+            y.toCLBuffer().address,
             incY,
         )
     }
@@ -93,13 +93,49 @@ class CLBlast internal constructor() : IBLAS {
             n,
             k,
             alpha,
-            a.toFloatArray(),
+            a.toCLBuffer().address,
             lda,
-            b.toFloatArray(),
+            b.toCLBuffer().address,
             ldb,
             beta,
-            c.toFloatArray(),
+            c.toCLBuffer().address,
             ldc,
         )
+    }
+
+    inner class CLBuffer(
+        override val size: Int,
+        internal val address: Long,
+    ): DataBuffer {
+        constructor(value: FloatArray) : this(
+            size = value.size,
+            address = instance.transfer(value, value.size),
+        )
+
+        override val indices: IntRange = 0 until size
+        private val array by lazy {
+            FloatArray(size).also { instance.read(address, it) }
+        }
+
+        override fun toFloatArray(): FloatArray = array
+
+        override fun get(i: Int): Float = array[i]
+
+        override fun set(i: Int, value: Float) {
+            TODO("Not yet implemented")
+        }
+
+        override fun slice(indices: IntRange): DataBuffer {
+            TODO("Not yet implemented")
+        }
+
+        override fun copyInto(destination: DataBuffer, destinationOffset: Int) {
+            TODO("Not yet implemented")
+        }
+    }
+
+    private fun DataBuffer.toCLBuffer() = when (this) {
+        is CLBuffer -> this
+        else -> CLBuffer(this.toFloatArray())
     }
 }

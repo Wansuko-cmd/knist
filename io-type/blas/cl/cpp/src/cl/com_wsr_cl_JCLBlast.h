@@ -41,83 +41,43 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_release
 
 /*
  * Class:     com_wsr_cl_JCLBlast
- * Method:    sdot2
+ * Method:    sdot
  * Signature: (IJIJI)F
  */
-JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBlast_sdot2
+JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBlast_sdot
   (JNIEnv *, jobject, jint, jlong, jint, jlong, jint);
 
 /*
  * Class:     com_wsr_cl_JCLBlast
- * Method:    sscal2
+ * Method:    sscal
  * Signature: (IFJI)V
  */
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sscal2
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sscal
   (JNIEnv *, jobject, jint, jfloat, jlong, jint);
 
 /*
  * Class:     com_wsr_cl_JCLBlast
- * Method:    saxpy2
+ * Method:    saxpy
  * Signature: (IFJIJI)V
  */
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_saxpy2
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_saxpy
   (JNIEnv *, jobject, jint, jfloat, jlong, jint, jlong, jint);
 
 /*
  * Class:     com_wsr_cl_JCLBlast
- * Method:    sgemm2
+ * Method:    sgemm
  * Signature: (ZZIIIFJIJIFJI)V
  */
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemm2
+JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemm
   (JNIEnv *, jobject, jboolean, jboolean, jint, jint, jint, jfloat, jlong, jint, jlong, jint, jfloat, jlong, jint);
 
 /*
  * Class:     com_wsr_cl_JCLBlast
- * Method:    sgemv2
+ * Method:    sgemv
  * Signature: (ZIIFJIJIFJI)V
  */
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemv2
-  (JNIEnv *, jobject, jboolean, jint, jint, jfloat, jlong, jint, jlong, jint, jfloat, jlong, jint);
-
-/*
- * Class:     com_wsr_cl_JCLBlast
- * Method:    sdot
- * Signature: (I[FI[FI)F
- */
-JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBlast_sdot
-  (JNIEnv *, jobject, jint, jfloatArray, jint, jfloatArray, jint);
-
-/*
- * Class:     com_wsr_cl_JCLBlast
- * Method:    sscal
- * Signature: (IF[FI)V
- */
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sscal
-  (JNIEnv *, jobject, jint, jfloat, jfloatArray, jint);
-
-/*
- * Class:     com_wsr_cl_JCLBlast
- * Method:    saxpy
- * Signature: (IF[FI[FI)V
- */
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_saxpy
-  (JNIEnv *, jobject, jint, jfloat, jfloatArray, jint, jfloatArray, jint);
-
-/*
- * Class:     com_wsr_cl_JCLBlast
- * Method:    sgemm
- * Signature: (ZZIIIF[FI[FIF[FI)V
- */
-JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemm
-  (JNIEnv *, jobject, jboolean, jboolean, jint, jint, jint, jfloat, jfloatArray, jint, jfloatArray, jint, jfloat, jfloatArray, jint);
-
-/*
- * Class:     com_wsr_cl_JCLBlast
- * Method:    sgemv
- * Signature: (ZIIF[FI[FIF[FI)V
- */
 JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemv
-  (JNIEnv *, jobject, jboolean, jint, jint, jfloat, jfloatArray, jint, jfloatArray, jint, jfloat, jfloatArray, jint);
+  (JNIEnv *, jobject, jboolean, jint, jint, jfloat, jlong, jint, jlong, jint, jfloat, jlong, jint);
 
 #ifdef __cplusplus
 }
