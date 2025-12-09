@@ -1,6 +1,7 @@
 package com.wsr.cl
 
 import com.wsr.blas.base.DataBuffer
+import com.wsr.blas.base.Default
 import com.wsr.blas.base.IBLAS
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -113,29 +114,32 @@ class CLBlast internal constructor() : IBLAS {
         )
 
         override val indices: IntRange = 0 until size
-        private val array by lazy {
-            FloatArray(size).also { instance.read(address, it) }
+
+        private val cpu = lazy {
+            val value = FloatArray(size)
+            instance.read(address, value)
+            instance.release(address)
+            DataBuffer.create(value)
         }
+        val onGpu: Boolean = !cpu.isInitialized()
 
-        override fun toFloatArray(): FloatArray = array
+        override fun toFloatArray(): FloatArray = cpu.value.toFloatArray()
 
-        override fun get(i: Int): Float = array[i]
+        override fun get(i: Int): Float = cpu.value[i]
 
         override fun set(i: Int, value: Float) {
-            TODO("Not yet implemented")
+            cpu.value[i] = value
         }
 
-        override fun slice(indices: IntRange): DataBuffer {
-            TODO("Not yet implemented")
-        }
+        override fun slice(indices: IntRange): DataBuffer = cpu.value.slice(indices)
 
         override fun copyInto(destination: DataBuffer, destinationOffset: Int) {
-            TODO("Not yet implemented")
+            cpu.value.copyInto(destination, destinationOffset)
         }
     }
 
     private fun DataBuffer.toCLBuffer() = when (this) {
-        is CLBuffer -> this
+        is CLBuffer if onGpu -> this
         else -> CLBuffer(this.toFloatArray())
     }
 }
