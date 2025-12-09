@@ -1,7 +1,6 @@
 package com.wsr.cl
 
 import com.wsr.blas.base.DataBuffer
-import com.wsr.blas.base.Default
 import com.wsr.blas.base.IBLAS
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -33,15 +32,29 @@ class CLBlast internal constructor() : IBLAS {
         instance.init()
     }
 
-    override fun sdot(n: Int, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int): Float =
-        instance.sdot(n, x.toCLBuffer().address, incX, y.toCLBuffer().address, incY)
+    override fun sdot(n: Int, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int): Float {
+        val xAddress = instance.transfer(x.toFloatArray(), x.size)
+        val yAddress = instance.transfer(y.toFloatArray(), y.size)
+        val result = instance.sdot(n, xAddress, incX, yAddress, incY)
+        instance.release(xAddress)
+        instance.release(yAddress)
+        return result
+    }
 
     override fun sscal(n: Int, alpha: Float, x: DataBuffer, incX: Int) {
-        instance.sscal(n, alpha, x.toCLBuffer().address, incX)
+        val xAddress = instance.transfer(x.toFloatArray(), x.size)
+        instance.sscal(n, alpha, xAddress, incX)
+        instance.read(xAddress, x.toFloatArray())
+        instance.release(xAddress)
     }
 
     override fun saxpy(n: Int, alpha: Float, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int) {
-        instance.saxpy(n, alpha, x.toCLBuffer().address, incX, y.toCLBuffer().address, incY)
+        val xAddress = instance.transfer(x.toFloatArray(), x.size)
+        val yAddress = instance.transfer(y.toFloatArray(), y.size)
+        instance.saxpy(n, alpha, xAddress, incX, yAddress, incY)
+        instance.read(yAddress, y.toFloatArray())
+        instance.release(xAddress)
+        instance.release(yAddress)
     }
 
     override fun sgemv(
@@ -57,19 +70,26 @@ class CLBlast internal constructor() : IBLAS {
         y: DataBuffer,
         incY: Int,
     ) {
+        val aAddress = instance.transfer(a.toFloatArray(), a.size)
+        val xAddress = instance.transfer(x.toFloatArray(), x.size)
+        val yAddress = instance.transfer(y.toFloatArray(), y.size)
         instance.sgemv(
             trans,
             m,
             n,
             alpha,
-            a.toCLBuffer().address,
+            aAddress,
             lda,
-            x.toCLBuffer().address,
+            xAddress,
             incX,
             beta,
-            y.toCLBuffer().address,
+            yAddress,
             incY,
         )
+        instance.read(yAddress, y.toFloatArray())
+        instance.release(aAddress)
+        instance.release(xAddress)
+        instance.release(yAddress)
     }
 
     override fun sgemm(
@@ -87,6 +107,9 @@ class CLBlast internal constructor() : IBLAS {
         c: DataBuffer,
         ldc: Int,
     ) {
+        val aAddress = instance.transfer(a.toFloatArray(), a.size)
+        val bAddress = instance.transfer(b.toFloatArray(), b.size)
+        val cAddress = instance.transfer(c.toFloatArray(), c.size)
         instance.sgemm(
             transA,
             transB,
@@ -94,52 +117,17 @@ class CLBlast internal constructor() : IBLAS {
             n,
             k,
             alpha,
-            a.toCLBuffer().address,
+            aAddress,
             lda,
-            b.toCLBuffer().address,
+            bAddress,
             ldb,
             beta,
-            c.toCLBuffer().address,
+            cAddress,
             ldc,
         )
-    }
-
-    inner class CLBuffer(
-        override val size: Int,
-        internal val address: Long,
-    ): DataBuffer {
-        constructor(value: FloatArray) : this(
-            size = value.size,
-            address = instance.transfer(value, value.size),
-        )
-
-        override val indices: IntRange = 0 until size
-
-        private val cpu = lazy {
-            val value = FloatArray(size)
-            instance.read(address, value)
-            instance.release(address)
-            DataBuffer.create(value)
-        }
-        val onGpu: Boolean = !cpu.isInitialized()
-
-        override fun toFloatArray(): FloatArray = cpu.value.toFloatArray()
-
-        override fun get(i: Int): Float = cpu.value[i]
-
-        override fun set(i: Int, value: Float) {
-            cpu.value[i] = value
-        }
-
-        override fun slice(indices: IntRange): DataBuffer = cpu.value.slice(indices)
-
-        override fun copyInto(destination: DataBuffer, destinationOffset: Int) {
-            cpu.value.copyInto(destination, destinationOffset)
-        }
-    }
-
-    private fun DataBuffer.toCLBuffer() = when (this) {
-        is CLBuffer if onGpu -> this
-        else -> CLBuffer(this.toFloatArray())
+        instance.read(cAddress, c.toFloatArray())
+        instance.release(aAddress)
+        instance.release(bAddress)
+        instance.release(cAddress)
     }
 }
