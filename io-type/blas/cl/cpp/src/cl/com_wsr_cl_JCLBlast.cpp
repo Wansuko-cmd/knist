@@ -112,7 +112,7 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_release
 }
 
 JNIEXPORT jfloat JNICALL Java_com_wsr_cl_JCLBlast_sdot
-        (JNIEnv *, jobject, jint, jlong, jint, jlong, jint) {
+         (JNIEnv *env, jobject, jint n, jlong x_ptr, jint incx, jlong y_ptr, jint incy) {
     cl_int err;
     cl_mem x_buffer = (cl_mem)x_ptr;
     cl_mem y_buffer = (cl_mem)y_ptr;
