@@ -3,6 +3,12 @@ package com.wsr.cl;
 public class JCLBlast {
     public native void init();
 
+    public native long transfer(float[] data, int size);
+
+    public native void read(long address, float[] destination);
+
+    public native void release(long address);
+
     public native float sdot(
             int n,
             float[] x,
