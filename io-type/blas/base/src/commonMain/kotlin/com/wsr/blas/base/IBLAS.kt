@@ -76,16 +76,17 @@ interface IBLAS {
 
     /**
      * Level 3 BLAS: 行列と行列の積 (転置なし固定)
-     * C = alpha * a * b + beta * c
+     * result[b] = alpha * a[b] * b[b] + beta * c[b]
      *
      * @param m 行列Aの行数、行列Cの行数
      * @param n 行列Bの列数、行列Cの列数
      * @param k 行列Aの列数、行列Bの行数
      * @param alpha スカラー係数
-     * @param a 行列A (row-major, サイズ m * k)
-     * @param b 行列B (row-major, サイズ k * n)
-     * @param beta Cに対する係数 (0fならCの初期値は無視)
-     * @param c 加算対象の行列 (nullなら新規作成)
+     * @param a 行列A群 (row-major, batchSize * m * k)
+     * @param b 行列B群 (row-major, batchSize * k * n)
+     * @param beta Cに対する係数
+     * @param c 加算対象の行列C群 (row-major, batchSize * m * n)
+     * @param batchSize バッチサイズ
      */
     fun sgemm(
         m: Int,
@@ -96,17 +97,26 @@ interface IBLAS {
         b: DataBuffer,
         beta: Float,
         c: DataBuffer,
+        batchSize: Int,
     ): DataBuffer {
-        val result = DataBuffer.create(m * n)
-        for (i in 0 until m) {
-            for (j in 0 until n) {
-                var sum = 0f
-                for (p in 0 until k) {
-                    sum += a[i * k + p] * b[p * n + j]
-                }
+        val result = DataBuffer.create(batchSize * m * n)
+        val strideA = m * k
+        val strideB = k * n
+        val strideC = m * n
+        for (batchIndex in 0 until batchSize) {
+            val offsetA = batchIndex * strideA
+            val offsetB = batchIndex * strideB
+            val offsetC = batchIndex * strideC
 
-                val index = i * n + j
-                result[index] = alpha * sum + beta * c[index]
+            for (i in 0 until m) {
+                for (j in 0 until n) {
+                    var sum = 0f
+                    for (p in 0 until k) {
+                        sum += a[offsetA + i * k + p] * b[offsetB + p * n + j]
+                    }
+                    val index = offsetC + i * n + j
+                    result[index] = alpha * sum + beta * c[index]
+                }
             }
         }
         return result
