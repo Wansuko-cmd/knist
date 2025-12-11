@@ -38,5 +38,6 @@ object BLAS : IBLAS {
         b: DataBuffer,
         beta: Float,
         c: DataBuffer,
-    ): DataBuffer = instance.sgemm(m, n, k, alpha, a, b, beta, c)
+        batchSize: Int,
+    ): DataBuffer = instance.sgemm(m, n, k, alpha, a, b, beta, c, batchSize)
 }

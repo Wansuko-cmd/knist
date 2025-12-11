@@ -27,6 +27,7 @@ infix fun IOType.D2.matMul(other: IOType.D2): IOType.D2 {
         b = other.value,
         beta = 0f,
         c = DataBuffer.create(shape[0] * other.shape[1]),
+        batchSize = 1,
     )
     return IOType.D2(result, listOf(shape[0], other.shape[1]))
 }
