@@ -48,7 +48,7 @@ else()
     set(OPENBLAS_LIB ${OPENBLAS_INSTALL_DIR}/lib/libopenblas.a)
 endif()
 
-add_library(JOpenBLAS SHARED ${SRC_DIR}/com_wsr_JOpenBLAS.cpp)
+add_library(JOpenBLAS SHARED ${SRC_DIR}/com_wsr_open_JOpenBLAS.cpp)
 add_dependencies(JOpenBLAS OpenBLAS)
 
 target_include_directories(JOpenBLAS PRIVATE

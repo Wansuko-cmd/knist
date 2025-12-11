@@ -205,20 +205,9 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemm(
     auto transA_cl = transA ? clblast::Transpose::kYes : clblast::Transpose::kNo;
     auto transB_cl = transB ? clblast::Transpose::kYes : clblast::Transpose::kNo;
 
-    clblast::StatusCode status = clblast::Gemm<float>(
-        clblast::Layout::kRowMajor,
-        transA_cl, transB_cl,
-        m, n, k,
-        alpha,
-        a_buffer, 0, lda,
-        b_buffer, 0, ldb,
-        beta,
-        c_buffer, 0, ldc,
-        &queue
-    );
     clblast::StatusCode status = clblast::GemmStridedBatched<float>(
         clblast::Layout::kRowMajor,
-        trans, trans,
+        transA_cl, transB_cl,
         m, n, k,
         alpha,
         a_buffer, 0, lda, a_stride,
