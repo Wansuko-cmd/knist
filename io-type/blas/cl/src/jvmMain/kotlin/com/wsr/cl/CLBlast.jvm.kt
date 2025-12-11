@@ -32,102 +32,120 @@ class CLBlast internal constructor() : IBLAS {
         instance.init()
     }
 
-    override fun sdot(n: Int, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int): Float {
+    override fun sdot2(x: DataBuffer, y: DataBuffer): Float {
         val xAddress = instance.transfer(x.toFloatArray(), x.size)
         val yAddress = instance.transfer(y.toFloatArray(), y.size)
-        val result = instance.sdot(n, xAddress, incX, yAddress, incY)
+        val result = instance.sdot(
+            /* n = */ x.size,
+            /* x = */ xAddress,
+            /* incX = */ 1,
+            /* y = */ yAddress,
+            /* incY = */ 1,
+        )
         instance.release(xAddress)
         instance.release(yAddress)
         return result
     }
 
-    override fun sscal(n: Int, alpha: Float, x: DataBuffer, incX: Int) {
-        val xAddress = instance.transfer(x.toFloatArray(), x.size)
-        instance.sscal(n, alpha, xAddress, incX)
-        instance.read(xAddress, x.toFloatArray())
+    override fun sscal2(alpha: Float, x: DataBuffer): DataBuffer {
+        val result = x.toFloatArray()
+        val xAddress = instance.transfer(result, x.size)
+        instance.sscal(
+            /* n = */ x.size,
+            /* alpha = */ alpha,
+            /* x = */ xAddress,
+            /* incX = */ 1,
+        )
+        instance.read(xAddress, result)
         instance.release(xAddress)
+        return DataBuffer.create(result)
     }
 
-    override fun saxpy(n: Int, alpha: Float, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int) {
+    override fun saxpy2(alpha: Float, x: DataBuffer, y: DataBuffer,): DataBuffer {
+        val result = y.toFloatArray()
         val xAddress = instance.transfer(x.toFloatArray(), x.size)
-        val yAddress = instance.transfer(y.toFloatArray(), y.size)
-        instance.saxpy(n, alpha, xAddress, incX, yAddress, incY)
-        instance.read(yAddress, y.toFloatArray())
+        val yAddress = instance.transfer(result, y.size)
+        instance.saxpy(
+            /* n = */ x.size,
+            /* alpha = */ alpha,
+            /* x = */ xAddress,
+            /* incX = */ 1,
+            /* y = */ yAddress,
+            /* incY = */ 1,
+        )
+        instance.read(yAddress, result)
         instance.release(xAddress)
         instance.release(yAddress)
+        return DataBuffer.create(result)
+
     }
 
-    override fun sgemv(
-        trans: Boolean,
-        m: Int,
-        n: Int,
+    override fun sgemv2(
+        row: Int,
+        col: Int,
         alpha: Float,
         a: DataBuffer,
-        lda: Int,
         x: DataBuffer,
-        incX: Int,
         beta: Float,
         y: DataBuffer,
-        incY: Int,
-    ) {
+    ): DataBuffer {
+        val result = y.toFloatArray()
         val aAddress = instance.transfer(a.toFloatArray(), a.size)
         val xAddress = instance.transfer(x.toFloatArray(), x.size)
-        val yAddress = instance.transfer(y.toFloatArray(), y.size)
+        val yAddress = instance.transfer(result, y.size)
         instance.sgemv(
-            trans,
-            m,
-            n,
-            alpha,
-            aAddress,
-            lda,
-            xAddress,
-            incX,
-            beta,
-            yAddress,
-            incY,
+            /* trans = */ false,
+            /* m = */ row,
+            /* n = */ col,
+            /* alpha = */ alpha,
+            /* a = */ aAddress,
+            /* lda = */ col,
+            /* x = */ xAddress,
+            /* incX = */ 1,
+            /* beta = */ beta,
+            /* y = */ yAddress,
+            /* incY  = */ 1,
         )
-        instance.read(yAddress, y.toFloatArray())
+        instance.read(yAddress, result)
         instance.release(aAddress)
         instance.release(xAddress)
         instance.release(yAddress)
+        return DataBuffer.create(result)
     }
 
-    override fun sgemm(
-        transA: Boolean,
-        transB: Boolean,
+    override fun sgemm2(
         m: Int,
         n: Int,
         k: Int,
         alpha: Float,
         a: DataBuffer,
-        lda: Int,
         b: DataBuffer,
-        ldb: Int,
         beta: Float,
         c: DataBuffer,
-        ldc: Int,
-    ) {
+    ): DataBuffer {
+        val result = c.toFloatArray()
         val aAddress = instance.transfer(a.toFloatArray(), a.size)
         val bAddress = instance.transfer(b.toFloatArray(), b.size)
-        val cAddress = instance.transfer(c.toFloatArray(), c.size)
+        val cAddress = instance.transfer(result, c.size)
         instance.sgemm(
-            transA,
-            transB,
-            m,
-            n,
-            k,
-            alpha,
-            aAddress,
-            lda,
-            bAddress,
-            ldb,
-            beta,
-            cAddress,
-            ldc,
+            /* transA = */ false,
+            /* transB = */ false,
+            /* m = */ m,
+            /* n = */ n,
+            /* k = */ k,
+            /* alpha = */ alpha,
+            /* a = */ aAddress,
+            /* lda = */ k,
+            /* b = */ bAddress,
+            /* ldb = */ n,
+            /* beta = */ beta,
+            /* c = */ cAddress,
+            /* ldc = */ n,
         )
-        instance.read(cAddress, c.toFloatArray())
+        instance.read(cAddress, result)
         instance.release(aAddress)
         instance.release(bAddress)
         instance.release(cAddress)
+        return DataBuffer.create(result)
     }
 }
