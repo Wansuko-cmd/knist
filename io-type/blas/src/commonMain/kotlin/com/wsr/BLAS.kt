@@ -13,17 +13,11 @@ object BLAS : IBLAS {
 
     override val isNative: Boolean = instance.isNative
 
-    override fun sdot(x: DataBuffer, y: DataBuffer): Float {
-        return instance.sdot(x, y)
-    }
+    override fun sdot(x: DataBuffer, y: DataBuffer): Float = instance.sdot(x, y)
 
-    override fun sscal(alpha: Float, x: DataBuffer): DataBuffer {
-        return instance.sscal(alpha, x)
-    }
+    override fun sscal(alpha: Float, x: DataBuffer): DataBuffer = instance.sscal(alpha, x)
 
-    override fun saxpy(alpha: Float, x: DataBuffer, y: DataBuffer): DataBuffer {
-        return instance.saxpy(alpha, x, y)
-    }
+    override fun saxpy(alpha: Float, x: DataBuffer, y: DataBuffer): DataBuffer = instance.saxpy(alpha, x, y)
 
     override fun sgemv(
         row: Int,
@@ -32,10 +26,8 @@ object BLAS : IBLAS {
         a: DataBuffer,
         x: DataBuffer,
         beta: Float,
-        y: DataBuffer
-    ): DataBuffer {
-        return instance.sgemv(row, col, alpha, a, x, beta, y)
-    }
+        y: DataBuffer,
+    ): DataBuffer = instance.sgemv(row, col, alpha, a, x, beta, y)
 
     override fun sgemm(
         m: Int,
@@ -45,8 +37,6 @@ object BLAS : IBLAS {
         a: DataBuffer,
         b: DataBuffer,
         beta: Float,
-        c: DataBuffer
-    ): DataBuffer {
-        return instance.sgemm(m, n, k, alpha, a, b, beta, c)
-    }
+        c: DataBuffer,
+    ): DataBuffer = instance.sgemm(m, n, k, alpha, a, b, beta, c)
 }

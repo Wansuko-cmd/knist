@@ -29,36 +29,34 @@ class OpenBLAS internal constructor() : IBLAS {
 
     override val isNative: Boolean = true
 
-    override fun sdot(x: DataBuffer, y: DataBuffer): Float {
-        return instance.sdot(
-            /* n = */ x.size,
-            /* x = */ x.toFloatArray(),
-            /* incX = */ 1,
-            /* y = */ y.toFloatArray(),
-            /* incY = */ 1,
-        )
-    }
+    override fun sdot(x: DataBuffer, y: DataBuffer): Float = instance.sdot(
+        x.size,
+        x.toFloatArray(),
+        1,
+        y.toFloatArray(),
+        1,
+    )
 
     override fun sscal(alpha: Float, x: DataBuffer): DataBuffer {
         val result = x.toFloatArray()
         instance.sscal(
-            /* n = */ x.size,
-            /* alpha = */ alpha,
-            /* x = */ result,
-            /* incX = */ 1,
+            x.size,
+            alpha,
+            result,
+            1,
         )
         return DataBuffer.create(result)
     }
 
-    override fun saxpy(alpha: Float, x: DataBuffer, y: DataBuffer,): DataBuffer {
+    override fun saxpy(alpha: Float, x: DataBuffer, y: DataBuffer): DataBuffer {
         val result = y.toFloatArray()
         instance.saxpy(
-            /* n = */ x.size,
-            /* alpha = */ alpha,
-            /* x = */ x.toFloatArray(),
-            /* incX = */ 1,
-            /* y = */ result,
-            /* incY = */ 1,
+            x.size,
+            alpha,
+            x.toFloatArray(),
+            1,
+            result,
+            1,
         )
         return DataBuffer.create(result)
     }
@@ -74,17 +72,17 @@ class OpenBLAS internal constructor() : IBLAS {
     ): DataBuffer {
         val result = y.toFloatArray()
         instance.sgemv(
-            /* trans = */ false,
-            /* m = */ row,
-            /* n = */ col,
-            /* alpha = */ alpha,
-            /* a = */ a.toFloatArray(),
-            /* lda = */ col,
-            /* x = */ x.toFloatArray(),
-            /* incX = */ 1,
-            /* beta = */ beta,
-            /* y = */ result,
-            /* incY  = */ 1,
+            false,
+            row,
+            col,
+            alpha,
+            a.toFloatArray(),
+            col,
+            x.toFloatArray(),
+            1,
+            beta,
+            result,
+            1,
         )
         return DataBuffer.create(result)
     }
@@ -101,19 +99,19 @@ class OpenBLAS internal constructor() : IBLAS {
     ): DataBuffer {
         val result = c.toFloatArray()
         instance.sgemm(
-            /* transA = */ false,
-            /* transB = */ false,
-            /* m = */ m,
-            /* n = */ n,
-            /* k = */ k,
-            /* alpha = */ alpha,
-            /* a = */ a.toFloatArray(),
-            /* lda = */ k,
-            /* b = */ b.toFloatArray(),
-            /* ldb = */ n,
-            /* beta = */ beta,
-            /* c = */ result,
-            /* ldc = */ n,
+            false,
+            false,
+            m,
+            n,
+            k,
+            alpha,
+            a.toFloatArray(),
+            k,
+            b.toFloatArray(),
+            n,
+            beta,
+            result,
+            n,
         )
         return DataBuffer.create(result)
     }

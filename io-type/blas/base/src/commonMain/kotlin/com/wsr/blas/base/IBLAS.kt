@@ -62,15 +62,7 @@ interface IBLAS {
      * @param beta スカラー係数
      * @param y ベクトルy
      */
-    fun sgemv(
-        row: Int,
-        col: Int,
-        alpha: Float,
-        a: DataBuffer,
-        x: DataBuffer,
-        beta: Float,
-        y: DataBuffer,
-    ): DataBuffer {
+    fun sgemv(row: Int, col: Int, alpha: Float, a: DataBuffer, x: DataBuffer, beta: Float, y: DataBuffer): DataBuffer {
         val result = DataBuffer.create(row)
         for (i in 0 until row) {
             var sum = 0f
