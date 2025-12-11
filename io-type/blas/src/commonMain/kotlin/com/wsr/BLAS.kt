@@ -57,4 +57,41 @@ object BLAS : IBLAS {
     ) {
         instance.sgemm(transA, transB, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc)
     }
+
+    override fun sdot2(x: DataBuffer, y: DataBuffer): Float {
+        return instance.sdot2(x, y)
+    }
+
+    override fun sscal2(alpha: Float, x: DataBuffer): DataBuffer {
+        return instance.sscal2(alpha, x)
+    }
+
+    override fun saxpy2(alpha: Float, x: DataBuffer, y: DataBuffer): DataBuffer {
+        return instance.saxpy2(alpha, x, y)
+    }
+
+    override fun sgemv2(
+        row: Int,
+        col: Int,
+        alpha: Float,
+        a: DataBuffer,
+        x: DataBuffer,
+        beta: Float,
+        y: DataBuffer
+    ): DataBuffer {
+        return instance.sgemv2(row, col, alpha, a, x, beta, y)
+    }
+
+    override fun sgemm2(
+        m: Int,
+        n: Int,
+        k: Int,
+        alpha: Float,
+        a: DataBuffer,
+        b: DataBuffer,
+        beta: Float,
+        c: DataBuffer
+    ): DataBuffer {
+        return instance.sgemm2(m, n, k, alpha, a, b, beta, c)
+    }
 }
