@@ -29,7 +29,7 @@ class OpenBLAS internal constructor() : IBLAS {
 
     override val isNative: Boolean = true
 
-    override fun sdot2(x: DataBuffer, y: DataBuffer): Float {
+    override fun sdot(x: DataBuffer, y: DataBuffer): Float {
         return instance.sdot(
             /* n = */ x.size,
             /* x = */ x.toFloatArray(),
@@ -39,7 +39,7 @@ class OpenBLAS internal constructor() : IBLAS {
         )
     }
 
-    override fun sscal2(alpha: Float, x: DataBuffer): DataBuffer {
+    override fun sscal(alpha: Float, x: DataBuffer): DataBuffer {
         val result = x.toFloatArray()
         instance.sscal(
             /* n = */ x.size,
@@ -50,7 +50,7 @@ class OpenBLAS internal constructor() : IBLAS {
         return DataBuffer.create(result)
     }
 
-    override fun saxpy2(alpha: Float, x: DataBuffer, y: DataBuffer,): DataBuffer {
+    override fun saxpy(alpha: Float, x: DataBuffer, y: DataBuffer,): DataBuffer {
         val result = y.toFloatArray()
         instance.saxpy(
             /* n = */ x.size,
@@ -63,7 +63,7 @@ class OpenBLAS internal constructor() : IBLAS {
         return DataBuffer.create(result)
     }
 
-    override fun sgemv2(
+    override fun sgemv(
         row: Int,
         col: Int,
         alpha: Float,
@@ -89,7 +89,7 @@ class OpenBLAS internal constructor() : IBLAS {
         return DataBuffer.create(result)
     }
 
-    override fun sgemm2(
+    override fun sgemm(
         m: Int,
         n: Int,
         k: Int,

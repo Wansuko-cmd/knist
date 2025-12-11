@@ -32,7 +32,7 @@ class CLBlast internal constructor() : IBLAS {
         instance.init()
     }
 
-    override fun sdot2(x: DataBuffer, y: DataBuffer): Float {
+    override fun sdot(x: DataBuffer, y: DataBuffer): Float {
         val xAddress = instance.transfer(x.toFloatArray(), x.size)
         val yAddress = instance.transfer(y.toFloatArray(), y.size)
         val result = instance.sdot(
@@ -47,7 +47,7 @@ class CLBlast internal constructor() : IBLAS {
         return result
     }
 
-    override fun sscal2(alpha: Float, x: DataBuffer): DataBuffer {
+    override fun sscal(alpha: Float, x: DataBuffer): DataBuffer {
         val result = x.toFloatArray()
         val xAddress = instance.transfer(result, x.size)
         instance.sscal(
@@ -61,7 +61,7 @@ class CLBlast internal constructor() : IBLAS {
         return DataBuffer.create(result)
     }
 
-    override fun saxpy2(alpha: Float, x: DataBuffer, y: DataBuffer,): DataBuffer {
+    override fun saxpy(alpha: Float, x: DataBuffer, y: DataBuffer,): DataBuffer {
         val result = y.toFloatArray()
         val xAddress = instance.transfer(x.toFloatArray(), x.size)
         val yAddress = instance.transfer(result, y.size)
@@ -80,7 +80,7 @@ class CLBlast internal constructor() : IBLAS {
 
     }
 
-    override fun sgemv2(
+    override fun sgemv(
         row: Int,
         col: Int,
         alpha: Float,
@@ -113,7 +113,7 @@ class CLBlast internal constructor() : IBLAS {
         return DataBuffer.create(result)
     }
 
-    override fun sgemm2(
+    override fun sgemm(
         m: Int,
         n: Int,
         k: Int,

@@ -3,11 +3,9 @@ package com.wsr.core.operation.matmul
 import com.wsr.BLAS
 import com.wsr.blas.base.DataBuffer
 import com.wsr.core.IOType
-import com.wsr.core.get
-import com.wsr.core.set
 
 infix fun IOType.D2.matMul(other: IOType.D1): IOType.D1 {
-    val result = BLAS.sgemv2(
+    val result = BLAS.sgemv(
         row = shape[0],
         col = shape[1],
         alpha = 1f,
@@ -20,7 +18,7 @@ infix fun IOType.D2.matMul(other: IOType.D1): IOType.D1 {
 }
 
 infix fun IOType.D2.matMul(other: IOType.D2): IOType.D2 {
-    val result = BLAS.sgemm2(
+    val result = BLAS.sgemm(
         m = shape[0],
         n = other.shape[1],
         k = shape[1],
