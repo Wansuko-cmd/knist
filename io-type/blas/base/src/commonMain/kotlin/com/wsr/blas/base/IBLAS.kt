@@ -172,4 +172,121 @@ interface IBLAS {
             }
         }
     }
+
+    /**
+     * Level 1 BLAS: ベクトルの内積
+     * result = x^T * y
+     *
+     * @param x ベクトルx
+     * @param y ベクトルy
+     * @return 内積の結果 sum(x * y)
+     */
+    fun sdot2(x: DataBuffer, y: DataBuffer): Float {
+        var result = 0f
+        repeat(x.size) {
+            result += x[it] * y[it]
+        }
+        return result
+    }
+
+    /**
+     * Level 1 BLAS: ベクトルのスカラー倍
+     * x = alpha * x
+     *
+     * @param alpha スカラー係数
+     * @param x ベクトルx
+     */
+    fun sscal2(alpha: Float, x: DataBuffer): DataBuffer {
+        val result = DataBuffer.create(x.size)
+        repeat(result.size) {
+            result[it] = alpha * x[it]
+        }
+        return result
+    }
+
+    /**
+     * Level 1 BLAS: ベクトルの定数倍加算
+     * y = alpha * x + y
+     *
+     * @param alpha スカラー係数
+     * @param x ベクトルx
+     * @param y ベクトルy
+     */
+    fun saxpy2(alpha: Float, x: DataBuffer, y: DataBuffer): DataBuffer {
+        val result = DataBuffer.create(x.size)
+        repeat(result.size) {
+            result[it] = alpha * x[it] + y[it]
+        }
+        return result
+    }
+
+    /**
+     * Level 2 BLAS: 行列とベクトルの積
+     * y = alpha * a * x + beta * y
+     *
+     * @param row 行列Aの行数
+     * @param col 行列Aの列数
+     * @param alpha スカラー係数
+     * @param a 行列A (row-major, サイズ m * n)
+     * @param x ベクトルx
+     * @param beta スカラー係数
+     * @param y ベクトルy
+     */
+    fun sgemv2(
+        row: Int,
+        col: Int,
+        alpha: Float,
+        a: DataBuffer,
+        x: DataBuffer,
+        beta: Float,
+        y: DataBuffer,
+    ): DataBuffer {
+        val result = DataBuffer.create(row)
+        for (i in 0 until row) {
+            var sum = 0f
+            for (j in 0 until col) {
+                sum += a[i * col + j] * x[j]
+            }
+            result[i] = alpha * sum + beta * y[i]
+        }
+        return result
+    }
+
+    /**
+     * Level 3 BLAS: 行列と行列の積 (転置なし固定)
+     * C = alpha * a * b + beta * c
+     *
+     * @param m 行列Aの行数、行列Cの行数
+     * @param n 行列Bの列数、行列Cの列数
+     * @param k 行列Aの列数、行列Bの行数
+     * @param alpha スカラー係数
+     * @param a 行列A (row-major, サイズ m * k)
+     * @param b 行列B (row-major, サイズ k * n)
+     * @param beta Cに対する係数 (0fならCの初期値は無視)
+     * @param c 加算対象の行列 (nullなら新規作成)
+     */
+    fun sgemm2(
+        m: Int,
+        n: Int,
+        k: Int,
+        alpha: Float,
+        a: DataBuffer,
+        b: DataBuffer,
+        beta: Float,
+        c: DataBuffer,
+    ): DataBuffer {
+        val result = DataBuffer.create(m * n)
+        for (i in 0 until m) {
+            for (j in 0 until n) {
+                var sum = 0f
+                for (p in 0 until k) {
+                    sum += a[i * k + p] * b[p * n + j]
+                }
+
+                val index = i * n + j
+                result[index] = alpha * sum + beta * c[index]
+            }
+        }
+        return result
+    }
 }
