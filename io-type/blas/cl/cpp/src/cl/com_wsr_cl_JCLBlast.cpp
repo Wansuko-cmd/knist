@@ -216,7 +216,7 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemm(
         c_buffer, 0, ldc, c_stride,
         batchSize,
         &queue, nullptr
-    )
+    );
 
     if (status != clblast::StatusCode::kSuccess) {
         fprintf(stderr, "CLBlast sgemm failed: %d\n", static_cast<int>(status));
