@@ -8,7 +8,7 @@ on:
       - '.github/workflows/build-cl-blast.yml'
 
 env:
-  WINDOWS_OPENCL_SDK_VERSION: '2024.05.08'
+  WINDOWS_OPENCL_SDK_VERSION: '2025.07.23'
 
 jobs:
   build:
