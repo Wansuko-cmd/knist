@@ -1,12 +1,22 @@
 package com.wsr.core.operation.matmul
 
+import com.wsr.BLAS
+import com.wsr.blas.base.DataBuffer
 import com.wsr.core.IOType
-import com.wsr.core.d3
 import com.wsr.core.get
 import com.wsr.core.set
 
 infix fun IOType.D3.matMul(other: IOType.D3): IOType.D3 {
-    val result = IOType.d3(listOf(shape[0], shape[1], other.shape[2]))
-    for (i in 0 until shape[0]) result[i] = this[i] matMul other[i]
-    return result
+    val result = BLAS.sgemm(
+        m = shape[1],
+        n = other.shape[2],
+        k = shape[2],
+        alpha = 1f,
+        a = value,
+        b = other.value,
+        beta = 0f,
+        c = DataBuffer.create(shape[0] * shape[1] * other.shape[2]),
+        batchSize = shape[0],
+    )
+    return IOType.D3(shape = listOf(shape[0], shape[1], other.shape[2]), value = result)
 }
