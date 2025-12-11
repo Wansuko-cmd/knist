@@ -3,43 +3,30 @@ package com.wsr.core.operation.matmul
 import com.wsr.BLAS
 import com.wsr.blas.base.DataBuffer
 import com.wsr.core.IOType
-import com.wsr.core.get
-import com.wsr.core.set
 
 infix fun IOType.D2.matMul(other: IOType.D1): IOType.D1 {
-    val result = DataBuffer.create(shape[0])
-    BLAS.sgemv(
-        trans = false,
-        m = shape[0],
-        n = shape[1],
+    val result = BLAS.sgemv(
+        row = shape[0],
+        col = shape[1],
         alpha = 1f,
         a = value,
-        lda = shape[1],
         x = other.value,
-        incX = 1,
         beta = 0f,
-        y = result,
-        incY = 1,
+        y = DataBuffer.create(shape[0]),
     )
     return IOType.D1(result)
 }
 
 infix fun IOType.D2.matMul(other: IOType.D2): IOType.D2 {
-    val result = DataBuffer.create(shape[0] * other.shape[1])
-    BLAS.sgemm(
-        transA = false,
-        transB = false,
+    val result = BLAS.sgemm(
         m = shape[0],
         n = other.shape[1],
         k = shape[1],
         alpha = 1f,
         a = value,
-        lda = shape[1],
         b = other.value,
-        ldb = other.shape[1],
         beta = 0f,
-        c = result,
-        ldc = other.shape[1],
+        c = DataBuffer.create(shape[0] * other.shape[1]),
     )
     return IOType.D2(result, listOf(shape[0], other.shape[1]))
 }

@@ -13,48 +13,30 @@ object BLAS : IBLAS {
 
     override val isNative: Boolean = instance.isNative
 
-    override fun sdot(n: Int, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int): Float =
-        instance.sdot(n, x, incX, y, incY)
+    override fun sdot(x: DataBuffer, y: DataBuffer): Float = instance.sdot(x, y)
 
-    override fun sscal(n: Int, alpha: Float, x: DataBuffer, incX: Int) {
-        instance.sscal(n, alpha, x, incX)
-    }
+    override fun sscal(alpha: Float, x: DataBuffer): DataBuffer = instance.sscal(alpha, x)
 
-    override fun saxpy(n: Int, alpha: Float, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int) {
-        instance.saxpy(n, alpha, x, incX, y, incY)
-    }
+    override fun saxpy(alpha: Float, x: DataBuffer, y: DataBuffer): DataBuffer = instance.saxpy(alpha, x, y)
 
     override fun sgemv(
-        trans: Boolean,
-        m: Int,
-        n: Int,
+        row: Int,
+        col: Int,
         alpha: Float,
         a: DataBuffer,
-        lda: Int,
         x: DataBuffer,
-        incX: Int,
         beta: Float,
         y: DataBuffer,
-        incY: Int,
-    ) {
-        instance.sgemv(trans, m, n, alpha, a, lda, x, incX, beta, y, incY)
-    }
+    ): DataBuffer = instance.sgemv(row, col, alpha, a, x, beta, y)
 
     override fun sgemm(
-        transA: Boolean,
-        transB: Boolean,
         m: Int,
         n: Int,
         k: Int,
         alpha: Float,
         a: DataBuffer,
-        lda: Int,
         b: DataBuffer,
-        ldb: Int,
         beta: Float,
         c: DataBuffer,
-        ldc: Int,
-    ) {
-        instance.sgemm(transA, transB, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc)
-    }
+    ): DataBuffer = instance.sgemm(m, n, k, alpha, a, b, beta, c)
 }

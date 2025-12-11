@@ -29,74 +29,90 @@ class OpenBLAS internal constructor() : IBLAS {
 
     override val isNative: Boolean = true
 
-    override fun sdot(n: Int, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int): Float =
-        instance.sdot(n, x.toFloatArray(), incX, y.toFloatArray(), incY)
+    override fun sdot(x: DataBuffer, y: DataBuffer): Float = instance.sdot(
+        x.size,
+        x.toFloatArray(),
+        1,
+        y.toFloatArray(),
+        1,
+    )
 
-    override fun sscal(n: Int, alpha: Float, x: DataBuffer, incX: Int) {
-        instance.sscal(n, alpha, x.toFloatArray(), incX)
+    override fun sscal(alpha: Float, x: DataBuffer): DataBuffer {
+        val result = x.toFloatArray()
+        instance.sscal(
+            x.size,
+            alpha,
+            result,
+            1,
+        )
+        return DataBuffer.create(result)
     }
 
-    override fun saxpy(n: Int, alpha: Float, x: DataBuffer, incX: Int, y: DataBuffer, incY: Int) {
-        instance.saxpy(n, alpha, x.toFloatArray(), incX, y.toFloatArray(), incY)
+    override fun saxpy(alpha: Float, x: DataBuffer, y: DataBuffer): DataBuffer {
+        val result = y.toFloatArray()
+        instance.saxpy(
+            x.size,
+            alpha,
+            x.toFloatArray(),
+            1,
+            result,
+            1,
+        )
+        return DataBuffer.create(result)
     }
 
     override fun sgemv(
-        trans: Boolean,
-        m: Int,
-        n: Int,
+        row: Int,
+        col: Int,
         alpha: Float,
         a: DataBuffer,
-        lda: Int,
         x: DataBuffer,
-        incX: Int,
         beta: Float,
         y: DataBuffer,
-        incY: Int,
-    ) {
+    ): DataBuffer {
+        val result = y.toFloatArray()
         instance.sgemv(
-            trans,
-            m,
-            n,
+            false,
+            row,
+            col,
             alpha,
             a.toFloatArray(),
-            lda,
+            col,
             x.toFloatArray(),
-            incX,
+            1,
             beta,
-            y.toFloatArray(),
-            incY,
+            result,
+            1,
         )
+        return DataBuffer.create(result)
     }
 
     override fun sgemm(
-        transA: Boolean,
-        transB: Boolean,
         m: Int,
         n: Int,
         k: Int,
         alpha: Float,
         a: DataBuffer,
-        lda: Int,
         b: DataBuffer,
-        ldb: Int,
         beta: Float,
         c: DataBuffer,
-        ldc: Int,
-    ) {
+    ): DataBuffer {
+        val result = c.toFloatArray()
         instance.sgemm(
-            transA,
-            transB,
+            false,
+            false,
             m,
             n,
             k,
             alpha,
             a.toFloatArray(),
-            lda,
+            k,
             b.toFloatArray(),
-            ldb,
+            n,
             beta,
-            c.toFloatArray(),
-            ldc,
+            result,
+            n,
         )
+        return DataBuffer.create(result)
     }
 }
