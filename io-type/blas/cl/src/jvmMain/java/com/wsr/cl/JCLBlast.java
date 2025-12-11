@@ -46,7 +46,8 @@ public class JCLBlast {
             int ldb,
             float beta,
             long c,
-            int ldc
+            int ldc,
+            int batchSize
     );
 
     public native void sgemv(

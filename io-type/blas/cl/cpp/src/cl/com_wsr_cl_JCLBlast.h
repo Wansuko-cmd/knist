@@ -66,10 +66,10 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_saxpy
 /*
  * Class:     com_wsr_cl_JCLBlast
  * Method:    sgemm
- * Signature: (ZZIIIFJIJIFJI)V
+ * Signature: (ZZIIIFJIJIFJII)V
  */
 JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemm
-  (JNIEnv *, jobject, jboolean, jboolean, jint, jint, jint, jfloat, jlong, jint, jlong, jint, jfloat, jlong, jint);
+  (JNIEnv *, jobject, jboolean, jboolean, jint, jint, jint, jfloat, jlong, jint, jlong, jint, jfloat, jlong, jint, jint);
 
 /*
  * Class:     com_wsr_cl_JCLBlast

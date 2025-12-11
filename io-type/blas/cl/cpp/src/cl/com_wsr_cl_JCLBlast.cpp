@@ -192,26 +192,30 @@ JNIEXPORT void JNICALL Java_com_wsr_cl_JCLBlast_sgemm(
     jboolean transA, jboolean transB,
     jint m, jint n, jint k,
     jfloat alpha, jlong a_ptr, jint lda, jlong b_ptr, jint ldb,
-    jfloat beta, jlong c_ptr, jint ldc
+    jfloat beta, jlong c_ptr, jint ldc, jint batchSize
 ) {
     cl_mem a_buffer = (cl_mem)a_ptr;
     cl_mem b_buffer = (cl_mem)b_ptr;
     cl_mem c_buffer = (cl_mem)c_ptr;
 
-    // 転送フラグの変換
+    size_t a_stride = m * k;
+    size_t b_stride = k * n;
+    size_t c_stride = m * n;
+
     auto transA_cl = transA ? clblast::Transpose::kYes : clblast::Transpose::kNo;
     auto transB_cl = transB ? clblast::Transpose::kYes : clblast::Transpose::kNo;
 
-    clblast::StatusCode status = clblast::Gemm<float>(
+    clblast::StatusCode status = clblast::GemmStridedBatched<float>(
         clblast::Layout::kRowMajor,
         transA_cl, transB_cl,
         m, n, k,
         alpha,
-        a_buffer, 0, lda,
-        b_buffer, 0, ldb,
+        a_buffer, 0, lda, a_stride,
+        b_buffer, 0, ldb, b_stride,
         beta,
-        c_buffer, 0, ldc,
-        &queue
+        c_buffer, 0, ldc, c_stride,
+        batchSize,
+        &queue, nullptr
     );
 
     if (status != clblast::StatusCode::kSuccess) {
