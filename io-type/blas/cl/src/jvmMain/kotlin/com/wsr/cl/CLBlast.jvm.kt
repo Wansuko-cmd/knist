@@ -121,6 +121,7 @@ class CLBlast internal constructor() : IBLAS {
         b: DataBuffer,
         beta: Float,
         c: DataBuffer,
+        batchSize: Int,
     ): DataBuffer {
         val result = c.toFloatArray()
         val aAddress = instance.transfer(a.toFloatArray(), a.size)
@@ -140,6 +141,7 @@ class CLBlast internal constructor() : IBLAS {
             beta,
             cAddress,
             n,
+            batchSize,
         )
         instance.read(cAddress, result)
         instance.release(aAddress)
