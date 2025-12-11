@@ -38,7 +38,8 @@ class JOpenBLAS {
             int ldb,
             float beta,
             float[] c,
-            int ldc
+            int ldc,
+            int batchSize
     );
 
     public native void sgemv(

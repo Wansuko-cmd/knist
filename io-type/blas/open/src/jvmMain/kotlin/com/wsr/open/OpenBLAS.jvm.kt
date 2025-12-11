@@ -96,6 +96,7 @@ class OpenBLAS internal constructor() : IBLAS {
         b: DataBuffer,
         beta: Float,
         c: DataBuffer,
+        batchSize: Int,
     ): DataBuffer {
         val result = c.toFloatArray()
         instance.sgemm(
@@ -112,6 +113,7 @@ class OpenBLAS internal constructor() : IBLAS {
             beta,
             result,
             n,
+            batchSize,
         )
         return DataBuffer.create(result)
     }

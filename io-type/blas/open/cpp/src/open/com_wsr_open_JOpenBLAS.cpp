@@ -46,22 +46,37 @@ JNIEXPORT void JNICALL Java_com_wsr_open_JOpenBLAS_sscal
 
 JNIEXPORT void JNICALL Java_com_wsr_open_JOpenBLAS_sgemm(JNIEnv *env, jobject, jboolean transA, jboolean transB, jint m, jint n, jint k,
         jfloat alpha, jfloatArray a, jint lda, jfloatArray b, jint ldb,
-jfloat beta, jfloatArray c, jint ldc
+jfloat beta, jfloatArray c, jint ldc, jint batchSize
 ) {
-    // Get array elements from Java
     jfloat *a_ptr = env->GetFloatArrayElements(a, nullptr);
     jfloat *b_ptr = env->GetFloatArrayElements(b, nullptr);
     jfloat *c_ptr = env->GetFloatArrayElements(c, nullptr);
 
-    // Convert transpose flags
+    int stride_a = m * k;
+    int stride_b = k * n;
+    int stride_c = m * n;
+
     CBLAS_TRANSPOSE transA_blas = transA ? CblasTrans : CblasNoTrans;
     CBLAS_TRANSPOSE transB_blas = transB ? CblasTrans : CblasNoTrans;
 
-    // Call OpenBLAS sgemm with row-major order
-    cblas_sgemm(CblasRowMajor, transA_blas, transB_blas, m, n, k,
-            alpha, a_ptr, lda, b_ptr, ldb, beta, c_ptr, ldc);
+    for (int i = 0; i < batchSize; ++i) {
+        jfloat *a_curr = a_ptr + (i * stride_a);
+        jfloat *b_curr = b_ptr + (i * stride_b);
+        jfloat *c_curr = c_ptr + (i * stride_c);
 
-    // Release arrays back to Java
+        // OpenBLAS呼び出し(row major)
+        cblas_sgemm(
+            CblasRowMajor,
+            transA_blas, transB_blas,
+            m, n, k,
+            alpha,
+            a_curr, lda,
+            b_curr, ldb,
+            beta,
+            c_curr, ldc
+        );
+    }
+
     env->ReleaseFloatArrayElements(a, a_ptr, JNI_ABORT);
     env->ReleaseFloatArrayElements(b, b_ptr, JNI_ABORT);
     env->ReleaseFloatArrayElements(c, c_ptr, 0);

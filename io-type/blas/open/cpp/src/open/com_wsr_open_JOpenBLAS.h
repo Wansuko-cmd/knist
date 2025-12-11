@@ -34,10 +34,10 @@ JNIEXPORT void JNICALL Java_com_wsr_open_JOpenBLAS_saxpy
 /*
  * Class:     com_wsr_open_JOpenBLAS
  * Method:    sgemm
- * Signature: (ZZIIIF[FI[FIF[FI)V
+ * Signature: (ZZIIIF[FI[FIF[FII)V
  */
 JNIEXPORT void JNICALL Java_com_wsr_open_JOpenBLAS_sgemm
-  (JNIEnv *, jobject, jboolean, jboolean, jint, jint, jint, jfloat, jfloatArray, jint, jfloatArray, jint, jfloat, jfloatArray, jint);
+  (JNIEnv *, jobject, jboolean, jboolean, jint, jint, jint, jfloat, jfloatArray, jint, jfloatArray, jint, jfloat, jfloatArray, jint, jint);
 
 /*
  * Class:     com_wsr_open_JOpenBLAS
