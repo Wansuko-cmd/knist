@@ -127,25 +127,10 @@ fun <T> NetworkBuilder.D2<T>.layerNorm(
             ),
         )
 
-        0 -> LayerNormAxis0D2(
+        0, 1 -> LayerNormAxisD2(
             outputX = inputX,
             outputY = inputY,
-            e = e,
-            optimizer = optimizer.d2(
-                inputX,
-                inputY,
-            ),
-            weight = initializer.d2(
-                input = listOf(inputX, inputY),
-                output = listOf(inputX, inputY),
-                x = inputX,
-                y = inputY,
-            ),
-        )
-
-        1 -> LayerNormAxis1D2(
-            outputX = inputX,
-            outputY = inputY,
+            axis = axis,
             e = e,
             optimizer = optimizer.d2(
                 inputX,

@@ -14,16 +14,16 @@ operator fun Float.times(other: Batch<IOType.D2>) = other.map { this * it }
 @JvmName("batchD2sTimesD0s")
 operator fun Batch<IOType.D2>.times(other: Batch<IOType.D0>) = Batch(size) { this[it] * other[it].get() }
 
-@JvmName("batchD2sMinusD1")
+@JvmName("batchD2sTimesD1")
 operator fun Batch<IOType.D2>.times(other: IOType.D1) = map { it * other }
 
-@JvmName("batchD2sMinusD1WithAxis")
+@JvmName("batchD2sTimesD1WithAxis")
 fun Batch<IOType.D2>.times(other: IOType.D1, axis: Int) = map { it.times(other = other, axis = axis) }
 
-@JvmName("batchD2sMinusD1s")
+@JvmName("batchD2sTimesD1s")
 operator fun Batch<IOType.D2>.times(other: Batch<IOType.D1>) = Batch(size) { this[it] * other[it] }
 
-@JvmName("batchD2sMinusD1sWithAxis")
+@JvmName("batchD2sTimesD1sWithAxis")
 fun Batch<IOType.D2>.times(other: Batch<IOType.D1>, axis: Int) =
     Batch(size) { this[it].times(other = other[it], axis = axis) }
 
