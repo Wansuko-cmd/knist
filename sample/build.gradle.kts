@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation(projects.lib)
+    implementation(projects.network)
 
     implementation(libs.coroutine)
     implementation(libs.serialization)

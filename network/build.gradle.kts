@@ -12,8 +12,6 @@ kotlin {
             dependencies {
                 api(projects.ioType)
 
-                implementation(libs.coroutine)
-
                 implementation(libs.serialization)
                 implementation(libs.serialization.okio)
 

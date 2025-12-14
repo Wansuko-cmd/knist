@@ -18,7 +18,7 @@ dependencyResolutionManagement {
 rootProject.name = "perceptron"
 
 include(":sample")
-include(":lib")
+include(":network")
 include(":io-type")
 
 include(":buffer")
