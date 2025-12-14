@@ -6,7 +6,6 @@ import com.wsr.batch.operation.matmul.matMul
 import com.wsr.batch.reshape.convert.toD2
 import com.wsr.core.IOType
 import com.wsr.core.operation.matmul.matMul
-import com.wsr.core.reshape.transpose.transpose
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
 import com.wsr.process.Context
@@ -29,12 +28,12 @@ class AffineD1 internal constructor(
         val output = forward(input)
         val delta = calcDelta(output)
         val dx = weight.matMul(delta)
-        val dw = input.toD2().transpose().matMul(delta.toD2())
+        val dw = input.toD2().matMul(delta.toD2(), transA = true)
         weight = optimizer.adapt(weight = weight, dw = dw)
         return dx
     }
 
-    private fun forward(input: Batch<IOType.D1>): Batch<IOType.D1> = weight.transpose().matMul(input)
+    private fun forward(input: Batch<IOType.D1>): Batch<IOType.D1> = weight.matMul(input, trans = true)
 }
 
 fun <T> NetworkBuilder.D1<T>.affine(

@@ -3,9 +3,7 @@ package com.wsr.process.compute.affine
 import com.wsr.NetworkBuilder
 import com.wsr.batch.Batch
 import com.wsr.batch.operation.matmul.matMul
-import com.wsr.batch.reshape.transpose.transpose
 import com.wsr.core.IOType
-import com.wsr.core.reshape.transpose.transpose
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
 import com.wsr.process.Context
@@ -32,8 +30,8 @@ class AffineD2 internal constructor(
         val output = forward(input)
         val delta = calcDelta(output)
 
-        val dx = delta.matMul(weight.transpose())
-        val dw = input.transpose().matMul(delta)
+        val dx = delta.matMul(weight, transB = true)
+        val dw = input.matMul(delta, transA = true)
 
         weight = optimizer.adapt(weight = weight, dw = dw)
         return dx
