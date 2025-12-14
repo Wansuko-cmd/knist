@@ -1,5 +1,13 @@
 package com.wsr.blas.base
 
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+
+@Serializable(with = DataBufferSerializable::class)
 interface DataBuffer {
     val size: Int
 
@@ -22,8 +30,11 @@ interface DataBuffer {
 }
 
 @ConsistentCopyVisibility
+@Serializable
 data class Default internal constructor(private val value: FloatArray) : DataBuffer {
     override val size = value.size
+
+    @Transient
     override val indices: IntRange = value.indices
 
     override fun toFloatArray(): FloatArray = value
@@ -58,4 +69,16 @@ data class Default internal constructor(private val value: FloatArray) : DataBuf
         result = 31 * result + indices.hashCode()
         return result
     }
+}
+
+object DataBufferSerializable : KSerializer<DataBuffer> {
+    override val descriptor: SerialDescriptor = Default.serializer().descriptor
+    override fun serialize(encoder: Encoder, value: DataBuffer) {
+        encoder.encodeSerializableValue(
+            serializer = Default.serializer(),
+            value = DataBuffer.create(value.toFloatArray()),
+        )
+    }
+
+    override fun deserialize(decoder: Decoder): DataBuffer = decoder.decodeSerializableValue(Default.serializer())
 }

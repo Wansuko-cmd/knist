@@ -31,6 +31,8 @@ fun createMnistModel(epoc: Int, seed: Int? = null): Float {
     // ニューラルネットワークを構築
     val network = createNetwork(seed)
 
+    network.toJson()
+
     println("訓練開始")
     val train = MnistDataset.read(imagePath = TRAIN_IMAGE_PATH, labelPath = TRAIN_LABEL_PATH)
     repeat(epoc) { epoc ->
