@@ -72,6 +72,7 @@ class CLBlast internal constructor() : IBLAS {
         col: Int,
         alpha: Float,
         a: DataBuffer,
+        trans: Boolean,
         x: DataBuffer,
         beta: Float,
         y: DataBuffer,
@@ -81,7 +82,7 @@ class CLBlast internal constructor() : IBLAS {
         val xAddress = instance.transfer(x.toFloatArray(), x.size)
         val yAddress = instance.transfer(result, y.size)
         instance.sgemv(
-            false,
+            trans,
             row,
             col,
             alpha,
@@ -106,7 +107,9 @@ class CLBlast internal constructor() : IBLAS {
         k: Int,
         alpha: Float,
         a: DataBuffer,
+        transA: Boolean,
         b: DataBuffer,
+        transB: Boolean,
         beta: Float,
         c: DataBuffer,
         batchSize: Int,
@@ -116,16 +119,16 @@ class CLBlast internal constructor() : IBLAS {
         val bAddress = instance.transfer(b.toFloatArray(), b.size)
         val cAddress = instance.transfer(result, c.size)
         instance.sgemm(
-            false,
-            false,
+            transA,
+            transB,
             m,
             n,
             k,
             alpha,
             aAddress,
-            k,
+            if (transA) m else k,
             bAddress,
-            n,
+            if (transB) k else n,
             beta,
             cAddress,
             n,

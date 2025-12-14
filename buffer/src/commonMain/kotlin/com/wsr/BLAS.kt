@@ -24,10 +24,11 @@ object BLAS : IBLAS {
         col: Int,
         alpha: Float,
         a: DataBuffer,
+        trans: Boolean,
         x: DataBuffer,
         beta: Float,
         y: DataBuffer,
-    ): DataBuffer = instance.sgemv(row, col, alpha, a, x, beta, y)
+    ): DataBuffer = instance.sgemv(row, col, alpha, a, trans, x, beta, y)
 
     override fun sgemm(
         m: Int,
@@ -35,9 +36,11 @@ object BLAS : IBLAS {
         k: Int,
         alpha: Float,
         a: DataBuffer,
+        transA: Boolean,
         b: DataBuffer,
+        transB: Boolean,
         beta: Float,
         c: DataBuffer,
         batchSize: Int,
-    ): DataBuffer = instance.sgemm(m, n, k, alpha, a, b, beta, c, batchSize)
+    ): DataBuffer = instance.sgemm(m, n, k, alpha, a, transA, b, transB, beta, c, batchSize)
 }
