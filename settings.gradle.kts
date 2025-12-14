@@ -22,14 +22,13 @@ include(":lib")
 include(":io-type:core")
 include(":io-type:batch")
 
-include(":io-type:blas")
+include(":buffer")
+include(":buffer:base")
+include(":buffer:open")
+include(":buffer:open:cpp")
 
-include(":io-type:blas:base")
-include(":io-type:blas:open")
-include(":io-type:blas:open:cpp")
-
-include(":io-type:blas:cl")
-include(":io-type:blas:cl:cpp")
+include(":buffer:cl")
+include(":buffer:cl:cpp")
 
 // include(":deprecated:functional")
 // include(":deprecated:optimize")

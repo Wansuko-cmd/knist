@@ -23,14 +23,14 @@ val currentArch: String = System.getProperty("os.arch").lowercase().let { arch -
 
 // ライブラリのファイル名（OS依存）
 val libFileName: String = when (currentOs) {
-    "macos" -> "libcl_blas.dylib"
-    "linux" -> "libcl_blas.so"
-    "mingw" -> "cl_blas.dll"
+    "macos" -> "libopen_blas.dylib"
+    "linux" -> "libopen_blas.so"
+    "mingw" -> "open_blas.dll"
     else -> error("Unsupported OS: $currentOs")
 }
 
 val nativeLibFile = projectDir.resolve("cpp/build/$libFileName")
-val jvmResourcesDir = projectDir.resolve("src/jvmMain/resources/cl/$currentOs/$currentArch")
+val jvmResourcesDir = projectDir.resolve("src/jvmMain/resources/open/$currentOs/$currentArch")
 
 val copyNativeToResources by tasks.registering(Copy::class) {
     group = "build"
@@ -48,7 +48,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(projects.ioType.blas.base)
+                implementation(projects.buffer.base)
             }
         }
 
