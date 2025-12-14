@@ -10,8 +10,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(projects.ioType.core)
-                api(projects.ioType.batch)
+                api(projects.ioType)
 
                 implementation(libs.coroutine)
 

@@ -19,8 +19,7 @@ rootProject.name = "perceptron"
 
 include(":sample")
 include(":lib")
-include(":io-type:core")
-include(":io-type:batch")
+include(":io-type")
 
 include(":buffer")
 include(":buffer:base")
