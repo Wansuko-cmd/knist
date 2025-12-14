@@ -6,7 +6,7 @@ import com.wsr.converter.linear.LinearD2
 import com.wsr.core.IOType
 import com.wsr.initializer.WeightInitializer
 import com.wsr.layer.Layer
-import com.wsr.layer.process.Process
+import com.wsr.layer.compute.Compute
 import com.wsr.layer.reshape.Reshape
 import com.wsr.optimizer.Optimizer
 import com.wsr.output.Output
@@ -25,7 +25,7 @@ sealed interface NetworkBuilder<I, O> {
         override val optimizer: Optimizer,
         override val initializer: WeightInitializer,
     ) : NetworkBuilder<I, IOType.D1> {
-        fun addProcess(process: Process.D1): D1<I> = copy(
+        fun addProcess(process: Compute.D1): D1<I> = copy(
             layers = layers + process,
             inputSize = process.outputSize,
         )
@@ -66,7 +66,7 @@ sealed interface NetworkBuilder<I, O> {
         override val optimizer: Optimizer,
         override val initializer: WeightInitializer,
     ) : NetworkBuilder<I, IOType.D2> {
-        fun addProcess(process: Process.D2): D2<I> = copy(
+        fun addProcess(process: Compute.D2): D2<I> = copy(
             layers = layers + process,
             inputX = process.outputX,
             inputY = process.outputY,
@@ -108,7 +108,7 @@ sealed interface NetworkBuilder<I, O> {
         override val optimizer: Optimizer,
         override val initializer: WeightInitializer,
     ) : NetworkBuilder<I, IOType.D3> {
-        fun addProcess(process: Process.D3): D3<I> = copy(
+        fun addProcess(process: Compute.D3): D3<I> = copy(
             layers = layers + process,
             inputX = process.outputX,
             inputY = process.outputY,
