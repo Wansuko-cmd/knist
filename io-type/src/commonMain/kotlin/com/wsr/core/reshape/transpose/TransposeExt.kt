@@ -10,9 +10,9 @@ fun IOType.D2.transpose() = IOType.d2(shape.reversed()) { x, y -> this[y, x] }
 
 fun IOType.D3.transpose(axisI: Int, axisJ: Int, axisK: Int): IOType.D3 {
     val shape = listOf(shape[axisI], shape[axisJ], shape[axisK])
-    return when {
-        axisI == 0 && axisJ == 1 && axisK == 2 -> this
-        axisI == 0 && axisJ == 2 && axisK == 1 ->
+    return when (axisI) {
+        0 if axisJ == 1 && axisK == 2 -> this
+        0 if axisJ == 2 && axisK == 1 ->
             IOType.d3(shape) { i, j, k ->
                 get(
                     i = i,
@@ -20,8 +20,7 @@ fun IOType.D3.transpose(axisI: Int, axisJ: Int, axisK: Int): IOType.D3 {
                     k = j,
                 )
             }
-
-        axisI == 1 && axisJ == 0 && axisK == 2 ->
+        1 if axisJ == 0 && axisK == 2 ->
             IOType.d3(shape) { i, j, k ->
                 get(
                     i = j,
@@ -29,8 +28,7 @@ fun IOType.D3.transpose(axisI: Int, axisJ: Int, axisK: Int): IOType.D3 {
                     k = k,
                 )
             }
-
-        axisI == 1 && axisJ == 2 && axisK == 0 ->
+        1 if axisJ == 2 && axisK == 0 ->
             IOType.d3(shape) { i, j, k ->
                 get(
                     i = k,
@@ -38,8 +36,7 @@ fun IOType.D3.transpose(axisI: Int, axisJ: Int, axisK: Int): IOType.D3 {
                     k = j,
                 )
             }
-
-        axisI == 2 && axisJ == 0 && axisK == 1 ->
+        2 if axisJ == 0 && axisK == 1 ->
             IOType.d3(shape) { i, j, k ->
                 get(
                     i = j,
@@ -47,8 +44,7 @@ fun IOType.D3.transpose(axisI: Int, axisJ: Int, axisK: Int): IOType.D3 {
                     k = i,
                 )
             }
-
-        axisI == 2 && axisJ == 1 && axisK == 0 ->
+        2 if axisJ == 1 && axisK == 0 ->
             IOType.d3(shape) { i, j, k ->
                 get(
                     i = k,
@@ -56,7 +52,6 @@ fun IOType.D3.transpose(axisI: Int, axisJ: Int, axisK: Int): IOType.D3 {
                     k = i,
                 )
             }
-
         else -> throw IllegalStateException()
     }
 }
