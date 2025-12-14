@@ -9,64 +9,64 @@ import com.wsr.converter.linear.LinearD3
 import com.wsr.converter.word.WordD1
 import com.wsr.converter.word.WordD2
 import com.wsr.converter.word.WordsD1
-import com.wsr.layer.Layer
-import com.wsr.layer.compute.affine.AffineD1
-import com.wsr.layer.compute.affine.AffineD2
-import com.wsr.layer.compute.attention.AttentionD2
-import com.wsr.layer.compute.bias.BiasD1
-import com.wsr.layer.compute.bias.BiasD2
-import com.wsr.layer.compute.bias.BiasD3
-import com.wsr.layer.compute.conv.ConvD1
-import com.wsr.layer.compute.debug.DebugD1
-import com.wsr.layer.compute.debug.DebugD2
-import com.wsr.layer.compute.debug.DebugD3
-import com.wsr.layer.compute.dropout.DropoutD1
-import com.wsr.layer.compute.dropout.DropoutD2
-import com.wsr.layer.compute.dropout.DropoutD3
-import com.wsr.layer.compute.function.linear.LinearD1 as ProcessLinearD1
-import com.wsr.layer.compute.function.linear.LinearD2 as ProcessLinearD2
-import com.wsr.layer.compute.function.linear.LinearD3 as ProcessLinearD3
-import com.wsr.layer.compute.function.relu.LeakyReLUD1
-import com.wsr.layer.compute.function.relu.LeakyReLUD2
-import com.wsr.layer.compute.function.relu.LeakyReLUD3
-import com.wsr.layer.compute.function.relu.ReLUD1
-import com.wsr.layer.compute.function.relu.ReLUD2
-import com.wsr.layer.compute.function.relu.ReLUD3
-import com.wsr.layer.compute.function.relu.SwishD1
-import com.wsr.layer.compute.function.relu.SwishD2
-import com.wsr.layer.compute.function.relu.SwishD3
-import com.wsr.layer.compute.function.sigmoid.SigmoidD1
-import com.wsr.layer.compute.function.sigmoid.SigmoidD2
-import com.wsr.layer.compute.function.sigmoid.SigmoidD3
-import com.wsr.layer.compute.function.softmax.SoftmaxD1
-import com.wsr.layer.compute.function.softmax.SoftmaxD2
-import com.wsr.layer.compute.function.softmax.SoftmaxD3
-import com.wsr.layer.compute.norm.layer.d1.LayerNormD1
-import com.wsr.layer.compute.norm.layer.d2.LayerNormAxis0D2
-import com.wsr.layer.compute.norm.layer.d2.LayerNormAxis1D2
-import com.wsr.layer.compute.norm.layer.d2.LayerNormD2
-import com.wsr.layer.compute.norm.layer.d3.LayerNormAxis0D3
-import com.wsr.layer.compute.norm.layer.d3.LayerNormAxis1D3
-import com.wsr.layer.compute.norm.layer.d3.LayerNormAxis2D3
-import com.wsr.layer.compute.norm.layer.d3.LayerNormD3
-import com.wsr.layer.compute.norm.minmax.MinMaxNormD1
-import com.wsr.layer.compute.norm.minmax.MinMaxNormD2
-import com.wsr.layer.compute.norm.minmax.MinMaxNormD3
-import com.wsr.layer.compute.pool.MaxPoolD2
-import com.wsr.layer.compute.pool.MaxPoolD3
-import com.wsr.layer.compute.position.PositionEmbeddingD2
-import com.wsr.layer.compute.position.PositionEncodeD2
-import com.wsr.layer.compute.position.RoPED2
-import com.wsr.layer.compute.skip.SkipD1
-import com.wsr.layer.compute.skip.SkipD2
-import com.wsr.layer.compute.skip.SkipD3
-import com.wsr.layer.reshape.gad.GlobalAverageD2ToD1
-import com.wsr.layer.reshape.gad.GlobalAverageD3ToD1
-import com.wsr.layer.reshape.gad.GlobalAverageD3ToD2
-import com.wsr.layer.reshape.reshape.ReshapeD2ToD1
-import com.wsr.layer.reshape.reshape.ReshapeD3ToD1
-import com.wsr.layer.reshape.reshape.ReshapeD3ToD2
-import com.wsr.layer.reshape.token.TokenEmbeddingD1ToD2
+import com.wsr.process.Process
+import com.wsr.process.compute.affine.AffineD1
+import com.wsr.process.compute.affine.AffineD2
+import com.wsr.process.compute.attention.AttentionD2
+import com.wsr.process.compute.bias.BiasD1
+import com.wsr.process.compute.bias.BiasD2
+import com.wsr.process.compute.bias.BiasD3
+import com.wsr.process.compute.conv.ConvD1
+import com.wsr.process.compute.debug.DebugD1
+import com.wsr.process.compute.debug.DebugD2
+import com.wsr.process.compute.debug.DebugD3
+import com.wsr.process.compute.dropout.DropoutD1
+import com.wsr.process.compute.dropout.DropoutD2
+import com.wsr.process.compute.dropout.DropoutD3
+import com.wsr.process.compute.function.linear.LinearD1 as ProcessLinearD1
+import com.wsr.process.compute.function.linear.LinearD2 as ProcessLinearD2
+import com.wsr.process.compute.function.linear.LinearD3 as ProcessLinearD3
+import com.wsr.process.compute.function.relu.LeakyReLUD1
+import com.wsr.process.compute.function.relu.LeakyReLUD2
+import com.wsr.process.compute.function.relu.LeakyReLUD3
+import com.wsr.process.compute.function.relu.ReLUD1
+import com.wsr.process.compute.function.relu.ReLUD2
+import com.wsr.process.compute.function.relu.ReLUD3
+import com.wsr.process.compute.function.relu.SwishD1
+import com.wsr.process.compute.function.relu.SwishD2
+import com.wsr.process.compute.function.relu.SwishD3
+import com.wsr.process.compute.function.sigmoid.SigmoidD1
+import com.wsr.process.compute.function.sigmoid.SigmoidD2
+import com.wsr.process.compute.function.sigmoid.SigmoidD3
+import com.wsr.process.compute.function.softmax.SoftmaxD1
+import com.wsr.process.compute.function.softmax.SoftmaxD2
+import com.wsr.process.compute.function.softmax.SoftmaxD3
+import com.wsr.process.compute.norm.layer.d1.LayerNormD1
+import com.wsr.process.compute.norm.layer.d2.LayerNormAxis0D2
+import com.wsr.process.compute.norm.layer.d2.LayerNormAxis1D2
+import com.wsr.process.compute.norm.layer.d2.LayerNormD2
+import com.wsr.process.compute.norm.layer.d3.LayerNormAxis0D3
+import com.wsr.process.compute.norm.layer.d3.LayerNormAxis1D3
+import com.wsr.process.compute.norm.layer.d3.LayerNormAxis2D3
+import com.wsr.process.compute.norm.layer.d3.LayerNormD3
+import com.wsr.process.compute.norm.minmax.MinMaxNormD1
+import com.wsr.process.compute.norm.minmax.MinMaxNormD2
+import com.wsr.process.compute.norm.minmax.MinMaxNormD3
+import com.wsr.process.compute.pool.MaxPoolD2
+import com.wsr.process.compute.pool.MaxPoolD3
+import com.wsr.process.compute.position.PositionEmbeddingD2
+import com.wsr.process.compute.position.PositionEncodeD2
+import com.wsr.process.compute.position.RoPED2
+import com.wsr.process.compute.skip.SkipD1
+import com.wsr.process.compute.skip.SkipD2
+import com.wsr.process.compute.skip.SkipD3
+import com.wsr.process.reshape.gad.GlobalAverageD2ToD1
+import com.wsr.process.reshape.gad.GlobalAverageD3ToD1
+import com.wsr.process.reshape.gad.GlobalAverageD3ToD2
+import com.wsr.process.reshape.reshape.ReshapeD2ToD1
+import com.wsr.process.reshape.reshape.ReshapeD3ToD1
+import com.wsr.process.reshape.reshape.ReshapeD3ToD2
+import com.wsr.process.reshape.token.TokenEmbeddingD1ToD2
 import com.wsr.optimizer.Optimizer
 import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.adam.AdamD1
@@ -116,7 +116,7 @@ import okio.BufferedSource
 
 class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
     private val converterSerializer = json.serializersModule.serializer<Converter>()
-    private val layerSerializer = json.serializersModule.serializer<List<Layer>>()
+    private val layerSerializer = json.serializersModule.serializer<List<Process>>()
     private val outputSerializer = json.serializersModule.serializer<Output>()
 
     override val descriptor: SerialDescriptor =
@@ -145,9 +145,9 @@ class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
         val modules = mutableListOf(buildInSerializersModule)
 
         @JvmName("registerLayer")
-        inline fun <reified T : Layer> register(clazz: KClass<T>) {
+        inline fun <reified T : Process> register(clazz: KClass<T>) {
             val module = SerializersModule {
-                polymorphic(Layer::class) {
+                polymorphic(Process::class) {
                     subclass(clazz)
                 }
             }
@@ -225,7 +225,7 @@ class NetworkSerializer<I, O> : KSerializer<Network<I, O>> {
 }
 
 private val buildInSerializersModule = SerializersModule {
-    polymorphic(Layer::class) {
+    polymorphic(Process::class) {
         /**
          * Process
          */

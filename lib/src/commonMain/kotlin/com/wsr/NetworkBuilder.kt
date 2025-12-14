@@ -5,15 +5,15 @@ import com.wsr.converter.linear.LinearD1
 import com.wsr.converter.linear.LinearD2
 import com.wsr.core.IOType
 import com.wsr.initializer.WeightInitializer
-import com.wsr.layer.Layer
-import com.wsr.layer.compute.Compute
-import com.wsr.layer.reshape.Reshape
+import com.wsr.process.Process
+import com.wsr.process.compute.Compute
+import com.wsr.process.reshape.Reshape
 import com.wsr.optimizer.Optimizer
 import com.wsr.output.Output
 
 sealed interface NetworkBuilder<I, O> {
     val input: Converter
-    val layers: List<Layer>
+    val layers: List<Process>
     val optimizer: Optimizer
     val initializer: WeightInitializer
 
@@ -21,7 +21,7 @@ sealed interface NetworkBuilder<I, O> {
     data class D1<I> internal constructor(
         val inputSize: Int,
         override val input: Converter,
-        override val layers: List<Layer>,
+        override val layers: List<Process>,
         override val optimizer: Optimizer,
         override val initializer: WeightInitializer,
     ) : NetworkBuilder<I, IOType.D1> {
@@ -62,7 +62,7 @@ sealed interface NetworkBuilder<I, O> {
         val inputX: Int,
         val inputY: Int,
         override val input: Converter,
-        override val layers: List<Layer>,
+        override val layers: List<Process>,
         override val optimizer: Optimizer,
         override val initializer: WeightInitializer,
     ) : NetworkBuilder<I, IOType.D2> {
@@ -104,7 +104,7 @@ sealed interface NetworkBuilder<I, O> {
         val inputY: Int,
         val inputZ: Int,
         override val input: Converter,
-        override val layers: List<Layer>,
+        override val layers: List<Process>,
         override val optimizer: Optimizer,
         override val initializer: WeightInitializer,
     ) : NetworkBuilder<I, IOType.D3> {

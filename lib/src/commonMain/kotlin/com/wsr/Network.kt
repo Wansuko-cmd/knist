@@ -3,8 +3,8 @@ package com.wsr
 import com.wsr.batch.Batch
 import com.wsr.converter.Converter
 import com.wsr.core.IOType
-import com.wsr.layer.Context
-import com.wsr.layer.Layer
+import com.wsr.process.Context
+import com.wsr.process.Process
 import com.wsr.output.Output
 import kotlinx.serialization.Serializable
 import okio.BufferedSink
@@ -16,12 +16,12 @@ private typealias TrainLambda = (input: Batch<IOType>, context: Context) -> Batc
 class Network<I, O> internal constructor(
     val inputConverter: Converter,
     val outputConverter: Converter,
-    val layers: List<Layer>,
+    val layers: List<Process>,
     val output: Output,
 ) {
     private val trainLambda: (TrainLambda) -> TrainLambda = run {
         val initial: (TrainLambda) -> TrainLambda = { it }
-        layers.foldRight(initial) { layer: Layer, acc: (TrainLambda) -> TrainLambda ->
+        layers.foldRight(initial) { layer: Process, acc: (TrainLambda) -> TrainLambda ->
             { final: TrainLambda ->
                 { input: Batch<IOType>, context: Context ->
                     layer._train(input, context) { i -> acc(final)(i, context) }
