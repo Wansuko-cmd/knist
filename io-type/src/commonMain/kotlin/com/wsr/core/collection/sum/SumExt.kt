@@ -1,46 +1,16 @@
 package com.wsr.core.collection.sum
 
 import com.wsr.core.IOType
-import com.wsr.core.d1
-import com.wsr.core.d2
-import com.wsr.core.get
-import com.wsr.core.reshape.transpose.transpose
+import com.wsr.core.collection.reduce.reduce
 
 fun IOType.D1.sum() = value.toFloatArray().sum()
 
 fun IOType.D2.sum() = value.toFloatArray().sum()
 
-fun IOType.D2.sum(axis: Int): IOType.D1 = when (axis) {
-    0 -> {
-        val transpose = transpose()
-        IOType.d1(shape[1]) { transpose[it].sum() }
-    }
-
-    1 -> {
-        IOType.d1(shape[0]) { this[it].sum() }
-    }
-
-    else -> throw IllegalArgumentException("IOType.D2.sum axis is $axis not 0 or 1.")
-}
+fun IOType.D2.sum(axis: Int): IOType.D1 = reduce(axis) { acc, i -> acc + i }
 
 fun IOType.D3.sum() = value.toFloatArray().sum()
 
-fun IOType.D3.sum(axis: Int) = when (axis) {
-    0 -> {
-        val transpose = transpose(axisI = 1, axisJ = 2, axisK = 0)
-        IOType.d2(i = transpose.shape[1], j = transpose.shape[2]) { i, j -> transpose[i, j].sum() }
-    }
-
-    1 -> {
-        val transpose = transpose(axisI = 0, axisJ = 2, axisK = 1)
-        IOType.d2(i = transpose.shape[0], j = transpose.shape[1]) { i, j -> transpose[i, j].sum() }
-    }
-
-    2 -> {
-        IOType.d2(i = shape[0], j = shape[1]) { i, j -> this[i, j].sum() }
-    }
-
-    else -> throw IllegalArgumentException("IOType.D3.sum axis is $axis not 0, 1 or 2.")
-}
+fun IOType.D3.sum(axis: Int) = reduce(axis) { acc, i -> acc + i }
 
 fun IOType.D4.sum() = value.toFloatArray().sum()
