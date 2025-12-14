@@ -7,9 +7,9 @@ import com.wsr.batch.reshape.transpose.transpose
 import com.wsr.core.IOType
 import com.wsr.core.reshape.transpose.transpose
 import com.wsr.initializer.WeightInitializer
+import com.wsr.optimizer.Optimizer
 import com.wsr.process.Context
 import com.wsr.process.compute.Compute
-import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 
 @Serializable

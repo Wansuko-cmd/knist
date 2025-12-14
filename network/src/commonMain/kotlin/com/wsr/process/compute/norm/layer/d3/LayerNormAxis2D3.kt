@@ -2,9 +2,9 @@ package com.wsr.process.compute.norm.layer.d3
 
 import com.wsr.batch.Batch
 import com.wsr.core.IOType
+import com.wsr.optimizer.Optimizer
 import com.wsr.process.Context
 import com.wsr.process.compute.Compute
-import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 
 @Serializable

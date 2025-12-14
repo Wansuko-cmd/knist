@@ -4,6 +4,9 @@ import com.wsr.Network
 import com.wsr.NetworkBuilder
 import com.wsr.NetworkSerializer
 import com.wsr.initializer.He
+import com.wsr.optimizer.Scheduler
+import com.wsr.optimizer.adam.AdamW
+import com.wsr.output.softmax.softmaxWithLoss
 import com.wsr.process.compute.affine.affine
 import com.wsr.process.compute.bias.bias
 import com.wsr.process.compute.function.relu.reLU
@@ -11,9 +14,6 @@ import com.wsr.process.compute.function.relu.swish
 import com.wsr.process.compute.norm.layer.d1.layerNorm
 import com.wsr.process.compute.skip.skip
 import com.wsr.process.reshape.reshape.reshapeToD1
-import com.wsr.optimizer.Scheduler
-import com.wsr.optimizer.adam.AdamW
-import com.wsr.output.softmax.softmaxWithLoss
 
 private const val TRAIN_IMAGE_PATH = "mnist/train-images-idx3-ubyte.gz"
 private const val TRAIN_LABEL_PATH = "mnist/train-labels-idx1-ubyte.gz"

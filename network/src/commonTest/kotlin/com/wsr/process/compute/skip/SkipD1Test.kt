@@ -9,11 +9,11 @@ import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.get
+import com.wsr.optimizer.Scheduler
+import com.wsr.optimizer.sgd.Sgd
 import com.wsr.process.Context
 import com.wsr.process.compute.affine.AffineD1
 import com.wsr.process.compute.bias.BiasD1
-import com.wsr.optimizer.Scheduler
-import com.wsr.optimizer.sgd.Sgd
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -19,9 +19,9 @@ import com.wsr.core.operation.plus.plus
 import com.wsr.core.operation.times.times
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
+import com.wsr.optimizer.Optimizer
 import com.wsr.process.Context
 import com.wsr.process.compute.Compute
-import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 
 @Serializable

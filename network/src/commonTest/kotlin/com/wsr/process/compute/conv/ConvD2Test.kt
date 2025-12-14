@@ -8,9 +8,9 @@ import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.d3
 import com.wsr.core.d4
-import com.wsr.process.Context
 import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
+import com.wsr.process.Context
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

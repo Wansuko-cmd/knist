@@ -8,9 +8,9 @@ import com.wsr.core.IOType
 import com.wsr.core.operation.matmul.matMul
 import com.wsr.core.reshape.transpose.transpose
 import com.wsr.initializer.WeightInitializer
+import com.wsr.optimizer.Optimizer
 import com.wsr.process.Context
 import com.wsr.process.compute.Compute
-import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 
 @Serializable

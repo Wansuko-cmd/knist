@@ -8,8 +8,8 @@ import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.d1
 import com.wsr.core.get
-import com.wsr.process.Context
 import com.wsr.nextFloat
+import com.wsr.process.Context
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals

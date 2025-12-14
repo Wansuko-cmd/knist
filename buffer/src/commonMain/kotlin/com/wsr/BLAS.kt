@@ -1,7 +1,7 @@
 package com.wsr
 
-import com.wsr.blas.base.DataBuffer
-import com.wsr.blas.base.IBLAS
+import com.wsr.base.DataBuffer
+import com.wsr.base.IBLAS
 import com.wsr.open.openBLAS
 
 object BLAS : IBLAS {

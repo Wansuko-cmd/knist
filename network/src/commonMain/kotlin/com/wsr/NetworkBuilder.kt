@@ -5,11 +5,11 @@ import com.wsr.converter.linear.LinearD1
 import com.wsr.converter.linear.LinearD2
 import com.wsr.core.IOType
 import com.wsr.initializer.WeightInitializer
+import com.wsr.optimizer.Optimizer
+import com.wsr.output.Output
 import com.wsr.process.Process
 import com.wsr.process.compute.Compute
 import com.wsr.process.reshape.Reshape
-import com.wsr.optimizer.Optimizer
-import com.wsr.output.Output
 
 sealed interface NetworkBuilder<I, O> {
     val input: Converter

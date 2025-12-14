@@ -1,7 +1,7 @@
 package com.wsr.core.operation.matmul
 
 import com.wsr.BLAS
-import com.wsr.blas.base.DataBuffer
+import com.wsr.base.DataBuffer
 import com.wsr.core.IOType
 
 infix fun IOType.D2.matMul(other: IOType.D1): IOType.D1 {

@@ -5,9 +5,9 @@ import com.wsr.batch.Batch
 import com.wsr.batch.operation.times.times
 import com.wsr.core.IOType
 import com.wsr.core.d1
+import com.wsr.nextFloat
 import com.wsr.process.Context
 import com.wsr.process.compute.Compute
-import com.wsr.nextFloat
 import kotlin.random.Random
 import kotlinx.serialization.Serializable
 

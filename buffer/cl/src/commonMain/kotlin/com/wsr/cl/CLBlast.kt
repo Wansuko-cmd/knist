@@ -1,6 +1,6 @@
 package com.wsr.cl
 
-import com.wsr.blas.base.IBLAS
+import com.wsr.base.IBLAS
 
 val cLBlast: IBLAS = loadCLBlast() ?: object : IBLAS {}
 

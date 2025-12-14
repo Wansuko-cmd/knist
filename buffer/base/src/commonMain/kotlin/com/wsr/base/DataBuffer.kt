@@ -1,4 +1,4 @@
-package com.wsr.blas.base
+package com.wsr.base
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable

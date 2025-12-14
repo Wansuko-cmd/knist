@@ -1,9 +1,9 @@
 package com.wsr.batch.operation.matmul
 
 import com.wsr.BLAS
+import com.wsr.base.DataBuffer
 import com.wsr.batch.Batch
 import com.wsr.batch.collecction.map.map
-import com.wsr.blas.base.DataBuffer
 import com.wsr.core.IOType
 import com.wsr.core.operation.matmul.matMul
 

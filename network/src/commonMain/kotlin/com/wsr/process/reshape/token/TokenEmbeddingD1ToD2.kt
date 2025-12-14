@@ -11,9 +11,9 @@ import com.wsr.core.operation.div.div
 import com.wsr.core.operation.plus.plus
 import com.wsr.core.set
 import com.wsr.initializer.WeightInitializer
+import com.wsr.optimizer.Optimizer
 import com.wsr.process.Context
 import com.wsr.process.reshape.Reshape
-import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
 
 @Serializable

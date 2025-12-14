@@ -21,9 +21,9 @@ import com.wsr.core.get
 import com.wsr.core.reshape.broadcast.broadcastToD2
 import com.wsr.core.reshape.transpose.transpose
 import com.wsr.initializer.WeightInitializer
+import com.wsr.optimizer.Optimizer
 import com.wsr.process.Context
 import com.wsr.process.compute.Compute
-import com.wsr.optimizer.Optimizer
 import kotlin.math.sqrt
 import kotlinx.serialization.Serializable
 

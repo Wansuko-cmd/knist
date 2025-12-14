@@ -1,10 +1,8 @@
 package com.wsr.core.operation.matmul
 
 import com.wsr.BLAS
-import com.wsr.blas.base.DataBuffer
+import com.wsr.base.DataBuffer
 import com.wsr.core.IOType
-import com.wsr.core.get
-import com.wsr.core.set
 
 infix fun IOType.D3.matMul(other: IOType.D3): IOType.D3 {
     val result = BLAS.sgemm(

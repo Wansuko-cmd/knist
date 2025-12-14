@@ -1,6 +1,6 @@
 package com.wsr.open
 
-import com.wsr.blas.base.IBLAS
+import com.wsr.base.IBLAS
 
 val openBLAS: IBLAS = loadOpenBLAS() ?: object : IBLAS {}
 

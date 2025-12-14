@@ -5,6 +5,9 @@ import com.wsr.NetworkBuilder
 import com.wsr.converter.word.WordD2
 import com.wsr.converter.word.wordsD1
 import com.wsr.initializer.Xavier
+import com.wsr.optimizer.Scheduler
+import com.wsr.optimizer.adam.AdamW
+import com.wsr.output.softmax.softmaxWithLoss
 import com.wsr.process.compute.affine.affine
 import com.wsr.process.compute.attention.attention
 import com.wsr.process.compute.bias.bias
@@ -14,9 +17,6 @@ import com.wsr.process.compute.norm.layer.d2.layerNorm
 import com.wsr.process.compute.position.positionEmbedding
 import com.wsr.process.compute.skip.skip
 import com.wsr.process.reshape.token.tokenEmbedding
-import com.wsr.optimizer.Scheduler
-import com.wsr.optimizer.adam.AdamW
-import com.wsr.output.softmax.softmaxWithLoss
 import java.io.File
 import kotlin.random.Random
 import kotlin.random.nextInt

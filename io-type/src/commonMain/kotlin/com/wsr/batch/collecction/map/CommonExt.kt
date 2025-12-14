@@ -1,7 +1,7 @@
 package com.wsr.batch.collecction.map
 
+import com.wsr.base.DataBuffer
 import com.wsr.batch.Batch
-import com.wsr.blas.base.DataBuffer
 import com.wsr.core.IOType
 
 inline fun <T : IOType> Batch<T>.mapValue(block: (Float) -> Float): Batch<T> {

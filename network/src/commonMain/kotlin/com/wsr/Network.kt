@@ -3,9 +3,9 @@ package com.wsr
 import com.wsr.batch.Batch
 import com.wsr.converter.Converter
 import com.wsr.core.IOType
+import com.wsr.output.Output
 import com.wsr.process.Context
 import com.wsr.process.Process
-import com.wsr.output.Output
 import kotlinx.serialization.Serializable
 import okio.BufferedSink
 import okio.BufferedSource

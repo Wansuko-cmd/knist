@@ -1,4 +1,4 @@
-package com.wsr.blas.base
+package com.wsr.base
 
 interface IBLAS {
     val isNative: Boolean get() = false

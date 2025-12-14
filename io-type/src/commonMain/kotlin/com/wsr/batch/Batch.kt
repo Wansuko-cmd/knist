@@ -1,6 +1,6 @@
 package com.wsr.batch
 
-import com.wsr.blas.base.DataBuffer
+import com.wsr.base.DataBuffer
 import com.wsr.core.IOType
 import com.wsr.core.d0
 

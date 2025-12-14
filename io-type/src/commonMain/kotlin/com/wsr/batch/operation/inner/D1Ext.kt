@@ -1,11 +1,9 @@
 package com.wsr.batch.operation.inner
 
 import com.wsr.BLAS
+import com.wsr.base.DataBuffer
 import com.wsr.batch.Batch
-import com.wsr.batch.get
-import com.wsr.blas.base.DataBuffer
 import com.wsr.core.IOType
-import com.wsr.core.operation.inner.inner
 
 @JvmName("batchD1sInnerToD1s")
 infix fun Batch<IOType.D1>.inner(other: Batch<IOType.D1>): Batch<IOType.D0> {
