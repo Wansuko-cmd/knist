@@ -7,13 +7,20 @@ import com.wsr.batch.collecction.map.map
 import com.wsr.core.IOType
 import com.wsr.core.operation.matmul.matMul
 
-fun IOType.D3.matMul(other: Batch<IOType.D3>, transA: Boolean = false, transB: Boolean = false) = other.map { this.matMul(it, transA, transB) }
+fun IOType.D3.matMul(other: Batch<IOType.D3>, transA: Boolean = false, transB: Boolean = false) = other.map {
+    this.matMul(it, transA, transB)
+}
 
 @JvmName("matMulToD3s")
-fun Batch<IOType.D3>.matMul(other: IOType.D3, transA: Boolean = false, transB: Boolean = false): Batch<IOType.D3> = map { it.matMul(other, transA, transB) }
+fun Batch<IOType.D3>.matMul(other: IOType.D3, transA: Boolean = false, transB: Boolean = false): Batch<IOType.D3> =
+    map { it.matMul(other, transA, transB) }
 
 @JvmName("matMulToD3s")
-fun Batch<IOType.D3>.matMul(other: Batch<IOType.D3>, transA: Boolean = false, transB: Boolean = false): Batch<IOType.D3> {
+fun Batch<IOType.D3>.matMul(
+    other: Batch<IOType.D3>,
+    transA: Boolean = false,
+    transB: Boolean = false,
+): Batch<IOType.D3> {
     val m = if (transA) shape[2] else shape[1]
     val n = if (transB) other.shape[1] else other.shape[2]
     val k = if (transA) shape[1] else shape[2]

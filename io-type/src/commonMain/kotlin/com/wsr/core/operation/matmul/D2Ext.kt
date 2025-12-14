@@ -13,7 +13,7 @@ fun IOType.D2.matMul(other: IOType.D1, trans: Boolean = false): IOType.D1 {
         trans = trans,
         x = other.value,
         beta = 0f,
-        y = DataBuffer.create(if(trans) shape[1] else shape[0]),
+        y = DataBuffer.create(if (trans) shape[1] else shape[0]),
     )
     return IOType.D1(result)
 }

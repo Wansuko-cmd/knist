@@ -31,7 +31,11 @@ fun Batch<IOType.D2>.matMul(other: IOType.D2, transA: Boolean = false, transB: B
 }
 
 @JvmName("matMulToD2s")
-fun Batch<IOType.D2>.matMul(other: Batch<IOType.D2>, transA: Boolean = false, transB: Boolean = false): Batch<IOType.D2> {
+fun Batch<IOType.D2>.matMul(
+    other: Batch<IOType.D2>,
+    transA: Boolean = false,
+    transB: Boolean = false,
+): Batch<IOType.D2> {
     val m = if (transA) shape[1] else shape[0]
     val n = if (transB) other.shape[0] else other.shape[1]
     val k = if (transA) shape[0] else shape[1]
