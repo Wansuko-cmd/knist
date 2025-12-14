@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        module: [ lib, io-type:core ]
+        module: [ network, io-type ]
     runs-on: ubuntu-latest
     steps:
       - name: 仮想ブランチにチェックアウト

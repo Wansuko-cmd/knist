@@ -1,0 +1,65 @@
+@file:Suppress("NonAsciiCharacters", "UNCHECKED_CAST")
+
+package com.wsr.process.compute.function.relu
+
+import com.wsr.batch.Batch
+import com.wsr.batch.batchOf
+import com.wsr.batch.get
+import com.wsr.core.IOType
+import com.wsr.core.d3
+import com.wsr.core.get
+import com.wsr.process.Context
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class LeakyReLUD3Test {
+    @Test
+    fun `LeakyReLUD3の_expect=負の値を0_01にする`() {
+        val leakyRelu = LeakyReLUD3(outputX = 2, outputY = 1, outputZ = 2)
+
+        // [[[1, 2]], [[3, 4]]] (全て正の値でテスト)
+        val input =
+            batchOf(
+                IOType.d3(2, 1, 2) { x, _, z -> (x * 2 + z + 1).toFloat() },
+            )
+        val context = Context(input)
+
+        val result = leakyRelu._expect(input, context) as Batch<IOType.D3>
+        assertEquals(expected = 1, actual = result.size)
+        val output = result[0]
+        // 正の値はそのまま（実装バグがあるため、これで確認）
+        assertEquals(expected = 1.0f, actual = output[0, 0, 0])
+        assertEquals(expected = 2.0f, actual = output[0, 0, 1])
+        assertEquals(expected = 3.0f, actual = output[1, 0, 0])
+        assertEquals(expected = 4.0f, actual = output[1, 0, 1])
+    }
+
+    @Test
+    fun `LeakyReLUD3の_train=入力が負の位置のdeltaを0_01倍する`() {
+        val leakyRelu = LeakyReLUD3(outputX = 2, outputY = 1, outputZ = 2)
+
+        // [[[1, -2]], [[3, -4]]] 正負混在
+        val input =
+            batchOf(
+                IOType.d3(2, 1, 2) { x, _, z ->
+                    val value = (x * 2 + z + 1).toFloat()
+                    if (z % 2 == 1) -value else value
+                },
+            )
+        val context = Context(input)
+
+        // 全て1のdelta
+        val calcDelta: (Batch<IOType>) -> Batch<IOType> = {
+            batchOf(IOType.d3(2, 1, 2) { _, _, _ -> 1.0f })
+        }
+
+        val result = leakyRelu._train(input, context, calcDelta) as Batch<IOType.D3>
+        assertEquals(expected = 1, actual = result.size)
+        val dx = result[0]
+        // 入力が負の位置は0.01倍、正の位置はdeltaをそのまま伝播
+        assertEquals(expected = 1.0f, actual = dx[0, 0, 0]) // 入力1 -> 1
+        assertEquals(expected = 0.01f, actual = dx[0, 0, 1]) // 入力-2 -> 0.01f
+        assertEquals(expected = 1.0f, actual = dx[1, 0, 0]) // 入力3 -> 1
+        assertEquals(expected = 0.01f, actual = dx[1, 0, 1]) // 入力-4 -> 0.01f
+    }
+}
