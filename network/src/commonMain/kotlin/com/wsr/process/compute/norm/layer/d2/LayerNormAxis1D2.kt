@@ -65,8 +65,8 @@ class LayerNormAxis1D2 internal constructor(
         // dy/x <- (x-average(x)のx)
         val dx1 = dNumerator
 
-        // dy/x <- average(x)のx - axis=1なので各行で平均
-        val dx2 = -1f * dNumerator.average(axis = 1).broadcastToD2(axis = 1, size = outputY)
+        // dy/x <- x-average(x)のaverage(x)のx
+        val dx2 = -1f * dNumerator.average(axis = 1)
 
         // dy/x <- variance(x)のx
         val dx3 = run {
@@ -76,16 +76,15 @@ class LayerNormAxis1D2 internal constructor(
             val dVariancePerRow = dvn / dvd
 
             // dy/[x-average(x)]のx部分
-            val dSquared = 2f * dVariancePerRow.broadcastToD2(axis = 1, size = outputY) * numerator
+            val dSquared = 2f * dVariancePerRow.times(other = numerator, axis = 1)
 
-            // dy/[-average(x)]のx部分 (各行で同じ値なのでbroadcast)
+            // dy/[x-average(x)]のaverage(x)のx部分
             val avgGradient = -2f * dVariancePerRow * numerator.average(axis = 1)
-            val dx2Broadcast = avgGradient.broadcastToD2(axis = 1, size = outputY)
 
-            dSquared + dx2Broadcast
+            dSquared.plus(other = avgGradient, axis = 1)
         }
 
         // dy/dx
-        return dx1 + dx2 + dx3
+        return dx1.plus(dx2, axis = 1) + dx3
     }
 }
