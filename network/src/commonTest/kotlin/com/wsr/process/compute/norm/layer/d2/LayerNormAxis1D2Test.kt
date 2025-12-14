@@ -22,9 +22,10 @@ class LayerNormAxis1D2Test {
         // weight = [[1, 1], [1, 1]]
         val weight = IOType.d2(2, 2) { _, _ -> 1.0f }
         val norm =
-            LayerNormAxis1D2(
+            LayerNormAxisD2(
                 outputX = 2,
                 outputY = 2,
+                axis = 1,
                 e = 1e-10f,
                 optimizer = Sgd(Scheduler.Fix(0.1f)).d2(i = 2, j = 2),
                 weight = weight,
@@ -81,9 +82,10 @@ class LayerNormAxis1D2Test {
         // weight = [[2, 2], [2, 2]]
         val weight = IOType.d2(2, 2) { _, _ -> 2.0f }
         val norm =
-            LayerNormAxis1D2(
+            LayerNormAxisD2(
                 outputX = 2,
                 outputY = 2,
+                axis = 1,
                 e = 1e-10f,
                 optimizer = Sgd(Scheduler.Fix(0.1f)).d2(i = 2, j = 2),
                 weight = weight,
@@ -154,9 +156,10 @@ class LayerNormAxis1D2Test {
                 }
             }
         val norm =
-            LayerNormAxis1D2(
+            LayerNormAxisD2(
                 outputX = 2,
                 outputY = 2,
+                axis = 1,
                 e = 1e-10f,
                 optimizer = Sgd(Scheduler.Fix(0.01f)).d2(i = 2, j = 2),
                 weight = weight,
