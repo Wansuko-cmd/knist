@@ -18,19 +18,14 @@ dependencyResolutionManagement {
 rootProject.name = "perceptron"
 
 include(":sample")
+
 include(":network")
+
 include(":io-type")
 
 include(":buffer")
 include(":buffer:base")
 include(":buffer:open")
 include(":buffer:open:cpp")
-
 include(":buffer:cl")
 include(":buffer:cl:cpp")
-
-// include(":deprecated:functional")
-// include(":deprecated:optimize")
-// include(":deprecated:tensor")
-// include(":deprecated:logical")
-// include(":deprecated:practical")
