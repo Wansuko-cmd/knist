@@ -52,22 +52,36 @@ interface IBLAS {
 
     /**
      * Level 2 BLAS: 行列とベクトルの積
-     * y = alpha * a * x + beta * y
+     * y = alpha * op(a) * x + beta * y
+     * op(x) = if (trans) x^T else x
      *
      * @param row 行列Aの行数
      * @param col 行列Aの列数
      * @param alpha スカラー係数
-     * @param a 行列A (row-major, サイズ m * n)
+     * @param a 行列A (row-major, サイズ row * col)
+     * @param trans 行列Aを転置するか
      * @param x ベクトルx
      * @param beta スカラー係数
      * @param y ベクトルy
      */
-    fun sgemv(row: Int, col: Int, alpha: Float, a: DataBuffer, x: DataBuffer, beta: Float, y: DataBuffer): DataBuffer {
-        val result = DataBuffer.create(row)
-        for (i in 0 until row) {
+    fun sgemv(
+        row: Int,
+        col: Int,
+        alpha: Float,
+        a: DataBuffer,
+        trans: Boolean,
+        x: DataBuffer,
+        beta: Float,
+        y: DataBuffer,
+    ): DataBuffer {
+        val rows = if (trans) col else row
+        val cols = if (trans) row else col
+        val result = DataBuffer.create(rows)
+        for (i in 0 until rows) {
             var sum = 0f
-            for (j in 0 until col) {
-                sum += a[i * col + j] * x[j]
+            for (j in 0 until cols) {
+                val valA = if (trans) a[j * col + i] else a[i * col + j]
+                sum += valA * x[j]
             }
             result[i] = alpha * sum + beta * y[i]
         }
@@ -75,15 +89,18 @@ interface IBLAS {
     }
 
     /**
-     * Level 3 BLAS: 行列と行列の積 (転置なし固定)
-     * result[b] = alpha * a[b] * b[b] + beta * c[b]
+     * Level 3 BLAS: 行列と行列の積
+     * result[i] = alpha * op(a[i]) * op(b[i]) + beta * c[i]
+     * op(x) = if (trans) x^T else x
      *
-     * @param m 行列Aの行数、行列Cの行数
-     * @param n 行列Bの列数、行列Cの列数
-     * @param k 行列Aの列数、行列Bの行数
+     * @param m op(行列A)の行数、行列Cの行数、結果行列の行数
+     * @param n op(行列B)の列数、行列Cの列数、結果行列の列数
+     * @param k op(行列A)の列数、op(行列B)の行数
      * @param alpha スカラー係数
      * @param a 行列A群 (row-major, batchSize * m * k)
+     * @param transA 行列Aを転置するか
      * @param b 行列B群 (row-major, batchSize * k * n)
+     * @param transB 行列Bを転置するか
      * @param beta Cに対する係数
      * @param c 加算対象の行列C群 (row-major, batchSize * m * n)
      * @param batchSize バッチサイズ
@@ -94,7 +111,9 @@ interface IBLAS {
         k: Int,
         alpha: Float,
         a: DataBuffer,
+        transA: Boolean,
         b: DataBuffer,
+        transB: Boolean,
         beta: Float,
         c: DataBuffer,
         batchSize: Int,
@@ -112,7 +131,9 @@ interface IBLAS {
                 for (j in 0 until n) {
                     var sum = 0f
                     for (p in 0 until k) {
-                        sum += a[offsetA + i * k + p] * b[offsetB + p * n + j]
+                        val valA = if (transA) a[offsetA + p * m + i] else a[offsetA + i * k + p]
+                        val valB = if (transB) b[offsetB + j * k + p] else b[offsetB + p * n + j]
+                        sum += valA * valB
                     }
                     val index = offsetC + i * n + j
                     result[index] = alpha * sum + beta * c[index]
