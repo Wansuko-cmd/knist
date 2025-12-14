@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'io-type/blas/cl/cpp/src/**'
+      - 'buffer/cl/cpp/src/**'
       - '.github/workflows/build-cl-blast.yml'
 
 env:
@@ -76,11 +76,11 @@ jobs:
       - name: CLBlastのキャッシュを復元
         uses: actions/cache@v4
         with:
-          path: io-type/blas/cl/cpp/build/clblast
-          key: clblast-${{ hashFiles('io-type/blas/cl/cpp/CMakeLists.txt') }}-${{ matrix.os_name }}-${{ matrix.arch }}
+          path: buffer/cl/cpp/build/clblast
+          key: clblast-${{ hashFiles('buffer/cl/cpp/CMakeLists.txt') }}-${{ matrix.os_name }}-${{ matrix.arch }}
 
       - name: ネイティブライブラリをビルド
-        run: ./gradlew :io-type:blas:cl:cpp:cmakeBuild
+        run: ./gradlew :buffer:cl:cpp:cmakeBuild
         shell: bash
 
       - name: 成果物をアップロード (Windows以外)
@@ -89,8 +89,8 @@ jobs:
         with:
           name: cl-blast-${{ matrix.os_name }}-${{ matrix.arch }}
           path: |
-            io-type/blas/cl/cpp/build/libcl_blast.${{ matrix.lib_extension }}
-            io-type/blas/cl/cpp/build/Release/libcl_blast.${{ matrix.lib_extension }}
+            buffer/cl/cpp/build/libcl_blast.${{ matrix.lib_extension }}
+            buffer/cl/cpp/build/Release/libcl_blast.${{ matrix.lib_extension }}
           if-no-files-found: error
 
       - name: 成果物をアップロード (Windows)
@@ -99,8 +99,8 @@ jobs:
         with:
           name: cl-blast-${{ matrix.os_name }}-${{ matrix.arch }}
           path: |
-            io-type/blas/cl/cpp/build/cl_blast.${{ matrix.lib_extension }}
-            io-type/blas/cl/cpp/build/Release/cl_blast.${{ matrix.lib_extension }}
+            buffer/cl/cpp/build/cl_blast.${{ matrix.lib_extension }}
+            buffer/cl/cpp/build/Release/cl_blast.${{ matrix.lib_extension }}
           if-no-files-found: error
 
   commit:
@@ -125,33 +125,33 @@ jobs:
       - name: 成果物をresourcesに配置
         run: |
           # macOS/Arm64
-          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/macos/Arm64
-          find artifacts/cl-blast-macos-Arm64 -name "libcl_blast.dylib" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/macos/Arm64/ \;
+          mkdir -p buffer/cl/src/jvmMain/resources/cl/macos/Arm64
+          find artifacts/cl-blast-macos-Arm64 -name "libcl_blast.dylib" -exec cp {} buffer/cl/src/jvmMain/resources/cl/macos/Arm64/ \;
 
           # macOS/X64
-          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/macos/X64
-          find artifacts/cl-blast-macos-X64 -name "libcl_blast.dylib" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/macos/X64/ \;
+          mkdir -p buffer/cl/src/jvmMain/resources/cl/macos/X64
+          find artifacts/cl-blast-macos-X64 -name "libcl_blast.dylib" -exec cp {} buffer/cl/src/jvmMain/resources/cl/macos/X64/ \;
 
           # Linux/X64
-          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/linux/X64
-          find artifacts/cl-blast-linux-X64 -name "libcl_blast.so" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/linux/X64/ \;
+          mkdir -p buffer/cl/src/jvmMain/resources/cl/linux/X64
+          find artifacts/cl-blast-linux-X64 -name "libcl_blast.so" -exec cp {} buffer/cl/src/jvmMain/resources/cl/linux/X64/ \;
 
           # Linux/Arm64
-          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/linux/Arm64
-          find artifacts/cl-blast-linux-Arm64 -name "libcl_blast.so" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/linux/Arm64/ \;
+          mkdir -p buffer/cl/src/jvmMain/resources/cl/linux/Arm64
+          find artifacts/cl-blast-linux-Arm64 -name "libcl_blast.so" -exec cp {} buffer/cl/src/jvmMain/resources/cl/linux/Arm64/ \;
 
           # Windows/X64
-          mkdir -p io-type/blas/cl/src/jvmMain/resources/cl/mingw/X64
-          find artifacts/cl-blast-mingw-X64 -name "cl_blast.dll" -exec cp {} io-type/blas/cl/src/jvmMain/resources/cl/mingw/X64/ \;
+          mkdir -p buffer/cl/src/jvmMain/resources/cl/mingw/X64
+          find artifacts/cl-blast-mingw-X64 -name "cl_blast.dll" -exec cp {} buffer/cl/src/jvmMain/resources/cl/mingw/X64/ \;
 
           echo "=== Resources structure ==="
-          find io-type/blas/cl/src/jvmMain/resources -type f
+          find buffer/cl/src/jvmMain/resources -type f
 
       - name: 変更をコミット
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add io-type/blas/cl/src/jvmMain/resources/
+          git add buffer/cl/src/jvmMain/resources/
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
