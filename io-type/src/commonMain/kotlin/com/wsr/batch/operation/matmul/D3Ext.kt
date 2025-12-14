@@ -7,23 +7,28 @@ import com.wsr.batch.collecction.map.map
 import com.wsr.core.IOType
 import com.wsr.core.operation.matmul.matMul
 
-infix fun IOType.D3.matMul(other: Batch<IOType.D3>) = other.map { this matMul it }
+fun IOType.D3.matMul(other: Batch<IOType.D3>, transA: Boolean = false, transB: Boolean = false) = other.map { this.matMul(it, transA, transB) }
 
 @JvmName("matMulToD3s")
-infix fun Batch<IOType.D3>.matMul(other: IOType.D3): Batch<IOType.D3> = map { it matMul other }
+fun Batch<IOType.D3>.matMul(other: IOType.D3, transA: Boolean = false, transB: Boolean = false): Batch<IOType.D3> = map { it.matMul(other, transA, transB) }
 
 @JvmName("matMulToD3s")
-infix fun Batch<IOType.D3>.matMul(other: Batch<IOType.D3>): Batch<IOType.D3> {
+fun Batch<IOType.D3>.matMul(other: Batch<IOType.D3>, transA: Boolean = false, transB: Boolean = false): Batch<IOType.D3> {
+    val m = if (transA) shape[2] else shape[1]
+    val n = if (transB) other.shape[1] else other.shape[2]
+    val k = if (transA) shape[1] else shape[2]
     val result = BLAS.sgemm(
-        m = shape[1],
-        n = other.shape[2],
-        k = shape[2],
+        m = m,
+        n = n,
+        k = k,
         alpha = 1f,
         a = value,
+        transA = transA,
         b = other.value,
+        transB = transB,
         beta = 0f,
-        c = DataBuffer.create(size * shape[0] * shape[1] * other.shape[2]),
+        c = DataBuffer.create(size * shape[0] * m * n),
         batchSize = size * shape[0],
     )
-    return Batch(value = result, size = size, shape = listOf(shape[0], shape[1], other.shape[2]))
+    return Batch(value = result, size = size, shape = listOf(shape[0], m, n))
 }

@@ -51,7 +51,7 @@ class ConvD1 internal constructor(
 
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
         val col = input.unfold(windowSize = kernel, stride = stride, padding = padding)
-        return (weight.reshapeToD2(outputX, channel * kernel) matMul col)
+        return (weight.reshapeToD2(outputX, channel * kernel).matMul(col))
             .reshapeToD3(i = filter, j = input.size, k = outputY)
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
             .toBatch()
@@ -63,7 +63,7 @@ class ConvD1 internal constructor(
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
         val col = input.unfold(windowSize = kernel, stride = stride, padding = padding)
-        val output = (weight.reshapeToD2(i = outputX, j = channel * kernel) matMul col)
+        val output = (weight.reshapeToD2(i = outputX, j = channel * kernel).matMul(col))
             .reshapeToD3(i = filter, j = input.size, k = outputY)
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
             .toBatch()
@@ -78,7 +78,7 @@ class ConvD1 internal constructor(
         val deltaCol = delta.toD3()
             .transpose(axisI = 1, axisJ = 0, axisK = 2)
             .reshapeToD2(i = filter, j = input.size * outputY)
-        val dx = (reversed matMul deltaCol).fold(
+        val dx = (reversed.matMul(deltaCol)).fold(
             channel = channel,
             batchSize = input.size,
             inputSize = inputSize,
