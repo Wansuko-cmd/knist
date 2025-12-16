@@ -132,39 +132,13 @@ fun <T> NetworkBuilder.D3<T>.layerNorm(
             ),
         )
 
-        0 -> LayerNormAxis0D3(
+        0, 1, 2 -> LayerNormAxisD3(
             outputX = inputX,
             outputY = inputY,
             outputZ = inputZ,
             optimizer = optimizer.d3(inputX, inputY, inputZ),
-            weight = initializer.d3(
-                input = listOf(inputX, inputY, inputZ),
-                output = listOf(inputX, inputY, inputZ),
-                x = inputX,
-                y = inputY,
-                z = inputZ,
-            ),
-        )
-
-        1 -> LayerNormAxis1D3(
-            outputX = inputX,
-            outputY = inputY,
-            outputZ = inputZ,
-            optimizer = optimizer.d3(inputX, inputY, inputZ),
-            weight = initializer.d3(
-                input = listOf(inputX, inputY, inputZ),
-                output = listOf(inputX, inputY, inputZ),
-                x = inputX,
-                y = inputY,
-                z = inputZ,
-            ),
-        )
-
-        2 -> LayerNormAxis2D3(
-            outputX = inputX,
-            outputY = inputY,
-            outputZ = inputZ,
-            optimizer = optimizer.d3(inputX, inputY, inputZ),
+            axis = axis,
+            e = e,
             weight = initializer.d3(
                 input = listOf(inputX, inputY, inputZ),
                 output = listOf(inputX, inputY, inputZ),

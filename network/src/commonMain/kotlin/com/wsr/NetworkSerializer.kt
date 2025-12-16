@@ -73,9 +73,7 @@ import com.wsr.process.compute.function.softmax.SoftmaxD3
 import com.wsr.process.compute.norm.layer.d1.LayerNormD1
 import com.wsr.process.compute.norm.layer.d2.LayerNormAxisD2
 import com.wsr.process.compute.norm.layer.d2.LayerNormD2
-import com.wsr.process.compute.norm.layer.d3.LayerNormAxis0D3
-import com.wsr.process.compute.norm.layer.d3.LayerNormAxis1D3
-import com.wsr.process.compute.norm.layer.d3.LayerNormAxis2D3
+import com.wsr.process.compute.norm.layer.d3.LayerNormAxisD3
 import com.wsr.process.compute.norm.layer.d3.LayerNormD3
 import com.wsr.process.compute.norm.minmax.MinMaxNormD1
 import com.wsr.process.compute.norm.minmax.MinMaxNormD2
@@ -288,9 +286,7 @@ private val buildInSerializersModule = SerializersModule {
         subclass(LayerNormAxisD2::class)
 
         subclass(LayerNormD3::class)
-        subclass(LayerNormAxis0D3::class)
-        subclass(LayerNormAxis1D3::class)
-        subclass(LayerNormAxis2D3::class)
+        subclass(LayerNormAxisD3::class)
 
         subclass(MinMaxNormD1::class)
         subclass(MinMaxNormD2::class)
