@@ -27,13 +27,13 @@ class SigmoidWithLossD2Test {
         val result = sigmoid._expect(input)
 
         assertEquals(
-            expected =  batchOf(
+            expected = batchOf(
                 IOType.d2(
                     shape = listOf(2, 2),
-                    value = floatArrayOf(0.7310586f, 0.880797f, 0.95257413f, 0.98201376f)
-                )
+                    value = floatArrayOf(0.7310586f, 0.880797f, 0.95257413f, 0.98201376f),
+                ),
             ),
-            actual = result
+            actual = result,
         )
     }
 

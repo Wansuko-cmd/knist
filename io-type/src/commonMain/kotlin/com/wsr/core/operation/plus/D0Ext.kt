@@ -5,7 +5,11 @@ import com.wsr.core.d0
 import com.wsr.core.d1
 import com.wsr.core.d2
 import com.wsr.core.d3
+import com.wsr.core.d4
 import com.wsr.core.get
+import com.wsr.core.operation.times.times
+
+operator fun Float.plus(other: IOType.D0): IOType.D0 = IOType.d0(this + other.get())
 
 operator fun Float.plus(other: IOType.D1): IOType.D1 = IOType.d1(other.shape) { this + other[it] }
 
@@ -13,4 +17,16 @@ operator fun Float.plus(other: IOType.D2): IOType.D2 = IOType.d2(other.shape) { 
 
 operator fun Float.plus(other: IOType.D3): IOType.D3 = IOType.d3(other.shape) { i, j, k -> this + other[i, j, k] }
 
+operator fun Float.plus(other: IOType.D4): IOType.D4 = IOType.d4(other.shape) { i, j, k, l -> this + other[i, j, k, l] }
+
+operator fun IOType.D0.plus(other: Float) = IOType.d0(get() + other)
+
 operator fun IOType.D0.plus(other: IOType.D0) = IOType.d0(get() + other.get())
+
+operator fun IOType.D0.plus(other: IOType.D1) = this.get() + other
+
+operator fun IOType.D0.plus(other: IOType.D2) = this.get() + other
+
+operator fun IOType.D0.plus(other: IOType.D3) = this.get() + other
+
+operator fun IOType.D0.plus(other: IOType.D4) = this.get() + other
