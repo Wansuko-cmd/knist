@@ -8,9 +8,6 @@ import com.wsr.core.IOType
 import com.wsr.core.get
 import com.wsr.core.operation.times.times
 
-@JvmName("batchFloatTimesD1s")
-operator fun Float.times(other: Batch<IOType.D1>) = other.map { this * it }
-
 @JvmName("batchD1sTimesD0s")
 operator fun Batch<IOType.D1>.times(other: Batch<IOType.D0>) = Batch(size) { this[it] * other[it].get() }
 

@@ -1,4 +1,4 @@
-package com.wsr.process.compute.norm.layer.d2
+package com.wsr.process.compute.norm.layer.d3
 
 import com.wsr.batch.Batch
 import com.wsr.batch.collecction.average.average
@@ -16,21 +16,23 @@ import com.wsr.process.compute.Compute
 import kotlinx.serialization.Serializable
 
 @Serializable
-class LayerNormAxisD2 internal constructor(
+class LayerNormAxisD3 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
+    override val outputZ: Int,
     private val axis: Int,
     private val e: Float,
-    private val optimizer: Optimizer.D2,
-    private var weight: IOType.D2,
-) : Compute.D2() {
+    private val optimizer: Optimizer.D3,
+    private var weight: IOType.D3,
+) : Compute.D3() {
     private val outputT = when (axis) {
         0 -> outputX
         1 -> outputY
-        else -> throw IllegalArgumentException("LayerNormAxisD2 axis is $axis, not 0 or 1.")
+        2 -> outputZ
+        else -> throw IllegalArgumentException("LayerNormAxisD3 axis is $axis, not 0, 1 or 2.")
     }
 
-    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> {
         val average = input.average(axis = axis)
         val numerator = input.minus(other = average, axis = axis)
 
@@ -42,10 +44,10 @@ class LayerNormAxisD2 internal constructor(
     }
 
     override fun train(
-        input: Batch<IOType.D2>,
+        input: Batch<IOType.D3>,
         context: Context,
-        calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D2> {
+        calcDelta: (Batch<IOType.D3>) -> Batch<IOType.D3>,
+    ): Batch<IOType.D3> {
         val average = input.average(axis = axis)
         val numerator = input.minus(other = average, axis = axis)
 
