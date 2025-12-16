@@ -3,6 +3,7 @@ package com.wsr.process.compute.norm.layer.d1
 import com.wsr.NetworkBuilder
 import com.wsr.batch.Batch
 import com.wsr.batch.collecction.average.average
+import com.wsr.batch.collecction.sum.sum
 import com.wsr.batch.get
 import com.wsr.batch.math.pow
 import com.wsr.batch.math.sqrt
@@ -12,7 +13,6 @@ import com.wsr.batch.operation.plus.plus
 import com.wsr.batch.operation.times.times
 import com.wsr.core.IOType
 import com.wsr.core.collection.sum.sum
-import com.wsr.core.d0
 import com.wsr.core.math.pow
 import com.wsr.core.operation.div.div
 import com.wsr.core.operation.plus.plus
@@ -70,10 +70,10 @@ class LayerNormD1 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx
-        val dx2 = Batch(input.size) { IOType.d0(-dNumerator[it].sum() / outputSize.toFloat()) }
+        val dx2 = -1f * dNumerator.sum() / outputSize.toFloat()
 
         // dy/x <- variance(x)のx
-        val dx3 = Batch(input.size) {
+        val dx3 = run {
             /**
              * dy/[sqrt(variance(x)]
              *   = (sum(dOutput * numerator) / denominator) * (-1 / (2f * denominator^2))
@@ -85,21 +85,21 @@ class LayerNormD1 internal constructor(
              * dy/[variance(x)]
              *   = -sum(dOutput * normalize) / (denominator^2 * outputSize)
              */
-            val dvn = -(dOutput[it] * normalize[it]).sum()
-            val dvd = 2f * denominator[it].pow(2) * outputSize.toFloat()
+            val dvn = -1f * (dOutput * normalize).sum()
+            val dvd = 2f * denominator.pow(2) * outputSize.toFloat()
             val dVariance = dvn / dvd
 
             // dy/[x-average(x)]
-            val dSquared = 2f * dVariance * numerator[it]
+            val dSquared = 2f * dVariance * numerator
 
             // dy/[x]
             val dx1 = dSquared
-
             // dy/[-average(x)]
-            val dx2 = -dSquared.sum() / outputSize.toFloat()
+            val dx2 = -1f * dSquared.sum() / outputSize.toFloat()
 
             dx1 + dx2
         }
+
         // dy/dx
         return dx1 + dx2 + dx3
     }
