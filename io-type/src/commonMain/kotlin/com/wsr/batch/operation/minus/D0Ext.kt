@@ -5,7 +5,6 @@ import com.wsr.batch.collecction.map.map
 import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.operation.minus.minus
-import com.wsr.core.operation.times.times
 
 @JvmName("batchFloatMinusD0s")
 operator fun Float.minus(other: Batch<IOType.D0>) = Batch(other.size) { this - other[it] }

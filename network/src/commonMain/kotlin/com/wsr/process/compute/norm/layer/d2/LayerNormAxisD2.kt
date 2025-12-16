@@ -24,6 +24,12 @@ class LayerNormAxisD2 internal constructor(
     private val optimizer: Optimizer.D2,
     private var weight: IOType.D2,
 ) : Compute.D2() {
+    private val outputT = when (axis) {
+        0 -> outputX
+        1 -> outputY
+        else -> throw IllegalArgumentException("LayerNormAxisD2 axis is $axis, not 0 or 1.")
+    }
+
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
         val average = input.average(axis = axis)
         val numerator = input.minus(other = average, axis = axis)
@@ -72,7 +78,7 @@ class LayerNormAxisD2 internal constructor(
         val dx3 = run {
             // 各行ごとの勾配を事前計算
             val dvn = (dOutput * normalize).sum(axis = axis)
-            val dvd = -2f * outputY.toFloat() * denominator.pow(2)
+            val dvd = -2f * outputT.toFloat() * denominator.pow(2)
             val dVariancePerRow = dvn / dvd
 
             // dy/[x-average(x)]のx部分
