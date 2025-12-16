@@ -5,7 +5,6 @@ import com.wsr.batch.collecction.map.map
 import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.operation.plus.plus
-import com.wsr.core.operation.times.times
 
 @JvmName("batchFloatPlusD0s")
 operator fun Float.plus(other: Batch<IOType.D0>) = Batch(other.size) { this + other[it] }
