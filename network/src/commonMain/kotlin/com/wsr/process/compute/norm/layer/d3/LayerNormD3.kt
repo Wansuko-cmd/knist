@@ -3,6 +3,7 @@ package com.wsr.process.compute.norm.layer.d3
 import com.wsr.NetworkBuilder
 import com.wsr.batch.Batch
 import com.wsr.batch.collecction.average.average
+import com.wsr.batch.collecction.sum.sum
 import com.wsr.batch.get
 import com.wsr.batch.math.pow
 import com.wsr.batch.math.sqrt
@@ -13,7 +14,6 @@ import com.wsr.batch.operation.times.times
 import com.wsr.core.IOType
 import com.wsr.core.collection.average.average
 import com.wsr.core.collection.sum.sum
-import com.wsr.core.d0
 import com.wsr.core.math.pow
 import com.wsr.core.operation.div.div
 import com.wsr.core.operation.plus.plus
@@ -34,6 +34,8 @@ class LayerNormD3 internal constructor(
     private val optimizer: Optimizer.D3,
     private var weight: IOType.D3,
 ) : Compute.D3() {
+    private val outputSize = outputX * outputY * outputZ
+
     override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> {
         val average = input.average()
         val numerator = input - average
@@ -73,10 +75,10 @@ class LayerNormD3 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx
-        val dx2 = Batch(input.size) { IOType.d0(-dNumerator[it].average()) }
+        val dx2 = -1f * dNumerator.sum() / outputSize.toFloat()
 
         // dy/x <- variance(x)のx
-        val dx3 = Batch(input.size) {
+        val dx3 = run {
             /**
              * dy/[sqrt(variance(x)]
              *   = (sum(dOutput * numerator) / denominator) * (-1 / (2f * denominator^2))
@@ -88,21 +90,21 @@ class LayerNormD3 internal constructor(
              * dy/[variance(x)]
              *   = -sum(dOutput * normalize) / (denominator^2 * outputSize)
              */
-            val dvn = -(dOutput[it] * normalize[it]).sum()
-            val dvd = 2f * denominator[it].pow(2) * (outputX * outputY * outputZ).toFloat()
+            val dvn = -1f * (dOutput * normalize).sum()
+            val dvd = 2f * denominator.pow(2) * outputSize.toFloat()
             val dVariance = dvn / dvd
 
             // dy/[x-average(x)]
-            val dSquared = 2f * dVariance * numerator[it]
+            val dSquared = 2f * dVariance * numerator
 
             // dy/[x]
             val dx1 = dSquared
-
             // dy/[-average(x)]
-            val dx2 = -dSquared.average()
+            val dx2 = -1f * dSquared.sum() / outputSize.toFloat()
 
             dx1 + dx2
         }
+
         // dy/dx
         return dx1 + dx2 + dx3
     }
