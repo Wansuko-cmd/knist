@@ -28,3 +28,10 @@ operator fun Batch<IOType.D2>.plus(other: IOType.D2) = map { it + other }
 
 @JvmName("batchD2sPlusD2s")
 operator fun Batch<IOType.D2>.plus(other: Batch<IOType.D2>) = mapWith(other) { a, b -> a + b }
+
+@JvmName("batchD2sPlusD3s")
+operator fun Batch<IOType.D2>.plus(other: Batch<IOType.D3>) = Batch(size) { this[it] + other[it] }
+
+@JvmName("batchD2sPlusD3sWithAxis")
+fun Batch<IOType.D2>.plus(other: Batch<IOType.D3>, axis: Int) =
+    Batch(size) { this[it].plus(other = other[it], axis = axis) }
