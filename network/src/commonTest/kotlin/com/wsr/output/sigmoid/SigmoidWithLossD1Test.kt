@@ -23,7 +23,12 @@ class SigmoidWithLossD1Test {
         val sigmoid = SigmoidWithLossD1(outputSize = 3)
         val result = sigmoid._expect(input)
 
-        assertEquals(expected = input, actual = result)
+        assertEquals(
+            expected = batchOf(
+                IOType.d1(floatArrayOf(0.7310586f, 0.880797f, 0.95257413f)),
+            ),
+            actual = result,
+        )
     }
 
     @Test
