@@ -3,6 +3,8 @@ name: 'TinyStoriesモデルの出力を確認'
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
 
 jobs:
   test:
@@ -10,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
+        index: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
     steps:
       - name: リポジトリにチェックアウト
         uses: actions/checkout@v4
