@@ -9,8 +9,3 @@ inline fun Batch<IOType.D2>.forEach(block: (IOType.D2) -> Unit) {
 }
 
 inline fun Batch<IOType.D2>.map(block: (IOType.D2) -> IOType.D2): Batch<IOType.D2> = Batch(size) { block(this[it]) }
-
-inline fun Batch<IOType.D2>.mapWith(
-    other: Batch<IOType.D2>,
-    block: (IOType.D2, IOType.D2) -> IOType.D2,
-): Batch<IOType.D2> = Batch(size) { block(this[it], other[it]) }

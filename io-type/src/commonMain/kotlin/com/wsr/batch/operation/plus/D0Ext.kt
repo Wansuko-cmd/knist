@@ -1,25 +1,25 @@
 package com.wsr.batch.operation.plus
 
 import com.wsr.batch.Batch
-import com.wsr.batch.collecction.map.map
+import com.wsr.batch.collecction.map.mapValue
 import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.operation.plus.plus
 
 @JvmName("batchFloatPlusD0s")
-operator fun Float.plus(other: Batch<IOType.D0>) = Batch(other.size) { this + other[it] }
+operator fun Float.plus(other: Batch<IOType.D0>) = other.mapValue { this + it }
 
 @JvmName("batchFloatPlusD1s")
-operator fun Float.plus(other: Batch<IOType.D1>) = other.map { this + it }
+operator fun Float.plus(other: Batch<IOType.D1>) = other.mapValue { this + it }
 
 @JvmName("batchFloatPlusD2s")
-operator fun Float.plus(other: Batch<IOType.D2>) = other.map { this + it }
+operator fun Float.plus(other: Batch<IOType.D2>) = other.mapValue { this + it }
 
 @JvmName("batchFloatPlusD3s")
-operator fun Float.plus(other: Batch<IOType.D3>) = other.map { this + it }
+operator fun Float.plus(other: Batch<IOType.D3>) = other.mapValue { this + it }
 
 @JvmName("batchD0sPlusFloat")
-operator fun Batch<IOType.D0>.plus(other: Float) = Batch(size) { this[it] + other }
+operator fun Batch<IOType.D0>.plus(other: Float) = mapValue { it + other }
 
 @JvmName("batchD0sPlusD0s")
 operator fun Batch<IOType.D0>.plus(other: Batch<IOType.D0>) = Batch(size) { this[it] + other[it] }

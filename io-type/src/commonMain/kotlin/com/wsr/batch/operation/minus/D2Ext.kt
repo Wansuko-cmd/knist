@@ -24,7 +24,7 @@ fun Batch<IOType.D2>.minus(other: Batch<IOType.D1>, axis: Int) =
     Batch(size) { this[it].minus(other = other[it], axis = axis) }
 
 @JvmName("batchD2sMinusD2")
-operator fun Batch<IOType.D2>.minus(other: IOType.D2) = map { it - other }
+operator fun Batch<IOType.D2>.minus(other: IOType.D2) = mapWith(other) { a, b -> a - b }
 
 @JvmName("batchD2sMinusD2s")
 operator fun Batch<IOType.D2>.minus(other: Batch<IOType.D2>) = mapWith(other) { a, b -> a - b }
