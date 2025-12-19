@@ -4,15 +4,11 @@ import com.wsr.core.IOType
 import com.wsr.core.d2
 import com.wsr.core.d3
 import com.wsr.core.get
-import com.wsr.core.operation.div.div
+import com.wsr.core.operation.zip.zipWith
 
 operator fun IOType.D2.times(other: Float): IOType.D2 = IOType.d2(shape) { i, j -> this[i, j] * other }
 
-fun IOType.D2.times2(other: IOType.D1, axis: Int): IOType.D2 = when (axis) {
-    0 -> IOType.d2(shape) { i, j -> this[i, j] * other[i] }
-    1 -> IOType.d2(shape) { i, j -> this[i, j] * other[j] }
-    else -> throw IllegalArgumentException("IOType.D2.times axis is $axis not 0 or 1.")
-}
+fun IOType.D2.times2(other: IOType.D1, axis: Int): IOType.D2 = zipWith(other, axis) { a, b -> a * b }
 
 operator fun IOType.D2.times(other: IOType.D2): IOType.D2 = IOType.d2(shape) { i, j -> this[i, j] * other[i, j] }
 
