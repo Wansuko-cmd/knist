@@ -31,7 +31,7 @@ publishing {
     publications {
         create<MavenPublication>(project.name) {
             groupId = libs.versions.lib.group.id.get()
-            artifactId = "perceptron"
+            artifactId = "knist"
             version = libs.versions.lib.version.get()
             from(components["kotlin"])
         }

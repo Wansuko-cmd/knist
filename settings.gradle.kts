@@ -15,7 +15,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "perceptron"
+rootProject.name = "knist"
 
 include(":sample")
 

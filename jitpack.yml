@@ -2,9 +2,9 @@ jdk:
   - openjdk17
 install:
   - chmod 777 ./gradlew
-  - ./gradlew lib:publishToMavenLocal
-  - ./gradlew io-type:core:publishToMavenLocal
-  - ./gradlew io-type:batch:publishToMavenLocal
-  - ./gradlew io-type:blas:publishToMavenLocal
-  - ./gradlew io-type:blas:open:publishToMavenLocal
-  - ./gradlew io-type:blas:base:publishToMavenLocal
+  - ./gradlew network:publishToMavenLocal
+  - ./gradlew io-type:publishToMavenLocal
+  - ./gradlew buffer:publishToMavenLocal
+  - ./gradlew buffer:open:publishToMavenLocal
+  - ./gradlew buffer:cl:publishToMavenLocal
+  - ./gradlew buffer:base:publishToMavenLocal
