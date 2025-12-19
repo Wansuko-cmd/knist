@@ -6,7 +6,6 @@ import com.wsr.batch.collecction.map.mapWith
 import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.operation.plus.plus
-import com.wsr.core.operation.plus.plus
 
 @JvmName("batchD3sPlusD0s")
 operator fun Batch<IOType.D3>.plus(other: Batch<IOType.D0>): Batch<IOType.D3> = Batch(size) { this[it] + other[it] }

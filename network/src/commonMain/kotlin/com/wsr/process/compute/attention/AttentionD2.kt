@@ -8,7 +8,6 @@ import com.wsr.batch.math.softmax
 import com.wsr.batch.operation.div.div
 import com.wsr.batch.operation.matmul.matMul
 import com.wsr.batch.operation.minus.minus
-import com.wsr.batch.operation.minus.minus
 import com.wsr.batch.operation.plus.plus
 import com.wsr.batch.operation.times.times
 import com.wsr.batch.reshape.reshape.reshapeToD2

@@ -6,7 +6,6 @@ import com.wsr.batch.collecction.map.mapWith
 import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.operation.div.div
-import com.wsr.core.operation.div.div
 
 @JvmName("batchD2sDivFloat")
 operator fun Batch<IOType.D2>.div(other: Float): Batch<IOType.D2> = map { it / other }
