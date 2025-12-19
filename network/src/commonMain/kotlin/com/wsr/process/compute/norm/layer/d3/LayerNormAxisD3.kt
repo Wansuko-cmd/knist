@@ -6,12 +6,12 @@ import com.wsr.batch.collecction.sum.sum
 import com.wsr.batch.math.pow
 import com.wsr.batch.math.sqrt
 import com.wsr.batch.operation.div.div
-import com.wsr.batch.operation.div.div2
-import com.wsr.batch.operation.minus.minus2
+import com.wsr.batch.operation.div.div
+import com.wsr.batch.operation.minus.minus
 import com.wsr.batch.operation.plus.plus
-import com.wsr.batch.operation.plus.plus2
+import com.wsr.batch.operation.plus.plus
 import com.wsr.batch.operation.times.times
-import com.wsr.batch.operation.times.times2
+import com.wsr.batch.operation.times.times
 import com.wsr.core.IOType
 import com.wsr.optimizer.Optimizer
 import com.wsr.process.Context
@@ -45,12 +45,12 @@ class LayerNormAxisD3 internal constructor(
 
     override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> {
         val average = input.average(axis = axis)
-        val numerator = input.minus2(other = average, axis1 = axis1, axis2 = axis2)
+        val numerator = input.minus(other = average, axis1 = axis1, axis2 = axis2)
 
         val variance = numerator.pow(2).average(axis = axis)
         val denominator = variance.sqrt(e = e)
 
-        val normalize = numerator.div2(other = denominator, axis1 = axis1, axis2 = axis2)
+        val normalize = numerator.div(other = denominator, axis1 = axis1, axis2 = axis2)
         return weight * normalize
     }
 
@@ -60,12 +60,12 @@ class LayerNormAxisD3 internal constructor(
         calcDelta: (Batch<IOType.D3>) -> Batch<IOType.D3>,
     ): Batch<IOType.D3> {
         val average = input.average(axis = axis)
-        val numerator = input.minus2(other = average, axis1 = axis1, axis2 = axis2)
+        val numerator = input.minus(other = average, axis1 = axis1, axis2 = axis2)
 
         val variance = numerator.pow(2).average(axis = axis)
         val denominator = variance.sqrt(e = e)
 
-        val normalize = numerator.div2(other = denominator, axis1 = axis1, axis2 = axis2)
+        val normalize = numerator.div(other = denominator, axis1 = axis1, axis2 = axis2)
 
         val output = weight * normalize
         val delta = calcDelta(output)
@@ -79,7 +79,7 @@ class LayerNormAxisD3 internal constructor(
         val dOutput = delta * weight
 
         // dy/[x-average(x)] (分子に関する勾配)
-        val dNumerator = dOutput.div2(other = denominator, axis1 = axis1, axis2 = axis2)
+        val dNumerator = dOutput.div(other = denominator, axis1 = axis1, axis2 = axis2)
 
         // dy/x <- (x-average(x)のx)
         val dx1 = dNumerator
@@ -95,15 +95,15 @@ class LayerNormAxisD3 internal constructor(
             val dVariancePerRow = dvn / dvd
 
             // dy/[x-average(x)]のx部分
-            val dSquared = 2f * dVariancePerRow.times2(other = numerator, axis1 = axis1, axis2 = axis2)
+            val dSquared = 2f * dVariancePerRow.times(other = numerator, axis1 = axis1, axis2 = axis2)
 
             // dy/[x-average(x)]のaverage(x)のx部分
             val avgGradient = -2f * dVariancePerRow * numerator.average(axis = axis)
 
-            dSquared.plus2(other = avgGradient, axis1 = axis1, axis2 = axis2)
+            dSquared.plus(other = avgGradient, axis1 = axis1, axis2 = axis2)
         }
 
         // dy/dx
-        return dx1.plus2(dx2, axis1 = axis1, axis2 = axis2) + dx3
+        return dx1.plus(dx2, axis1 = axis1, axis2 = axis2) + dx3
     }
 }

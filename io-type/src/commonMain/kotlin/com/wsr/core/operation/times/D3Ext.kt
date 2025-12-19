@@ -7,7 +7,7 @@ import com.wsr.core.operation.zip.zipWith
 
 operator fun IOType.D3.times(other: Float): IOType.D3 = IOType.d3(shape) { i, j, k -> this[i, j, k] * other }
 
-fun IOType.D3.times2(other: IOType.D2, axis1: Int, axis2: Int): IOType.D3 = zipWith(other, axis1, axis2) { a, b ->
+fun IOType.D3.times(other: IOType.D2, axis1: Int, axis2: Int): IOType.D3 = zipWith(other, axis1, axis2) { a, b ->
     a * b
 }
 

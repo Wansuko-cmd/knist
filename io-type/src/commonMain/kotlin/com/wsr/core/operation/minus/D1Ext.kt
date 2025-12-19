@@ -11,4 +11,4 @@ operator fun IOType.D1.minus(other: IOType.D0): IOType.D1 = IOType.d1(shape) { t
 
 operator fun IOType.D1.minus(other: IOType.D1): IOType.D1 = IOType.d1(shape) { this[it] - other[it] }
 
-fun IOType.D1.minus2(other: IOType.D2, axis: Int): IOType.D2 = zipWith(other, axis) { a, b -> a - b }
+fun IOType.D1.minus(other: IOType.D2, axis: Int): IOType.D2 = zipWith(other, axis) { a, b -> a - b }

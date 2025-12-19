@@ -5,7 +5,7 @@ import com.wsr.batch.collecction.map.mapWith
 import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.operation.minus.minus
-import com.wsr.core.operation.minus.minus2
+import com.wsr.core.operation.minus.minus
 
 @JvmName("batchD1sMinusD0s")
 operator fun Batch<IOType.D1>.minus(other: Batch<IOType.D0>): Batch<IOType.D1> = Batch(size) { this[it] - other[it] }
@@ -17,5 +17,5 @@ operator fun Batch<IOType.D1>.minus(other: IOType.D1) = mapWith(other) { a, b ->
 operator fun Batch<IOType.D1>.minus(other: Batch<IOType.D1>) = mapWith(other) { a, b -> a - b }
 
 @JvmName("batchD1sMinusD2sWithAxis")
-fun Batch<IOType.D1>.minus2(other: Batch<IOType.D2>, axis: Int) =
-    Batch(size) { this[it].minus2(other = other[it], axis = axis) }
+fun Batch<IOType.D1>.minus(other: Batch<IOType.D2>, axis: Int) =
+    Batch(size) { this[it].minus(other = other[it], axis = axis) }

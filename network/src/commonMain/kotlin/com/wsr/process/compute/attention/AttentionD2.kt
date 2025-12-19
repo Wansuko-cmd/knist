@@ -8,7 +8,7 @@ import com.wsr.batch.math.softmax
 import com.wsr.batch.operation.div.div
 import com.wsr.batch.operation.matmul.matMul
 import com.wsr.batch.operation.minus.minus
-import com.wsr.batch.operation.minus.minus2
+import com.wsr.batch.operation.minus.minus
 import com.wsr.batch.operation.plus.plus
 import com.wsr.batch.operation.times.times
 import com.wsr.batch.reshape.reshape.reshapeToD2
@@ -126,7 +126,7 @@ class AttentionD2 internal constructor(
         val dSoftmax = dHeads.matMul(value, transB = true)
 
         val sum = (dSoftmax * softmax).sum(axis = 2)
-        val dMasked = softmax * dSoftmax.minus2(other = sum, axis1 = 0, axis2 = 1)
+        val dMasked = softmax * dSoftmax.minus(other = sum, axis1 = 0, axis2 = 1)
 
         val dScaled = dMasked
         val dMul = dScaled / sqrt(dim.toFloat())

@@ -6,7 +6,7 @@ import com.wsr.batch.collecction.map.mapWith
 import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.operation.div.div
-import com.wsr.core.operation.div.div2
+import com.wsr.core.operation.div.div
 
 @JvmName("batchD1sDivD0s")
 operator fun Batch<IOType.D1>.div(other: Float): Batch<IOType.D1> = map { it / other }
@@ -21,5 +21,5 @@ operator fun Batch<IOType.D1>.div(other: IOType.D1) = mapWith(other) { a, b -> a
 operator fun Batch<IOType.D1>.div(other: Batch<IOType.D1>) = mapWith(other) { a, b -> a / b }
 
 @JvmName("batchD1sDivD2sWithAxis")
-fun Batch<IOType.D1>.div2(other: Batch<IOType.D2>, axis: Int) =
-    Batch(size) { this[it].div2(other = other[it], axis = axis) }
+fun Batch<IOType.D1>.div(other: Batch<IOType.D2>, axis: Int) =
+    Batch(size) { this[it].div(other = other[it], axis = axis) }

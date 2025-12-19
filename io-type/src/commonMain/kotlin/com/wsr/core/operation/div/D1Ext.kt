@@ -11,4 +11,4 @@ operator fun IOType.D1.div(other: IOType.D0): IOType.D1 = IOType.d1(shape) { thi
 
 operator fun IOType.D1.div(other: IOType.D1): IOType.D1 = IOType.d1(this.shape) { i -> this[i] / other[i] }
 
-fun IOType.D1.div2(other: IOType.D2, axis: Int): IOType.D2 = zipWith(other, axis) { a, b -> a / b }
+fun IOType.D1.div(other: IOType.D2, axis: Int): IOType.D2 = zipWith(other, axis) { a, b -> a / b }

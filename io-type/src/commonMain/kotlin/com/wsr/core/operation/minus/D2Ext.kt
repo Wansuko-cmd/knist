@@ -9,8 +9,8 @@ operator fun IOType.D2.minus(other: Float): IOType.D2 = IOType.d2(shape) { i, j 
 
 operator fun IOType.D2.minus(other: IOType.D0): IOType.D2 = IOType.d2(shape) { i, j -> this[i, j] - other.get() }
 
-fun IOType.D2.minus2(other: IOType.D1, axis: Int): IOType.D2 = zipWith(other, axis) { a, b -> a - b }
+fun IOType.D2.minus(other: IOType.D1, axis: Int): IOType.D2 = zipWith(other, axis) { a, b -> a - b }
 
 operator fun IOType.D2.minus(other: IOType.D2): IOType.D2 = IOType.d2(shape) { i, j -> this[i, j] - other[i, j] }
 
-fun IOType.D2.minus2(other: IOType.D3, axis1: Int, axis2: Int) = zipWith(other, axis1, axis2) { a, b -> a - b }
+fun IOType.D2.minus(other: IOType.D3, axis1: Int, axis2: Int) = zipWith(other, axis1, axis2) { a, b -> a - b }
