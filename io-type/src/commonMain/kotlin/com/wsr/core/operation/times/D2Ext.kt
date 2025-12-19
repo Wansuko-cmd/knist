@@ -20,3 +20,5 @@ fun IOType.D2.times(other: IOType.D3, axis: Int): IOType.D3 = when (axis) {
     2 -> IOType.d3(shape) { i, j, k -> this[i, j] * other[i, j, k] }
     else -> throw IllegalArgumentException("IOType.D2.times axis is $axis not 0, 1 or 2.")
 }
+
+fun IOType.D2.times2(other: IOType.D3, axis1: Int, axis2: Int): IOType.D3 = zipWith(other, axis1, axis2) { a, b -> a * b }
