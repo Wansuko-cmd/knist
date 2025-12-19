@@ -1,7 +1,6 @@
 package com.wsr.batch.operation.div
 
 import com.wsr.batch.Batch
-import com.wsr.batch.collecction.map.map
 import com.wsr.batch.collecction.map.mapWith
 import com.wsr.batch.get
 import com.wsr.core.IOType
@@ -13,19 +12,6 @@ operator fun Batch<IOType.D3>.div(other: Float): Batch<IOType.D3> = Batch(size) 
 
 @JvmName("batchD3sDivD0s")
 operator fun Batch<IOType.D3>.div(other: Batch<IOType.D0>): Batch<IOType.D3> = Batch(size) { this[it] / other[it] }
-
-@JvmName("batchD3sMinusD2")
-operator fun Batch<IOType.D3>.div(other: IOType.D2) = map { it / other }
-
-@JvmName("batchD3sMinusD2WithAxis")
-fun Batch<IOType.D3>.div(other: IOType.D2, axis: Int) = map { it.div(other = other, axis = axis) }
-
-@JvmName("batchD3sMinusD2s")
-operator fun Batch<IOType.D3>.div(other: Batch<IOType.D2>) = Batch(size) { this[it] / other[it] }
-
-@JvmName("batchD3sMinusD2sWithAxis")
-fun Batch<IOType.D3>.div(other: Batch<IOType.D2>, axis: Int) =
-    Batch(size) { this[it].div(other = other[it], axis = axis) }
 
 @JvmName("batchD3sDivD2sWithAxis")
 fun Batch<IOType.D2>.div2(other: Batch<IOType.D3>, axis1: Int, axis2: Int) =

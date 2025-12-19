@@ -28,13 +28,6 @@ operator fun Batch<IOType.D2>.times(other: IOType.D2) = mapWith(other) { a, b ->
 @JvmName("batchD2sTimesD2s")
 operator fun Batch<IOType.D2>.times(other: Batch<IOType.D2>) = mapWith(other) { a, b -> a * b }
 
-@JvmName("batchD2sTimesD3s")
-operator fun Batch<IOType.D2>.times(other: Batch<IOType.D3>) = Batch(size) { this[it] * other[it] }
-
-@JvmName("batchD2sTimesD3sWithAxisD")
-fun Batch<IOType.D2>.times(other: Batch<IOType.D3>, axis: Int) =
-    Batch(size) { this[it].times(other = other[it], axis = axis) }
-
 @JvmName("batchD2sTimesD3sWithAxis")
 fun Batch<IOType.D2>.times2(other: Batch<IOType.D3>, axis1: Int, axis2: Int) =
     Batch(size) { this[it].times2(other = other[it], axis1 = axis1, axis2 = axis2) }

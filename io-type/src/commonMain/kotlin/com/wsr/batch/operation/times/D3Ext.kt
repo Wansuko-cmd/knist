@@ -12,19 +12,6 @@ import com.wsr.core.operation.times.times2
 @JvmName("batchD3sTimesD0s")
 operator fun Batch<IOType.D3>.times(other: Batch<IOType.D0>) = Batch(size) { this[it] * other[it].get() }
 
-@JvmName("batchD3sMinusD2")
-operator fun Batch<IOType.D3>.times(other: IOType.D2) = map { it * other }
-
-@JvmName("batchD3sMinusD2WithAxis")
-fun Batch<IOType.D3>.times(other: IOType.D2, axis: Int) = map { it.times(other = other, axis = axis) }
-
-@JvmName("batchD3sMinusD2s")
-operator fun Batch<IOType.D3>.times(other: Batch<IOType.D2>) = Batch(size) { this[it] * other[it] }
-
-@JvmName("batchD3sMinusD2sWithAxis")
-fun Batch<IOType.D3>.times(other: Batch<IOType.D2>, axis: Int) =
-    Batch(size) { this[it].times(other = other[it], axis = axis) }
-
 @JvmName("batchD3sTimesD2sWithAxis")
 fun Batch<IOType.D3>.times2(other: Batch<IOType.D2>, axis1: Int, axis2: Int) =
     Batch(size) { this[it].times2(other = other[it], axis1 = axis1, axis2 = axis2) }
