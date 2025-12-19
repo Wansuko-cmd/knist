@@ -11,21 +11,8 @@ import com.wsr.core.operation.minus.minus2
 @JvmName("batchD2sMinusD0s")
 operator fun Batch<IOType.D2>.minus(other: Batch<IOType.D0>): Batch<IOType.D2> = Batch(size) { this[it] - other[it] }
 
-@JvmName("batchD2sMinusD1")
-operator fun Batch<IOType.D2>.minus(other: IOType.D1) = map { it - other }
-
-@JvmName("batchD2sMinusD1WithAxisD")
-fun Batch<IOType.D2>.minus(other: IOType.D1, axis: Int) = map { it.minus(other = other, axis = axis) }
-
 @JvmName("batchD2sMinusD1WithAxis")
 fun Batch<IOType.D2>.minus2(other: IOType.D1, axis: Int) = map { it.minus2(other = other, axis = axis) }
-
-@JvmName("batchD2sMinusD1s")
-operator fun Batch<IOType.D2>.minus(other: Batch<IOType.D1>) = Batch(size) { this[it] - other[it] }
-
-@JvmName("batchD2sMinusD1sWithAxisD")
-fun Batch<IOType.D2>.minus(other: Batch<IOType.D1>, axis: Int) =
-    Batch(size) { this[it].minus(other = other[it], axis = axis) }
 
 @JvmName("batchD2sMinusD1sWithAxis")
 fun Batch<IOType.D2>.minus2(other: Batch<IOType.D1>, axis: Int) =

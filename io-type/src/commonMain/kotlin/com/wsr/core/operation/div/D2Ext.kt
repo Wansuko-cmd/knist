@@ -9,14 +9,6 @@ operator fun IOType.D2.div(other: Float): IOType.D2 = IOType.d2(shape) { i, j ->
 
 operator fun IOType.D2.div(other: IOType.D0): IOType.D2 = IOType.d2(shape) { i, j -> this[i, j] / other.get() }
 
-operator fun IOType.D2.div(other: IOType.D1): IOType.D2 = this.div(other = other, axis = 0)
-
-fun IOType.D2.div(other: IOType.D1, axis: Int): IOType.D2 = when (axis) {
-    0 -> IOType.d2(shape) { i, j -> this[i, j] / other[j] }
-    1 -> IOType.d2(shape) { i, j -> this[i, j] / other[i] }
-    else -> throw IllegalArgumentException("IOType.D2.div axis is $axis not 0 or 1.")
-}
-
 fun IOType.D2.div2(other: IOType.D1, axis: Int): IOType.D2 = when (axis) {
     0 -> IOType.d2(shape) { i, j -> this[i, j] / other[i] }
     1 -> IOType.d2(shape) { i, j -> this[i, j] / other[j] }
