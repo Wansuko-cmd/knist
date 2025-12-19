@@ -18,3 +18,9 @@ fun IOType.D1.minus(other: IOType.D2, axis: Int): IOType.D2 = when (axis) {
     1 -> IOType.d2(other.shape) { i, j -> this[i] - other[i, j] }
     else -> throw IllegalArgumentException("IOType.D1.minus axis is $axis not 0 or 1.")
 }
+
+fun IOType.D1.minus2(other: IOType.D2, axis: Int): IOType.D2 = when (axis) {
+    0 -> IOType.d2(other.shape) { i, j -> this[i] - other[i, j] }
+    1 -> IOType.d2(other.shape) { i, j -> this[j] - other[i, j] }
+    else -> throw IllegalArgumentException("IOType.D1.minus axis is $axis not 0 or 1.")
+}

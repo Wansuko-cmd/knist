@@ -5,6 +5,7 @@ import com.wsr.batch.collecction.map.mapWith
 import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.operation.plus.plus
+import com.wsr.core.operation.plus.plus2
 
 @JvmName("batchD1sPlusD0s")
 operator fun Batch<IOType.D1>.plus(other: Batch<IOType.D0>): Batch<IOType.D1> = Batch(size) { this[it] + other[it] }
@@ -18,6 +19,10 @@ operator fun Batch<IOType.D1>.plus(other: Batch<IOType.D1>) = mapWith(other) { a
 @JvmName("batchD1sPlusD2s")
 operator fun Batch<IOType.D1>.plus(other: Batch<IOType.D2>) = Batch(size) { this[it] + other[it] }
 
-@JvmName("batchD1sPlusD2sWithAxis")
+@JvmName("batchD1sPlusD2sWithAxisD")
 fun Batch<IOType.D1>.plus(other: Batch<IOType.D2>, axis: Int) =
     Batch(size) { this[it].plus(other = other[it], axis = axis) }
+
+@JvmName("batchD1sPlusD2sWithAxis")
+fun Batch<IOType.D1>.plus2(other: Batch<IOType.D2>, axis: Int) =
+    Batch(size) { this[it].plus2(other = other[it], axis = axis) }

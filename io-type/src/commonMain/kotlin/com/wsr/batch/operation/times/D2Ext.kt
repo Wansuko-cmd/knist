@@ -7,6 +7,7 @@ import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.get
 import com.wsr.core.operation.times.times
+import com.wsr.core.operation.times.times2
 
 @JvmName("batchD2sTimesD0s")
 operator fun Batch<IOType.D2>.times(other: Batch<IOType.D0>) = Batch(size) { this[it] * other[it].get() }
@@ -14,15 +15,22 @@ operator fun Batch<IOType.D2>.times(other: Batch<IOType.D0>) = Batch(size) { thi
 @JvmName("batchD2sTimesD1")
 operator fun Batch<IOType.D2>.times(other: IOType.D1) = map { it * other }
 
-@JvmName("batchD2sTimesD1WithAxis")
+@JvmName("batchD2sTimesD1WithAxisD")
 fun Batch<IOType.D2>.times(other: IOType.D1, axis: Int) = map { it.times(other = other, axis = axis) }
+
+@JvmName("batchD2sTimesD1WithAxis")
+fun Batch<IOType.D2>.times2(other: IOType.D1, axis: Int) = map { it.times2(other = other, axis = axis) }
 
 @JvmName("batchD2sTimesD1s")
 operator fun Batch<IOType.D2>.times(other: Batch<IOType.D1>) = Batch(size) { this[it] * other[it] }
 
-@JvmName("batchD2sTimesD1sWithAxis")
+@JvmName("batchD2sTimesD1sWithAxisD")
 fun Batch<IOType.D2>.times(other: Batch<IOType.D1>, axis: Int) =
     Batch(size) { this[it].times(other = other[it], axis = axis) }
+
+@JvmName("batchD2sTimesD1sWithAxis")
+fun Batch<IOType.D2>.times2(other: Batch<IOType.D1>, axis: Int) =
+    Batch(size) { this[it].times2(other = other[it], axis = axis) }
 
 @JvmName("batchD2TimesD2s")
 operator fun IOType.D2.times(other: Batch<IOType.D2>) = other.map { this * it }
