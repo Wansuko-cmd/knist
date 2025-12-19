@@ -27,7 +27,7 @@ fun Batch<IOType.D3>.div(other: Batch<IOType.D2>, axis: Int) =
     Batch(size) { this[it].div(other = other[it], axis = axis) }
 
 @JvmName("batchD3sDivD3")
-operator fun Batch<IOType.D3>.div(other: IOType.D3) = map { it / other }
+operator fun Batch<IOType.D3>.div(other: IOType.D3) = mapWith(other) { a, b -> a / b }
 
 @JvmName("batchD3sDivD3s")
 operator fun Batch<IOType.D3>.div(other: Batch<IOType.D3>) = mapWith(other) { a, b -> a / b }
