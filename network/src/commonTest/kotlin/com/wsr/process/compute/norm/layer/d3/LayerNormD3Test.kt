@@ -9,8 +9,6 @@ import com.wsr.batch.toBatch
 import com.wsr.core.IOType
 import com.wsr.core.d3
 import com.wsr.core.get
-import com.wsr.optimizer.Scheduler
-import com.wsr.optimizer.sgd.Sgd
 import com.wsr.process.Context
 import kotlin.math.sqrt
 import kotlin.test.Test
@@ -27,8 +25,6 @@ class LayerNormD3Test {
                 outputY = 2,
                 outputZ = 2,
                 e = 1e-10f,
-                optimizer = Sgd(Scheduler.Fix(0.1f)).d3(i = 2, j = 2, k = 2),
-                weight = weight,
             )
 
         // 2つのバッチ: [[[0, 2], [2, 4]], [[4, 6], [6, 8]]], [[[2, 4], [4, 6]], [[6, 8], [8, 10]]]
@@ -142,8 +138,6 @@ class LayerNormD3Test {
                 outputY = 2,
                 outputZ = 2,
                 e = 1e-10f,
-                optimizer = Sgd(Scheduler.Fix(0.1f)).d3(i = 2, j = 2, k = 2),
-                weight = weight,
             )
 
         // 2つのバッチ: [[[0, 2], [2, 4]], [[4, 6], [6, 8]]], [[[2, 4], [4, 6]], [[6, 8], [8, 10]]]
@@ -212,8 +206,6 @@ class LayerNormD3Test {
                 outputY = 2,
                 outputZ = 2,
                 e = 1e-10f,
-                optimizer = Sgd(Scheduler.Fix(0.01f)).d3(i = 2, j = 2, k = 2),
-                weight = weight,
             )
 
         // [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
