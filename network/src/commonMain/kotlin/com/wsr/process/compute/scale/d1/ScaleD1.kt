@@ -17,10 +17,7 @@ class ScaleD1 internal constructor(
     private val optimizer: Optimizer.D1,
     private var weight: IOType.D1,
 ) : Compute.D1() {
-    override fun expect(
-        input: Batch<IOType.D1>,
-        context: Context,
-    ): Batch<IOType.D1> = input * weight
+    override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D1> = input * weight
 
     override fun train(
         input: Batch<IOType.D1>,
@@ -39,17 +36,15 @@ class ScaleD1 internal constructor(
     }
 }
 
-fun <T> NetworkBuilder.D1<T>.scale(
-    optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = Fixed(1f),
-) = addProcess(
-    process = ScaleD1(
-        outputSize = inputSize,
-        optimizer = optimizer.d1(inputSize),
-        weight = initializer.d1(
-            input = listOf(inputSize),
-            output = listOf(inputSize),
-            size = inputSize,
+fun <T> NetworkBuilder.D1<T>.scale(optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = Fixed(1f)) =
+    addProcess(
+        process = ScaleD1(
+            outputSize = inputSize,
+            optimizer = optimizer.d1(inputSize),
+            weight = initializer.d1(
+                input = listOf(inputSize),
+                output = listOf(inputSize),
+                size = inputSize,
+            ),
         ),
-    ),
-)
+    )

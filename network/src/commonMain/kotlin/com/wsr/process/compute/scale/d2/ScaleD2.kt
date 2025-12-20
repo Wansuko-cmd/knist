@@ -18,10 +18,7 @@ class ScaleD2 internal constructor(
     private val optimizer: Optimizer.D2,
     private var weight: IOType.D2,
 ) : Compute.D2() {
-    override fun expect(
-        input: Batch<IOType.D2>,
-        context: Context,
-    ): Batch<IOType.D2> = input * weight
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> = input * weight
 
     override fun train(
         input: Batch<IOType.D2>,
@@ -75,7 +72,6 @@ fun <T> NetworkBuilder.D2<T>.scale(
                 ),
             )
         }
-
 
         else -> throw IllegalStateException(
             """

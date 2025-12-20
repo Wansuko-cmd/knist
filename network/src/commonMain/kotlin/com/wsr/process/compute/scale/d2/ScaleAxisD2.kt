@@ -18,10 +18,8 @@ class ScaleAxisD2 internal constructor(
     private var weight: IOType.D1,
 ) : Compute.D2() {
     private val sumAxis = if (axis == 0) 1 else 0
-    override fun expect(
-        input: Batch<IOType.D2>,
-        context: Context,
-    ): Batch<IOType.D2> = input.times(other = weight, axis = axis)
+    override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> =
+        input.times(other = weight, axis = axis)
 
     override fun train(
         input: Batch<IOType.D2>,

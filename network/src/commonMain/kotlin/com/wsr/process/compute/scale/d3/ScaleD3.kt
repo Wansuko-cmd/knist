@@ -9,8 +9,6 @@ import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
 import com.wsr.process.Context
 import com.wsr.process.compute.Compute
-import com.wsr.process.compute.scale.d2.ScaleAxisD2
-import com.wsr.process.compute.scale.d2.ScaleD2
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,10 +19,7 @@ class ScaleD3 internal constructor(
     private val optimizer: Optimizer.D3,
     private var weight: IOType.D3,
 ) : Compute.D3() {
-    override fun expect(
-        input: Batch<IOType.D3>,
-        context: Context,
-    ): Batch<IOType.D3> = input * weight
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> = input * weight
 
     override fun train(
         input: Batch<IOType.D3>,
@@ -86,7 +81,6 @@ fun <T> NetworkBuilder.D3<T>.scale(
                 ),
             )
         }
-
 
         else -> throw IllegalStateException(
             """

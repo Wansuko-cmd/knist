@@ -26,10 +26,8 @@ class ScaleAxisD3 internal constructor(
         0, 1 -> 2
         else -> 1
     }
-    override fun expect(
-        input: Batch<IOType.D3>,
-        context: Context,
-    ): Batch<IOType.D3> = input.times(other = weight, axis = axis)
+    override fun expect(input: Batch<IOType.D3>, context: Context): Batch<IOType.D3> =
+        input.times(other = weight, axis = axis)
 
     override fun train(
         input: Batch<IOType.D3>,
