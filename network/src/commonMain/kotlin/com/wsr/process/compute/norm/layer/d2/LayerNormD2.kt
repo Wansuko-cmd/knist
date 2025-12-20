@@ -16,11 +16,8 @@ import com.wsr.process.compute.Compute
 import kotlinx.serialization.Serializable
 
 @Serializable
-class LayerNormD2 internal constructor(
-    override val outputX: Int,
-    override val outputY: Int,
-    private val e: Float,
-) : Compute.D2() {
+class LayerNormD2 internal constructor(override val outputX: Int, override val outputY: Int, private val e: Float) :
+    Compute.D2() {
     private val outputSize = outputX * outputY
 
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
@@ -89,10 +86,7 @@ class LayerNormD2 internal constructor(
     }
 }
 
-fun <T> NetworkBuilder.D2<T>.layerNorm(
-    axis: Int? = null,
-    e: Float = 1e-6f,
-): NetworkBuilder.D2<T> {
+fun <T> NetworkBuilder.D2<T>.layerNorm(axis: Int? = null, e: Float = 1e-6f): NetworkBuilder.D2<T> {
     val process = when (axis) {
         null -> LayerNormD2(
             outputX = inputX,

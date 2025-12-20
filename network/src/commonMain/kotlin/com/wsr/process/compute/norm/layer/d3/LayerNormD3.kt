@@ -90,10 +90,7 @@ class LayerNormD3 internal constructor(
     }
 }
 
-fun <T> NetworkBuilder.D3<T>.layerNorm(
-    axis: Int? = null,
-    e: Float = 1e-6f,
-): NetworkBuilder.D3<T> {
+fun <T> NetworkBuilder.D3<T>.layerNorm(axis: Int? = null, e: Float = 1e-6f): NetworkBuilder.D3<T> {
     val process = when (axis) {
         null -> LayerNormD3(
             outputX = inputX,

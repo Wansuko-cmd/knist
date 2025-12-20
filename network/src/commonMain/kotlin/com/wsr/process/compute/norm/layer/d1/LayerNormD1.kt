@@ -16,10 +16,7 @@ import com.wsr.process.compute.Compute
 import kotlinx.serialization.Serializable
 
 @Serializable
-class LayerNormD1 internal constructor(
-    override val outputSize: Int,
-    private val e: Float,
-) : Compute.D1() {
+class LayerNormD1 internal constructor(override val outputSize: Int, private val e: Float) : Compute.D1() {
     override fun expect(input: Batch<IOType.D1>, context: Context): Batch<IOType.D1> {
         val average = input.average()
         val numerator = input - average
