@@ -9,8 +9,6 @@ import com.wsr.batch.toBatch
 import com.wsr.core.IOType
 import com.wsr.core.d2
 import com.wsr.core.get
-import com.wsr.optimizer.Scheduler
-import com.wsr.optimizer.sgd.Sgd
 import com.wsr.process.Context
 import kotlin.math.sqrt
 import kotlin.test.Test
@@ -26,8 +24,6 @@ class LayerNormD2Test {
                 outputX = 2,
                 outputY = 2,
                 e = 1e-10f,
-                optimizer = Sgd(Scheduler.Fix(0.1f)).d2(i = 2, j = 2),
-                weight = weight,
             )
 
         // 2つのバッチ: [[0, 2], [2, 4]], [[2, 4], [4, 6]]
@@ -100,8 +96,6 @@ class LayerNormD2Test {
                 outputX = 2,
                 outputY = 2,
                 e = 1e-10f,
-                optimizer = Sgd(Scheduler.Fix(0.1f)).d2(i = 2, j = 2),
-                weight = weight,
             )
 
         // 2つのバッチ: [[0, 2], [2, 4]], [[2, 4], [4, 6]]
@@ -174,8 +168,6 @@ class LayerNormD2Test {
                 outputX = 2,
                 outputY = 2,
                 e = 1e-10f,
-                optimizer = Sgd(Scheduler.Fix(0.01f)).d2(i = 2, j = 2),
-                weight = weight,
             )
 
         // [[1, 2], [3, 4]]

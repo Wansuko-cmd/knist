@@ -4,7 +4,6 @@ import com.wsr.NetworkBuilder
 import com.wsr.batch.Batch
 import com.wsr.batch.collecction.average.average
 import com.wsr.batch.collecction.sum.sum
-import com.wsr.batch.get
 import com.wsr.batch.math.pow
 import com.wsr.batch.math.sqrt
 import com.wsr.batch.operation.div.div
@@ -12,12 +11,6 @@ import com.wsr.batch.operation.minus.minus
 import com.wsr.batch.operation.plus.plus
 import com.wsr.batch.operation.times.times
 import com.wsr.core.IOType
-import com.wsr.core.collection.average.average
-import com.wsr.core.collection.sum.sum
-import com.wsr.core.math.pow
-import com.wsr.core.operation.div.div
-import com.wsr.core.operation.plus.plus
-import com.wsr.core.operation.times.times
 import com.wsr.initializer.Fixed
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
@@ -30,8 +23,6 @@ class LayerNormD2 internal constructor(
     override val outputX: Int,
     override val outputY: Int,
     private val e: Float,
-    private val optimizer: Optimizer.D2,
-    private var weight: IOType.D2,
 ) : Compute.D2() {
     private val outputSize = outputX * outputY
 
@@ -42,7 +33,7 @@ class LayerNormD2 internal constructor(
         val variance = numerator.pow(n = 2).average()
         val denominator = variance.sqrt(e = e)
 
-        return weight * (numerator / denominator)
+        return numerator / denominator
     }
 
     override fun train(
@@ -56,19 +47,11 @@ class LayerNormD2 internal constructor(
         val variance = numerator.pow(n = 2).average()
         val denominator = variance.sqrt(e = e)
 
-        val normalize = numerator / denominator
-        val output = weight * normalize
+        val output = numerator / denominator
         val delta = calcDelta(output)
 
-        val dOutput = delta * weight
-
-        weight = optimizer.adapt(
-            weight = weight,
-            dw = normalize * delta,
-        )
-
         // dy/[x-average(x)]
-        val dNumerator = dOutput / denominator
+        val dNumerator = delta / denominator
 
         // dy/x <- (x-average(x)のx)
         val dx1 = dNumerator
@@ -80,16 +63,16 @@ class LayerNormD2 internal constructor(
         val dx3 = run {
             /**
              * dy/[sqrt(variance(x)]
-             *   = (sum(dOutput * numerator) / denominator) * (-1 / (2f * denominator^2))
-             *   = -sum(dOutput * numerator / denominator) / 2f * denominator^2
-             *   = -sum(dOutput * normalize) / denominator^2
+             *   = (sum(delta * numerator) / denominator) * (-1 / (2f * denominator^2))
+             *   = -sum(delta * numerator / denominator) / 2f * denominator^2
+             *   = -sum(delta * output) / denominator^2
              *
              * d[sqrt(variance(x)]/[variance(x)] = 1 / outputSize
              *
              * dy/[variance(x)]
-             *   = -sum(dOutput * normalize) / (denominator^2 * outputSize)
+             *   = -sum(delta * output) / (denominator^2 * outputSize)
              */
-            val dvn = -1f * (dOutput * normalize).sum()
+            val dvn = -1f * (delta * output).sum()
             val dvd = 2f * denominator.pow(2) * outputSize.toFloat()
             val dVariance = dvn / dvd
 
@@ -120,13 +103,6 @@ fun <T> NetworkBuilder.D2<T>.layerNorm(
             outputX = inputX,
             outputY = inputY,
             e = e,
-            optimizer = optimizer.d2(inputX, inputY),
-            weight = initializer.d2(
-                input = listOf(inputX, inputY),
-                output = listOf(inputX, inputY),
-                x = inputX,
-                y = inputY,
-            ),
         )
 
         0, 1 -> LayerNormAxisD2(
