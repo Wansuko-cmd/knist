@@ -11,9 +11,6 @@ import com.wsr.batch.operation.minus.minus
 import com.wsr.batch.operation.plus.plus
 import com.wsr.batch.operation.times.times
 import com.wsr.core.IOType
-import com.wsr.initializer.Fixed
-import com.wsr.initializer.WeightInitializer
-import com.wsr.optimizer.Optimizer
 import com.wsr.process.Context
 import com.wsr.process.compute.Compute
 import kotlinx.serialization.Serializable
@@ -95,8 +92,6 @@ class LayerNormD2 internal constructor(
 fun <T> NetworkBuilder.D2<T>.layerNorm(
     axis: Int? = null,
     e: Float = 1e-6f,
-    optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = Fixed(1f),
 ): NetworkBuilder.D2<T> {
     val process = when (axis) {
         null -> LayerNormD2(
@@ -110,16 +105,6 @@ fun <T> NetworkBuilder.D2<T>.layerNorm(
             outputY = inputY,
             axis = axis,
             e = e,
-            optimizer = optimizer.d2(
-                inputX,
-                inputY,
-            ),
-            weight = initializer.d2(
-                input = listOf(inputX, inputY),
-                output = listOf(inputX, inputY),
-                x = inputX,
-                y = inputY,
-            ),
         )
 
         else -> throw IllegalStateException(
