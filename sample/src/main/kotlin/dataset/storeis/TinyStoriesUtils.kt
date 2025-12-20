@@ -15,6 +15,7 @@ import com.wsr.process.compute.dropout.dropout
 import com.wsr.process.compute.function.relu.swish
 import com.wsr.process.compute.norm.layer.d2.layerNorm
 import com.wsr.process.compute.position.positionEmbedding
+import com.wsr.process.compute.scale.d2.scale
 import com.wsr.process.compute.skip.skip
 import com.wsr.process.reshape.token.tokenEmbedding
 import java.io.File
@@ -67,19 +68,19 @@ fun createTinyStoriesModel(seed: Int? = null): Network<List<String>, List<String
             this
                 .skip {
                     this
-                        .layerNorm(axis = 1).bias()
+                        .layerNorm(axis = 1).scale().bias()
                         .attention(numOfHeads = NUM_HEADS, maskValue = PAD_INDEX)
                         .dropout(0.9f)
                 }
                 .skip {
                     this
-                        .layerNorm(axis = 1).bias()
+                        .layerNorm(axis = 1).scale().bias()
                         .affine(FFN_DIM).bias().swish()
                         .affine(EMBEDDING_DIM).bias()
                         .dropout(0.9f)
                 }
         }
-        .layerNorm(axis = 1).bias()
+        .layerNorm(axis = 1).scale().bias()
         .affine(words.size)
         .softmaxWithLoss(
             converter = {
