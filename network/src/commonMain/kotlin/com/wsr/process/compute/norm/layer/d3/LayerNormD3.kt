@@ -11,9 +11,6 @@ import com.wsr.batch.operation.minus.minus
 import com.wsr.batch.operation.plus.plus
 import com.wsr.batch.operation.times.times
 import com.wsr.core.IOType
-import com.wsr.initializer.Fixed
-import com.wsr.initializer.WeightInitializer
-import com.wsr.optimizer.Optimizer
 import com.wsr.process.Context
 import com.wsr.process.compute.Compute
 import kotlinx.serialization.Serializable
@@ -96,8 +93,6 @@ class LayerNormD3 internal constructor(
 fun <T> NetworkBuilder.D3<T>.layerNorm(
     axis: Int? = null,
     e: Float = 1e-6f,
-    optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = Fixed(1f),
 ): NetworkBuilder.D3<T> {
     val process = when (axis) {
         null -> LayerNormD3(
@@ -111,16 +106,8 @@ fun <T> NetworkBuilder.D3<T>.layerNorm(
             outputX = inputX,
             outputY = inputY,
             outputZ = inputZ,
-            optimizer = optimizer.d3(inputX, inputY, inputZ),
             axis = axis,
             e = e,
-            weight = initializer.d3(
-                input = listOf(inputX, inputY, inputZ),
-                output = listOf(inputX, inputY, inputZ),
-                x = inputX,
-                y = inputY,
-                z = inputZ,
-            ),
         )
 
         else -> throw IllegalStateException(
