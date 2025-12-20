@@ -30,14 +30,17 @@ class LayerNormAxisD2 internal constructor(
         else -> throw IllegalArgumentException("LayerNormAxisD2 axis is $axis, not 0 or 1.")
     }
 
+    // 四則演算用
+    private val basicOpAxis = if (axis == 0) 1 else 0
+
     override fun expect(input: Batch<IOType.D2>, context: Context): Batch<IOType.D2> {
         val average = input.average(axis = axis)
-        val numerator = input.minus(other = average, axis = axis)
+        val numerator = input.minus(other = average, axis = basicOpAxis)
 
         val variance = numerator.pow(2).average(axis = axis)
         val denominator = variance.sqrt(e = e)
 
-        val normalize = numerator.div(other = denominator, axis = axis)
+        val normalize = numerator.div(other = denominator, axis = basicOpAxis)
         return weight * normalize
     }
 
@@ -47,12 +50,12 @@ class LayerNormAxisD2 internal constructor(
         calcDelta: (Batch<IOType.D2>) -> Batch<IOType.D2>,
     ): Batch<IOType.D2> {
         val average = input.average(axis = axis)
-        val numerator = input.minus(other = average, axis = axis)
+        val numerator = input.minus(other = average, axis = basicOpAxis)
 
         val variance = numerator.pow(2).average(axis = axis)
         val denominator = variance.sqrt(e = e)
 
-        val normalize = numerator.div(other = denominator, axis = axis)
+        val normalize = numerator.div(other = denominator, axis = basicOpAxis)
 
         val output = weight * normalize
         val delta = calcDelta(output)
@@ -66,7 +69,7 @@ class LayerNormAxisD2 internal constructor(
         val dOutput = delta * weight
 
         // dy/[x-average(x)] (分子に関する勾配)
-        val dNumerator = dOutput.div(other = denominator, axis = axis)
+        val dNumerator = dOutput.div(other = denominator, axis = basicOpAxis)
 
         // dy/x <- (x-average(x)のx)
         val dx1 = dNumerator
@@ -82,15 +85,15 @@ class LayerNormAxisD2 internal constructor(
             val dVariancePerRow = dvn / dvd
 
             // dy/[x-average(x)]のx部分
-            val dSquared = 2f * dVariancePerRow.times(other = numerator, axis = axis)
+            val dSquared = 2f * dVariancePerRow.times(other = numerator, axis = basicOpAxis)
 
             // dy/[x-average(x)]のaverage(x)のx部分
             val avgGradient = -2f * dVariancePerRow * numerator.average(axis = axis)
 
-            dSquared.plus(other = avgGradient, axis = axis)
+            dSquared.plus(other = avgGradient, axis = basicOpAxis)
         }
 
         // dy/dx
-        return dx1.plus(dx2, axis = axis) + dx3
+        return dx1.plus(dx2, axis = basicOpAxis) + dx3
     }
 }

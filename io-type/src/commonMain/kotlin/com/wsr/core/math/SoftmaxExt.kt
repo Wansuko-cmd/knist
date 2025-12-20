@@ -22,9 +22,9 @@ fun IOType.D2.softmax(): IOType.D2 {
 
 fun IOType.D2.softmax(axis: Int): IOType.D2 {
     val max = max(axis = axis)
-    val exp = this.minus(other = max, axis = axis).exp()
+    val exp = this.minus(other = max, axis = if (axis == 0) 1 else 0).exp()
     val sum = exp.sum(axis = axis)
-    return exp.div(other = sum, axis = axis)
+    return exp.div(other = sum, axis = if (axis == 0) 1 else 0)
 }
 
 fun IOType.D3.softmax(): IOType.D3 {
@@ -35,8 +35,16 @@ fun IOType.D3.softmax(): IOType.D3 {
 }
 
 fun IOType.D3.softmax(axis: Int): IOType.D3 {
+    val axis1 = when (axis) {
+        0 -> 1
+        else -> 0
+    }
+    val axis2 = when (axis) {
+        0, 1 -> 2
+        else -> 1
+    }
     val max = max(axis = axis)
-    val exp = this.minus(other = max, axis = axis).exp()
+    val exp = this.minus(other = max, axis1 = axis1, axis2 = axis2).exp()
     val sum = exp.sum(axis = axis)
-    return exp.div(other = sum, axis = axis)
+    return exp.div(other = sum, axis1 = axis1, axis2 = axis2)
 }
