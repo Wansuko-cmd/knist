@@ -83,6 +83,11 @@ import com.wsr.process.compute.pool.MaxPoolD3
 import com.wsr.process.compute.position.PositionEmbeddingD2
 import com.wsr.process.compute.position.PositionEncodeD2
 import com.wsr.process.compute.position.RoPED2
+import com.wsr.process.compute.scale.d1.ScaleD1
+import com.wsr.process.compute.scale.d2.ScaleAxisD2
+import com.wsr.process.compute.scale.d2.ScaleD2
+import com.wsr.process.compute.scale.d3.ScaleAxisD3
+import com.wsr.process.compute.scale.d3.ScaleD3
 import com.wsr.process.compute.skip.SkipD1
 import com.wsr.process.compute.skip.SkipD2
 import com.wsr.process.compute.skip.SkipD3
@@ -251,11 +256,6 @@ private val buildInSerializersModule = SerializersModule {
         subclass(DropoutD2::class)
         subclass(DropoutD3::class)
 
-        // Position
-        subclass(PositionEncodeD2::class)
-        subclass(PositionEmbeddingD2::class)
-        subclass(RoPED2::class)
-
         // Function
         subclass(ProcessLinearD1::class)
         subclass(ProcessLinearD2::class)
@@ -295,6 +295,18 @@ private val buildInSerializersModule = SerializersModule {
         // Pool
         subclass(MaxPoolD2::class)
         subclass(MaxPoolD3::class)
+
+        // Position
+        subclass(PositionEncodeD2::class)
+        subclass(PositionEmbeddingD2::class)
+        subclass(RoPED2::class)
+
+        // Scale
+        subclass(ScaleD1::class)
+        subclass(ScaleD2::class)
+        subclass(ScaleAxisD2::class)
+        subclass(ScaleD3::class)
+        subclass(ScaleAxisD3::class)
 
         // Skip
         subclass(SkipD1::class)
