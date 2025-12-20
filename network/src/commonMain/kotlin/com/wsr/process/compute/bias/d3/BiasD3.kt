@@ -1,4 +1,4 @@
-package com.wsr.process.compute.bias
+package com.wsr.process.compute.bias.d3
 
 import com.wsr.NetworkBuilder
 import com.wsr.batch.Batch
@@ -33,9 +33,13 @@ class BiasD3(
     }
 }
 
-fun <T> NetworkBuilder.D3<T>.bias(optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = Fixed(0f)) =
-    addProcess(
-        process = BiasD3(
+fun <T> NetworkBuilder.D3<T>.bias(
+    axis: Int? = null,
+    optimizer: Optimizer = this.optimizer,
+    initializer: WeightInitializer = Fixed(0f),
+): NetworkBuilder.D3<T> {
+    val process = when (axis) {
+        null -> BiasD3(
             outputX = inputX,
             outputY = inputY,
             outputZ = inputZ,
@@ -47,5 +51,34 @@ fun <T> NetworkBuilder.D3<T>.bias(optimizer: Optimizer = this.optimizer, initial
                 y = inputY,
                 z = inputZ,
             ),
-        ),
-    )
+        )
+
+        0, 1, 2 -> {
+            val inputT = when (axis) {
+                0 -> inputX
+                1 -> inputY
+                else -> inputZ
+            }
+            BiasAxisD3(
+                outputX = inputX,
+                outputY = inputY,
+                outputZ = inputZ,
+                axis = axis,
+                optimizer = optimizer.d1(inputT),
+                weight = initializer.d1(
+                    input = listOf(inputT),
+                    output = listOf(inputT),
+                    size = inputT,
+                ),
+            )
+        }
+
+        else -> throw IllegalStateException(
+            """
+            invalid parameter.
+            axis: $axis
+            """.trimIndent(),
+        )
+    }
+    return addProcess(process = process)
+}

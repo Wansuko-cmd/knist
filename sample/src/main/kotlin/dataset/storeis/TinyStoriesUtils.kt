@@ -10,7 +10,7 @@ import com.wsr.optimizer.adam.AdamW
 import com.wsr.output.softmax.softmaxWithLoss
 import com.wsr.process.compute.affine.affine
 import com.wsr.process.compute.attention.attention
-import com.wsr.process.compute.bias.bias
+import com.wsr.process.compute.bias.d2.bias
 import com.wsr.process.compute.dropout.dropout
 import com.wsr.process.compute.function.relu.swish
 import com.wsr.process.compute.norm.layer.d2.layerNorm
@@ -68,19 +68,19 @@ fun createTinyStoriesModel(seed: Int? = null): Network<List<String>, List<String
             this
                 .skip {
                     this
-                        .layerNorm(axis = 1).scale().bias()
+                        .layerNorm(axis = 1).scale(axis = 1).bias(axis = 1)
                         .attention(numOfHeads = NUM_HEADS, maskValue = PAD_INDEX)
                         .dropout(0.9f)
                 }
                 .skip {
                     this
-                        .layerNorm(axis = 1).scale().bias()
-                        .affine(FFN_DIM).bias().swish()
-                        .affine(EMBEDDING_DIM).bias()
+                        .layerNorm(axis = 1).scale(axis = 1).bias(axis = 1)
+                        .affine(FFN_DIM).bias(axis = 1).swish()
+                        .affine(EMBEDDING_DIM).bias(axis = 1)
                         .dropout(0.9f)
                 }
         }
-        .layerNorm(axis = 1).scale().bias()
+        .layerNorm(axis = 1).scale(axis = 1).bias(axis = 1)
         .affine(words.size)
         .softmaxWithLoss(
             converter = {

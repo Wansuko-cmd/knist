@@ -42,9 +42,11 @@ import com.wsr.process.Process
 import com.wsr.process.compute.affine.AffineD1
 import com.wsr.process.compute.affine.AffineD2
 import com.wsr.process.compute.attention.AttentionD2
-import com.wsr.process.compute.bias.BiasD1
-import com.wsr.process.compute.bias.BiasD2
-import com.wsr.process.compute.bias.BiasD3
+import com.wsr.process.compute.bias.d1.BiasD1
+import com.wsr.process.compute.bias.d2.BiasAxisD2
+import com.wsr.process.compute.bias.d2.BiasD2
+import com.wsr.process.compute.bias.d3.BiasAxisD3
+import com.wsr.process.compute.bias.d3.BiasD3
 import com.wsr.process.compute.conv.ConvD1
 import com.wsr.process.compute.debug.DebugD1
 import com.wsr.process.compute.debug.DebugD2
@@ -241,7 +243,9 @@ private val buildInSerializersModule = SerializersModule {
         // Bias
         subclass(BiasD1::class)
         subclass(BiasD2::class)
+        subclass(BiasAxisD2::class)
         subclass(BiasD3::class)
+        subclass(BiasAxisD3::class)
 
         // Conv
         subclass(ConvD1::class)

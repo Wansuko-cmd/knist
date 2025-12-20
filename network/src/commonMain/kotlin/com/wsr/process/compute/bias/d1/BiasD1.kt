@@ -1,4 +1,4 @@
-package com.wsr.process.compute.bias
+package com.wsr.process.compute.bias.d1
 
 import com.wsr.NetworkBuilder
 import com.wsr.batch.Batch

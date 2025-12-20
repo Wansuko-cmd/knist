@@ -11,6 +11,7 @@ import com.wsr.core.get
 import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import com.wsr.process.Context
+import com.wsr.process.compute.bias.d1.BiasD1
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
