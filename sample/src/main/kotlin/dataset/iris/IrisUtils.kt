@@ -9,7 +9,7 @@ import com.wsr.optimizer.Scheduler
 import com.wsr.optimizer.sgd.Sgd
 import com.wsr.output.softmax.softmaxWithLoss
 import com.wsr.process.compute.affine.affine
-import com.wsr.process.compute.bias.bias
+import com.wsr.process.compute.bias.d1.bias
 import com.wsr.process.compute.function.relu.reLU
 import maxIndex
 

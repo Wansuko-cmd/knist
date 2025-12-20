@@ -10,7 +10,7 @@ import com.wsr.optimizer.adam.AdamW
 import com.wsr.output.softmax.softmaxWithLoss
 import com.wsr.process.compute.affine.affine
 import com.wsr.process.compute.attention.attention
-import com.wsr.process.compute.bias.bias
+import com.wsr.process.compute.bias.d1.bias
 import com.wsr.process.compute.dropout.dropout
 import com.wsr.process.compute.function.relu.swish
 import com.wsr.process.compute.norm.layer.d2.layerNorm
