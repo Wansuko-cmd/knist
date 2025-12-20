@@ -10,7 +10,6 @@ import com.wsr.batch.operation.minus.minus
 import com.wsr.batch.operation.plus.plus
 import com.wsr.batch.operation.times.times
 import com.wsr.core.IOType
-import com.wsr.optimizer.Optimizer
 import com.wsr.process.Context
 import com.wsr.process.compute.Compute
 import kotlinx.serialization.Serializable
@@ -22,8 +21,6 @@ class LayerNormAxisD3 internal constructor(
     override val outputZ: Int,
     private val axis: Int,
     private val e: Float,
-    private val optimizer: Optimizer.D3,
-    private var weight: IOType.D3,
 ) : Compute.D3() {
     private val outputT = when (axis) {
         0 -> outputX
@@ -47,8 +44,7 @@ class LayerNormAxisD3 internal constructor(
         val variance = numerator.pow(2).average(axis = axis)
         val denominator = variance.sqrt(e = e)
 
-        val normalize = numerator.div(other = denominator, axis1 = axis1, axis2 = axis2)
-        return weight * normalize
+        return numerator.div(other = denominator, axis1 = axis1, axis2 = axis2)
     }
 
     override fun train(
@@ -62,21 +58,11 @@ class LayerNormAxisD3 internal constructor(
         val variance = numerator.pow(2).average(axis = axis)
         val denominator = variance.sqrt(e = e)
 
-        val normalize = numerator.div(other = denominator, axis1 = axis1, axis2 = axis2)
-
-        val output = weight * normalize
+        val output = numerator.div(other = denominator, axis1 = axis1, axis2 = axis2)
         val delta = calcDelta(output)
 
-        weight = optimizer.adapt(
-            weight = weight,
-            dw = normalize * delta,
-        )
-
-        // dOutput
-        val dOutput = delta * weight
-
         // dy/[x-average(x)] (分子に関する勾配)
-        val dNumerator = dOutput.div(other = denominator, axis1 = axis1, axis2 = axis2)
+        val dNumerator = delta.div(other = denominator, axis1 = axis1, axis2 = axis2)
 
         // dy/x <- (x-average(x)のx)
         val dx1 = dNumerator
@@ -87,7 +73,7 @@ class LayerNormAxisD3 internal constructor(
         // dy/x <- variance(x)のx
         val dx3 = run {
             // 各行ごとの勾配を事前計算
-            val dvn = (dOutput * normalize).sum(axis = axis)
+            val dvn = (delta * output).sum(axis = axis)
             val dvd = -2f * outputT.toFloat() * denominator.pow(2)
             val dVariancePerRow = dvn / dvd
 
