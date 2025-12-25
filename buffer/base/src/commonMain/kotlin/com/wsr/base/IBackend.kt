@@ -45,4 +45,16 @@ interface IBackend {
     fun ln(x: DataBuffer, e: Float): DataBuffer
     fun pow(x: DataBuffer, n: Int): DataBuffer
     fun sqrt(x: DataBuffer, e: Float): DataBuffer
+
+    fun max(x: DataBuffer): Float
+    fun max(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer
+    fun max(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer
+
+    fun min(x: DataBuffer): Float
+    fun min(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer
+    fun min(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer
+
+    fun sum(x: DataBuffer): Float
+    fun sum(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer
+    fun sum(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer
 }
