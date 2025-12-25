@@ -57,4 +57,7 @@ interface IBackend {
     fun sum(x: DataBuffer): Float
     fun sum(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer
     fun sum(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer
+
+    fun transpose(x: DataBuffer, xi: Int, xj: Int): DataBuffer
+    fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, axisI: Int, axisJ: Int, axisK: Int): DataBuffer
 }
