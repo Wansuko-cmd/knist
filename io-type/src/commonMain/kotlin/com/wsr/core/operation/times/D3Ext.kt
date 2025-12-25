@@ -2,9 +2,7 @@ package com.wsr.core.operation.times
 
 import com.wsr.Backend
 import com.wsr.core.IOType
-import com.wsr.core.d3
 import com.wsr.core.get
-import com.wsr.core.operation.zip.zipWith
 
 operator fun IOType.D3.times(other: Float): IOType.D3 {
     val result = Backend.times(x = value, y = other)

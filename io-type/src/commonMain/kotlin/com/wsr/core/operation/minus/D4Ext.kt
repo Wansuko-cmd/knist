@@ -2,7 +2,6 @@ package com.wsr.core.operation.minus
 
 import com.wsr.Backend
 import com.wsr.core.IOType
-import com.wsr.core.d4
 import com.wsr.core.get
 
 operator fun IOType.D4.minus(other: Float): IOType.D4 {

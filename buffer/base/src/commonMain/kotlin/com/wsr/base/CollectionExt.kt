@@ -299,12 +299,7 @@ internal inline fun DataBuffer.reduce(operation: (Float, Float) -> Float): Float
     return acc
 }
 
-internal inline fun DataBuffer.reduce(
-    xi: Int,
-    xj: Int,
-    axis: Int,
-    operation: (Float, Float) -> Float,
-): DataBuffer =
+internal inline fun DataBuffer.reduce(xi: Int, xj: Int, axis: Int, operation: (Float, Float) -> Float): DataBuffer =
     when (axis) {
         0 -> {
             val result = DataBuffer.create(size = xj)

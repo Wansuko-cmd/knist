@@ -2,11 +2,6 @@ package com.wsr.core.math
 
 import com.wsr.Backend
 import com.wsr.core.IOType
-import com.wsr.core.d0
-import com.wsr.core.d1
-import com.wsr.core.d2
-import com.wsr.core.d3
-import com.wsr.core.d4
 import com.wsr.core.get
 import kotlin.math.pow
 

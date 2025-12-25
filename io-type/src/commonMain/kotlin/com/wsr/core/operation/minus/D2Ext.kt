@@ -2,9 +2,7 @@ package com.wsr.core.operation.minus
 
 import com.wsr.Backend
 import com.wsr.core.IOType
-import com.wsr.core.d2
 import com.wsr.core.get
-import com.wsr.core.operation.zip.zipWith
 
 operator fun IOType.D2.minus(other: Float): IOType.D2 {
     val result = Backend.minus(x = value, y = other)

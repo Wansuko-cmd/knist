@@ -2,7 +2,6 @@ package com.wsr.core.collection.max
 
 import com.wsr.Backend
 import com.wsr.core.IOType
-import com.wsr.core.collection.reduce.reduce
 
 fun IOType.D1.max() = Backend.max(x = value)
 

@@ -2,7 +2,6 @@ package com.wsr.core.collection.min
 
 import com.wsr.Backend
 import com.wsr.core.IOType
-import com.wsr.core.collection.reduce.reduce
 
 fun IOType.D1.min() = Backend.min(x = value)
 

@@ -2,9 +2,7 @@ package com.wsr.core.operation.plus
 
 import com.wsr.Backend
 import com.wsr.core.IOType
-import com.wsr.core.d3
 import com.wsr.core.get
-import com.wsr.core.operation.zip.zipWith
 
 operator fun IOType.D3.plus(other: Float): IOType.D3 {
     val result = Backend.plus(x = value, y = other)
