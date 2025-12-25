@@ -1,18 +1,49 @@
 package com.wsr.core.operation.plus
 
+import com.wsr.Backend
 import com.wsr.core.IOType
 import com.wsr.core.d3
 import com.wsr.core.get
 import com.wsr.core.operation.zip.zipWith
 
-operator fun IOType.D3.plus(other: Float): IOType.D3 = IOType.d3(shape) { i, j, k -> this[i, j, k] + other }
+operator fun IOType.D3.plus(other: Float): IOType.D3 {
+    val result = Backend.plus(x = value, y = other)
+    return IOType.D3(shape = shape, value = result)
+}
 
-operator fun IOType.D3.plus(other: IOType.D0): IOType.D3 = IOType.d3(shape) { i, j, k -> this[i, j, k] + other.get() }
+operator fun IOType.D3.plus(other: IOType.D0): IOType.D3 {
+    val result = Backend.plus(x = value, y = other.get())
+    return IOType.D3(shape = shape, value = result)
+}
 
-fun IOType.D3.plus(other: IOType.D1, axis: Int): IOType.D3 = zipWith(other, axis) { a, b -> a + b }
+fun IOType.D3.plus(other: IOType.D1, axis: Int): IOType.D3 {
+    val result = Backend.plus(
+        x = value,
+        xi = i,
+        xj = j,
+        xk = k,
+        y = other.value,
+        axis = axis,
+    )
+    return IOType.D3(shape = shape, value = result)
+}
 
-fun IOType.D3.plus(other: IOType.D2, axis1: Int, axis2: Int) = zipWith(other, axis1, axis2) { a, b -> a + b }
+fun IOType.D3.plus(other: IOType.D2, axis1: Int, axis2: Int): IOType.D3 {
+    val result = Backend.plus(
+        x = value,
+        xi = i,
+        xj = j,
+        xk = k,
+        y = other.value,
+        yi = other.i,
+        yj = other.j,
+        axis1 = axis1,
+        axis2 = axis2,
+    )
+    return IOType.D3(shape = shape, value = result)
+}
 
-operator fun IOType.D3.plus(other: IOType.D3): IOType.D3 = IOType.d3(shape) { i, j, k ->
-    this[i, j, k] + other[i, j, k]
+operator fun IOType.D3.plus(other: IOType.D3): IOType.D3 {
+    val result = Backend.plus(x = value, y = other.value)
+    return IOType.D3(shape = shape, value = result)
 }

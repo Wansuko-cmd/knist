@@ -1,59 +1,18 @@
 package com.wsr.core.reshape.transpose
 
+import com.wsr.Backend
 import com.wsr.core.IOType
-import com.wsr.core.d2
-import com.wsr.core.d3
 import com.wsr.core.d4
 import com.wsr.core.get
 
-fun IOType.D2.transpose() = IOType.d2(shape.reversed()) { x, y -> this[y, x] }
+fun IOType.D2.transpose(): IOType.D2 {
+    val result = Backend.transpose(x = value, xi = i, xj = j)
+    return IOType.D2(shape = listOf(j, i), value = result)
+}
 
 fun IOType.D3.transpose(axisI: Int, axisJ: Int, axisK: Int): IOType.D3 {
-    val shape = listOf(shape[axisI], shape[axisJ], shape[axisK])
-    return when (axisI) {
-        0 if axisJ == 1 && axisK == 2 -> this
-        0 if axisJ == 2 && axisK == 1 ->
-            IOType.d3(shape) { i, j, k ->
-                get(
-                    i = i,
-                    j = k,
-                    k = j,
-                )
-            }
-        1 if axisJ == 0 && axisK == 2 ->
-            IOType.d3(shape) { i, j, k ->
-                get(
-                    i = j,
-                    j = i,
-                    k = k,
-                )
-            }
-        1 if axisJ == 2 && axisK == 0 ->
-            IOType.d3(shape) { i, j, k ->
-                get(
-                    i = k,
-                    j = i,
-                    k = j,
-                )
-            }
-        2 if axisJ == 0 && axisK == 1 ->
-            IOType.d3(shape) { i, j, k ->
-                get(
-                    i = j,
-                    j = k,
-                    k = i,
-                )
-            }
-        2 if axisJ == 1 && axisK == 0 ->
-            IOType.d3(shape) { i, j, k ->
-                get(
-                    i = k,
-                    j = j,
-                    k = i,
-                )
-            }
-        else -> throw IllegalStateException()
-    }
+    val result = Backend.transpose(x = value, xi = i, xj = j, xk = k, axisI = axisI, axisJ = axisJ, axisK = axisK)
+    return IOType.D3(shape = listOf(shape[axisI], shape[axisJ], shape[axisK]), value = result)
 }
 
 fun IOType.D4.transpose(axisI: Int, axisJ: Int, axisK: Int, axisL: Int): IOType.D4 {
