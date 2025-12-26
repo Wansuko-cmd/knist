@@ -1,13 +1,14 @@
 package com.wsr.core.operation.div
 
+import com.wsr.Backend
 import com.wsr.core.IOType
-import com.wsr.core.d4
-import com.wsr.core.get
 
-operator fun IOType.D4.div(other: Float): IOType.D4 = IOType.d4(this.shape) { i, j, k, l ->
-    this[i, j, k, l] / other
+operator fun IOType.D4.div(other: Float): IOType.D4 {
+    val result = Backend.div(x = value, y = other)
+    return IOType.D4(shape = shape, value = result)
 }
 
-operator fun IOType.D4.div(other: IOType.D4): IOType.D4 = IOType.d4(this.shape) { i, j, k, l ->
-    this[i, j, k, l] / other[i, j, k, l]
+operator fun IOType.D4.div(other: IOType.D4): IOType.D4 {
+    val result = Backend.div(x = value, y = other.value)
+    return IOType.D4(shape = shape, value = result)
 }
