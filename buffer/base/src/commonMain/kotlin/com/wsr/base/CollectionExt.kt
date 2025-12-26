@@ -23,17 +23,20 @@ internal inline fun DataBuffer.zipWith(
     when (axis) {
         0 -> {
             for (i in 0 until yi) {
+                val thisValue = this[i]
+                val oi = i * yj
                 for (j in 0 until yj) {
-                    val index = i * yj + j
-                    result[index] = block(this[i], other[index])
+                    val index = oi + j
+                    result[index] = block(thisValue, other[index])
                 }
             }
         }
 
         1 -> {
             for (i in 0 until yi) {
+                val oi = i * yj
                 for (j in 0 until yj) {
-                    val index = i * yj + j
+                    val index = oi + j
                     result[index] = block(this[j], other[index])
                 }
             }
@@ -55,10 +58,12 @@ internal inline fun DataBuffer.zipWith(
         0 -> {
             check(size == yi)
             for (i in 0 until yi) {
+                val thisValue = this[i]
                 for (j in 0 until yj) {
+                    val oi = (i * yj + j) * yk
                     for (k in 0 until yk) {
-                        val index = ((i * yj + j) * yk) + k
-                        result[index] = block(this[i], other[index])
+                        val index = oi + k
+                        result[index] = block(thisValue, other[index])
                     }
                 }
             }
@@ -68,9 +73,11 @@ internal inline fun DataBuffer.zipWith(
             check(size == yj)
             for (i in 0 until yi) {
                 for (j in 0 until yj) {
+                    val thisValue = this[j]
+                    val oi = (i * yj + j) * yk
                     for (k in 0 until yk) {
-                        val index = ((i * yj + j) * yk) + k
-                        result[index] = block(this[j], other[index])
+                        val index = oi + k
+                        result[index] = block(thisValue, other[index])
                     }
                 }
             }
@@ -80,8 +87,9 @@ internal inline fun DataBuffer.zipWith(
             check(size == yk)
             for (i in 0 until yi) {
                 for (j in 0 until yj) {
+                    val oi = (i * yj + j) * yk
                     for (k in 0 until yk) {
-                        val index = ((i * yj + j) * yk) + k
+                        val index = oi + k
                         result[index] = block(this[k], other[index])
                     }
                 }
@@ -103,9 +111,11 @@ internal inline fun DataBuffer.zipWith(
         0 -> {
             check(xi == other.size)
             for (i in 0 until xi) {
+                val ti = i * xj
+                val otherValue = other[i]
                 for (j in 0 until xj) {
-                    val index = i * xj + j
-                    result[index] = block(this[index], other[i])
+                    val index = ti + j
+                    result[index] = block(this[index], otherValue)
                 }
             }
         }
@@ -113,8 +123,9 @@ internal inline fun DataBuffer.zipWith(
         1 -> {
             check(xj == other.size)
             for (i in 0 until xi) {
+                val ti = i * xj
                 for (j in 0 until xj) {
-                    val index = i * xj + j
+                    val index = ti + j
                     result[index] = block(this[index], other[j])
                 }
             }
@@ -141,10 +152,11 @@ internal inline fun DataBuffer.zipWith(
                 check(xi == yi && xj == yj)
                 for (i in 0 until yi) {
                     for (j in 0 until yj) {
-                        val indexIJ = i * yj + j
+                        val thisValue = this[i * yj + j]
+                        val oi = (i * yj + j) * yk
                         for (k in 0 until yk) {
-                            val index = (i * yj + j) * yk + k
-                            result[index] = block(this[indexIJ], this[index])
+                            val otherIndex = oi + k
+                            result[otherIndex] = block(thisValue, other[otherIndex])
                         }
                     }
                 }
@@ -153,11 +165,13 @@ internal inline fun DataBuffer.zipWith(
             2 -> {
                 check(xi == yi && xj == yk)
                 for (i in 0 until yi) {
-                    for (k in 0 until yk) {
-                        val indexIK = i * yk + k
-                        for (j in 0 until yj) {
-                            val index = (i * yj + j) * yk + k
-                            result[index] = block(this[indexIK], this[index])
+                    for (j in 0 until yj) {
+                        val ti = i * yk
+                        val oi = (i * yj + j) * yk
+                        for (k in 0 until yk) {
+                            val thisIndex = ti + k
+                            val otherIndex = oi + k
+                            result[otherIndex] = block(this[thisIndex], other[otherIndex])
                         }
                     }
                 }
@@ -167,12 +181,14 @@ internal inline fun DataBuffer.zipWith(
         1 -> when (axis2) {
             2 -> {
                 check(xi == yj && xj == yk)
-                for (j in 0 until yj) {
-                    for (k in 0 until yk) {
-                        val indexJK = j * yk + k
-                        for (i in 0 until yi) {
-                            val index = (i * yj + j) * yk + k
-                            result[index] = block(this[indexJK], this[index])
+                for (i in 0 until yi) {
+                    for (j in 0 until yj) {
+                        val ti = j * yk
+                        val oi = (i * yj + j) * yk
+                        for (k in 0 until yk) {
+                            val thisIndex = ti + k
+                            val otherIndex = oi + k
+                            result[otherIndex] = block(this[thisIndex], other[otherIndex])
                         }
                     }
                 }
@@ -195,10 +211,12 @@ internal inline fun DataBuffer.zipWith(
         0 -> {
             check(xi == other.size)
             for (i in 0 until xi) {
+                val otherValue = other[i]
                 for (j in 0 until xj) {
+                    val ti = (i * xj + j) * xk
                     for (k in 0 until xk) {
-                        val index = (i * xj + j) * xk + k
-                        result[index] = block(this[index], other[i])
+                        val index = ti + k
+                        result[index] = block(this[index], otherValue)
                     }
                 }
             }
@@ -208,9 +226,11 @@ internal inline fun DataBuffer.zipWith(
             check(xj == other.size)
             for (i in 0 until xi) {
                 for (j in 0 until xj) {
+                    val ti = (i * xj + j) * xk
+                    val otherValue = other[j]
                     for (k in 0 until xk) {
-                        val index = (i * xj + j) * xk + k
-                        result[index] = block(this[index], other[j])
+                        val index = ti + k
+                        result[index] = block(this[index], otherValue)
                     }
                 }
             }
@@ -220,8 +240,9 @@ internal inline fun DataBuffer.zipWith(
             check(xk == other.size)
             for (i in 0 until xi) {
                 for (j in 0 until xj) {
+                    val ti = (i * xj + j) * xk
                     for (k in 0 until xk) {
-                        val index = (i * xj + j) * xk + k
+                        val index = ti + k
                         result[index] = block(this[index], other[k])
                     }
                 }
@@ -250,10 +271,11 @@ internal inline fun DataBuffer.zipWith(
                 check(xi == yi && xj == yj)
                 for (i in 0 until xi) {
                     for (j in 0 until xj) {
-                        val indexIJ = i * xj + j
+                        val ti = (i * xj + j) * xk
+                        val otherValue = other[i * xj + j]
                         for (k in 0 until xk) {
-                            val index = (i * xj + j) * xk + k
-                            result[index] = block(this[index], other[indexIJ])
+                            val thisIndex = ti + k
+                            result[thisIndex] = block(this[thisIndex], otherValue)
                         }
                     }
                 }
@@ -262,11 +284,12 @@ internal inline fun DataBuffer.zipWith(
             2 -> {
                 check(xi == yi && xk == yj)
                 for (i in 0 until xi) {
-                    for (k in 0 until xk) {
-                        val indexIK = i * xk + k
-                        for (j in 0 until xj) {
-                            val index = (i * xj + j) * xk + k
-                            result[index] = block(this[index], other[indexIK])
+                    for (j in 0 until xj) {
+                        val ti = (i * xj + j) * xk
+                        for (k in 0 until xk) {
+                            val thisIndex = ti + k
+                            val otherIndex = i * xk + k
+                            result[thisIndex] = block(this[thisIndex], other[otherIndex])
                         }
                     }
                 }
@@ -276,12 +299,13 @@ internal inline fun DataBuffer.zipWith(
         1 -> when (axis2) {
             2 -> {
                 check(xj == yi && xk == yj)
-                for (j in 0 until xj) {
-                    for (k in 0 until xk) {
-                        val indexJK = j * xk + k
-                        for (i in 0 until xi) {
-                            val index = (i * xj + j) * xk + k
-                            result[index] = block(this[index], other[indexJK])
+                for (i in 0 until xi) {
+                    for (j in 0 until xj) {
+                        val ti = (i * xj + j) * xk
+                        for (k in 0 until xk) {
+                            val thisIndex = ti + k
+                            val otherIndex = j * xk + k
+                            result[thisIndex] = block(this[thisIndex], other[otherIndex])
                         }
                     }
                 }
