@@ -50,4 +50,4 @@ jobs:
 
       - name: TinyStoriesテストを実行
         run: |
-          ${{ github.workspace }}/gradlew sample:test --tests "stories.TinyStoriesTest" --info
+          ${{ github.workspace }}/gradlew sample:test --tests "stories.TinyStoriesTest" --info --no-build-cache
