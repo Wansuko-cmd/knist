@@ -323,6 +323,20 @@ internal inline fun DataBuffer.reduce(operation: (Float, Float) -> Float): Float
     return acc
 }
 
+internal inline fun DataBuffer.reduce(xb: Int, operation: (Float, Float) -> Float): DataBuffer {
+    val result = DataBuffer.create(xb)
+    val stride = size / xb
+    for (b in 0 until xb) {
+        val offset = b * stride
+        var acc = this[offset]
+        for (i in 1 until stride) {
+            acc = operation(acc, this[offset + i])
+        }
+        result[b] = acc
+    }
+    return result
+}
+
 internal inline fun DataBuffer.reduce(xi: Int, xj: Int, axis: Int, operation: (Float, Float) -> Float): DataBuffer =
     when (axis) {
         0 -> {
@@ -396,6 +410,81 @@ internal inline fun DataBuffer.reduce(
                     acc = operation(acc, this[(i * xj + j) * xk + k])
                 }
                 result[i * xj + j] = acc
+            }
+        }
+        result
+    }
+
+    else -> throw IllegalArgumentException()
+}
+
+internal inline fun DataBuffer.reduce(
+    xi: Int,
+    xj: Int,
+    xk: Int,
+    xl: Int,
+    axis: Int,
+    operation: (Float, Float) -> Float,
+): DataBuffer = when (axis) {
+    0 -> {
+        val result = DataBuffer.create(xj * xk * xl)
+        for (j in 0 until xj) {
+            for (k in 0 until xk) {
+                for (l in 0 until xl) {
+                    var acc = this[(j * xk + k) * xl + l]
+                    for (i in 1 until xi) {
+                        acc = operation(acc, this[((i * xj + j) * xk + k) * xl + l])
+                    }
+                    result[(j * xk + k) * xl + l] = acc
+                }
+            }
+        }
+        result
+    }
+
+    1 -> {
+        val result = DataBuffer.create(xi * xk * xl)
+        for (i in 0 until xi) {
+            for (k in 0 until xk) {
+                for (l in 0 until xl) {
+                    var acc = this[(i * xj * xk + k) * xl + l]
+                    for (j in 1 until xj) {
+                        acc = operation(acc, this[((i * xj + j) * xk + k) * xl + l])
+                    }
+                    result[(i * xk + k) * xl + l] = acc
+                }
+            }
+        }
+        result
+    }
+
+    2 -> {
+        val result = DataBuffer.create(xi * xj * xl)
+        for (i in 0 until xi) {
+            for (j in 0 until xj) {
+                for (l in 0 until xl) {
+                    var acc = this[(i * xj + j) * xk * xl + l]
+                    for (k in 1 until xk) {
+                        acc = operation(acc, this[((i * xj + j) * xk + k) * xl + l])
+                    }
+                    result[(i * xj + j) * xl + l] = acc
+                }
+            }
+        }
+        result
+    }
+
+    3 -> {
+        val result = DataBuffer.create(xi * xj * xk)
+        for (i in 0 until xi) {
+            for (j in 0 until xj) {
+                for (k in 0 until xk) {
+                    var acc = this[((i * xj + j) * xk + k) * xl]
+                    for (l in 1 until xl) {
+                        acc = operation(acc, this[((i * xj + j) * xk + k) * xl + l])
+                    }
+                    result[(i * xj + j) * xk + k] = acc
+                }
             }
         }
         result

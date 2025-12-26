@@ -253,13 +253,20 @@ object BackendKotlin : IBackend {
 
     override fun max(x: DataBuffer): Float = x.reduce { acc, i -> maxOf(acc, i) }
 
+    override fun max(x: DataBuffer, xb: Int): DataBuffer = x.reduce(xb = xb) { acc, i -> maxOf(acc, i) }
+
     override fun max(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer =
         x.reduce(xi = xi, xj = xj, axis = axis) { acc, i -> maxOf(acc, i) }
 
     override fun max(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer =
         x.reduce(xi = xi, xj = xj, xk = xk, axis = axis) { acc, i -> maxOf(acc, i) }
 
+    override fun max(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axis: Int): DataBuffer =
+        x.reduce(xi = xi, xj = xj, xk = xk, xl = xl, axis = axis) { acc, i -> maxOf(acc, i) }
+
     override fun min(x: DataBuffer): Float = x.reduce { acc, i -> minOf(acc, i) }
+
+    override fun min(x: DataBuffer, xb: Int): DataBuffer = x.reduce(xb = xb) { acc, i -> minOf(acc, i) }
 
     override fun min(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer =
         x.reduce(xi = xi, xj = xj, axis = axis) { acc, i -> minOf(acc, i) }
@@ -267,13 +274,21 @@ object BackendKotlin : IBackend {
     override fun min(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer =
         x.reduce(xi = xi, xj = xj, xk = xk, axis = axis) { acc, i -> minOf(acc, i) }
 
+    override fun min(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axis: Int): DataBuffer =
+        x.reduce(xi = xi, xj = xj, xk = xk, xl = xl, axis = axis) { acc, i -> minOf(acc, i) }
+
     override fun sum(x: DataBuffer): Float = x.reduce { acc, i -> acc + i }
+
+    override fun sum(x: DataBuffer, xb: Int): DataBuffer = x.reduce(xb = xb) { acc, i -> acc + i }
 
     override fun sum(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer =
         x.reduce(xi = xi, xj = xj, axis = axis) { acc, i -> acc + i }
 
     override fun sum(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer =
         x.reduce(xi = xi, xj = xj, xk = xk, axis = axis) { acc, i -> acc + i }
+
+    override fun sum(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axis: Int): DataBuffer =
+        x.reduce(xi = xi, xj = xj, xk = xk, xl = xl, axis = axis) { acc, i -> acc + i }
 
     override fun transpose(x: DataBuffer, xi: Int, xj: Int): DataBuffer {
         val result = DataBuffer.create(x.size)
