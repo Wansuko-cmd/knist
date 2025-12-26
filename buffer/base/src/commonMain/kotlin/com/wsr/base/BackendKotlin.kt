@@ -290,9 +290,11 @@ object BackendKotlin : IBackend {
         val newShape = listOf(oldShape[axisI], oldShape[axisJ], oldShape[axisK])
         val result = DataBuffer.create(x.size)
         for (ni in 0 until newShape[0]) {
+            val nii = ni * newShape[1]
             for (nj in 0 until newShape[1]) {
+                val nji = (nii + nj) * newShape[2]
                 for (nk in 0 until newShape[2]) {
-                    val newIndex = (ni * newShape[1] + nj) * newShape[2] + nk
+                    val newIndex = nji + nk
 
                     val (oi, oj, ok) = IntArray(3).apply {
                         this[axisI] = ni
@@ -302,6 +304,45 @@ object BackendKotlin : IBackend {
                     val oldIndex = (oi * xj + oj) * xk + ok
 
                     result[newIndex] = x[oldIndex]
+                }
+            }
+        }
+        return result
+    }
+
+    override fun transpose(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        xl: Int,
+        axisI: Int,
+        axisJ: Int,
+        axisK: Int,
+        axisL: Int,
+    ): DataBuffer {
+        val oldShape = listOf(xi, xj, xk, xl)
+        val newShape = listOf(oldShape[axisI], oldShape[axisJ], oldShape[axisK], oldShape[axisL])
+        val result = DataBuffer.create(x.size)
+        for (ni in 0 until newShape[0]) {
+            val nii = ni * newShape[1]
+            for (nj in 0 until newShape[1]) {
+                val nji = (nii + nj) * newShape[2]
+                for (nk in 0 until newShape[2]) {
+                    val nki = (nji + nk) * newShape[3]
+                    for (nl in 0 until newShape[3]) {
+                        val newIndex = nki + nl
+
+                        val (oi, oj, ok, ol) = IntArray(4).apply {
+                            this[axisI] = ni
+                            this[axisJ] = nj
+                            this[axisK] = nk
+                            this[axisL] = nl
+                        }
+                        val oldIndex = ((oi * xj + oj) * xk + ok) * xl + ol
+
+                        result[newIndex] = x[oldIndex]
+                    }
                 }
             }
         }

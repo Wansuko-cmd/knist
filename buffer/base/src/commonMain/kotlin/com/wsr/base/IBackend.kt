@@ -140,4 +140,5 @@ interface IBackend {
 
     fun transpose(x: DataBuffer, xi: Int, xj: Int): DataBuffer
     fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, axisI: Int, axisJ: Int, axisK: Int): DataBuffer
+    fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int): DataBuffer
 }
