@@ -1,16 +1,23 @@
 package com.wsr.batch.collecction.minmax
 
+import com.wsr.Backend
 import com.wsr.batch.Batch
-import com.wsr.batch.get
 import com.wsr.core.IOType
-import com.wsr.core.collection.min.min
-import com.wsr.core.d0
 
 @JvmName("batchD1sMin")
-fun Batch<IOType.D1>.min() = Batch(size) { IOType.d0(this[it].min()) }
+fun Batch<IOType.D1>.min(): Batch<IOType.D0> {
+    val result = Backend.min(x = value, xb = size)
+    return Batch(shape = listOf(1), size = size, value = result)
+}
 
 @JvmName("batchD2sMin")
-fun Batch<IOType.D2>.min() = Batch(size) { IOType.d0(this[it].min()) }
+fun Batch<IOType.D2>.min(): Batch<IOType.D0> {
+    val result = Backend.min(x = value, xb = size)
+    return Batch(shape = listOf(1), size = size, value = result)
+}
 
 @JvmName("batchD3sMin")
-fun Batch<IOType.D3>.min() = Batch(size) { IOType.d0(this[it].min()) }
+fun Batch<IOType.D3>.min(): Batch<IOType.D0> {
+    val result = Backend.min(x = value, xb = size)
+    return Batch(shape = listOf(1), size = size, value = result)
+}
