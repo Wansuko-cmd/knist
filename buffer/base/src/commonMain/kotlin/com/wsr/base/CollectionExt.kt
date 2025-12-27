@@ -315,12 +315,414 @@ internal inline fun DataBuffer.zipWith(
     return result
 }
 
+internal inline fun DataBuffer.zipWith(
+    xi: Int,
+    xj: Int,
+    xk: Int,
+    other: DataBuffer,
+    yi: Int,
+    yj: Int,
+    yk: Int,
+    yl: Int,
+    axis1: Int,
+    axis2: Int,
+    axis3: Int,
+    block: (Float, Float) -> Float,
+): DataBuffer {
+    val result = DataBuffer.create(other.size)
+    when (axis1) {
+        0 -> when (axis2) {
+            1 -> when (axis3) {
+                2 -> {
+                    check(xi == yi && xj == yj && xk == yk)
+                    for (i in 0 until yi) {
+                        for (j in 0 until yj) {
+                            for (k in 0 until yk) {
+                                val thisValue = this[(i * yj + j) * yk + k]
+                                val oi = ((i * yj + j) * yk + k) * yl
+                                for (l in 0 until yl) {
+                                    val otherIndex = oi + l
+                                    result[otherIndex] = block(thisValue, other[otherIndex])
+                                }
+                            }
+                        }
+                    }
+                }
+
+                3 -> {
+                    check(xi == yi && xj == yj && xk == yl)
+                    for (i in 0 until yi) {
+                        for (j in 0 until yj) {
+                            for (k in 0 until yk) {
+                                val oi = ((i * yj + j) * yk + k) * yl
+                                for (l in 0 until yl) {
+                                    val thisIndex = (i * yj + j) * yl + l
+                                    val otherIndex = oi + l
+                                    result[otherIndex] = block(this[thisIndex], other[otherIndex])
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            2 -> when (axis3) {
+                3 -> {
+                    check(xi == yi && xj == yk && xk == yl)
+                    for (i in 0 until yi) {
+                        for (j in 0 until yj) {
+                            for (k in 0 until yk) {
+                                val oi = ((i * yj + j) * yk + k) * yl
+                                for (l in 0 until yl) {
+                                    val thisIndex = (i * yk + k) * yl + l
+                                    val otherIndex = oi + l
+                                    result[otherIndex] = block(this[thisIndex], other[otherIndex])
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        1 -> when (axis2) {
+            2 -> when (axis3) {
+                3 -> {
+                    check(xi == yj && xj == yk && xk == yl)
+                    for (i in 0 until yi) {
+                        for (j in 0 until yj) {
+                            for (k in 0 until yk) {
+                                val oi = ((i * yj + j) * yk + k) * yl
+                                for (l in 0 until yl) {
+                                    val thisIndex = (j * yk * k) * yl + l
+                                    val otherIndex = oi + l
+                                    result[otherIndex] = block(this[thisIndex], other[otherIndex])
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return result
+}
+
+internal inline fun DataBuffer.zipWith(
+    xi: Int,
+    xj: Int,
+    xk: Int,
+    xl: Int,
+    other: DataBuffer,
+    axis: Int,
+    block: (Float, Float) -> Float,
+): DataBuffer {
+    val result = DataBuffer.create(size)
+    when (axis) {
+        0 -> {
+            check(xi == other.size)
+            for (i in 0 until xi) {
+                val otherValue = other[i]
+                for (j in 0 until xj) {
+                    for (k in 0 until xk) {
+                        val ti = ((i * xj + j) * xk + k) * xl
+                        for (l in 0 until xl) {
+                            val thisIndex = ti + l
+                            result[thisIndex] = block(this[thisIndex], otherValue)
+                        }
+                    }
+                }
+            }
+        }
+
+        1 -> {
+            check(xj == other.size)
+            for (i in 0 until xi) {
+                for (j in 0 until xj) {
+                    val otherValue = other[j]
+                    for (k in 0 until xk) {
+                        val ti = ((i * xj + j) * xk + k) * xl
+                        for (l in 0 until xl) {
+                            val thisIndex = ti + l
+                            result[thisIndex] = block(this[thisIndex], otherValue)
+                        }
+                    }
+                }
+            }
+        }
+
+        2 -> {
+            check(xk == other.size)
+            for (i in 0 until xi) {
+                for (j in 0 until xj) {
+                    for (k in 0 until xk) {
+                        val ti = ((i * xj + j) * xk + k) * xl
+                        val otherValue = other[k]
+                        for (l in 0 until xl) {
+                            val thisIndex = ti + l
+                            result[thisIndex] = block(this[thisIndex], otherValue)
+                        }
+                    }
+                }
+            }
+        }
+
+        3 -> {
+            check(xl == other.size)
+            for (i in 0 until xi) {
+                for (j in 0 until xj) {
+                    for (k in 0 until xk) {
+                        val ti = ((i * xj + j) * xk + k) * xl
+                        for (l in 0 until xl) {
+                            val thisIndex = ti + l
+                            result[thisIndex] = block(this[thisIndex], other[l])
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return result
+}
+
+internal inline fun DataBuffer.zipWith(
+    xi: Int,
+    xj: Int,
+    xk: Int,
+    xl: Int,
+    other: DataBuffer,
+    yi: Int,
+    yj: Int,
+    axis1: Int,
+    axis2: Int,
+    block: (Float, Float) -> Float,
+): DataBuffer {
+    val result = DataBuffer.create(size)
+    when (axis1) {
+        0 -> when (axis2) {
+            1 -> {
+                check(xi == yi && xj == yj)
+                for (i in 0 until xi) {
+                    for (j in 0 until xj) {
+                        val otherValue = other[i * xj + j]
+                        for (k in 0 until xk) {
+                            val ti = ((i * xj + j) * xk + k) * xl
+                            for (l in 0 until xl) {
+                                val thisIndex = ti + l
+                                result[thisIndex] = block(this[thisIndex], otherValue)
+                            }
+                        }
+                    }
+                }
+            }
+
+            2 -> {
+                check(xi == yi && xk == yj)
+                for (i in 0 until xi) {
+                    for (j in 0 until xj) {
+                        for (k in 0 until xk) {
+                            val otherValue = other[i * xk + k]
+                            val ti = ((i * xj + j) * xk + k) * xl
+                            for (l in 0 until xl) {
+                                val thisIndex = ti + l
+                                result[thisIndex] = block(this[thisIndex], otherValue)
+                            }
+                        }
+                    }
+                }
+            }
+
+            3 -> {
+                check(xi == yi && xl == yj)
+                for (i in 0 until xi) {
+                    val oi = i * xl
+                    for (j in 0 until xj) {
+                        for (k in 0 until xk) {
+                            val ti = ((i * xj + j) * xk + k) * xl
+                            for (l in 0 until xl) {
+                                val thisIndex = ti + l
+                                val otherIndex = oi + l
+                                result[thisIndex] = block(this[thisIndex], other[otherIndex])
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        1 -> when (axis2) {
+            2 -> {
+                check(xj == yi && xk == yj)
+                for (i in 0 until xi) {
+                    for (j in 0 until xj) {
+                        for (k in 0 until xk) {
+                            val otherValue = other[j * xk + k]
+                            val ti = ((i * xj + j) * xk + k) * xl
+                            for (l in 0 until xl) {
+                                val thisIndex = ti + l
+                                result[thisIndex] = block(this[thisIndex], otherValue)
+                            }
+                        }
+                    }
+                }
+            }
+
+            3 -> {
+                check(xj == yi && xl == yj)
+                for (i in 0 until xi) {
+                    for (j in 0 until xj) {
+                        val oi = j * xl
+                        for (k in 0 until xk) {
+                            val ti = ((i * xj + j) * xk + k) * xl
+                            for (l in 0 until xl) {
+                                val thisIndex = ti + l
+                                val otherIndex = oi + l
+                                result[thisIndex] = block(this[thisIndex], other[otherIndex])
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        2 -> when (axis2) {
+            3 -> {
+                check(xk == yi && xl == yj)
+                for (i in 0 until xi) {
+                    for (j in 0 until xj) {
+                        for (k in 0 until xk) {
+                            val ti = ((i * xj + j) * xk + k) * xl
+                            val oi = k * xl
+                            for (l in 0 until xl) {
+                                val thisIndex = ti + l
+                                val otherIndex = oi + l
+                                result[thisIndex] = block(this[thisIndex], other[otherIndex])
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return result
+}
+
+internal inline fun DataBuffer.zipWith(
+    xi: Int,
+    xj: Int,
+    xk: Int,
+    xl: Int,
+    other: DataBuffer,
+    yi: Int,
+    yj: Int,
+    yk: Int,
+    axis1: Int,
+    axis2: Int,
+    axis3: Int,
+    block: (Float, Float) -> Float,
+): DataBuffer {
+    val result = DataBuffer.create(size)
+    when (axis1) {
+        0 -> when (axis2) {
+            1 -> when (axis3) {
+                2 -> {
+                    check(xi == yi && xj == yj && xk == yk)
+                    for (i in 0 until xi) {
+                        for (j in 0 until xj) {
+                            for (k in 0 until xk) {
+                                val ti = ((i * xj + j) * xk + k) * xl
+                                val otherValue = other[(i * xj + j) * xk + k]
+                                for (l in 0 until xl) {
+                                    val thisIndex = ti + l
+                                    result[thisIndex] = block(this[thisIndex], otherValue)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                3 -> {
+                    check(xi == yi && xj == yj && xl == yk)
+                    for (i in 0 until xi) {
+                        for (j in 0 until xj) {
+                            for (k in 0 until xk) {
+                                val ti = ((i * xj + j) * xk + k) * xl
+                                val oi = (i * xj + j) * xl
+                                for (l in 0 until xl) {
+                                    val thisIndex = ti + l
+                                    val otherIndex = oi + l
+                                    result[thisIndex] = block(this[thisIndex], other[otherIndex])
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            2 -> when (axis3) {
+                3 -> {
+                    check(xi == yi && xk == yj && xl == yk)
+                    for (i in 0 until xi) {
+                        for (j in 0 until xj) {
+                            for (k in 0 until xk) {
+                                val ti = ((i * xj + j) * xk + k) * xl
+                                val oi = (i * xk + k) * xl
+                                for (l in 0 until xl) {
+                                    val thisIndex = ti + l
+                                    val otherIndex = oi + l
+                                    result[thisIndex] = block(this[thisIndex], other[otherIndex])
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        1 -> when (axis2) {
+            2 -> when (axis3) {
+                3 -> {
+                    check(xj == yi && xk == yj && xl == yk)
+                    for (i in 0 until xi) {
+                        for (j in 0 until xj) {
+                            for (k in 0 until xk) {
+                                val ti = ((i * xj + j) * xk + k) * xl
+                                val oi = (j * xk + k) * xl
+                                for (l in 0 until xl) {
+                                    val thisIndex = ti + l
+                                    val otherIndex = oi + l
+                                    result[thisIndex] = block(this[thisIndex], other[otherIndex])
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return result
+}
+
 internal inline fun DataBuffer.reduce(operation: (Float, Float) -> Float): Float {
     var acc = this[0]
     for (i in 1 until size) {
         acc = operation(acc, this[i])
     }
     return acc
+}
+
+internal inline fun DataBuffer.reduce(xb: Int, operation: (Float, Float) -> Float): DataBuffer {
+    val result = DataBuffer.create(xb)
+    val stride = size / xb
+    for (b in 0 until xb) {
+        val offset = b * stride
+        var acc = this[offset]
+        for (i in 1 until stride) {
+            acc = operation(acc, this[offset + i])
+        }
+        result[b] = acc
+    }
+    return result
 }
 
 internal inline fun DataBuffer.reduce(xi: Int, xj: Int, axis: Int, operation: (Float, Float) -> Float): DataBuffer =
@@ -396,6 +798,81 @@ internal inline fun DataBuffer.reduce(
                     acc = operation(acc, this[(i * xj + j) * xk + k])
                 }
                 result[i * xj + j] = acc
+            }
+        }
+        result
+    }
+
+    else -> throw IllegalArgumentException()
+}
+
+internal inline fun DataBuffer.reduce(
+    xi: Int,
+    xj: Int,
+    xk: Int,
+    xl: Int,
+    axis: Int,
+    operation: (Float, Float) -> Float,
+): DataBuffer = when (axis) {
+    0 -> {
+        val result = DataBuffer.create(xj * xk * xl)
+        for (j in 0 until xj) {
+            for (k in 0 until xk) {
+                for (l in 0 until xl) {
+                    var acc = this[(j * xk + k) * xl + l]
+                    for (i in 1 until xi) {
+                        acc = operation(acc, this[((i * xj + j) * xk + k) * xl + l])
+                    }
+                    result[(j * xk + k) * xl + l] = acc
+                }
+            }
+        }
+        result
+    }
+
+    1 -> {
+        val result = DataBuffer.create(xi * xk * xl)
+        for (i in 0 until xi) {
+            for (k in 0 until xk) {
+                for (l in 0 until xl) {
+                    var acc = this[(i * xj * xk + k) * xl + l]
+                    for (j in 1 until xj) {
+                        acc = operation(acc, this[((i * xj + j) * xk + k) * xl + l])
+                    }
+                    result[(i * xk + k) * xl + l] = acc
+                }
+            }
+        }
+        result
+    }
+
+    2 -> {
+        val result = DataBuffer.create(xi * xj * xl)
+        for (i in 0 until xi) {
+            for (j in 0 until xj) {
+                for (l in 0 until xl) {
+                    var acc = this[(i * xj + j) * xk * xl + l]
+                    for (k in 1 until xk) {
+                        acc = operation(acc, this[((i * xj + j) * xk + k) * xl + l])
+                    }
+                    result[(i * xj + j) * xl + l] = acc
+                }
+            }
+        }
+        result
+    }
+
+    3 -> {
+        val result = DataBuffer.create(xi * xj * xk)
+        for (i in 0 until xi) {
+            for (j in 0 until xj) {
+                for (k in 0 until xk) {
+                    var acc = this[((i * xj + j) * xk + k) * xl]
+                    for (l in 1 until xl) {
+                        acc = operation(acc, this[((i * xj + j) * xk + k) * xl + l])
+                    }
+                    result[(i * xj + j) * xk + k] = acc
+                }
             }
         }
         result
