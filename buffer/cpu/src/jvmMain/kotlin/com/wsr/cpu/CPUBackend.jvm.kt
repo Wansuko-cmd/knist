@@ -15,6 +15,7 @@ actual fun loadCPUBackend(): IBackend? {
 
 class CPUBackend : IBackend by KotlinBackend {
     private val openBLAS = JOpenBLAS()
+    private val transpose = JTranspose()
 
     override fun inner(x: DataBuffer, y: DataBuffer, b: Int): DataBuffer {
         val result = FloatArray(x.size)
@@ -106,6 +107,34 @@ class CPUBackend : IBackend by KotlinBackend {
             n,
             b,
         )
+        return DataBuffer.create(result)
+    }
+
+    override fun transpose(x: DataBuffer, xi: Int, xj: Int): DataBuffer {
+        val result = FloatArray(x.size)
+        transpose.transposeD2(x.toFloatArray(), xi, xj, result)
+        return DataBuffer.create(result)
+    }
+
+    override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, axisI: Int, axisJ: Int, axisK: Int): DataBuffer {
+        val result = FloatArray(x.size)
+        transpose.transposeD3(x.toFloatArray(), xi, xj, xk, axisI, axisJ, axisK, result)
+        return DataBuffer.create(result)
+    }
+
+    override fun transpose(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        xl: Int,
+        axisI: Int,
+        axisJ: Int,
+        axisK: Int,
+        axisL: Int,
+    ): DataBuffer {
+        val result = FloatArray(x.size)
+        transpose.transposeD4(x.toFloatArray(), xi, xj, xk, xl, axisI, axisJ, axisK, axisL, result)
         return DataBuffer.create(result)
     }
 }

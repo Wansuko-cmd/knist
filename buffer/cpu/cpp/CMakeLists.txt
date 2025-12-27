@@ -48,25 +48,29 @@ else()
     set(OPENBLAS_LIB ${OPENBLAS_INSTALL_DIR}/lib/libopenblas.a)
 endif()
 
-add_library(JOpenBLAS SHARED ${SRC_DIR}/com_wsr_cpu_JOpenBLAS.cpp)
-add_dependencies(JOpenBLAS OpenBLAS)
+set(SOURCE_FILES
+        ${SRC_DIR}/com_wsr_cpu_JOpenBLAS.cpp
+        ${SRC_DIR}/com_wsr_cpu_JTranspose.cpp
+)
+add_library(JCPU SHARED ${SOURCE_FILES})
+add_dependencies(JCPU OpenBLAS)
 
-target_include_directories(JOpenBLAS PRIVATE
+target_include_directories(JCPU PRIVATE
         ${OPENBLAS_INCLUDE_DIR}
         ${OPENBLAS_INSTALL_DIR}/include
 )
 
 # OpenBLASをリンク
-target_link_libraries(JOpenBLAS PRIVATE ${OPENBLAS_LIB})
+target_link_libraries(JCPU PRIVATE ${OPENBLAS_LIB})
 if(UNIX AND NOT APPLE AND NOT ANDROID)
     # Linux: pthreadとgfortranが必要
-    target_link_libraries(JOpenBLAS PRIVATE pthread m gfortran)
+    target_link_libraries(JCPU PRIVATE pthread m gfortran)
 elseif(APPLE)
     # macOS
-    target_link_libraries(JOpenBLAS PRIVATE pthread m)
+    target_link_libraries(JCPU PRIVATE pthread m)
 elseif(WIN32)
     # Windows: 追加のライブラリは不要（OpenBLASが静的リンク）
 endif()
 
 # ライブラリ名とサフィックスを設定
-set_target_properties(JOpenBLAS PROPERTIES OUTPUT_NAME "cpu")
+set_target_properties(JCPU PROPERTIES OUTPUT_NAME "cpu")
