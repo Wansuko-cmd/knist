@@ -337,6 +337,23 @@ interface IBackend {
         axis3: Int,
     ): DataBuffer
 
+    fun inner(x: DataBuffer, y: DataBuffer, b: Int): DataBuffer
+
+    fun matMul(x: DataBuffer, y: DataBuffer, transY: Boolean, n: Int, k: Int): DataBuffer
+
+    fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, m: Int, k: Int): DataBuffer
+
+    fun matMul(
+        x: DataBuffer,
+        transX: Boolean,
+        y: DataBuffer,
+        transY: Boolean,
+        m: Int,
+        n: Int,
+        k: Int,
+        b: Int,
+    ): DataBuffer
+
     fun exp(x: DataBuffer): DataBuffer
     fun ln(x: DataBuffer, e: Float): DataBuffer
     fun pow(x: DataBuffer, n: Int): DataBuffer
