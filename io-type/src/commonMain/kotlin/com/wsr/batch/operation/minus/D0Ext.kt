@@ -2,7 +2,6 @@ package com.wsr.batch.operation.minus
 
 import com.wsr.Backend
 import com.wsr.batch.Batch
-import com.wsr.batch.collecction.map.mapValue
 import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.operation.minus.minus

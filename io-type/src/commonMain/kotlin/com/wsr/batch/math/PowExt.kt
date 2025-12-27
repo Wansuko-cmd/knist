@@ -2,7 +2,6 @@ package com.wsr.batch.math
 
 import com.wsr.Backend
 import com.wsr.batch.Batch
-import com.wsr.batch.collecction.map.mapValue
 import com.wsr.core.IOType
 import kotlin.math.pow
 

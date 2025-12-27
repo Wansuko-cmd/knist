@@ -18,6 +18,6 @@ fun Batch<IOType.D3>.sum(axis: Int): Batch<IOType.D2> {
             1 -> listOf(shape[0], shape[2])
             else -> listOf(shape[0], shape[1])
         },
-        value = result
+        value = result,
     )
 }

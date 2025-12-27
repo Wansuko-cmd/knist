@@ -2,12 +2,9 @@ package com.wsr.batch.operation.times
 
 import com.wsr.Backend
 import com.wsr.batch.Batch
-import com.wsr.batch.collecction.map.map
-import com.wsr.batch.collecction.map.mapWith
 import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.get
-import com.wsr.core.operation.times.times
 import com.wsr.core.operation.times.times
 
 @JvmName("batchD3TimesD3s")

@@ -5,7 +5,6 @@ import com.wsr.batch.Batch
 import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.collection.max.max
-import com.wsr.core.d0
 
 @JvmName("batchD1sMax")
 fun Batch<IOType.D1>.max(): Batch<IOType.D0> {
