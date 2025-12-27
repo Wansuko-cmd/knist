@@ -12,6 +12,7 @@ kotlin {
                 api(projects.buffer.base)
                 api(projects.buffer.open)
                 api(projects.buffer.cl)
+                api(projects.buffer.cpu)
             }
         }
 
