@@ -1,23 +1,91 @@
 package com.wsr.batch.operation.div
 
+import com.wsr.Backend
 import com.wsr.batch.Batch
-import com.wsr.batch.collecction.map.mapWith
-import com.wsr.batch.get
 import com.wsr.core.IOType
-import com.wsr.core.operation.div.div
 
 @JvmName("batchD3sDivFloat")
-operator fun Batch<IOType.D3>.div(other: Float): Batch<IOType.D3> = Batch(size) { this[it] / other }
+operator fun Batch<IOType.D3>.div(other: Float): Batch<IOType.D3> {
+    val result = Backend.div(x = value, y = other)
+    return Batch(size = size, shape = shape, value = result)
+}
 
 @JvmName("batchD3sDivD0s")
-operator fun Batch<IOType.D3>.div(other: Batch<IOType.D0>): Batch<IOType.D3> = Batch(size) { this[it] / other[it] }
+operator fun Batch<IOType.D3>.div(other: Batch<IOType.D0>): Batch<IOType.D3> {
+    val result = Backend.div(x = value, xi = size, xj = step, y = other.value, axis = 0)
+    return Batch(size = size, shape = shape, value = result)
+}
+
+@JvmName("batchD3sDivD1WithAxis")
+fun Batch<IOType.D3>.div(other: IOType.D1, axis: Int): Batch<IOType.D3> {
+    val result = Backend.div(
+        x = value,
+        xi = size,
+        xj = shape[0],
+        xk = shape[1],
+        xl = shape[2],
+        y = other.value,
+        axis = axis + 1,
+    )
+    return Batch(size = size, shape = shape, value = result)
+}
+
+@JvmName("batchD3sDivD2")
+operator fun Batch<IOType.D3>.div(other: IOType.D2): Batch<IOType.D3> = div(other = other, axis1 = 1, axis2 = 2)
+
+@JvmName("batchD3sDivD2WithAxis")
+fun Batch<IOType.D3>.div(other: IOType.D2, axis1: Int, axis2: Int): Batch<IOType.D3> {
+    val result = Backend.div(
+        x = value,
+        xi = size,
+        xj = shape[0],
+        xk = shape[1],
+        xl = shape[2],
+        y = other.value,
+        yi = other.shape[0],
+        yj = other.shape[1],
+        axis1 = axis1 + 1,
+        axis2 = axis2 + 1,
+    )
+    return Batch(size = size, shape = shape, value = result)
+}
+
+@JvmName("batchD3sDivD2s")
+operator fun Batch<IOType.D3>.div(other: Batch<IOType.D2>) = div(other, axis1 = 1, axis2 = 2)
 
 @JvmName("batchD3sDivD2sWithAxis")
-fun Batch<IOType.D2>.div(other: Batch<IOType.D3>, axis1: Int, axis2: Int) =
-    Batch(size) { this[it].div(other = other[it], axis1 = axis1, axis2 = axis2) }
+fun Batch<IOType.D3>.div(other: Batch<IOType.D2>, axis1: Int, axis2: Int): Batch<IOType.D3> {
+    val result = Backend.div(
+        x = value,
+        xi = size,
+        xj = shape[0],
+        xk = shape[1],
+        xl = shape[2],
+        y = other.value,
+        yi = other.size,
+        yj = other.shape[0],
+        yk = other.shape[1],
+        axis1 = 0,
+        axis2 = axis1 + 1,
+        axis3 = axis2 + 1,
+    )
+    return Batch(size = size, shape = shape, value = result)
+}
 
 @JvmName("batchD3sDivD3")
-operator fun Batch<IOType.D3>.div(other: IOType.D3) = mapWith(other) { a, b -> a / b }
+operator fun Batch<IOType.D3>.div(other: IOType.D3): Batch<IOType.D3> {
+    val result = Backend.div(
+        x = value,
+        xi = size,
+        xj = step,
+        y = other.value,
+        axis = 1,
+    )
+    return Batch(size = size, shape = shape, value = result)
+}
 
 @JvmName("batchD3sDivD3s")
-operator fun Batch<IOType.D3>.div(other: Batch<IOType.D3>) = mapWith(other) { a, b -> a / b }
+operator fun Batch<IOType.D3>.div(other: Batch<IOType.D3>): Batch<IOType.D3> {
+    val result = Backend.div(x = value, y = other.value)
+    return Batch(size = size, shape = shape, value = result)
+}
