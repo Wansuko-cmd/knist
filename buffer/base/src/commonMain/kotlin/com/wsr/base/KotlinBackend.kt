@@ -2,7 +2,7 @@ package com.wsr.base
 
 import kotlin.math.pow
 
-object BackendKotlin : IBackend {
+object KotlinBackend : IBackend {
     // 0次元
     override fun plus(x: Float, y: DataBuffer): DataBuffer = y.map { x + it }
 
