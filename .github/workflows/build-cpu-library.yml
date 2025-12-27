@@ -1,4 +1,4 @@
-name: 'CPUのビルド '
+name: 'CPUのビルド'
 
 on:
   workflow_dispatch:
@@ -77,8 +77,8 @@ jobs:
         with:
           name: cpu-${{ matrix.os_name }}-${{ matrix.arch }}
           path: |
-            buffer/cpu/cpp/build/libcpu_blas.${{ matrix.lib_extension }}
-            buffer/cpu/cpp/build/Release/libcpu_blas.${{ matrix.lib_extension }}
+            buffer/cpu/cpp/build/libcpu.${{ matrix.lib_extension }}
+            buffer/cpu/cpp/build/Release/libcpu.${{ matrix.lib_extension }}
           if-no-files-found: error
 
       - name: 成果物をアップロード (Windows)
@@ -87,8 +87,8 @@ jobs:
         with:
           name: cpu-${{ matrix.os_name }}-${{ matrix.arch }}
           path: |
-            buffer/cpu/cpp/build/cpu_blas.${{ matrix.lib_extension }}
-            buffer/cpu/cpp/build/Release/cpu_blas.${{ matrix.lib_extension }}
+            buffer/cpu/cpp/build/cpu.${{ matrix.lib_extension }}
+            buffer/cpu/cpp/build/Release/cpu.${{ matrix.lib_extension }}
           if-no-files-found: error
 
   commit:
@@ -114,23 +114,23 @@ jobs:
         run: |
           # macOS/Arm64
           mkdir -p buffer/cpu/src/jvmMain/resources/cpu/macos/Arm64
-          find artifacts/cpu-macos-Arm64 -name "libcpu_blas.dylib" -exec cp {} buffer/cpu/src/jvmMain/resources/cpu/macos/Arm64/ \;
+          find artifacts/cpu-macos-Arm64 -name "libcpu.dylib" -exec cp {} buffer/cpu/src/jvmMain/resources/cpu/macos/Arm64/ \;
 
           # macOS/X64
           mkdir -p buffer/cpu/src/jvmMain/resources/cpu/macos/X64
-          find artifacts/cpu-macos-X64 -name "libcpu_blas.dylib" -exec cp {} buffer/cpu/src/jvmMain/resources/cpu/macos/X64/ \;
+          find artifacts/cpu-macos-X64 -name "libcpu.dylib" -exec cp {} buffer/cpu/src/jvmMain/resources/cpu/macos/X64/ \;
 
           # Linux/X64
           mkdir -p buffer/cpu/src/jvmMain/resources/cpu/linux/X64
-          find artifacts/cpu-linux-X64 -name "libcpu_blas.so" -exec cp {} buffer/cpu/src/jvmMain/resources/cpu/linux/X64/ \;
+          find artifacts/cpu-linux-X64 -name "libcpu.so" -exec cp {} buffer/cpu/src/jvmMain/resources/cpu/linux/X64/ \;
 
           # Linux/Arm64
           mkdir -p buffer/cpu/src/jvmMain/resources/cpu/linux/Arm64
-          find artifacts/cpu-linux-Arm64 -name "libcpu_blas.so" -exec cp {} buffer/cpu/src/jvmMain/resources/cpu/linux/Arm64/ \;
+          find artifacts/cpu-linux-Arm64 -name "libcpu.so" -exec cp {} buffer/cpu/src/jvmMain/resources/cpu/linux/Arm64/ \;
 
           # Windows/X64
           mkdir -p buffer/cpu/src/jvmMain/resources/cpu/mingw/X64
-          find artifacts/cpu-mingw-X64 -name "cpu_blas.dll" -exec cp {} buffer/cpu/src/jvmMain/resources/cpu/mingw/X64/ \;
+          find artifacts/cpu-mingw-X64 -name "cpu.dll" -exec cp {} buffer/cpu/src/jvmMain/resources/cpu/mingw/X64/ \;
 
           echo "=== Resources structure ==="
           find buffer/cpu/src/jvmMain/resources -type f
