@@ -59,5 +59,5 @@ fun Batch<IOType.D1>.times(other: Batch<IOType.D2>, axis: Int): Batch<IOType.D2>
         axis1 = 0,
         axis2 = axis + 1,
     )
-    return Batch(size = size, shape = shape, value = result)
+    return Batch(size = size, shape = other.shape, value = result)
 }
