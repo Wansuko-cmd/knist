@@ -3,21 +3,20 @@ package com.wsr.base
 import kotlin.math.pow
 
 object BackendKotlin : IBackend {
+    // 0次元
     override fun plus(x: Float, y: DataBuffer): DataBuffer = y.map { x + it }
 
+    // 1次元
     override fun plus(x: DataBuffer, y: Float): DataBuffer = x.map { it + y }
-
     override fun plus(x: DataBuffer, y: DataBuffer): DataBuffer = x.zipWith(other = y) { a, b -> a + b }
-
     override fun plus(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, axis: Int): DataBuffer =
         x.zipWith(other = y, yi = yi, yj = yj, axis = axis) { a, b -> a + b }
-
     override fun plus(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis: Int): DataBuffer =
         x.zipWith(other = y, yi = yi, yj = yj, yk = yk, axis = axis) { a, b -> a + b }
 
+    // 2次元
     override fun plus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer =
         x.zipWith(xi = xi, xj = xj, other = y, axis = axis) { a, b -> a + b }
-
     override fun plus(
         x: DataBuffer,
         xi: Int,
@@ -39,6 +38,7 @@ object BackendKotlin : IBackend {
         axis2 = axis2,
     ) { a, b -> a + b }
 
+    // 3次元
     override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer =
         x.zipWith(xi = xi, xj = xj, xk = xk, other = y, axis = axis) { a, b -> a + b }
 
@@ -63,21 +63,108 @@ object BackendKotlin : IBackend {
         axis2 = axis2,
     ) { a, b -> a + b }
 
+    override fun plus(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        y: DataBuffer,
+        yi: Int,
+        yj: Int,
+        yk: Int,
+        yl: Int,
+        axis1: Int,
+        axis2: Int,
+        axis3: Int,
+    ): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        other = y,
+        yi = yi,
+        yj = yj,
+        yk = yk,
+        yl = yl,
+        axis1 = axis1,
+        axis2 = axis2,
+        axis3 = axis3,
+    ) { a, b -> a + b }
+
+    // 4次元
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer =
+        x.zipWith(
+            xi = xi,
+            xj = xj,
+            xk = xk,
+            xl = xl,
+            other = y,
+            axis = axis,
+        ) { a, b -> a + b }
+
+    override fun plus(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        xl: Int,
+        y: DataBuffer,
+        yi: Int,
+        yj: Int,
+        axis1: Int,
+        axis2: Int,
+    ): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        xl = xl,
+        other = y,
+        yi = yi,
+        yj = yj,
+        axis1 = axis1,
+        axis2 = axis2,
+    ) { a, b -> a + b }
+
+    override fun plus(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        xl: Int,
+        y: DataBuffer,
+        yi: Int,
+        yj: Int,
+        yk: Int,
+        axis1: Int,
+        axis2: Int,
+        axis3: Int,
+    ): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        xl = xl,
+        other = y,
+        yi = yi,
+        yj = yj,
+        yk = yk,
+        axis1 = axis1,
+        axis2 = axis2,
+        axis3 = axis3,
+    ) { a, b -> a + b }
+
+    // 0次元
     override fun minus(x: Float, y: DataBuffer): DataBuffer = y.map { x - it }
 
+    // 1次元
     override fun minus(x: DataBuffer, y: Float): DataBuffer = x.map { it - y }
-
     override fun minus(x: DataBuffer, y: DataBuffer): DataBuffer = x.zipWith(other = y) { a, b -> a - b }
-
     override fun minus(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, axis: Int): DataBuffer =
         x.zipWith(other = y, yi = yi, yj = yj, axis = axis) { a, b -> a - b }
-
     override fun minus(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis: Int): DataBuffer =
         x.zipWith(other = y, yi = yi, yj = yj, yk = yk, axis = axis) { a, b -> a - b }
 
+    // 2次元
     override fun minus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer =
         x.zipWith(xi = xi, xj = xj, other = y, axis = axis) { a, b -> a - b }
-
     override fun minus(
         x: DataBuffer,
         xi: Int,
@@ -99,6 +186,7 @@ object BackendKotlin : IBackend {
         axis2 = axis2,
     ) { a, b -> a - b }
 
+    // 3次元
     override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer =
         x.zipWith(xi = xi, xj = xj, xk = xk, other = y, axis = axis) { a, b -> a - b }
 
@@ -123,21 +211,108 @@ object BackendKotlin : IBackend {
         axis2 = axis2,
     ) { a, b -> a - b }
 
+    override fun minus(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        y: DataBuffer,
+        yi: Int,
+        yj: Int,
+        yk: Int,
+        yl: Int,
+        axis1: Int,
+        axis2: Int,
+        axis3: Int,
+    ): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        other = y,
+        yi = yi,
+        yj = yj,
+        yk = yk,
+        yl = yl,
+        axis1 = axis1,
+        axis2 = axis2,
+        axis3 = axis3,
+    ) { a, b -> a - b }
+
+    // 4次元
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer =
+        x.zipWith(
+            xi = xi,
+            xj = xj,
+            xk = xk,
+            xl = xl,
+            other = y,
+            axis = axis,
+        ) { a, b -> a - b }
+
+    override fun minus(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        xl: Int,
+        y: DataBuffer,
+        yi: Int,
+        yj: Int,
+        axis1: Int,
+        axis2: Int,
+    ): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        xl = xl,
+        other = y,
+        yi = yi,
+        yj = yj,
+        axis1 = axis1,
+        axis2 = axis2,
+    ) { a, b -> a - b }
+
+    override fun minus(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        xl: Int,
+        y: DataBuffer,
+        yi: Int,
+        yj: Int,
+        yk: Int,
+        axis1: Int,
+        axis2: Int,
+        axis3: Int,
+    ): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        xl = xl,
+        other = y,
+        yi = yi,
+        yj = yj,
+        yk = yk,
+        axis1 = axis1,
+        axis2 = axis2,
+        axis3 = axis3,
+    ) { a, b -> a - b }
+
+    // 0次元
     override fun times(x: Float, y: DataBuffer): DataBuffer = y.map { x * it }
 
+    // 1次元
     override fun times(x: DataBuffer, y: Float): DataBuffer = x.map { it * y }
-
     override fun times(x: DataBuffer, y: DataBuffer): DataBuffer = x.zipWith(other = y) { a, b -> a * b }
-
     override fun times(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, axis: Int): DataBuffer =
         x.zipWith(other = y, yi = yi, yj = yj, axis = axis) { a, b -> a * b }
-
     override fun times(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis: Int): DataBuffer =
         x.zipWith(other = y, yi = yi, yj = yj, yk = yk, axis = axis) { a, b -> a * b }
 
+    // 2次元
     override fun times(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer =
         x.zipWith(xi = xi, xj = xj, other = y, axis = axis) { a, b -> a * b }
-
     override fun times(
         x: DataBuffer,
         xi: Int,
@@ -159,6 +334,7 @@ object BackendKotlin : IBackend {
         axis2 = axis2,
     ) { a, b -> a * b }
 
+    // 3次元
     override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer =
         x.zipWith(xi = xi, xj = xj, xk = xk, other = y, axis = axis) { a, b -> a * b }
 
@@ -183,21 +359,108 @@ object BackendKotlin : IBackend {
         axis2 = axis2,
     ) { a, b -> a * b }
 
+    override fun times(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        y: DataBuffer,
+        yi: Int,
+        yj: Int,
+        yk: Int,
+        yl: Int,
+        axis1: Int,
+        axis2: Int,
+        axis3: Int,
+    ): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        other = y,
+        yi = yi,
+        yj = yj,
+        yk = yk,
+        yl = yl,
+        axis1 = axis1,
+        axis2 = axis2,
+        axis3 = axis3,
+    ) { a, b -> a * b }
+
+    // 4次元
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer =
+        x.zipWith(
+            xi = xi,
+            xj = xj,
+            xk = xk,
+            xl = xl,
+            other = y,
+            axis = axis,
+        ) { a, b -> a * b }
+
+    override fun times(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        xl: Int,
+        y: DataBuffer,
+        yi: Int,
+        yj: Int,
+        axis1: Int,
+        axis2: Int,
+    ): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        xl = xl,
+        other = y,
+        yi = yi,
+        yj = yj,
+        axis1 = axis1,
+        axis2 = axis2,
+    ) { a, b -> a * b }
+
+    override fun times(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        xl: Int,
+        y: DataBuffer,
+        yi: Int,
+        yj: Int,
+        yk: Int,
+        axis1: Int,
+        axis2: Int,
+        axis3: Int,
+    ): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        xl = xl,
+        other = y,
+        yi = yi,
+        yj = yj,
+        yk = yk,
+        axis1 = axis1,
+        axis2 = axis2,
+        axis3 = axis3,
+    ) { a, b -> a * b }
+
+    // 0次元
     override fun div(x: Float, y: DataBuffer): DataBuffer = y.map { x / it }
 
+    // 1次元
     override fun div(x: DataBuffer, y: Float): DataBuffer = x.map { it / y }
-
     override fun div(x: DataBuffer, y: DataBuffer): DataBuffer = x.zipWith(other = y) { a, b -> a / b }
-
     override fun div(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, axis: Int): DataBuffer =
         x.zipWith(other = y, yi = yi, yj = yj, axis = axis) { a, b -> a / b }
-
     override fun div(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis: Int): DataBuffer =
-        x.zipWith(other = y, yi = yi, yj = yj, axis = axis) { a, b -> a / b }
+        x.zipWith(other = y, yi = yi, yj = yj, yk = yk, axis = axis) { a, b -> a / b }
 
+    // 2次元
     override fun div(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer =
         x.zipWith(xi = xi, xj = xj, other = y, axis = axis) { a, b -> a / b }
-
     override fun div(
         x: DataBuffer,
         xi: Int,
@@ -219,6 +482,7 @@ object BackendKotlin : IBackend {
         axis2 = axis2,
     ) { a, b -> a / b }
 
+    // 3次元
     override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer =
         x.zipWith(xi = xi, xj = xj, xk = xk, other = y, axis = axis) { a, b -> a / b }
 
@@ -241,6 +505,94 @@ object BackendKotlin : IBackend {
         yj = yj,
         axis1 = axis1,
         axis2 = axis2,
+    ) { a, b -> a / b }
+
+    override fun div(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        y: DataBuffer,
+        yi: Int,
+        yj: Int,
+        yk: Int,
+        yl: Int,
+        axis1: Int,
+        axis2: Int,
+        axis3: Int,
+    ): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        other = y,
+        yi = yi,
+        yj = yj,
+        yk = yk,
+        yl = yl,
+        axis1 = axis1,
+        axis2 = axis2,
+        axis3 = axis3,
+    ) { a, b -> a / b }
+
+    // 4次元
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer =
+        x.zipWith(
+            xi = xi,
+            xj = xj,
+            xk = xk,
+            xl = xl,
+            other = y,
+            axis = axis,
+        ) { a, b -> a / b }
+
+    override fun div(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        xl: Int,
+        y: DataBuffer,
+        yi: Int,
+        yj: Int,
+        axis1: Int,
+        axis2: Int,
+    ): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        xl = xl,
+        other = y,
+        yi = yi,
+        yj = yj,
+        axis1 = axis1,
+        axis2 = axis2,
+    ) { a, b -> a / b }
+
+    override fun div(
+        x: DataBuffer,
+        xi: Int,
+        xj: Int,
+        xk: Int,
+        xl: Int,
+        y: DataBuffer,
+        yi: Int,
+        yj: Int,
+        yk: Int,
+        axis1: Int,
+        axis2: Int,
+        axis3: Int,
+    ): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        xl = xl,
+        other = y,
+        yi = yi,
+        yj = yj,
+        yk = yk,
+        axis1 = axis1,
+        axis2 = axis2,
+        axis3 = axis3,
     ) { a, b -> a / b }
 
     override fun exp(x: DataBuffer): DataBuffer = x.map { kotlin.math.exp(it) }
