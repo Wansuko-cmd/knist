@@ -15,7 +15,7 @@ fun IOType.D2.matMul(other: Batch<IOType.D1>, trans: Boolean = false): Batch<IOT
         m = m,
         n = 1,
         k = k,
-        b = other.size
+        b = other.size,
     )
 
     return Batch(result, other.size, listOf(m))
