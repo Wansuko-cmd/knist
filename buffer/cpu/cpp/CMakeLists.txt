@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 project(io-type-blas C CXX)
 
 # ソースディレクトリを設定
-set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/open)
+set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/cpu)
 
 # JNIのセットアップ
 find_package(JNI REQUIRED)
@@ -48,7 +48,7 @@ else()
     set(OPENBLAS_LIB ${OPENBLAS_INSTALL_DIR}/lib/libopenblas.a)
 endif()
 
-add_library(JOpenBLAS SHARED ${SRC_DIR}/com_wsr_open_JOpenBLAS.cpp)
+add_library(JOpenBLAS SHARED ${SRC_DIR}/com_wsr_cpu_JOpenBLAS.cpp)
 add_dependencies(JOpenBLAS OpenBLAS)
 
 target_include_directories(JOpenBLAS PRIVATE
@@ -69,4 +69,4 @@ elseif(WIN32)
 endif()
 
 # ライブラリ名とサフィックスを設定
-set_target_properties(JOpenBLAS PROPERTIES OUTPUT_NAME "open_blas")
+set_target_properties(JOpenBLAS PROPERTIES OUTPUT_NAME "cpu")

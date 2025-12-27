@@ -1,8 +1,8 @@
 package com.wsr
 
-import com.wsr.base.KotlinBackend
 import com.wsr.base.DataBuffer
 import com.wsr.base.IBackend
+import com.wsr.base.KotlinBackend
 
 object Backend : IBackend by KotlinBackend {
     override fun inner(x: DataBuffer, y: DataBuffer, b: Int): DataBuffer = BLAS.sgemm(
