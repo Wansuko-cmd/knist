@@ -595,6 +595,81 @@ object BackendKotlin : IBackend {
         axis3 = axis3,
     ) { a, b -> a / b }
 
+    override fun inner(x: DataBuffer, y: DataBuffer, b: Int): DataBuffer {
+        val result = DataBuffer.create(b)
+        val stride = x.size / b
+        repeat(b) { b ->
+            var acc = 0f
+            val offset = b * stride
+            repeat(stride) { s ->
+                acc += x[offset + s] * y[offset + s]
+            }
+            result[b] = acc
+        }
+        return result
+    }
+
+    override fun matMul(x: DataBuffer, y: DataBuffer, transY: Boolean, n: Int, k: Int): DataBuffer {
+        val result = DataBuffer.create(n)
+        for (j in 0 until n) {
+            var sum = 0f
+            for (p in 0 until k) {
+                val yValue = if (transY) y[j * k + p] else y[p * n + j]
+                sum += x[p] * yValue
+            }
+            result[j] = sum
+        }
+        return result
+    }
+
+    override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, m: Int, k: Int): DataBuffer {
+        val result = DataBuffer.create(m)
+        for (i in 0 until m) {
+            var sum = 0f
+            for (p in 0 until k) {
+                val xValue = if (transX) x[p * m + i] else x[i * k + p]
+                sum += xValue * y[p]
+            }
+            result[i] = sum
+        }
+        return result
+    }
+
+    override fun matMul(
+        x: DataBuffer,
+        transX: Boolean,
+        y: DataBuffer,
+        transY: Boolean,
+        m: Int,
+        n: Int,
+        k: Int,
+        b: Int,
+    ): DataBuffer {
+        val result = DataBuffer.create(b * m * n)
+        val strideX = m * k
+        val strideY = k * n
+        val stride = m * n
+        for (batchIndex in 0 until b) {
+            val offsetX = batchIndex * strideX
+            val offsetY = batchIndex * strideY
+            val offset = batchIndex * stride
+
+            for (i in 0 until m) {
+                for (j in 0 until n) {
+                    var sum = 0f
+                    for (p in 0 until k) {
+                        val xValue = if (transX) x[offsetX + p * m + i] else x[offsetX + i * k + p]
+                        val yValue = if (transY) y[offsetY + j * k + p] else y[offsetY + p * n + j]
+                        sum += xValue * yValue
+                    }
+                    val index = offset + i * n + j
+                    result[index] = sum
+                }
+            }
+        }
+        return result
+    }
+
     override fun exp(x: DataBuffer): DataBuffer = x.map { kotlin.math.exp(it) }
 
     override fun ln(x: DataBuffer, e: Float): DataBuffer = x.map { kotlin.math.ln(it + e) }
