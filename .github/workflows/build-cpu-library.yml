@@ -1,4 +1,4 @@
-name: 'Open BLASのビルド'
+name: 'CPUのビルド'
 
 on:
   workflow_dispatch:
