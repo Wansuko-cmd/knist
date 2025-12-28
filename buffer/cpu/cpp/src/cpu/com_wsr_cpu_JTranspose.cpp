@@ -23,8 +23,8 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD2(
         const int BLOCK_SIZE = 32;
         for (int i_block = 0; i_block < xi; i_block += BLOCK_SIZE) {
             for (int j_block = 0; j_block < xj; j_block += BLOCK_SIZE) {
-                int i_end = std::min(i_block + BLOCK_SIZE, xi);
-                int j_end = std::min(j_block + BLOCK_SIZE, xj);
+                int i_end = std::min(i_block + BLOCK_SIZE, static_cast<int>(xi));
+                int j_end = std::min(j_block + BLOCK_SIZE, static_cast<int>(xj));
                 for (int i = i_block; i < i_end; i++) {
                     for (int j = j_block; j < j_end; j++) {
                         result_ptr[j * xi + i] = x_ptr[i * xj + j];
@@ -59,9 +59,9 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD3(
                     int new_index = nji + nk;
 
                     int old_indexes[3] = {0};
-                    old_indexes[axis_i] =ni;
-                    old_indexes[axis_j] =nj;
-                    old_indexes[axis_k] =nk;
+                    old_indexes[axis_i] = ni;
+                    old_indexes[axis_j] = nj;
+                    old_indexes[axis_k] = nk;
                     int old_index = (old_indexes[0] * xj + old_indexes[1]) * xk + old_indexes[2];
 
                     result_ptr[new_index] = x_ptr[old_index];
