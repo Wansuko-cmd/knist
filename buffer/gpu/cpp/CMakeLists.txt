@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
-project(io-type-blas-cl C CXX)
+project(io-type-gpu C CXX)
 
 # ソースディレクトリを設定
-set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/cl)
+set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/gpu)
 
 # JNIのセットアップ
 find_package(JNI REQUIRED)
@@ -69,21 +69,21 @@ else()
     set(CLBLAST_LIB ${CLBLAST_INSTALL_DIR}/lib/libclblast.a)
 endif()
 
-add_library(JCLBlast SHARED ${SRC_DIR}/com_wsr_cl_JCLBlast.cpp)
-add_dependencies(JCLBlast CLBlast)
+add_library(JGPU SHARED ${SRC_DIR}/com_wsr_gpu_JCLBlast.cpp)
+add_dependencies(JGPU CLBlast)
 
-target_include_directories(JCLBlast PRIVATE
+target_include_directories(JGPU PRIVATE
         ${CLBLAST_INCLUDE_DIR}
         ${OPENCL_INCLUDE_DIR}
 )
 
 # CLBlastとOpenCLをリンク
-target_link_libraries(JCLBlast PRIVATE ${CLBLAST_LIB})
-target_link_libraries(JCLBlast PRIVATE ${OPENCL_LIBRARY})
+target_link_libraries(JGPU PRIVATE ${CLBLAST_LIB})
+target_link_libraries(JGPU PRIVATE ${OPENCL_LIBRARY})
 
 if(UNIX AND NOT APPLE AND NOT ANDROID)
     # Linux: 追加のライブラリ
-    target_link_libraries(JCLBlast PRIVATE pthread m)
+    target_link_libraries(JGPU PRIVATE pthread m)
 elseif(APPLE)
     # macOS: 追加のライブラリは不要（OpenCLはフレームワーク）
 elseif(WIN32)
@@ -91,4 +91,4 @@ elseif(WIN32)
 endif()
 
 # ライブラリ名とサフィックスを設定
-set_target_properties(JCLBlast PROPERTIES OUTPUT_NAME "cl_blast")
+set_target_properties(JGPU PROPERTIES OUTPUT_NAME "gpu")
