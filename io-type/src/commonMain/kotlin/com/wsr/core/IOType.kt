@@ -1,6 +1,5 @@
 package com.wsr.core
 
-import com.wsr.BLAS
 import com.wsr.base.DataBuffer
 import kotlinx.serialization.Serializable
 
@@ -77,10 +76,6 @@ sealed class IOType {
         var result = value.hashCode()
         result = 31 * result + shape.hashCode()
         return result
-    }
-
-    companion object {
-        val enableBLAS get() = BLAS.isNative
     }
 }
 
