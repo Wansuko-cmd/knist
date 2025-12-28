@@ -5,7 +5,7 @@ import java.nio.file.StandardCopyOption
 
 fun loadNativeLibrary(path: String, name: String): Boolean {
     val resource = System.mapLibraryName(name)
-    val result = IBLAS::class.java
+    val result = IBackend::class.java
         .classLoader
         .getResourceAsStream(createLibPath(path) + resource)
         ?.use { inputStream ->
