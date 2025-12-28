@@ -27,6 +27,8 @@ include(":buffer")
 include(":buffer:base")
 include(":buffer:cpu")
 include(":buffer:cpu:cpp")
+include(":buffer:gpu")
+include(":buffer:gpu:cpp")
 
 include(":buffer:open")
 include(":buffer:open:cpp")
