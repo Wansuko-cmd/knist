@@ -25,6 +25,9 @@ include(":io-type")
 
 include(":buffer")
 include(":buffer:base")
+include(":buffer:cpu")
+include(":buffer:cpu:cpp")
+
 include(":buffer:open")
 include(":buffer:open:cpp")
 include(":buffer:cl")
