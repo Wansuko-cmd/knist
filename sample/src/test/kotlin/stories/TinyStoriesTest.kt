@@ -2,27 +2,15 @@
 
 package stories
 
-import com.wsr.BLAS
 import com.wsr.Network
 import dataset.storeis.MAX_LENGTH
 import dataset.storeis.createTinyStoriesModel
 import dataset.storeis.tokenize
 import kotlin.test.Test
-import org.junit.Before
 
 private const val SEED = 0
 
 class TinyStoriesTest {
-    @Before
-    fun setup() {
-        println(
-            """
-                設定
-                BLAS is Native: ${BLAS.isNative}
-            """.trimIndent(),
-        )
-    }
-
     @Test
     fun `TinyStoriesモデルの出力を確認`() {
         val network = createTinyStoriesModel(SEED)
