@@ -2,7 +2,6 @@ package com.wsr.base
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
@@ -11,7 +10,7 @@ import kotlinx.serialization.encoding.Encoder
 interface DataBuffer {
     val size: Int
 
-    val indices: IntRange
+    val indices: IntRange get() = 0 until size
 
     fun toFloatArray(): FloatArray
 
@@ -33,9 +32,6 @@ interface DataBuffer {
 @Serializable
 data class Default internal constructor(private val value: FloatArray) : DataBuffer {
     override val size = value.size
-
-    @Transient
-    override val indices: IntRange = value.indices
 
     override fun toFloatArray(): FloatArray = value
 
