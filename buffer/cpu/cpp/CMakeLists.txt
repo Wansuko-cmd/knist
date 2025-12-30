@@ -29,7 +29,6 @@ ExternalProject_Add(
         -DBUILD_WITHOUT_LAPACK=OFF
         -DC_LAPACK=ON
         -DUSE_THREAD=ON
-        -DUSE_OPENMP=OFF
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5
         ${OPENBLAS_CMAKE_ARGS}
         BUILD_COMMAND ${CMAKE_COMMAND} --build . --config Release
