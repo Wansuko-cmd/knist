@@ -137,4 +137,8 @@ class CPUBackend : IBackend by KotlinBackend {
         transpose.transposeD4(x.toFloatArray(), xi, xj, xk, xl, axisI, axisJ, axisK, axisL, result)
         return create(result)
     }
+
+    override fun create(size: Int): DataBuffer = CPUBuffer.create(size)
+
+    override fun create(value: FloatArray): DataBuffer = CPUBuffer.create(value)
 }
