@@ -10,26 +10,26 @@ extern "C" {
 /*
  * Class:     com_wsr_cpu_JTranspose
  * Method:    transposeD2
- * Signature: ([FII[F)V
+ * Signature: (Ljava/nio/ByteBuffer;IILjava/nio/ByteBuffer;)V
  */
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD2
-  (JNIEnv *, jobject, jfloatArray, jint, jint, jfloatArray);
+  (JNIEnv *, jobject, jobject, jint, jint, jobject);
 
 /*
  * Class:     com_wsr_cpu_JTranspose
  * Method:    transposeD3
- * Signature: ([FIIIIII[F)V
+ * Signature: (Ljava/nio/ByteBuffer;IIIIIILjava/nio/ByteBuffer;)V
  */
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD3
-  (JNIEnv *, jobject, jfloatArray, jint, jint, jint, jint, jint, jint, jfloatArray);
+  (JNIEnv *, jobject, jobject, jint, jint, jint, jint, jint, jint, jobject);
 
 /*
  * Class:     com_wsr_cpu_JTranspose
  * Method:    transposeD4
- * Signature: ([FIIIIIIII[F)V
+ * Signature: (Ljava/nio/ByteBuffer;IIIIIIIILjava/nio/ByteBuffer;)V
  */
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD4
-  (JNIEnv *, jobject, jfloatArray, jint, jint, jint, jint, jint, jint, jint, jint, jfloatArray);
+  (JNIEnv *, jobject, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
 
 #ifdef __cplusplus
 }

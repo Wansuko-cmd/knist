@@ -1,5 +1,7 @@
 package com.wsr.cpu;
 
+import java.nio.ByteBuffer;
+
 class JOpenBLAS {
     public native void sgemm(
             boolean transA,
@@ -8,12 +10,12 @@ class JOpenBLAS {
             int n,
             int k,
             float alpha,
-            float[] a,
+            ByteBuffer a,
             int lda,
-            float[] b,
+            ByteBuffer b,
             int ldb,
             float beta,
-            float[] c,
+            ByteBuffer c,
             int ldc,
             int batchSize
     );

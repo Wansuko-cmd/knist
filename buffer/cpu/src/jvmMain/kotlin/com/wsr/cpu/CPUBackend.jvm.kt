@@ -18,7 +18,7 @@ class CPUBackend : IBackend by KotlinBackend {
     private val transpose = JTranspose()
 
     override fun inner(x: DataBuffer, y: DataBuffer, b: Int): DataBuffer {
-        val result = FloatArray(x.size)
+        val result = CPUBuffer.create(x.size)
         openBLAS.sgemm(
             false,
             true,
@@ -26,20 +26,20 @@ class CPUBackend : IBackend by KotlinBackend {
             1,
             x.size,
             1f,
-            x.toFloatArray(),
+            x.toCPUBuffer().byteBuffer,
             x.size,
-            y.toFloatArray(),
+            y.toCPUBuffer().byteBuffer,
             x.size,
             0f,
-            result,
+            result.byteBuffer,
             1,
             1,
         )
-        return create(result)
+        return result
     }
 
     override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, m: Int, k: Int): DataBuffer {
-        val result = FloatArray(m)
+        val result = CPUBuffer.create(m)
         openBLAS.sgemm(
             transX,
             false,
@@ -47,20 +47,20 @@ class CPUBackend : IBackend by KotlinBackend {
             1,
             k,
             1f,
-            x.toFloatArray(),
+            x.toCPUBuffer().byteBuffer,
             if (transX) m else k,
-            y.toFloatArray(),
+            y.toCPUBuffer().byteBuffer,
             1,
             0f,
-            result,
+            result.byteBuffer,
             1,
             1,
         )
-        return create(result)
+        return result
     }
 
     override fun matMul(x: DataBuffer, y: DataBuffer, transY: Boolean, n: Int, k: Int): DataBuffer {
-        val result = FloatArray(n)
+        val result = CPUBuffer.create(n)
         openBLAS.sgemm(
             false,
             transY,
@@ -68,16 +68,16 @@ class CPUBackend : IBackend by KotlinBackend {
             n,
             k,
             1f,
-            x.toFloatArray(),
+            x.toCPUBuffer().byteBuffer,
             k,
-            y.toFloatArray(),
+            y.toCPUBuffer().byteBuffer,
             if (transY) k else n,
             0f,
-            result,
+            result.byteBuffer,
             n,
             1,
         )
-        return create(result)
+        return result
     }
 
     override fun matMul(
@@ -90,7 +90,7 @@ class CPUBackend : IBackend by KotlinBackend {
         k: Int,
         b: Int,
     ): DataBuffer {
-        val result = FloatArray(b * m * n)
+        val result = CPUBuffer.create(b * m * n)
         openBLAS.sgemm(
             transX,
             transY,
@@ -98,28 +98,28 @@ class CPUBackend : IBackend by KotlinBackend {
             n,
             k,
             1f,
-            x.toFloatArray(),
+            x.toCPUBuffer().byteBuffer,
             if (transX) m else k,
-            y.toFloatArray(),
+            y.toCPUBuffer().byteBuffer,
             if (transY) k else n,
             0f,
-            result,
+            result.byteBuffer,
             n,
             b,
         )
-        return create(result)
+        return result
     }
 
     override fun transpose(x: DataBuffer, xi: Int, xj: Int): DataBuffer {
-        val result = FloatArray(x.size)
-        transpose.transposeD2(x.toFloatArray(), xi, xj, result)
-        return create(result)
+        val result = CPUBuffer.create(x.size)
+        transpose.transposeD2(x.toCPUBuffer().byteBuffer, xi, xj, result.byteBuffer)
+        return result
     }
 
     override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, axisI: Int, axisJ: Int, axisK: Int): DataBuffer {
-        val result = FloatArray(x.size)
-        transpose.transposeD3(x.toFloatArray(), xi, xj, xk, axisI, axisJ, axisK, result)
-        return create(result)
+        val result = CPUBuffer.create(x.size)
+        transpose.transposeD3(x.toCPUBuffer().byteBuffer, xi, xj, xk, axisI, axisJ, axisK, result.byteBuffer)
+        return result
     }
 
     override fun transpose(
@@ -133,9 +133,9 @@ class CPUBackend : IBackend by KotlinBackend {
         axisK: Int,
         axisL: Int,
     ): DataBuffer {
-        val result = FloatArray(x.size)
-        transpose.transposeD4(x.toFloatArray(), xi, xj, xk, xl, axisI, axisJ, axisK, axisL, result)
-        return create(result)
+        val result = CPUBuffer.create(x.size)
+        transpose.transposeD4(x.toCPUBuffer().byteBuffer, xi, xj, xk, xl, axisI, axisJ, axisK, axisL, result.byteBuffer)
+        return result
     }
 
     override fun create(size: Int): DataBuffer = CPUBuffer.create(size)

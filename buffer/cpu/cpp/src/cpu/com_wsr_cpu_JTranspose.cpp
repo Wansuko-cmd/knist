@@ -2,30 +2,26 @@
 #include <stdio.h>
 
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD2(
-        JNIEnv *env, jobject, jfloatArray x, jint xi, jint xj, jfloatArray result
+        JNIEnv *env, jobject, jobject x, jint xi, jint xj, jobject result
 ) {
     // Javaからポインタを取得
-    jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
-    jfloat *result_ptr = env->GetFloatArrayElements(result, nullptr);
+    jfloat *x_ptr = (jfloat*)env->GetDirectBufferAddress(x);
+    jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
 
     for (int i = 0; i < xi; i++) {
         for (int j = 0; j < xj; j++) {
             result_ptr[j * xi + i] = x_ptr[i * xj + j];
         }
     }
-
-    // リソース解放
-    env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
-    env->ReleaseFloatArrayElements(result, result_ptr, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD3(
-        JNIEnv *env, jobject, jfloatArray x, jint xi, jint xj, jint xk,
-        jint axis_i, jint axis_j, jint axis_k, jfloatArray result
+        JNIEnv *env, jobject, jobject x, jint xi, jint xj, jint xk,
+        jint axis_i, jint axis_j, jint axis_k, jobject result
 ) {
     // Javaからポインタを取得
-    jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
-    jfloat *result_ptr = env->GetFloatArrayElements(result, nullptr);
+    jfloat *x_ptr = (jfloat*)env->GetDirectBufferAddress(x);
+    jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
 
     int old_shape[3] = { xi, xj, xk };
     int new_shape[3] = { old_shape[axis_i], old_shape[axis_j], old_shape[axis_k] };
@@ -47,20 +43,15 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD3(
             }
         }
     }
-
-
-    // リソース解放
-    env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
-    env->ReleaseFloatArrayElements(result, result_ptr, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD4(
-        JNIEnv *env, jobject, jfloatArray x, jint xi, jint xj, jint xk, jint xl,
-        jint axis_i, jint axis_j, jint axis_k, jint axis_l, jfloatArray result
+        JNIEnv *env, jobject, jobject x, jint xi, jint xj, jint xk, jint xl,
+        jint axis_i, jint axis_j, jint axis_k, jint axis_l, jobject result
 ) {
     // Javaからポインタを取得
-    jfloat *x_ptr = env->GetFloatArrayElements(x, nullptr);
-    jfloat *result_ptr = env->GetFloatArrayElements(result, nullptr);
+    jfloat *x_ptr = (jfloat*)env->GetDirectBufferAddress(x);
+    jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
 
     int old_shape[4] = { xi, xj, xk, xl };
     int new_shape[4] = { old_shape[axis_i], old_shape[axis_j], old_shape[axis_k], old_shape[axis_l] };
@@ -86,8 +77,4 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD4(
             }
         }
     }
-
-    // リソース解放
-    env->ReleaseFloatArrayElements(x, x_ptr, JNI_ABORT);
-    env->ReleaseFloatArrayElements(result, result_ptr, 0);
 }

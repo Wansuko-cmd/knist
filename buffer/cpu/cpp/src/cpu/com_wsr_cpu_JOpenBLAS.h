@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     com_wsr_cpu_JOpenBLAS
  * Method:    sgemm
- * Signature: (ZZIIIF[FI[FIF[FII)V
+ * Signature: (ZZIIIFLjava/nio/ByteBuffer;ILjava/nio/ByteBuffer;IFLjava/nio/ByteBuffer;II)V
  */
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JOpenBLAS_sgemm
-  (JNIEnv *, jobject, jboolean, jboolean, jint, jint, jint, jfloat, jfloatArray, jint, jfloatArray, jint, jfloat, jfloatArray, jint, jint);
+  (JNIEnv *, jobject, jboolean, jboolean, jint, jint, jint, jfloat, jobject, jint, jobject, jint, jfloat, jobject, jint, jint);
 
 #ifdef __cplusplus
 }
