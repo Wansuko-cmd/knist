@@ -40,7 +40,10 @@ data class Default(private val value: FloatArray) : DataBuffer {
     override fun slice(indices: IntRange): DataBuffer = Default(value.sliceArray(indices))
 
     override fun copyInto(destination: DataBuffer, destinationOffset: Int) {
-        value.copyInto(destination.toFloatArray(), destinationOffset)
+        when (destination) {
+            is Default -> value.copyInto(destination.value, destinationOffset)
+            else -> for (i in indices) destination[destinationOffset + i] = this[i]
+        }
     }
 
     override fun equals(other: Any?): Boolean {

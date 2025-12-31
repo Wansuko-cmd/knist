@@ -1,12 +1,14 @@
 package com.wsr.converter.word
 
 import com.wsr.NetworkBuilder
+import com.wsr.base.DataBuffer
 import com.wsr.batch.Batch
 import com.wsr.batch.toBatch
 import com.wsr.batch.toList
 import com.wsr.converter.Converter
 import com.wsr.core.IOType
 import com.wsr.core.d1
+import com.wsr.create
 import com.wsr.initializer.WeightInitializer
 import com.wsr.optimizer.Optimizer
 import kotlinx.serialization.Serializable
@@ -27,7 +29,7 @@ class WordsD1(
             .map { wordToId[it] ?: unknownIndex.toFloat() }
 
         IOType.d1(outputSize) { paddingIndex.toFloat() }.also {
-            tokenIds.toFloatArray().copyInto(it.value.toFloatArray())
+            DataBuffer.create(tokenIds.toFloatArray()).copyInto(it.value)
         }
     }.toBatch()
 
