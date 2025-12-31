@@ -26,7 +26,7 @@ interface DataBuffer {
 
 @Serializable
 data class Default(private val value: FloatArray) : DataBuffer {
-    constructor(size: Int): this(value = FloatArray(size))
+    constructor(size: Int) : this(value = FloatArray(size))
 
     override val size = value.size
 
