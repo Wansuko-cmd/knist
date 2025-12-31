@@ -2,7 +2,6 @@ package com.wsr.base
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
@@ -11,7 +10,7 @@ import kotlinx.serialization.encoding.Encoder
 interface DataBuffer {
     val size: Int
 
-    val indices: IntRange
+    val indices: IntRange get() = 0 until size
 
     fun toFloatArray(): FloatArray
 
@@ -22,20 +21,14 @@ interface DataBuffer {
 
     fun copyInto(destination: DataBuffer, destinationOffset: Int = 0)
 
-    companion object {
-        fun create(value: FloatArray) = Default(value)
-
-        fun create(size: Int) = Default(FloatArray(size))
-    }
+    companion object
 }
 
-@ConsistentCopyVisibility
 @Serializable
-data class Default internal constructor(private val value: FloatArray) : DataBuffer {
-    override val size = value.size
+data class Default(private val value: FloatArray) : DataBuffer {
+    constructor(size: Int) : this(value = FloatArray(size))
 
-    @Transient
-    override val indices: IntRange = value.indices
+    override val size = value.size
 
     override fun toFloatArray(): FloatArray = value
 
@@ -47,7 +40,10 @@ data class Default internal constructor(private val value: FloatArray) : DataBuf
     override fun slice(indices: IntRange): DataBuffer = Default(value.sliceArray(indices))
 
     override fun copyInto(destination: DataBuffer, destinationOffset: Int) {
-        value.copyInto(destination.toFloatArray(), destinationOffset)
+        when (destination) {
+            is Default -> value.copyInto(destination.value, destinationOffset)
+            else -> for (i in indices) destination[destinationOffset + i] = this[i]
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -76,7 +72,7 @@ object DataBufferSerializable : KSerializer<DataBuffer> {
     override fun serialize(encoder: Encoder, value: DataBuffer) {
         encoder.encodeSerializableValue(
             serializer = Default.serializer(),
-            value = DataBuffer.create(value.toFloatArray()),
+            value = Default(value.toFloatArray()),
         )
     }
 

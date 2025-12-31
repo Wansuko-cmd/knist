@@ -2,6 +2,7 @@ package com.wsr.batch
 
 import com.wsr.base.DataBuffer
 import com.wsr.core.IOType
+import com.wsr.create
 
 fun <T : IOType> List<T>.toBatch(): Batch<T> {
     val batchSize = size

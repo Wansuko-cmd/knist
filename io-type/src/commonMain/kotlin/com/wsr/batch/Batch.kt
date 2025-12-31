@@ -3,6 +3,7 @@ package com.wsr.batch
 import com.wsr.base.DataBuffer
 import com.wsr.core.IOType
 import com.wsr.core.d0
+import com.wsr.create
 
 class Batch<out T : IOType>(val value: DataBuffer, val size: Int, val shape: List<Int>) {
     val step = shape.reduce { acc, i -> acc * i }
