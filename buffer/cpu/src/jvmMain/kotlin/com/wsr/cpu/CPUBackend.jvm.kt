@@ -35,7 +35,7 @@ class CPUBackend : IBackend by KotlinBackend {
             1,
             1,
         )
-        return DataBuffer.create(result)
+        return create(result)
     }
 
     override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, m: Int, k: Int): DataBuffer {
@@ -56,7 +56,7 @@ class CPUBackend : IBackend by KotlinBackend {
             1,
             1,
         )
-        return DataBuffer.create(result)
+        return create(result)
     }
 
     override fun matMul(x: DataBuffer, y: DataBuffer, transY: Boolean, n: Int, k: Int): DataBuffer {
@@ -77,7 +77,7 @@ class CPUBackend : IBackend by KotlinBackend {
             n,
             1,
         )
-        return DataBuffer.create(result)
+        return create(result)
     }
 
     override fun matMul(
@@ -107,19 +107,19 @@ class CPUBackend : IBackend by KotlinBackend {
             n,
             b,
         )
-        return DataBuffer.create(result)
+        return create(result)
     }
 
     override fun transpose(x: DataBuffer, xi: Int, xj: Int): DataBuffer {
         val result = FloatArray(x.size)
         transpose.transposeD2(x.toFloatArray(), xi, xj, result)
-        return DataBuffer.create(result)
+        return create(result)
     }
 
     override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, axisI: Int, axisJ: Int, axisK: Int): DataBuffer {
         val result = FloatArray(x.size)
         transpose.transposeD3(x.toFloatArray(), xi, xj, xk, axisI, axisJ, axisK, result)
-        return DataBuffer.create(result)
+        return create(result)
     }
 
     override fun transpose(
@@ -135,6 +135,6 @@ class CPUBackend : IBackend by KotlinBackend {
     ): DataBuffer {
         val result = FloatArray(x.size)
         transpose.transposeD4(x.toFloatArray(), xi, xj, xk, xl, axisI, axisJ, axisK, axisL, result)
-        return DataBuffer.create(result)
+        return create(result)
     }
 }

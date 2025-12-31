@@ -21,16 +21,13 @@ interface DataBuffer {
 
     fun copyInto(destination: DataBuffer, destinationOffset: Int = 0)
 
-    companion object {
-        fun create(value: FloatArray) = Default(value)
-
-        fun create(size: Int) = Default(FloatArray(size))
-    }
+    companion object
 }
 
-@ConsistentCopyVisibility
 @Serializable
-data class Default internal constructor(private val value: FloatArray) : DataBuffer {
+data class Default(private val value: FloatArray) : DataBuffer {
+    constructor(size: Int): this(value = FloatArray(size))
+
     override val size = value.size
 
     override fun toFloatArray(): FloatArray = value
@@ -72,7 +69,7 @@ object DataBufferSerializable : KSerializer<DataBuffer> {
     override fun serialize(encoder: Encoder, value: DataBuffer) {
         encoder.encodeSerializableValue(
             serializer = Default.serializer(),
-            value = DataBuffer.create(value.toFloatArray()),
+            value = Default(value.toFloatArray()),
         )
     }
 

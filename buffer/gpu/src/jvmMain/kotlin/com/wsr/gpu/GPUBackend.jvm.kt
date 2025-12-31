@@ -45,7 +45,7 @@ class GPUBackend : IBackend by KotlinBackend {
         clBlast.release(aAddress)
         clBlast.release(bAddress)
         clBlast.release(cAddress)
-        return DataBuffer.create(result)
+        return create(result)
     }
 
     override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, m: Int, k: Int): DataBuffer {
@@ -73,7 +73,7 @@ class GPUBackend : IBackend by KotlinBackend {
         clBlast.release(aAddress)
         clBlast.release(bAddress)
         clBlast.release(cAddress)
-        return DataBuffer.create(result)
+        return create(result)
     }
 
     override fun matMul(x: DataBuffer, y: DataBuffer, transY: Boolean, n: Int, k: Int): DataBuffer {
@@ -101,7 +101,7 @@ class GPUBackend : IBackend by KotlinBackend {
         clBlast.release(aAddress)
         clBlast.release(bAddress)
         clBlast.release(cAddress)
-        return DataBuffer.create(result)
+        return create(result)
     }
 
     override fun matMul(
@@ -138,6 +138,6 @@ class GPUBackend : IBackend by KotlinBackend {
         clBlast.release(aAddress)
         clBlast.release(bAddress)
         clBlast.release(cAddress)
-        return DataBuffer.create(result)
+        return create(result)
     }
 }
