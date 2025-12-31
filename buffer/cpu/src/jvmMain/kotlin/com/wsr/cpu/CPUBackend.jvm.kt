@@ -15,6 +15,8 @@ actual fun loadCPUBackend(): IBackend? {
 
 class CPUBackend : IBackend by KotlinBackend {
     private val openBLAS = JOpenBLAS()
+    private val operation = JOperation()
+    private val collection = JCollection()
     private val transpose = JTranspose()
 
     override fun inner(x: DataBuffer, y: DataBuffer, b: Int): DataBuffer {
@@ -107,6 +109,138 @@ class CPUBackend : IBackend by KotlinBackend {
             n,
             b,
         )
+        return result
+    }
+
+    override fun max(x: DataBuffer): Float = collection.max(x.toCPUBuffer().byteBuffer)
+
+    override fun max(x: DataBuffer, xb: Int): DataBuffer {
+        val result = CPUBuffer.create(xb)
+        collection.maxD1(x.toCPUBuffer().byteBuffer, xb, result.byteBuffer)
+        return result
+    }
+
+    override fun max(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer {
+        val result = CPUBuffer.create(
+            size = when (axis) {
+                0 -> xj
+                else -> xi
+            },
+        )
+        collection.maxD2(x.toCPUBuffer().byteBuffer, xi, xj, axis, result.byteBuffer)
+        return result
+    }
+
+    override fun max(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer {
+        val result = CPUBuffer.create(
+            size = when (axis) {
+                0 -> xj * xk
+                1 -> xi * xk
+                else -> xi * xj
+            },
+        )
+        collection.maxD3(x.toCPUBuffer().byteBuffer, xi, xj, xk, axis, result.byteBuffer)
+        return result
+    }
+
+    override fun max(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axis: Int): DataBuffer {
+        val result = CPUBuffer.create(
+            size = when (axis) {
+                0 -> xj * xk * xl
+                1 -> xi * xk * xl
+                2 -> xi * xj * xl
+                else -> xi * xj * xk
+            },
+        )
+        collection.maxD4(x.toCPUBuffer().byteBuffer, xi, xj, xk, xl, axis, result.byteBuffer)
+        return result
+    }
+
+    override fun min(x: DataBuffer): Float = collection.min(x.toCPUBuffer().byteBuffer)
+
+    override fun min(x: DataBuffer, xb: Int): DataBuffer {
+        val result = CPUBuffer.create(xb)
+        collection.minD1(x.toCPUBuffer().byteBuffer, xb, result.byteBuffer)
+        return result
+    }
+
+    override fun min(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer {
+        val result = CPUBuffer.create(
+            size = when (axis) {
+                0 -> xj
+                else -> xi
+            },
+        )
+        collection.minD2(x.toCPUBuffer().byteBuffer, xi, xj, axis, result.byteBuffer)
+        return result
+    }
+
+    override fun min(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer {
+        val result = CPUBuffer.create(
+            size = when (axis) {
+                0 -> xj * xk
+                1 -> xi * xk
+                else -> xi * xj
+            },
+        )
+        collection.minD3(x.toCPUBuffer().byteBuffer, xi, xj, xk, axis, result.byteBuffer)
+        return result
+    }
+
+    override fun min(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axis: Int): DataBuffer {
+        val result = CPUBuffer.create(
+            size = when (axis) {
+                0 -> xj * xk * xl
+                1 -> xi * xk * xl
+                2 -> xi * xj * xl
+                else -> xi * xj * xk
+            },
+        )
+        collection.minD4(x.toCPUBuffer().byteBuffer, xi, xj, xk, xl, axis, result.byteBuffer)
+        return result
+    }
+
+    override fun sum(x: DataBuffer): Float = collection.sum(x.toCPUBuffer().byteBuffer)
+
+    override fun sum(x: DataBuffer, xb: Int): DataBuffer {
+        val result = CPUBuffer.create(xb)
+        collection.sumD1(x.toCPUBuffer().byteBuffer, xb, result.byteBuffer)
+        return result
+    }
+
+    override fun sum(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer {
+        val result = CPUBuffer.create(
+            size = when (axis) {
+                0 -> xj
+                else -> xi
+            },
+        )
+        collection.sumD2(x.toCPUBuffer().byteBuffer, xi, xj, axis, result.byteBuffer)
+        return result
+    }
+
+    override fun sum(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer {
+        val result = CPUBuffer.create(
+            size = when (axis) {
+                0 -> xj * xk
+                1 -> xi * xk
+                else -> xi * xj
+            },
+        )
+        collection.sumD3(x.toCPUBuffer().byteBuffer, xi, xj, xk, axis, result.byteBuffer)
+        return result
+    }
+
+    override fun sum(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axis: Int): DataBuffer {
+        val result = CPUBuffer.create(
+            size = when (axis) {
+                0 -> xj * xk * xl
+                1 -> xi * xk * xl
+                2 -> xi * xj * xl
+                else -> xi * xj * xk
+            },
+        )
+        collection.sumD4(x.toCPUBuffer().byteBuffer, xi, xj, xk, xl, axis, result.byteBuffer)
         return result
     }
 

@@ -49,6 +49,8 @@ endif()
 
 set(SOURCE_FILES
         ${SRC_DIR}/com_wsr_cpu_JOpenBLAS.cpp
+        ${SRC_DIR}/com_wsr_cpu_JOperation.cpp
+        ${SRC_DIR}/com_wsr_cpu_JCollection.cpp
         ${SRC_DIR}/com_wsr_cpu_JTranspose.cpp
 )
 add_library(JCPU SHARED ${SOURCE_FILES})
