@@ -68,13 +68,14 @@ target_include_directories(JCPU PRIVATE
 
 # OpenMPのサポートを有効化
 if(OpenMP_CXX_FOUND)
+    target_link_libraries(JCPU PRIVATE ${OpenMP_CXX_LIBRARIES})
+    target_include_directories(JCPU PRIVATE ${OpenMP_CXX_INCLUDE_DIRS})
     if (APPLE)
         target_compile_options(JCPU PRIVATE  -Xpreprocessor -fopenmp)
-        target_link_libraries(JCPU PRIVATE ${OpenMP_CXX_LIBRARIES})
-        target_include_directories(JCPU PRIVATE ${OpenMP_CXX_INCLUDE_DIRS})
+    elseif (WIN32 AND MSVC)
+         target_compile_options(JCPU PRIVATE /openmp:experimental)
     else()
         target_compile_options(JCPU PRIVATE ${OpenMP_CXX_FLAGS})
-        target_link_libraries(JCPU PRIVATE ${OpenMP_CXX_LIBRARIES})
     endif()
     message(STATUS "OpenMP support enabled")
 else()
