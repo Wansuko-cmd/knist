@@ -37,7 +37,7 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD3(
     int new_shape[3] = { old_shape[axis_i], old_shape[axis_j], old_shape[axis_k] };
 
     #ifdef _OPENMP
-    #pragma omp parallel for collapse(3) if(xi * xj * xk >= PARALLEL_THRESHOLD)
+    #pragma omp parallel for if(xi * xj * xk >= PARALLEL_THRESHOLD)
     #endif
     for (int ni = 0; ni < new_shape[0]; ni++) {
         int nii = ni * new_shape[1];
@@ -70,7 +70,7 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD4(
     int new_shape[4] = { old_shape[axis_i], old_shape[axis_j], old_shape[axis_k], old_shape[axis_l] };
 
     #ifdef _OPENMP
-    #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+    #pragma omp parallel for if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
     #endif
     for (int ni = 0; ni < new_shape[0]; ni++) {
         int nii = ni * new_shape[1];

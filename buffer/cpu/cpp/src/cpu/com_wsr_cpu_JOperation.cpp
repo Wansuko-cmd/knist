@@ -98,11 +98,14 @@ inline void zipWithD1ToD2(
 
     if (axis == 0) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(2) if(yi * yj >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for if(yi * yj >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < yi; i++) {
             float x_value = x_ptr[i];
             int y_i = i * yj;
+            #ifdef _OPENMP
+            #pragma omp simd
+            #endif
             for (int j = 0; j < yj; j++) {
                 int index = y_i + j;
                 PERFORM_OPERATION(result_ptr[index], x_value, y_ptr[index]);
@@ -110,10 +113,13 @@ inline void zipWithD1ToD2(
         }
     } else if (axis == 1) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(2) if(yi * yj >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for if(yi * yj >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < yi; i++) {
             int y_i = i * yj;
+            #ifdef _OPENMP
+            #pragma omp simd
+            #endif
             for (int j = 0; j < yj; j++) {
                 int index = y_i + j;
                 PERFORM_OPERATION(result_ptr[index], x_ptr[j], y_ptr[index]);
@@ -138,12 +144,15 @@ inline void zipWithD1ToD3(
 
     if (axis == 0) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(3) if(yi * yj * yk >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(2) if(yi * yj * yk >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < yi; i++) {
-            float x_value = x_ptr[i];
             for (int j = 0; j < yj; j++) {
+                float x_value = x_ptr[i];
                 int y_i = (i * yj + j) * yk;
+                #ifdef _OPENMP
+                #pragma omp simd
+                #endif
                 for (int k = 0; k < yk; k++) {
                     int index = y_i + k;
                     PERFORM_OPERATION(result_ptr[index], x_value, y_ptr[index]);
@@ -152,12 +161,15 @@ inline void zipWithD1ToD3(
         }
     } else if (axis == 1) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(3) if(yi * yj * yk >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(2) if(yi * yj * yk >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 float x_value = x_ptr[j];
                 int y_i = (i * yj + j) * yk;
+                #ifdef _OPENMP
+                #pragma omp simd
+                #endif
                 for (int k = 0; k < yk; k++) {
                     int index = y_i + k;
                     PERFORM_OPERATION(result_ptr[index], x_value, y_ptr[index]);
@@ -166,11 +178,14 @@ inline void zipWithD1ToD3(
         }
     } else if (axis == 2) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(3) if(yi * yj * yk >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(2) if(yi * yj * yk >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 int y_i = (i * yj + j) * yk;
+                #ifdef _OPENMP
+                #pragma omp simd
+                #endif
                 for (int k = 0; k < yk; k++) {
                     int index = y_i + k;
                     PERFORM_OPERATION(result_ptr[index], x_ptr[k], y_ptr[index]);
@@ -194,11 +209,14 @@ inline void zipWithD2ToD1(
 
     if (axis == 0) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(2) if(xi * xj >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for if(xi * xj >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             float y_value = y_ptr[i];
             int x_i = i * xj;
+            #ifdef _OPENMP
+            #pragma omp simd
+            #endif
             for (int j = 0; j < xj; j++) {
                 int index = x_i + j;
                 PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_value);
@@ -206,10 +224,13 @@ inline void zipWithD2ToD1(
         }
     } else if (axis == 1) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(2) if(xi * xj >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for if(xi * xj >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             int x_i = i * xj;
+            #ifdef _OPENMP
+            #pragma omp simd
+            #endif
             for (int j = 0; j < xj; j++) {
                 int index = x_i + j;
                 PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_ptr[j]);
@@ -232,12 +253,15 @@ inline void zipWithD2ToD3(
 
     if (axis1 == 0 && axis2 == 1) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(3) if(yi * yj * yk >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(2) if(yi * yj * yk >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 float x_value = x_ptr[i * yj + j];
                 int y_i = (i * yj + j) * yk;
+                #ifdef _OPENMP
+                #pragma omp simd
+                #endif
                 for (int k = 0; k < yk; k++) {
                     int y_index = y_i + k;
                     PERFORM_OPERATION(result_ptr[y_index], x_value, y_ptr[y_index]);
@@ -246,12 +270,15 @@ inline void zipWithD2ToD3(
         }
     } else if (axis1 == 0 && axis2 == 2) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(3) if(yi * yj * yk >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(2) if(yi * yj * yk >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 int x_i = i * yk;
                 int y_i = (i * yj + j) * yk;
+                #ifdef _OPENMP
+                #pragma omp simd
+                #endif
                 for (int k = 0; k < yk; k++) {
                     int x_index = x_i + k;
                     int y_index = y_i + k;
@@ -261,12 +288,15 @@ inline void zipWithD2ToD3(
         }
     } else if (axis1 == 1 && axis2 == 2) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(3) if(yi * yj * yk >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(2) if(yi * yj * yk >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 int x_i = j * yk;
                 int y_i = (i * yj + j) * yk;
+                #ifdef _OPENMP
+                #pragma omp simd
+                #endif
                 for (int k = 0; k < yk; k++) {
                     int x_index = x_i + k;
                     int y_index = y_i + k;
@@ -291,12 +321,15 @@ inline void zipWithD3ToD1(
 
     if (axis == 0) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(3) if(xi * xj * xk >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(2) if(xi * xj * xk >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
-            float y_value = y_ptr[i];
             for (int j = 0; j < xj; j++) {
+                float y_value = y_ptr[i];
                 int x_i = (i * xj + j) * xk;
+                #ifdef _OPENMP
+                #pragma omp simd
+                #endif
                 for (int k = 0; k < xk; k++) {
                     int index = x_i + k;
                     PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_value);
@@ -305,12 +338,15 @@ inline void zipWithD3ToD1(
         }
     } else if (axis == 1) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(3) if(xi * xj * xk >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(2) if(xi * xj * xk >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 float y_value = y_ptr[j];
                 int x_i = (i * xj + j) * xk;
+                #ifdef _OPENMP
+                #pragma omp simd
+                #endif
                 for (int k = 0; k < xk; k++) {
                     int index = x_i + k;
                     PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_value);
@@ -319,11 +355,14 @@ inline void zipWithD3ToD1(
         }
     } else if (axis == 2) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(3) if(xi * xj * xk >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(2) if(xi * xj * xk >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 int x_i = (i * xj + j) * xk;
+                #ifdef _OPENMP
+                #pragma omp simd
+                #endif
                 for (int k = 0; k < xk; k++) {
                     int index = x_i + k;
                     PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_ptr[k]);
@@ -347,12 +386,15 @@ inline void zipWithD3ToD2(
 
     if (axis1 == 0 && axis2 == 1) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(3) if(xi * xj * xk >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(2) if(xi * xj * xk >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 int x_i = (i * xj + j) * xk;
                 float y_value = y_ptr[i * yj + j];
+                #ifdef _OPENMP
+                #pragma omp simd
+                #endif
                 for (int k = 0; k < xk; k++) {
                     int index = x_i + k;
                     PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_value);
@@ -361,11 +403,14 @@ inline void zipWithD3ToD2(
         }
     } else if (axis1 == 0 && axis2 == 2) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(3) if(xi * xj * xk >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(2) if(xi * xj * xk >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 int x_i = (i * xj + j) * xk;
+                #ifdef _OPENMP
+                #pragma omp simd
+                #endif
                 for (int k = 0; k < xk; k++) {
                     int index = x_i + k;
                     int y_index = i * yj + k;
@@ -375,11 +420,14 @@ inline void zipWithD3ToD2(
         }
     } else if (axis1 == 1 && axis2 == 2) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(3) if(xi * xj * xk >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(2) if(xi * xj * xk >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 int x_i = (i * xj + j) * xk;
+                #ifdef _OPENMP
+                #pragma omp simd
+                #endif
                 for (int k = 0; k < xk; k++) {
                     int index = x_i + k;
                     int y_index = j * yj + k;
@@ -404,13 +452,16 @@ inline void zipWithD3ToD4(
 
     if (axis1 == 0 && axis2 == 1 && axis3 == 2) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(yi * yj * yk * yl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(yi * yj * yk * yl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 for (int k = 0; k < yk; k++) {
                     float x_value = x_ptr[(i * xj + j) * xk + k];
                     int y_i = ((i * yj + j) * yk + k) * yl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < yl; l++) {
                         int y_index = y_i + l;
                         PERFORM_OPERATION(result_ptr[y_index], x_value, y_ptr[y_index]);
@@ -420,12 +471,15 @@ inline void zipWithD3ToD4(
         }
     } else if (axis1 == 0 && axis2 == 1 && axis3 == 3) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(yi * yj * yk * yl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(yi * yj * yk * yl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 for (int k = 0; k < yk; k++) {
                     int y_i = ((i * yj + j) * yk + k) * yl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < yl; l++) {
                         int x_index = (i * xj + j) * xk + l;
                         int y_index = y_i + l;
@@ -436,12 +490,15 @@ inline void zipWithD3ToD4(
         }
     } else if (axis1 == 0 && axis2 == 2 && axis3 == 3) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(yi * yj * yk * yl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(yi * yj * yk * yl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 for (int k = 0; k < yk; k++) {
                     int y_i = ((i * yj + j) * yk + k) * yl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < yl; l++) {
                         int x_index = (i * xj + k) * xk + l;
                         int y_index = y_i + l;
@@ -452,12 +509,15 @@ inline void zipWithD3ToD4(
         }
     } else if (axis1 == 1 && axis2 == 2 && axis3 == 3) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(yi * yj * yk * yl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(yi * yj * yk * yl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 for (int k = 0; k < yk; k++) {
                     int y_i = ((i * yj + j) * yk + k) * yl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < yl; l++) {
                         int x_index = (j * xj + k) * xk + l;
                         int y_index = y_i + l;
@@ -483,13 +543,16 @@ inline void zipWithD4ToD1(
 
     if (axis == 0) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
-            float y_value = y_ptr[i];
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
+                    float y_value = y_ptr[i];
                     int x_i = ((i * xj + j) * xk + k) * xl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_value);
@@ -499,13 +562,16 @@ inline void zipWithD4ToD1(
         }
     } else if (axis == 1) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
-                float y_value = y_ptr[j];
                 for (int k = 0; k < xk; k++) {
+                    float y_value = y_ptr[j];
                     int x_i = ((i * xj + j) * xk + k) * xl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_value);
@@ -515,13 +581,16 @@ inline void zipWithD4ToD1(
         }
     } else if (axis == 2) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
                     float y_value = y_ptr[k];
                     int x_i = ((i * xj + j) * xk + k) * xl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_value);
@@ -531,12 +600,15 @@ inline void zipWithD4ToD1(
         }
     } else if (axis == 3) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
                     int x_i = ((i * xj + j) * xk + k) * xl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_ptr[l]);
@@ -561,13 +633,16 @@ inline void zipWithD4ToD2(
 
     if (axis1 == 0 && axis2 == 1) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
-                float y_value = y_ptr[i * yj + j];
                 for (int k = 0; k < xk; k++) {
+                    float y_value = y_ptr[i * yj + j];
                     int x_i = ((i * xj + j) * xk + k) * xl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_value);
@@ -577,13 +652,16 @@ inline void zipWithD4ToD2(
         }
     } else if (axis1 == 0 && axis2 == 2) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
                     float y_value = y_ptr[i * yj + k];
                     int x_i = ((i * xj + j) * xk + k) * xl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_value);
@@ -593,12 +671,15 @@ inline void zipWithD4ToD2(
         }
     } else if (axis1 == 0 && axis2 == 3) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
                     int x_i = ((i * xj + j) * xk + k) * xl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         int y_index = i * yj + l;
@@ -609,13 +690,16 @@ inline void zipWithD4ToD2(
         }
     } else if (axis1 == 1 && axis2 == 2) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
                     float y_value = y_ptr[j * yj + k];
                     int x_i = ((i * xj + j) * xk + k) * xl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_value);
@@ -625,12 +709,15 @@ inline void zipWithD4ToD2(
         }
     } else if (axis1 == 1 && axis2 == 3) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
                     int x_i = ((i * xj + j) * xk + k) * xl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         int y_index = j * yj + l;
@@ -641,12 +728,15 @@ inline void zipWithD4ToD2(
         }
     } else if (axis1 == 2 && axis2 == 3) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
                     int x_i = ((i * xj + j) * xk + k) * xl;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         int y_index = k * yj + l;
@@ -672,13 +762,16 @@ inline void zipWithD4ToD3(
 
     if (axis1 == 0 && axis2 == 1 && axis3 == 2) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
                     int x_i = ((i * xj + j) * xk + k) * xl;
                     float y_value = y_ptr[(i * yj + j) * yk + k];
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         PERFORM_OPERATION(result_ptr[index], x_ptr[index], y_value);
@@ -688,13 +781,16 @@ inline void zipWithD4ToD3(
         }
     } else if (axis1 == 0 && axis2 == 1 && axis3 == 3) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
                     int x_i = ((i * xj + j) * xk + k) * xl;
                     int y_i = (i * yj + j) * yk;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         int y_index = y_i + l;
@@ -705,13 +801,16 @@ inline void zipWithD4ToD3(
         }
     } else if (axis1 == 0 && axis2 == 2 && axis3 == 3) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
                     int x_i = ((i * xj + j) * xk + k) * xl;
                     int y_i = (i * yj + k) * yk;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         int y_index = y_i + l;
@@ -722,13 +821,16 @@ inline void zipWithD4ToD3(
         }
     } else if (axis1 == 1 && axis2 == 2 && axis3 == 3) {
         #ifdef _OPENMP
-        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #pragma omp parallel for collapse(3) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
         #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
                     int x_i = ((i * xj + j) * xk + k) * xl;
                     int y_i = (j * yj + k) * yk;
+                    #ifdef _OPENMP
+                    #pragma omp simd
+                    #endif
                     for (int l = 0; l < xl; l++) {
                         int index = x_i + l;
                         int y_index = y_i + l;
