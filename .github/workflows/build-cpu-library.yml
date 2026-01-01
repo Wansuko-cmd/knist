@@ -57,6 +57,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gfortran
 
+      - name: OpenMPのセットアップ（Mac）
+        if: runner.os == 'macOS'
+        run: |
+          brew install libomp
+          export OpenMP_ROOT=$(brew --prefix)/opt/libomp
+
       - name: gradlewに権限を付与 (Unix)
         if: runner.os != 'Windows'
         run: chmod 777 ./gradlew
