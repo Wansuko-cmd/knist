@@ -1,26 +1,28 @@
 package com.wsr.cpu;
 
+import java.nio.ByteBuffer;
+
 class JTranspose {
     public native void transposeD2(
-            float[] x,
+            ByteBuffer x,
             int xi,
             int xj,
-            float[] result
+            ByteBuffer result
     );
 
     public native void transposeD3(
-            float[] x,
+            ByteBuffer x,
             int xi,
             int xj,
             int xk,
             int axisI,
             int axisJ,
             int axisK,
-            float[] result
+            ByteBuffer result
     );
 
     public native void transposeD4(
-            float[] x,
+            ByteBuffer x,
             int xi,
             int xj,
             int xk,
@@ -29,6 +31,6 @@ class JTranspose {
             int axisJ,
             int axisK,
             int axisL,
-            float[] result
+            ByteBuffer result
     );
 }

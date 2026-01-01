@@ -5,13 +5,13 @@
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JOpenBLAS_sgemm(
         JNIEnv *env, jobject, jboolean transA, jboolean transB,
         jint m, jint n, jint k,
-        jfloat alpha, jfloatArray a, jint lda, jfloatArray b, jint ldb,
-        jfloat beta, jfloatArray c, jint ldc, jint batchSize
+        jfloat alpha, jobject a, jint lda, jobject b, jint ldb,
+        jfloat beta, jobject c, jint ldc, jint batchSize
 ) {
     // Javaからポインタを取得
-    jfloat *a_ptr = env->GetFloatArrayElements(a, nullptr);
-    jfloat *b_ptr = env->GetFloatArrayElements(b, nullptr);
-    jfloat *c_ptr = env->GetFloatArrayElements(c, nullptr);
+    jfloat *a_ptr = (jfloat*)env->GetDirectBufferAddress(a);
+    jfloat *b_ptr = (jfloat*)env->GetDirectBufferAddress(b);
+    jfloat *c_ptr = (jfloat*)env->GetDirectBufferAddress(c);
 
     int stride_a = m * k;
     int stride_b = k * n;
@@ -39,9 +39,4 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JOpenBLAS_sgemm(
             c_curr, ldc
         );
     }
-
-    // リソース解放
-    env->ReleaseFloatArrayElements(a, a_ptr, JNI_ABORT);
-    env->ReleaseFloatArrayElements(b, b_ptr, JNI_ABORT);
-    env->ReleaseFloatArrayElements(c, c_ptr, 0);
 }
