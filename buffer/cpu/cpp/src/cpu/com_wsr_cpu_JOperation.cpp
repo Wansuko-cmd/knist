@@ -1,6 +1,11 @@
 #include "com_wsr_cpu_JOperation.h"
 #include <stdio.h>
-#include <cmath>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
+// L1キャッシュを32KB = 4096Bと仮定
+const int PARALLEL_THRESHOLD = 4 * 4096;
 
 #define PERFORM_OPERATION(result, x, y) \
     if constexpr (Op == Operation::Plus) { \
@@ -31,6 +36,9 @@ inline void zipWithD0ToD1(
     jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
     jlong size = env->GetDirectBufferCapacity(y) / sizeof(jfloat);
 
+    #ifdef _OPENMP
+    #pragma omp parallel for if(size >= PARALLEL_THRESHOLD)
+    #endif
     for (int i = 0; i < size; i++) {
         PERFORM_OPERATION(result_ptr[i], x, y_ptr[i]);
     }
@@ -47,6 +55,9 @@ inline void zipWithD1ToD0(
     jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
     jlong size = env->GetDirectBufferCapacity(x) / sizeof(jfloat);
 
+    #ifdef _OPENMP
+    #pragma omp parallel for if(size >= PARALLEL_THRESHOLD)
+    #endif
     for (int i = 0; i < size; i++) {
         PERFORM_OPERATION(result_ptr[i], x_ptr[i], y);
     }
@@ -65,6 +76,9 @@ inline void zipWithD1ToD1(
 
     jlong size = env->GetDirectBufferCapacity(result) / sizeof(jfloat);
 
+    #ifdef _OPENMP
+    #pragma omp parallel for if(size >= PARALLEL_THRESHOLD)
+    #endif
     for (int i = 0; i < size; i++) {
         PERFORM_OPERATION(result_ptr[i], x_ptr[i], y_ptr[i]);
     }
@@ -83,6 +97,9 @@ inline void zipWithD1ToD2(
     jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
 
     if (axis == 0) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(2) if(yi * yj >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < yi; i++) {
             float x_value = x_ptr[i];
             int y_i = i * yj;
@@ -92,6 +109,9 @@ inline void zipWithD1ToD2(
             }
         }
     } else if (axis == 1) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(2) if(yi * yj >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < yi; i++) {
             int y_i = i * yj;
             for (int j = 0; j < yj; j++) {
@@ -117,6 +137,9 @@ inline void zipWithD1ToD3(
     jlong x_size = env->GetDirectBufferCapacity(result) / sizeof(jfloat);
 
     if (axis == 0) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(3) if(yi * yj * yk >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < yi; i++) {
             float x_value = x_ptr[i];
             for (int j = 0; j < yj; j++) {
@@ -128,6 +151,9 @@ inline void zipWithD1ToD3(
             }
         }
     } else if (axis == 1) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(3) if(yi * yj * yk >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 float x_value = x_ptr[j];
@@ -139,6 +165,9 @@ inline void zipWithD1ToD3(
             }
         }
     } else if (axis == 2) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(3) if(yi * yj * yk >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 int y_i = (i * yj + j) * yk;
@@ -164,6 +193,9 @@ inline void zipWithD2ToD1(
     jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
 
     if (axis == 0) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(2) if(xi * xj >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             float y_value = y_ptr[i];
             int x_i = i * xj;
@@ -173,6 +205,9 @@ inline void zipWithD2ToD1(
             }
         }
     } else if (axis == 1) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(2) if(xi * xj >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             int x_i = i * xj;
             for (int j = 0; j < xj; j++) {
@@ -196,6 +231,9 @@ inline void zipWithD2ToD3(
     jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
 
     if (axis1 == 0 && axis2 == 1) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(3) if(yi * yj * yk >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 float x_value = x_ptr[i * yj + j];
@@ -207,6 +245,9 @@ inline void zipWithD2ToD3(
             }
         }
     } else if (axis1 == 0 && axis2 == 2) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(3) if(yi * yj * yk >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 int x_i = i * yk;
@@ -219,6 +260,9 @@ inline void zipWithD2ToD3(
             }
         }
     } else if (axis1 == 1 && axis2 == 2) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(3) if(yi * yj * yk >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 int x_i = j * yk;
@@ -246,6 +290,9 @@ inline void zipWithD3ToD1(
     jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
 
     if (axis == 0) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(3) if(xi * xj * xk >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             float y_value = y_ptr[i];
             for (int j = 0; j < xj; j++) {
@@ -257,6 +304,9 @@ inline void zipWithD3ToD1(
             }
         }
     } else if (axis == 1) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(3) if(xi * xj * xk >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 float y_value = y_ptr[j];
@@ -268,6 +318,9 @@ inline void zipWithD3ToD1(
             }
         }
     } else if (axis == 2) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(3) if(xi * xj * xk >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 int x_i = (i * xj + j) * xk;
@@ -293,6 +346,9 @@ inline void zipWithD3ToD2(
     jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
 
     if (axis1 == 0 && axis2 == 1) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(3) if(xi * xj * xk >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 int x_i = (i * xj + j) * xk;
@@ -304,6 +360,9 @@ inline void zipWithD3ToD2(
             }
         }
     } else if (axis1 == 0 && axis2 == 2) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(3) if(xi * xj * xk >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 int x_i = (i * xj + j) * xk;
@@ -315,6 +374,9 @@ inline void zipWithD3ToD2(
             }
         }
     } else if (axis1 == 1 && axis2 == 2) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(3) if(xi * xj * xk >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 int x_i = (i * xj + j) * xk;
@@ -341,6 +403,9 @@ inline void zipWithD3ToD4(
     jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
 
     if (axis1 == 0 && axis2 == 1 && axis3 == 2) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(yi * yj * yk * yl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 for (int k = 0; k < yk; k++) {
@@ -354,6 +419,9 @@ inline void zipWithD3ToD4(
             }
         }
     } else if (axis1 == 0 && axis2 == 1 && axis3 == 3) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(yi * yj * yk * yl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 for (int k = 0; k < yk; k++) {
@@ -367,6 +435,9 @@ inline void zipWithD3ToD4(
             }
         }
     } else if (axis1 == 0 && axis2 == 2 && axis3 == 3) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(yi * yj * yk * yl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 for (int k = 0; k < yk; k++) {
@@ -380,6 +451,9 @@ inline void zipWithD3ToD4(
             }
         }
     } else if (axis1 == 1 && axis2 == 2 && axis3 == 3) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(yi * yj * yk * yl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < yi; i++) {
             for (int j = 0; j < yj; j++) {
                 for (int k = 0; k < yk; k++) {
@@ -408,6 +482,9 @@ inline void zipWithD4ToD1(
     jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
 
     if (axis == 0) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             float y_value = y_ptr[i];
             for (int j = 0; j < xj; j++) {
@@ -421,6 +498,9 @@ inline void zipWithD4ToD1(
             }
         }
     } else if (axis == 1) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 float y_value = y_ptr[j];
@@ -434,6 +514,9 @@ inline void zipWithD4ToD1(
             }
         }
     } else if (axis == 2) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
@@ -447,6 +530,9 @@ inline void zipWithD4ToD1(
             }
         }
     } else if (axis == 3) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
@@ -474,6 +560,9 @@ inline void zipWithD4ToD2(
     jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
 
     if (axis1 == 0 && axis2 == 1) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 float y_value = y_ptr[i * yj + j];
@@ -487,6 +576,9 @@ inline void zipWithD4ToD2(
             }
         }
     } else if (axis1 == 0 && axis2 == 2) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
@@ -500,6 +592,9 @@ inline void zipWithD4ToD2(
             }
         }
     } else if (axis1 == 0 && axis2 == 3) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
@@ -513,6 +608,9 @@ inline void zipWithD4ToD2(
             }
         }
     } else if (axis1 == 1 && axis2 == 2) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
@@ -526,6 +624,9 @@ inline void zipWithD4ToD2(
             }
         }
     } else if (axis1 == 1 && axis2 == 3) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
@@ -539,6 +640,9 @@ inline void zipWithD4ToD2(
             }
         }
     } else if (axis1 == 2 && axis2 == 3) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
@@ -567,6 +671,9 @@ inline void zipWithD4ToD3(
     jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
 
     if (axis1 == 0 && axis2 == 1 && axis3 == 2) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
@@ -580,6 +687,9 @@ inline void zipWithD4ToD3(
             }
         }
     } else if (axis1 == 0 && axis2 == 1 && axis3 == 3) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
@@ -594,6 +704,9 @@ inline void zipWithD4ToD3(
             }
         }
     } else if (axis1 == 0 && axis2 == 2 && axis3 == 3) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
@@ -608,6 +721,9 @@ inline void zipWithD4ToD3(
             }
         }
     } else if (axis1 == 1 && axis2 == 2 && axis3 == 3) {
+        #ifdef _OPENMP
+        #pragma omp parallel for collapse(4) if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+        #endif
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {

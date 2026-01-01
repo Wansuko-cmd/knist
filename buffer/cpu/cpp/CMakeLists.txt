@@ -8,6 +8,9 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/cpu)
 find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
 
+# OpenMPのサポートを検出
+find_package(OpenMP)
+
 # OpenBLASのセットアップ
 include(ExternalProject)
 
@@ -62,6 +65,15 @@ target_include_directories(JCPU PRIVATE
         ${OPENBLAS_INCLUDE_DIR}
         ${OPENBLAS_INSTALL_DIR}/include
 )
+
+# OpenMPのサポートを有効化
+if(OpenMP_CXX_FOUND)
+    target_compile_options(JCPU PRIVATE ${OpenMP_CXX_FLAGS})
+    target_link_libraries(JCPU PRIVATE ${OpenMP_CXX_LIBRARIES})
+    message(STATUS "OpenMP support enabled")
+else()
+    message(WARNING "OpenMP support disabled")
+endif()
 
 # OpenBLASをリンク
 target_link_libraries(JCPU PRIVATE ${OPENBLAS_LIB})
