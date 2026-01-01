@@ -61,7 +61,6 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install libomp
-          export OpenMP_ROOT=$(brew --prefix)/opt/libomp
 
       - name: gradlewに権限を付与 (Unix)
         if: runner.os != 'Windows'
@@ -73,9 +72,17 @@ jobs:
           path: buffer/cpu/cpp/build/cpu
           key: cpu-${{ hashFiles('buffer/cpu/cpp/CMakeLists.txt') }}-${{ matrix.os_name }}-${{ matrix.arch }}
 
-      - name: ネイティブライブラリをビルド
-        run: ./gradlew :buffer:cpu:cpp:cmakeBuild
+      - name: ネイティブライブラリをビルド（macOS以外）
+        if: runner.os != 'macOS'
         shell: bash
+        run: ./gradlew :buffer:cpu:cpp:cmakeBuild
+
+      - name: ネイティブライブラリをビルド（macOS）
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          export OpenMP_ROOT=$(brew --prefix)/opt/libomp
+          ./gradlew :buffer:cpu:cpp:cmakeBuild
 
       - name: 成果物をアップロード (Windows以外)
         if: runner.os != 'Windows'
