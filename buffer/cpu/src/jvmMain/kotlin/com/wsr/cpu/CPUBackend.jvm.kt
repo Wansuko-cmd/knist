@@ -16,6 +16,7 @@ actual fun loadCPUBackend(): IBackend? {
 class CPUBackend : IBackend by KotlinBackend {
     private val openBLAS = JOpenBLAS()
     private val operation = JOperation()
+    private val math = JMath()
     private val collection = JCollection()
     private val transpose = JTranspose()
 
@@ -1017,6 +1018,30 @@ class CPUBackend : IBackend by KotlinBackend {
             n,
             b,
         )
+        return result
+    }
+
+    override fun exp(x: DataBuffer): DataBuffer {
+        val result = CPUBuffer.create(x.size)
+        math.exp(x.toCPUBuffer().byteBuffer, result.byteBuffer)
+        return result
+    }
+
+    override fun ln(x: DataBuffer, e: Float): DataBuffer {
+        val result = CPUBuffer.create(x.size)
+        math.ln(x.toCPUBuffer().byteBuffer, e, result.byteBuffer)
+        return result
+    }
+
+    override fun pow(x: DataBuffer, n: Int): DataBuffer {
+        val result = CPUBuffer.create(x.size)
+        math.pow(x.toCPUBuffer().byteBuffer, n, result.byteBuffer)
+        return result
+    }
+
+    override fun sqrt(x: DataBuffer, e: Float): DataBuffer {
+        val result = CPUBuffer.create(x.size)
+        math.sqrt(x.toCPUBuffer().byteBuffer, e, result.byteBuffer)
         return result
     }
 
