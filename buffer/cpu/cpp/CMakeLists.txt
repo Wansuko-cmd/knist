@@ -55,6 +55,7 @@ set(SOURCE_FILES
         ${SRC_DIR}/com_wsr_cpu_JTranspose.cpp
 )
 add_library(JCPU SHARED ${SOURCE_FILES})
+target_compile_features(JCPU PRIVATE cxx_std_17)
 add_dependencies(JCPU OpenBLAS)
 
 target_include_directories(JCPU PRIVATE
