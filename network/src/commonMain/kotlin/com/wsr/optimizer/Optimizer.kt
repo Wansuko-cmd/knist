@@ -22,14 +22,14 @@ interface Optimizer {
         protected abstract fun adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1
 
         fun adapt(weight: IOType.D1, dw: IOType.D1, enableClip: Boolean = _maxNorm != Float.MAX_VALUE): IOType.D1 {
-            val norm = sqrt(dw.pow(2).sum())
-            val scaled = if (norm > _maxNorm && enableClip) {
-                val scale = _maxNorm / norm
-                dw * scale
-            } else {
-                dw
+            if (enableClip) {
+                val norm = sqrt(dw.pow(2).sum())
+                if (norm > _maxNorm) {
+                    val scale = _maxNorm / norm
+                    return adapt(weight, dw * scale).also { _step++ }
+                }
             }
-            return adapt(weight, scaled).also { _step++ }
+            return adapt(weight, dw).also { _step++ }
         }
 
         fun adapt(
@@ -46,14 +46,14 @@ interface Optimizer {
         protected abstract fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2
 
         fun adapt(weight: IOType.D2, dw: IOType.D2, enableClip: Boolean = _maxNorm != Float.MAX_VALUE): IOType.D2 {
-            val norm = sqrt(dw.pow(2).sum())
-            val scaled = if (norm > _maxNorm && enableClip) {
-                val scale = _maxNorm / norm
-                dw * scale
-            } else {
-                dw
+            if (enableClip) {
+                val norm = sqrt(dw.pow(2).sum())
+                if (norm > _maxNorm) {
+                    val scale = _maxNorm / norm
+                    return adapt(weight, dw * scale).also { _step++ }
+                }
             }
-            return adapt(weight, scaled).also { _step++ }
+            return adapt(weight, dw).also { _step++ }
         }
 
         fun adapt(
@@ -70,14 +70,14 @@ interface Optimizer {
         protected abstract fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3
 
         fun adapt(weight: IOType.D3, dw: IOType.D3, enableClip: Boolean = _maxNorm != Float.MAX_VALUE): IOType.D3 {
-            val norm = sqrt(dw.pow(2).sum())
-            val scaled = if (norm > _maxNorm && enableClip) {
-                val scale = _maxNorm / norm
-                dw * scale
-            } else {
-                dw
+            if (enableClip) {
+                val norm = sqrt(dw.pow(2).sum())
+                if (norm > _maxNorm) {
+                    val scale = _maxNorm / norm
+                    return adapt(weight, dw * scale).also { _step++ }
+                }
             }
-            return adapt(weight, scaled).also { _step++ }
+            return adapt(weight, dw).also { _step++ }
         }
 
         fun adapt(
@@ -94,14 +94,14 @@ interface Optimizer {
         protected abstract fun adapt(weight: IOType.D4, dw: IOType.D4): IOType.D4
 
         fun adapt(weight: IOType.D4, dw: IOType.D4, enableClip: Boolean = _maxNorm != Float.MAX_VALUE): IOType.D4 {
-            val norm = sqrt(dw.pow(2).sum())
-            val scaled = if (norm > _maxNorm && enableClip) {
-                val scale = _maxNorm / norm
-                dw * scale
-            } else {
-                dw
+            if (enableClip) {
+                val norm = sqrt(dw.pow(2).sum())
+                if (norm > _maxNorm) {
+                    val scale = _maxNorm / norm
+                    return adapt(weight, dw * scale).also { _step++ }
+                }
             }
-            return adapt(weight, scaled).also { _step++ }
+            return adapt(weight, dw).also { _step++ }
         }
 
         fun adapt(
