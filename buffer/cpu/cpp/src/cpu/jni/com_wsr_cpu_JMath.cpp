@@ -1,17 +1,14 @@
 #include "com_wsr_cpu_JMath.h"
-#include <cmath>
-#include <algorithm>
+#include <math_fun.h>
 
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JMath_exp(
         JNIEnv *env, jobject obj, jobject x, jobject result
 ) {
     jfloat *x_ptr = static_cast<jfloat*>(env->GetDirectBufferAddress(x));
     jfloat *result_ptr = static_cast<jfloat*>(env->GetDirectBufferAddress(result));
-    jlong size = env->GetDirectBufferCapacity(x) / sizeof(jfloat);
+    size_t size = static_cast<size_t>(env->GetDirectBufferCapacity(x)) / sizeof(jfloat);
 
-    for (int i = 0; i < size; i++) {
-        result_ptr[i] = std::exp(x_ptr[i]);
-    }
+    exp_d1(x_ptr, result_ptr, size);
 }
 
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JMath_ln(
@@ -19,11 +16,9 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JMath_ln(
 ) {
     jfloat *x_ptr = static_cast<jfloat*>(env->GetDirectBufferAddress(x));
     jfloat *result_ptr = static_cast<jfloat*>(env->GetDirectBufferAddress(result));
-    jlong size = env->GetDirectBufferCapacity(x) / sizeof(jfloat);
+    size_t size = static_cast<size_t>(env->GetDirectBufferCapacity(x)) / sizeof(jfloat);
 
-    for (int i = 0; i < size; i++) {
-        result_ptr[i] = std::log(x_ptr[i] + e);
-    }
+    ln_d1(x_ptr, e, result_ptr, size);
 }
 
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JMath_pow(
@@ -31,11 +26,9 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JMath_pow(
 ) {
     jfloat *x_ptr = static_cast<jfloat*>(env->GetDirectBufferAddress(x));
     jfloat *result_ptr = static_cast<jfloat*>(env->GetDirectBufferAddress(result));
-    jlong size = env->GetDirectBufferCapacity(x) / sizeof(jfloat);
+    size_t size = static_cast<size_t>(env->GetDirectBufferCapacity(x)) / sizeof(jfloat);
 
-    for (int i = 0; i < size; i++) {
-        result_ptr[i] = std::pow(x_ptr[i], n);
-    }
+    pow_d1(x_ptr, n, result_ptr, size);
 }
 
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JMath_sqrt(
@@ -43,10 +36,7 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JMath_sqrt(
 ) {
     jfloat *x_ptr = static_cast<jfloat*>(env->GetDirectBufferAddress(x));
     jfloat *result_ptr = static_cast<jfloat*>(env->GetDirectBufferAddress(result));
-    jlong capacity = env->GetDirectBufferCapacity(x);
-    jlong size = capacity / sizeof(jfloat);
+    size_t size = static_cast<size_t>(env->GetDirectBufferCapacity(x)) / sizeof(jfloat);
 
-    for (int i = 0; i < size; i++) {
-        result_ptr[i] = std::sqrt(x_ptr[i] + e);
-    }
+    sqrt_d1(x_ptr, e, result_ptr, size);
 }
