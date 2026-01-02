@@ -359,6 +359,11 @@ interface IBackend {
     fun pow(x: DataBuffer, n: Int): DataBuffer
     fun sqrt(x: DataBuffer, e: Float): DataBuffer
 
+    fun average(x: DataBuffer): Float
+    fun average(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer
+    fun average(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer
+    fun average(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axis: Int): DataBuffer
+
     fun max(x: DataBuffer): Float
     fun max(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer
     fun max(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer
