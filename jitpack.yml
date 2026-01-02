@@ -5,6 +5,6 @@ install:
   - ./gradlew network:publishToMavenLocal
   - ./gradlew io-type:publishToMavenLocal
   - ./gradlew buffer:publishToMavenLocal
-  - ./gradlew buffer:open:publishToMavenLocal
-  - ./gradlew buffer:cl:publishToMavenLocal
+  - ./gradlew buffer:cpu:publishToMavenLocal
+  - ./gradlew buffer:gpu:publishToMavenLocal
   - ./gradlew buffer:base:publishToMavenLocal
