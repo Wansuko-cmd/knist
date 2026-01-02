@@ -66,7 +66,6 @@ set(SOURCE_FILES
         ${SRC_DIR}/jni/com_wsr_cpu_JCollection.cpp
         ${SRC_DIR}/jni/com_wsr_cpu_JMath.cpp
         ${SRC_DIR}/jni/com_wsr_cpu_JMatMul.cpp
-        ${SRC_DIR}/jni/com_wsr_cpu_JOpenBLAS.cpp
         ${SRC_DIR}/jni/com_wsr_cpu_JOperation.cpp
         ${SRC_DIR}/jni/com_wsr_cpu_JTranspose.cpp
 )

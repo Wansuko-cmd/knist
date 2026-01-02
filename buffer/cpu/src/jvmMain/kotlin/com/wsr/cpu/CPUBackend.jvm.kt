@@ -14,10 +14,10 @@ actual fun loadCPUBackend(): IBackend? {
 }
 
 class CPUBackend : IBackend by KotlinBackend {
-    private val openBLAS = JOpenBLAS()
-    private val operation = JOperation()
-    private val math = JMath()
     private val collection = JCollection()
+    private val math = JMath()
+    private val matMul = JMatMul()
+    private val operation = JOperation()
     private val transpose = JTranspose()
 
     // 0次元
@@ -930,63 +930,37 @@ class CPUBackend : IBackend by KotlinBackend {
 
     override fun inner(x: DataBuffer, y: DataBuffer, b: Int): DataBuffer {
         val result = CPUBuffer.create(x.size)
-        openBLAS.sgemm(
-            false,
-            true,
-            1,
-            1,
-            x.size,
-            1f,
+        matMul.inner(
             x.toCPUBuffer().byteBuffer,
-            x.size,
             y.toCPUBuffer().byteBuffer,
-            x.size,
-            0f,
+            b,
             result.byteBuffer,
-            1,
-            1,
         )
         return result
     }
 
     override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, m: Int, k: Int): DataBuffer {
         val result = CPUBuffer.create(m)
-        openBLAS.sgemm(
-            transX,
-            false,
-            m,
-            1,
-            k,
-            1f,
+        matMul.matMulD2ToD1(
             x.toCPUBuffer().byteBuffer,
-            if (transX) m else k,
+            transX,
             y.toCPUBuffer().byteBuffer,
-            1,
-            0f,
+            m,
+            k,
             result.byteBuffer,
-            1,
-            1,
         )
         return result
     }
 
     override fun matMul(x: DataBuffer, y: DataBuffer, transY: Boolean, n: Int, k: Int): DataBuffer {
         val result = CPUBuffer.create(n)
-        openBLAS.sgemm(
-            false,
-            transY,
-            1,
-            n,
-            k,
-            1f,
+        matMul.matMulD1ToD2(
             x.toCPUBuffer().byteBuffer,
-            k,
             y.toCPUBuffer().byteBuffer,
-            if (transY) k else n,
-            0f,
-            result.byteBuffer,
+            transY,
             n,
-            1,
+            k,
+            result.byteBuffer,
         )
         return result
     }
@@ -1002,21 +976,16 @@ class CPUBackend : IBackend by KotlinBackend {
         b: Int,
     ): DataBuffer {
         val result = CPUBuffer.create(b * m * n)
-        openBLAS.sgemm(
+        matMul.matMulD2ToD2(
+            x.toCPUBuffer().byteBuffer,
             transX,
+            y.toCPUBuffer().byteBuffer,
             transY,
             m,
             n,
             k,
-            1f,
-            x.toCPUBuffer().byteBuffer,
-            if (transX) m else k,
-            y.toCPUBuffer().byteBuffer,
-            if (transY) k else n,
-            0f,
-            result.byteBuffer,
-            n,
             b,
+            result.byteBuffer,
         )
         return result
     }
