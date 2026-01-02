@@ -711,20 +711,6 @@ internal inline fun DataBuffer.reduce(operation: (Float, Float) -> Float): Float
     return acc
 }
 
-internal inline fun DataBuffer.reduce(xb: Int, operation: (Float, Float) -> Float): DataBuffer {
-    val result = Default(xb)
-    val stride = size / xb
-    for (b in 0 until xb) {
-        val offset = b * stride
-        var acc = this[offset]
-        for (i in 1 until stride) {
-            acc = operation(acc, this[offset + i])
-        }
-        result[b] = acc
-    }
-    return result
-}
-
 internal inline fun DataBuffer.reduce(xi: Int, xj: Int, axis: Int, operation: (Float, Float) -> Float): DataBuffer =
     when (axis) {
         0 -> {

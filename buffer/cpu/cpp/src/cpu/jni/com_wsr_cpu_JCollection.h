@@ -9,19 +9,11 @@ extern "C" {
 #endif
 /*
  * Class:     com_wsr_cpu_JCollection
- * Method:    max
+ * Method:    maxD1
  * Signature: (Ljava/nio/ByteBuffer;)F
  */
-JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_max
+JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_maxD1
   (JNIEnv *, jobject, jobject);
-
-/*
- * Class:     com_wsr_cpu_JCollection
- * Method:    maxD1
- * Signature: (Ljava/nio/ByteBuffer;ILjava/nio/ByteBuffer;)V
- */
-JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_maxD1
-  (JNIEnv *, jobject, jobject, jint, jobject);
 
 /*
  * Class:     com_wsr_cpu_JCollection
@@ -49,19 +41,11 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_maxD4
 
 /*
  * Class:     com_wsr_cpu_JCollection
- * Method:    min
+ * Method:    minD1
  * Signature: (Ljava/nio/ByteBuffer;)F
  */
-JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_min
+JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_minD1
   (JNIEnv *, jobject, jobject);
-
-/*
- * Class:     com_wsr_cpu_JCollection
- * Method:    minD1
- * Signature: (Ljava/nio/ByteBuffer;ILjava/nio/ByteBuffer;)V
- */
-JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_minD1
-  (JNIEnv *, jobject, jobject, jint, jobject);
 
 /*
  * Class:     com_wsr_cpu_JCollection
@@ -89,19 +73,11 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_minD4
 
 /*
  * Class:     com_wsr_cpu_JCollection
- * Method:    sum
+ * Method:    sumD1
  * Signature: (Ljava/nio/ByteBuffer;)F
  */
-JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_sum
+JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_sumD1
   (JNIEnv *, jobject, jobject);
-
-/*
- * Class:     com_wsr_cpu_JCollection
- * Method:    sumD1
- * Signature: (Ljava/nio/ByteBuffer;ILjava/nio/ByteBuffer;)V
- */
-JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_sumD1
-  (JNIEnv *, jobject, jobject, jint, jobject);
 
 /*
  * Class:     com_wsr_cpu_JCollection

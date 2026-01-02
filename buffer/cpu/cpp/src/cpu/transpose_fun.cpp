@@ -1,5 +1,4 @@
-#include "com_wsr_cpu_JTranspose.h"
-#include <stdio.h>
+#include <transpose_fun.h>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -8,31 +7,23 @@
 // L1キャッシュを32KB = 4096Bと仮定
 const int PARALLEL_THRESHOLD = 4 * 4096;
 
-JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD2(
-        JNIEnv *env, jobject, jobject x, jint xi, jint xj, jobject result
-) {
-    // Javaからポインタを取得
-    jfloat *x_ptr = (jfloat*)env->GetDirectBufferAddress(x);
-    jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
-
+void transpose_d2(const float* x, int xi, int xj, float* result) {
     #ifdef _OPENMP
     #pragma omp parallel for collapse(2) if(xi * xj >= PARALLEL_THRESHOLD)
     #endif
     for (int i = 0; i < xi; i++) {
         for (int j = 0; j < xj; j++) {
-            result_ptr[j * xi + i] = x_ptr[i * xj + j];
+            result[j * xi + i] = x[i * xj + j];
         }
     }
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD3(
-        JNIEnv *env, jobject, jobject x, jint xi, jint xj, jint xk,
-        jint axis_i, jint axis_j, jint axis_k, jobject result
+void transpose_d3(
+    const float* x,
+    int xi, int xj, int xk,
+    int axis_i, int axis_j, int axis_k,
+    float* result
 ) {
-    // Javaからポインタを取得
-    jfloat *x_ptr = (jfloat*)env->GetDirectBufferAddress(x);
-    jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
-
     int old_shape[3] = { xi, xj, xk };
     int new_shape[3] = { old_shape[axis_i], old_shape[axis_j], old_shape[axis_k] };
 
@@ -52,20 +43,18 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD3(
                 old_indexes[axis_k] = nk;
                 int old_index = (old_indexes[0] * xj + old_indexes[1]) * xk + old_indexes[2];
 
-                result_ptr[new_index] = x_ptr[old_index];
+                result[new_index] = x[old_index];
             }
         }
     }
 }
 
-JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD4(
-        JNIEnv *env, jobject, jobject x, jint xi, jint xj, jint xk, jint xl,
-        jint axis_i, jint axis_j, jint axis_k, jint axis_l, jobject result
+void transpose_d4(
+    const float* x,
+    int xi, int xj, int xk, int xl,
+    int axis_i, int axis_j, int axis_k, int axis_l,
+    float* result
 ) {
-    // Javaからポインタを取得
-    jfloat *x_ptr = (jfloat*)env->GetDirectBufferAddress(x);
-    jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
-
     int old_shape[4] = { xi, xj, xk, xl };
     int new_shape[4] = { old_shape[axis_i], old_shape[axis_j], old_shape[axis_k], old_shape[axis_l] };
 
@@ -88,7 +77,7 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD4(
                     old_indexes[axis_l] = nl;
                     int old_index = ((old_indexes[0] * xj + old_indexes[1]) * xk + old_indexes[2]) * xl + old_indexes[3];
 
-                    result_ptr[new_index] = x_ptr[old_index];
+                    result[new_index] = x[old_index];
                 }
             }
         }

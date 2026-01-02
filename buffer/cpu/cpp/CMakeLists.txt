@@ -50,14 +50,27 @@ else()
     set(OPENBLAS_LIB ${OPENBLAS_INSTALL_DIR}/lib/libopenblas.a)
 endif()
 
-set(SOURCE_FILES
-        ${SRC_DIR}/com_wsr_cpu_JOpenBLAS.cpp
-        ${SRC_DIR}/com_wsr_cpu_JOperation.cpp
-        ${SRC_DIR}/com_wsr_cpu_JCollection.cpp
-        ${SRC_DIR}/com_wsr_cpu_JMath.cpp
-        ${SRC_DIR}/com_wsr_cpu_JTranspose.cpp
+set(HEADER_FILES
+        ${SRC_DIR}/collection_fun.h
+        ${SRC_DIR}/mat_mul_fun.h
+        ${SRC_DIR}/math_fun.h
+        ${SRC_DIR}/operation_fun.h
+        ${SRC_DIR}/transpose_fun.h
 )
-add_library(JCPU SHARED ${SOURCE_FILES})
+set(SOURCE_FILES
+        ${SRC_DIR}/collection_fun.cpp
+        ${SRC_DIR}/mat_mul_fun.cpp
+        ${SRC_DIR}/math_fun.cpp
+        ${SRC_DIR}/operation_fun.cpp
+        ${SRC_DIR}/transpose_fun.cpp
+        ${SRC_DIR}/jni/com_wsr_cpu_JCollection.cpp
+        ${SRC_DIR}/jni/com_wsr_cpu_JMath.cpp
+        ${SRC_DIR}/jni/com_wsr_cpu_JMatMul.cpp
+        ${SRC_DIR}/jni/com_wsr_cpu_JOperation.cpp
+        ${SRC_DIR}/jni/com_wsr_cpu_JTranspose.cpp
+)
+add_library(JCPU SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_include_directories(JCPU PRIVATE ${SRC_DIR})
 target_compile_features(JCPU PRIVATE cxx_std_17)
 add_dependencies(JCPU OpenBLAS)
 
