@@ -390,6 +390,16 @@ object Backend : IBackend {
 
     override fun sqrt(x: DataBuffer, e: Float): DataBuffer = instance.sqrt(x, e)
 
+    override fun average(x: DataBuffer): Float = instance.average(x)
+
+    override fun average(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer = instance.average(x, xi, xj, axis)
+
+    override fun average(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer =
+        instance.average(x, xi, xj, xk, axis)
+
+    override fun average(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axis: Int): DataBuffer =
+        instance.average(x, xi, xj, xk, xl, axis)
+
     override fun max(x: DataBuffer): Float = instance.max(x)
 
     override fun max(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer = instance.max(x, xi, xj, axis)
