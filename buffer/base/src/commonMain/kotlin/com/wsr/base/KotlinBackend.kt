@@ -678,6 +678,47 @@ object KotlinBackend : IBackend {
 
     override fun sqrt(x: DataBuffer, e: Float): DataBuffer = x.map { kotlin.math.sqrt(it + e) }
 
+    override fun average(x: DataBuffer): Float {
+        val sum = sum(x = x)
+        return sum / x.size
+    }
+
+    override fun average(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer {
+        val sum = sum(x = x, xi = xi, xj = xj, axis = axis)
+        return div(
+            x = sum,
+            y = when (axis) {
+                0 -> xi.toFloat()
+                else -> xj.toFloat()
+            },
+        )
+    }
+
+    override fun average(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer {
+        val sum = sum(x = x, xi = xi, xj = xj, xk = xk, axis = axis)
+        return div(
+            x = sum,
+            y = when (axis) {
+                0 -> xi.toFloat()
+                1 -> xj.toFloat()
+                else -> xk.toFloat()
+            },
+        )
+    }
+
+    override fun average(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axis: Int): DataBuffer {
+        val sum = sum(x = x, xi = xi, xj = xj, xk = xk, xl = xl, axis = axis)
+        return div(
+            x = sum,
+            y = when (axis) {
+                0 -> xi.toFloat()
+                1 -> xj.toFloat()
+                2 -> xk.toFloat()
+                else -> xl.toFloat()
+            },
+        )
+    }
+
     override fun max(x: DataBuffer): Float = x.reduce { acc, i -> maxOf(acc, i) }
 
     override fun max(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer =
