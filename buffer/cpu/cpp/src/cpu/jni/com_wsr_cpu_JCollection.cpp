@@ -22,7 +22,7 @@ enum class Operation {
 };
 
 template<Operation Op>
-inline float reduce(
+inline float reduceD1(
     JNIEnv *env, jobject obj,
     jobject x
 ) {
@@ -34,28 +34,6 @@ inline float reduce(
         PERFORM_OPERATION(acc, x_ptr[i]);
     }
     return acc;
-}
-
-template<Operation Op>
-inline void reduceD1(
-    JNIEnv *env, jobject obj,
-    jobject x, jint xb,
-    jobject result
-) {
-    jfloat *x_ptr = (jfloat*)env->GetDirectBufferAddress(x);
-    jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
-    jlong size = env->GetDirectBufferCapacity(x) / sizeof(jfloat);
-
-    int stride = size / xb;
-
-    for (int b = 0; b < xb; b++) {
-        int offset = b * stride;
-        float acc = x_ptr[offset];
-        for (int i = 1; i < stride; i++) {
-            PERFORM_OPERATION(acc, x_ptr[offset + i]);
-        }
-        result_ptr[b] = acc;
-    }
 }
 
 template<Operation Op>
@@ -191,16 +169,10 @@ inline void reduceD4(
     }
 }
 
-JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_max(
+JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_maxD1(
         JNIEnv *env, jobject obj, jobject x
 ) {
-    return (jfloat)reduce<Operation::Max>(env, obj, x);
-}
-
-JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_maxD1(
-        JNIEnv *env, jobject obj, jobject x, jint xb, jobject result
-) {
-    reduceD1<Operation::Max>(env, obj, x, xb, result);
+    return (jfloat)reduceD1<Operation::Max>(env, obj, x);
 }
 
 
@@ -222,16 +194,10 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_maxD4(
     reduceD4<Operation::Max>(env, obj, x, xi, xj, xk, xl, axis, result);
 }
 
-JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_min(
+JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_minD1(
         JNIEnv *env, jobject obj, jobject x
 ) {
-    return (jfloat)reduce<Operation::Min>(env, obj, x);
-}
-
-JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_minD1(
-        JNIEnv *env, jobject obj, jobject x, jint xb, jobject result
-) {
-    reduceD1<Operation::Min>(env, obj, x, xb, result);
+    return (jfloat)reduceD1<Operation::Min>(env, obj, x);
 }
 
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_minD2(
@@ -252,16 +218,10 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_minD4(
     reduceD4<Operation::Min>(env, obj, x, xi, xj, xk, xl, axis, result);
 }
 
-JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_sum(
+JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_sumD1(
         JNIEnv *env, jobject obj, jobject x
 ) {
-    return (jfloat)reduce<Operation::Sum>(env, obj, x);
-}
-
-JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_sumD1(
-        JNIEnv *env, jobject obj, jobject x, jint xb, jobject result
-) {
-    reduceD1<Operation::Sum>(env, obj, x, xb, result);
+    return (jfloat)reduceD1<Operation::Sum>(env, obj, x);
 }
 
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_sumD2(

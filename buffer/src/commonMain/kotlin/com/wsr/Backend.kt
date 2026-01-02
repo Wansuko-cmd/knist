@@ -392,8 +392,6 @@ object Backend : IBackend {
 
     override fun max(x: DataBuffer): Float = instance.max(x)
 
-    override fun max(x: DataBuffer, xb: Int): DataBuffer = instance.max(x, xb)
-
     override fun max(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer = instance.max(x, xi, xj, axis)
 
     override fun max(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer =
@@ -404,8 +402,6 @@ object Backend : IBackend {
 
     override fun min(x: DataBuffer): Float = instance.min(x)
 
-    override fun min(x: DataBuffer, xb: Int): DataBuffer = instance.min(x, xb)
-
     override fun min(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer = instance.min(x, xi, xj, axis)
 
     override fun min(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer =
@@ -415,8 +411,6 @@ object Backend : IBackend {
         instance.min(x, xi, xj, xk, xl, axis)
 
     override fun sum(x: DataBuffer): Float = instance.sum(x)
-
-    override fun sum(x: DataBuffer, xb: Int): DataBuffer = instance.sum(x, xb)
 
     override fun sum(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer = instance.sum(x, xi, xj, axis)
 
