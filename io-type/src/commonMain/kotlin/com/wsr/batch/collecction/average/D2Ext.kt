@@ -5,7 +5,6 @@ import com.wsr.batch.Batch
 import com.wsr.batch.get
 import com.wsr.core.IOType
 import com.wsr.core.collection.average.average
-import com.wsr.core.d0
 import com.wsr.core.operation.div.div
 import com.wsr.core.operation.plus.plus
 
