@@ -9,6 +9,38 @@ extern "C" {
 #endif
 /*
  * Class:     com_wsr_cpu_JCollection
+ * Method:    averageD1
+ * Signature: (Ljava/nio/ByteBuffer;)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_averageD1
+  (JNIEnv *, jobject, jobject);
+
+/*
+ * Class:     com_wsr_cpu_JCollection
+ * Method:    averageD2
+ * Signature: (Ljava/nio/ByteBuffer;IIILjava/nio/ByteBuffer;)V
+ */
+JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_averageD2
+  (JNIEnv *, jobject, jobject, jint, jint, jint, jobject);
+
+/*
+ * Class:     com_wsr_cpu_JCollection
+ * Method:    averageD3
+ * Signature: (Ljava/nio/ByteBuffer;IIIILjava/nio/ByteBuffer;)V
+ */
+JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_averageD3
+  (JNIEnv *, jobject, jobject, jint, jint, jint, jint, jobject);
+
+/*
+ * Class:     com_wsr_cpu_JCollection
+ * Method:    averageD4
+ * Signature: (Ljava/nio/ByteBuffer;IIIIILjava/nio/ByteBuffer;)V
+ */
+JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_averageD4
+  (JNIEnv *, jobject, jobject, jint, jint, jint, jint, jint, jobject);
+
+/*
+ * Class:     com_wsr_cpu_JCollection
  * Method:    maxD1
  * Signature: (Ljava/nio/ByteBuffer;)F
  */

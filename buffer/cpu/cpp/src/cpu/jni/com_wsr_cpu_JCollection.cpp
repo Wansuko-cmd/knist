@@ -1,6 +1,34 @@
 #include "com_wsr_cpu_JCollection.h"
 #include <collection_fun.h>
 
+JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_averageD1
+  (JNIEnv *env, jobject obj, jobject x) {
+    jfloat *x_ptr = (jfloat*)env->GetDirectBufferAddress(x);
+    size_t size = static_cast<size_t>(env->GetDirectBufferCapacity(x)) / sizeof(jfloat);
+    return (jfloat)average_d1(x_ptr, size);
+}
+
+JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_averageD2
+  (JNIEnv *env, jobject obj, jobject x, jint xi, jint xj, jint axis, jobject result) {
+    jfloat *x_ptr = (jfloat*)env->GetDirectBufferAddress(x);
+    jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
+    average_d2(x_ptr, xi, xj, axis, result_ptr);
+}
+
+JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_averageD3
+  (JNIEnv *env, jobject obj, jobject x, jint xi, jint xj, jint xk, jint axis, jobject result) {
+    jfloat *x_ptr = (jfloat*)env->GetDirectBufferAddress(x);
+    jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
+    average_d3(x_ptr, xi, xj, xk, axis, result_ptr);
+}
+
+JNIEXPORT void JNICALL Java_com_wsr_cpu_JCollection_averageD4
+  (JNIEnv *env, jobject obj, jobject x, jint xi, jint xj, jint xk, jint xl, jint axis, jobject result) {
+    jfloat *x_ptr = (jfloat*)env->GetDirectBufferAddress(x);
+    jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
+    average_d4(x_ptr, xi, xj, xk, xl, axis, result_ptr);
+}
+
 JNIEXPORT jfloat JNICALL Java_com_wsr_cpu_JCollection_maxD1(
         JNIEnv *env, jobject obj, jobject x
 ) {

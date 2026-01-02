@@ -137,6 +137,67 @@ inline void reduce_d4(const float* x, int xi, int xj, int xk, int xl, int axis, 
     }
 }
 
+float average_d1(const float* x, size_t size) {
+    return reduce_d1<Operation::Sum>(x, size) / size;
+}
+
+void average_d2(const float* x, int xi, int xj, int axis, float* result) {
+    reduce_d2<Operation::Sum>(x, xi, xj, axis, result);
+    int size;
+    int n;
+    if (axis == 0) {
+        size = xj;
+        n = xi;
+    } else {
+        size = xi;
+        n = xj;
+    }
+    for (int i = 0; i < size; i++) {
+        result[i] /= n;
+    }
+}
+
+void average_d3(const float* x, int xi, int xj, int xk, int axis, float* result) {
+    reduce_d3<Operation::Sum>(x, xi, xj, xk, axis, result);
+    int size;
+    int n;
+    if (axis == 0) {
+        size = xj * xk;
+        n = xi;
+    } else if (axis == 1) {
+        size = xi * xk;
+        n = xj;
+    } else {
+        size = xi * xj;
+        n = xk;
+    }
+    for (int i = 0; i < size; i++) {
+        result[i] /= n;
+    }
+}
+
+void average_d4(const float* x, int xi, int xj, int xk, int xl, int axis, float* result) {
+    reduce_d4<Operation::Sum>(x, xi, xj, xk, xl, axis, result);
+    int size;
+    int n;
+    if (axis == 0) {
+        size = xj * xk * xl;
+        n = xi;
+    } else if (axis == 1) {
+        size = xi * xk * xl;
+        n = xj;
+    } else if (axis == 2) {
+        size = xi * xj * xl;
+        n = xk;
+    } else {
+        size = xi * xj * xk;
+        n = xl;
+    }
+    for (int i = 0; i < size; i++) {
+        result[i] /= n;
+    }
+}
+
 float max_d1(const float* x, size_t size) {
     return reduce_d1<Operation::Max>(x, size);
 }
