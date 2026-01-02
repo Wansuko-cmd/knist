@@ -21,7 +21,7 @@ interface Optimizer {
         protected val step: Int get() = _step / _stepUnit
         protected abstract fun adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1
 
-        fun adapt(weight: IOType.D1, dw: IOType.D1, enableClip: Boolean = true): IOType.D1 {
+        fun adapt(weight: IOType.D1, dw: IOType.D1, enableClip: Boolean = _maxNorm != Float.MAX_VALUE): IOType.D1 {
             val norm = sqrt(dw.pow(2).sum())
             val scaled = if (norm > _maxNorm && enableClip) {
                 val scale = _maxNorm / norm
@@ -32,8 +32,11 @@ interface Optimizer {
             return adapt(weight, scaled).also { _step++ }
         }
 
-        fun adapt(weight: IOType.D1, dw: Batch<IOType.D1>, enableClip: Boolean = true): IOType.D1 =
-            adapt(weight, dw.batchAverage(), enableClip)
+        fun adapt(
+            weight: IOType.D1,
+            dw: Batch<IOType.D1>,
+            enableClip: Boolean = _maxNorm != Float.MAX_VALUE,
+        ): IOType.D1 = adapt(weight, dw.batchAverage(), enableClip)
     }
 
     @Serializable
@@ -42,7 +45,7 @@ interface Optimizer {
         protected val step: Int get() = _step / _stepUnit
         protected abstract fun adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2
 
-        fun adapt(weight: IOType.D2, dw: IOType.D2, enableClip: Boolean = true): IOType.D2 {
+        fun adapt(weight: IOType.D2, dw: IOType.D2, enableClip: Boolean = _maxNorm != Float.MAX_VALUE): IOType.D2 {
             val norm = sqrt(dw.pow(2).sum())
             val scaled = if (norm > _maxNorm && enableClip) {
                 val scale = _maxNorm / norm
@@ -53,8 +56,11 @@ interface Optimizer {
             return adapt(weight, scaled).also { _step++ }
         }
 
-        fun adapt(weight: IOType.D2, dw: Batch<IOType.D2>, enableClip: Boolean = true): IOType.D2 =
-            adapt(weight, dw.batchAverage(), enableClip)
+        fun adapt(
+            weight: IOType.D2,
+            dw: Batch<IOType.D2>,
+            enableClip: Boolean = _maxNorm != Float.MAX_VALUE,
+        ): IOType.D2 = adapt(weight, dw.batchAverage(), enableClip)
     }
 
     @Serializable
@@ -63,7 +69,7 @@ interface Optimizer {
         protected val step: Int get() = _step / _stepUnit
         protected abstract fun adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3
 
-        fun adapt(weight: IOType.D3, dw: IOType.D3, enableClip: Boolean = true): IOType.D3 {
+        fun adapt(weight: IOType.D3, dw: IOType.D3, enableClip: Boolean = _maxNorm != Float.MAX_VALUE): IOType.D3 {
             val norm = sqrt(dw.pow(2).sum())
             val scaled = if (norm > _maxNorm && enableClip) {
                 val scale = _maxNorm / norm
@@ -74,8 +80,11 @@ interface Optimizer {
             return adapt(weight, scaled).also { _step++ }
         }
 
-        fun adapt(weight: IOType.D3, dw: Batch<IOType.D3>, enableClip: Boolean = true): IOType.D3 =
-            adapt(weight, dw.batchAverage(), enableClip)
+        fun adapt(
+            weight: IOType.D3,
+            dw: Batch<IOType.D3>,
+            enableClip: Boolean = _maxNorm != Float.MAX_VALUE,
+        ): IOType.D3 = adapt(weight, dw.batchAverage(), enableClip)
     }
 
     @Serializable
@@ -84,7 +93,7 @@ interface Optimizer {
         protected val step: Int get() = _step / _stepUnit
         protected abstract fun adapt(weight: IOType.D4, dw: IOType.D4): IOType.D4
 
-        fun adapt(weight: IOType.D4, dw: IOType.D4, enableClip: Boolean = true): IOType.D4 {
+        fun adapt(weight: IOType.D4, dw: IOType.D4, enableClip: Boolean = _maxNorm != Float.MAX_VALUE): IOType.D4 {
             val norm = sqrt(dw.pow(2).sum())
             val scaled = if (norm > _maxNorm && enableClip) {
                 val scale = _maxNorm / norm
@@ -95,7 +104,10 @@ interface Optimizer {
             return adapt(weight, scaled).also { _step++ }
         }
 
-        fun adapt(weight: IOType.D4, dw: Batch<IOType.D4>, enableClip: Boolean = true): IOType.D4 =
-            adapt(weight, dw.batchAverage(), enableClip)
+        fun adapt(
+            weight: IOType.D4,
+            dw: Batch<IOType.D4>,
+            enableClip: Boolean = _maxNorm != Float.MAX_VALUE,
+        ): IOType.D4 = adapt(weight, dw.batchAverage(), enableClip)
     }
 }
