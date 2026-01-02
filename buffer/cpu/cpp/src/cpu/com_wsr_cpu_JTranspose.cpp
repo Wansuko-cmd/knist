@@ -1,6 +1,13 @@
 #include "com_wsr_cpu_JTranspose.h"
 #include <stdio.h>
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
+// L1キャッシュを32KB = 4096Bと仮定
+const int PARALLEL_THRESHOLD = 4 * 4096;
+
 JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD2(
         JNIEnv *env, jobject, jobject x, jint xi, jint xj, jobject result
 ) {
@@ -8,6 +15,9 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD2(
     jfloat *x_ptr = (jfloat*)env->GetDirectBufferAddress(x);
     jfloat *result_ptr = (jfloat*)env->GetDirectBufferAddress(result);
 
+    #ifdef _OPENMP
+    #pragma omp parallel for collapse(2) if(xi * xj >= PARALLEL_THRESHOLD)
+    #endif
     for (int i = 0; i < xi; i++) {
         for (int j = 0; j < xj; j++) {
             result_ptr[j * xi + i] = x_ptr[i * xj + j];
@@ -26,6 +36,9 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD3(
     int old_shape[3] = { xi, xj, xk };
     int new_shape[3] = { old_shape[axis_i], old_shape[axis_j], old_shape[axis_k] };
 
+    #ifdef _OPENMP
+    #pragma omp parallel for if(xi * xj * xk >= PARALLEL_THRESHOLD)
+    #endif
     for (int ni = 0; ni < new_shape[0]; ni++) {
         int nii = ni * new_shape[1];
         for (int nj = 0; nj < new_shape[1]; nj++) {
@@ -56,6 +69,9 @@ JNIEXPORT void JNICALL Java_com_wsr_cpu_JTranspose_transposeD4(
     int old_shape[4] = { xi, xj, xk, xl };
     int new_shape[4] = { old_shape[axis_i], old_shape[axis_j], old_shape[axis_k], old_shape[axis_l] };
 
+    #ifdef _OPENMP
+    #pragma omp parallel for if(xi * xj * xk * xl >= PARALLEL_THRESHOLD)
+    #endif
     for (int ni = 0; ni < new_shape[0]; ni++) {
         int nii = ni * new_shape[1];
         for (int nj = 0; nj < new_shape[1]; nj++) {
