@@ -52,19 +52,22 @@ endif()
 
 set(HEADER_FILES
         ${SRC_DIR}/collection_fun.h
+        ${SRC_DIR}/mat_mul_fun.h
         ${SRC_DIR}/math_fun.h
         ${SRC_DIR}/operation_fun.h
         ${SRC_DIR}/transpose_fun.h
 )
 set(SOURCE_FILES
         ${SRC_DIR}/collection_fun.cpp
+        ${SRC_DIR}/mat_mul_fun.cpp
         ${SRC_DIR}/math_fun.cpp
         ${SRC_DIR}/operation_fun.cpp
         ${SRC_DIR}/transpose_fun.cpp
-        ${SRC_DIR}/jni/com_wsr_cpu_JOpenBLAS.cpp
-        ${SRC_DIR}/jni/com_wsr_cpu_JOperation.cpp
         ${SRC_DIR}/jni/com_wsr_cpu_JCollection.cpp
         ${SRC_DIR}/jni/com_wsr_cpu_JMath.cpp
+        ${SRC_DIR}/jni/com_wsr_cpu_JMatMul.cpp
+        ${SRC_DIR}/jni/com_wsr_cpu_JOpenBLAS.cpp
+        ${SRC_DIR}/jni/com_wsr_cpu_JOperation.cpp
         ${SRC_DIR}/jni/com_wsr_cpu_JTranspose.cpp
 )
 add_library(JCPU SHARED ${HEADER_FILES} ${SOURCE_FILES})
