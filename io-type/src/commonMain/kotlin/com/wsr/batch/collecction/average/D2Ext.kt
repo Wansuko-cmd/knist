@@ -2,11 +2,7 @@ package com.wsr.batch.collecction.average
 
 import com.wsr.Backend
 import com.wsr.batch.Batch
-import com.wsr.batch.get
 import com.wsr.core.IOType
-import com.wsr.core.collection.average.average
-import com.wsr.core.operation.div.div
-import com.wsr.core.operation.plus.plus
 
 @JvmName("batchD2sAverageBatch")
 fun Batch<IOType.D2>.average(): Batch<IOType.D0> {
@@ -21,7 +17,7 @@ fun Batch<IOType.D2>.average(axis: Int): Batch<IOType.D1> {
     val result = Backend.div(x = sum, y = shape[axis].toFloat())
     return Batch(
         size = size,
-        shape = listOf(result.size),
+        shape = listOf(if (axis == 0) shape[1] else shape[0]),
         value = result,
     )
 }
