@@ -1,5 +1,9 @@
 #include <collection_fun.h>
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 #define PERFORM_OPERATION(acc, x) \
     if constexpr (Op == Operation::Max) { \
         if (acc < x) { \
@@ -170,6 +174,9 @@ void average_d2(const float* x, int xi, int xj, int axis, float* result) {
         size = xi;
         n = xj;
     }
+    #ifdef _OPENMP
+    #pragma omp simd
+    #endif
     for (int i = 0; i < size; i++) {
         result[i] /= n;
     }
@@ -189,6 +196,9 @@ void average_d3(const float* x, int xi, int xj, int xk, int axis, float* result)
         size = xi * xj;
         n = xk;
     }
+    #ifdef _OPENMP
+    #pragma omp simd
+    #endif
     for (int i = 0; i < size; i++) {
         result[i] /= n;
     }
@@ -211,6 +221,9 @@ void average_d4(const float* x, int xi, int xj, int xk, int xl, int axis, float*
         size = xi * xj * xk;
         n = xl;
     }
+    #ifdef _OPENMP
+    #pragma omp simd
+    #endif
     for (int i = 0; i < size; i++) {
         result[i] /= n;
     }
