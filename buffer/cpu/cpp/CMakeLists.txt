@@ -1,22 +1,54 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 project(io-type-blas C CXX)
 
-# ソースディレクトリを設定
+###########################
+# CPUの設定
+###########################
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/cpu)
+set(HEADER_FILES
+        ${SRC_DIR}/collection_fun.h
+        ${SRC_DIR}/mat_mul_fun.h
+        ${SRC_DIR}/math_fun.h
+        ${SRC_DIR}/operation_fun.h
+        ${SRC_DIR}/transpose_fun.h
+)
+set(SOURCE_FILES
+        ${SRC_DIR}/collection_fun.cpp
+        ${SRC_DIR}/mat_mul_fun.cpp
+        ${SRC_DIR}/math_fun.cpp
+        ${SRC_DIR}/operation_fun.cpp
+        ${SRC_DIR}/transpose_fun.cpp
+        ${SRC_DIR}/jni/com_wsr_cpu_JCollection.cpp
+        ${SRC_DIR}/jni/com_wsr_cpu_JMath.cpp
+        ${SRC_DIR}/jni/com_wsr_cpu_JMatMul.cpp
+        ${SRC_DIR}/jni/com_wsr_cpu_JOperation.cpp
+        ${SRC_DIR}/jni/com_wsr_cpu_JTranspose.cpp
+)
+add_library(CPU SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_include_directories(CPU PRIVATE ${SRC_DIR})
 
-# JNIのセットアップ
+# コンパイラの設定
+target_compile_features(CPU PRIVATE cxx_std_17)
+set_target_properties(CPU PROPERTIES OUTPUT_NAME "cpu")
+
+
+
+###########################
+# JNI
+###########################
 find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
 
-# OpenMPのサポートを検出
-find_package(OpenMP)
 
-# OpenBLASのセットアップ
+
+###########################
+# OpenBLAS
+###########################
 include(ExternalProject)
 
-# OpenBLASのインストール先
 set(OPENBLAS_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/openblas)
 set(OPENBLAS_INSTALL_DIR ${OPENBLAS_PREFIX}/install)
+set(OPENBLAS_INCLUDE_DIR ${OPENBLAS_INSTALL_DIR}/include/openblas)
 
 ExternalProject_Add(
         OpenBLAS
@@ -41,71 +73,37 @@ ExternalProject_Add(
         LOG_BUILD ON
 )
 
-set(OPENBLAS_INCLUDE_DIR ${OPENBLAS_INSTALL_DIR}/include/openblas)
 if(WIN32)
-    # Windows (MSVC): openblas.lib
     set(OPENBLAS_LIB ${OPENBLAS_INSTALL_DIR}/lib/openblas.lib)
 else()
-    # Unix系 (macOS, Linux): libopenblas.a
     set(OPENBLAS_LIB ${OPENBLAS_INSTALL_DIR}/lib/libopenblas.a)
 endif()
 
-set(HEADER_FILES
-        ${SRC_DIR}/collection_fun.h
-        ${SRC_DIR}/mat_mul_fun.h
-        ${SRC_DIR}/math_fun.h
-        ${SRC_DIR}/operation_fun.h
-        ${SRC_DIR}/transpose_fun.h
-)
-set(SOURCE_FILES
-        ${SRC_DIR}/collection_fun.cpp
-        ${SRC_DIR}/mat_mul_fun.cpp
-        ${SRC_DIR}/math_fun.cpp
-        ${SRC_DIR}/operation_fun.cpp
-        ${SRC_DIR}/transpose_fun.cpp
-        ${SRC_DIR}/jni/com_wsr_cpu_JCollection.cpp
-        ${SRC_DIR}/jni/com_wsr_cpu_JMath.cpp
-        ${SRC_DIR}/jni/com_wsr_cpu_JMatMul.cpp
-        ${SRC_DIR}/jni/com_wsr_cpu_JOperation.cpp
-        ${SRC_DIR}/jni/com_wsr_cpu_JTranspose.cpp
-)
-add_library(JCPU SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_include_directories(JCPU PRIVATE ${SRC_DIR})
-target_compile_features(JCPU PRIVATE cxx_std_17)
-add_dependencies(JCPU OpenBLAS)
-
-target_include_directories(JCPU PRIVATE
+add_dependencies(CPU OpenBLAS)
+target_include_directories(CPU PRIVATE
         ${OPENBLAS_INCLUDE_DIR}
         ${OPENBLAS_INSTALL_DIR}/include
 )
+target_link_libraries(CPU PRIVATE ${OPENBLAS_LIB})
 
-# OpenMPのサポートを有効化
+
+
+###########################
+# OpenMP
+###########################
+find_package(OpenMP)
+
 if(OpenMP_CXX_FOUND)
-    target_link_libraries(JCPU PRIVATE ${OpenMP_CXX_LIBRARIES})
-    target_include_directories(JCPU PRIVATE ${OpenMP_CXX_INCLUDE_DIRS})
+    target_link_libraries(CPU PRIVATE ${OpenMP_CXX_LIBRARIES})
+    target_include_directories(CPU PRIVATE ${OpenMP_CXX_INCLUDE_DIRS})
     if (APPLE)
-        target_compile_options(JCPU PRIVATE  -Xpreprocessor -fopenmp)
+        target_compile_options(CPU PRIVATE  -Xpreprocessor -fopenmp)
     elseif (WIN32 AND MSVC)
-         target_compile_options(JCPU PRIVATE /openmp:experimental)
+         target_compile_options(CPU PRIVATE /openmp:experimental)
     else()
-        target_compile_options(JCPU PRIVATE ${OpenMP_CXX_FLAGS})
+        target_compile_options(CPU PRIVATE ${OpenMP_CXX_FLAGS})
     endif()
     message(STATUS "OpenMP support enabled")
 else()
     message(WARNING "OpenMP support disabled")
 endif()
-
-# OpenBLASをリンク
-target_link_libraries(JCPU PRIVATE ${OPENBLAS_LIB})
-if(UNIX AND NOT APPLE AND NOT ANDROID)
-    # Linux: pthreadとgfortranが必要
-    target_link_libraries(JCPU PRIVATE pthread m gfortran)
-elseif(APPLE)
-    # macOS
-    target_link_libraries(JCPU PRIVATE pthread m)
-elseif(WIN32)
-    # Windows: 追加のライブラリは不要（OpenBLASが静的リンク）
-endif()
-
-# ライブラリ名とサフィックスを設定
-set_target_properties(JCPU PROPERTIES OUTPUT_NAME "cpu")
