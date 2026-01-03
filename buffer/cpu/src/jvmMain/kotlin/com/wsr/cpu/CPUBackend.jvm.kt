@@ -1014,7 +1014,45 @@ class CPUBackend : IBackend by KotlinBackend {
         return result
     }
 
+    override fun average(x: DataBuffer): Float = collection.averageD1(x.toCPUBuffer().byteBuffer)
+
     override fun max(x: DataBuffer): Float = collection.maxD1(x.toCPUBuffer().byteBuffer)
+
+    override fun average(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer {
+        val result = CPUBuffer.create(
+            size = when (axis) {
+                0 -> xj
+                else -> xi
+            },
+        )
+        collection.averageD2(x.toCPUBuffer().byteBuffer, xi, xj, axis, result.byteBuffer)
+        return result
+    }
+
+    override fun average(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer {
+        val result = CPUBuffer.create(
+            size = when (axis) {
+                0 -> xj * xk
+                1 -> xi * xk
+                else -> xi * xj
+            },
+        )
+        collection.averageD3(x.toCPUBuffer().byteBuffer, xi, xj, xk, axis, result.byteBuffer)
+        return result
+    }
+
+    override fun average(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axis: Int): DataBuffer {
+        val result = CPUBuffer.create(
+            size = when (axis) {
+                0 -> xj * xk * xl
+                1 -> xi * xk * xl
+                2 -> xi * xj * xl
+                else -> xi * xj * xk
+            },
+        )
+        collection.averageD4(x.toCPUBuffer().byteBuffer, xi, xj, xk, xl, axis, result.byteBuffer)
+        return result
+    }
 
     override fun max(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer {
         val result = CPUBuffer.create(
