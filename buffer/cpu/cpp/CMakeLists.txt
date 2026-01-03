@@ -38,8 +38,10 @@ if (MSVC)
             /GL                # リンク時コード生成
             /Oi                # 組み込み関数使用
             /Ot                # 速度優先
+            /arch:AVX2         # AVX2命令セットを有効化
     )
-else()
+    set(OPENBLAS_TARGET "-DTARGET=HASWELL")
+elseif (APPLE)
     target_compile_options(CPU PRIVATE
             -O3                # 高度な最適化
             -ffast-math        # 高速浮動小数点演算
@@ -47,6 +49,17 @@ else()
             -funroll-loops     # ループ展開
             -fomit-frame-pointer # フレームポインタ省略
     )
+    set(OPENBLAS_TARGET "-DTARGET=ARMV8")
+else()
+    target_compile_options(CPU PRIVATE
+            -O3                # 高度な最適化
+            -ffast-math        # 高速浮動小数点演算
+            -flto              # リンク時最適化
+            -funroll-loops     # ループ展開
+            -fomit-frame-pointer # フレームポインタ省略
+            -mavx2            # AVX2命令セットを有効化
+    )
+    set(OPENBLAS_TARGET "-DTARGET=HASWELL")
 endif()
 
 
@@ -82,6 +95,7 @@ ExternalProject_Add(
         -DBUILD_WITHOUT_LAPACK=OFF
         -DC_LAPACK=ON
         -DUSE_THREAD=ON
+        ${OPENBLAS_TARGET}
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5
         ${OPENBLAS_CMAKE_ARGS}
         BUILD_COMMAND ${CMAKE_COMMAND} --build . --config Release
