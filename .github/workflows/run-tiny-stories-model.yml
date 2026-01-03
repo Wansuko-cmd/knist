@@ -8,11 +8,28 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os.image }}
+    name: Build (${{ matrix.os.name }}/${{ matrix.os.arch }})/${{ matrix.index }}
     strategy:
       fail-fast: false
       matrix:
-        index: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+        index: [ 0, 1, 2, 3, 4 ]
+        os:
+          # macOS
+          - image: macos-latest
+            name: macos
+            arch: Arm64
+          # Linux
+          - image: ubuntu-latest
+            name: linux
+            arch: X64
+          - image: ubuntu-24.04-arm
+            name: linux
+            arch: Arm64
+          # Windows
+          - image: windows-latest
+            name: windows
+            arch: X64
     steps:
       - name: リポジトリにチェックアウト
         uses: actions/checkout@v4
@@ -44,9 +61,9 @@ jobs:
           echo "ダウンロード完了"
           ls -lh sample/src/main/resources/stories/
 
-      - name: ./gradlewに権限を付与
-        run: |
-          chmod 777 ${{ github.workspace }}/gradlew
+      - name: gradlewに権限を付与 (Unix)
+        if: runner.os != 'Windows'
+        run: chmod 777 ${{ github.workspace }}/gradlew
 
       - name: TinyStoriesテストを実行
         run: |
