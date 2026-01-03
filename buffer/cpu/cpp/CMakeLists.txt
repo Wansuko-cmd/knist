@@ -30,6 +30,24 @@ target_include_directories(CPU PRIVATE ${SRC_DIR})
 # コンパイラの設定
 target_compile_features(CPU PRIVATE cxx_std_17)
 set_target_properties(CPU PROPERTIES OUTPUT_NAME "cpu")
+if (MSVC)
+    target_compile_options(CPU PRIVATE
+            /O2                # 標準最適化
+            /Ob3               # 積極的インライン展開
+            /fp:fast           # 高速浮動小数点演算
+            /GL                # リンク時コード生成
+            /Oi                # 組み込み関数使用
+            /Ot                # 速度優先
+    )
+else()
+    target_compile_options(CPU PRIVATE
+            -O3                # 高度な最適化
+            -ffast-math        # 高速浮動小数点演算
+            -flto              # リンク時最適化
+            -funroll-loops     # ループ展開
+            -fomit-frame-pointer # フレームポインタ省略
+    )
+endif()
 
 
 
