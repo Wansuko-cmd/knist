@@ -55,14 +55,13 @@ jobs:
 
       - name: TinyStoriesデータセットをダウンロード
         if: steps.cache-tiny-stories.outputs.cache-hit != 'true'
+        shell: bash
         run: |
           mkdir -p sample/src/main/resources/stories
           echo "TinyStories-train.txtをダウンロード中..."
-          curl -L -o sample/src/main/resources/stories/TinyStories-train.txt \
-            "https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStories-train.txt"
+          curl -L -o "sample/src/main/resources/stories/TinyStories-train.txt" "https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStories-train.txt"
           echo "TinyStories-valid.txtをダウンロード中..."
-          curl -L -o sample/src/main/resources/stories/TinyStories-valid.txt \
-            "https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStories-valid.txt"
+          curl -L -o "sample/src/main/resources/stories/TinyStories-valid.txt" "https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStories-valid.txt"
           echo "ダウンロード完了"
 
       - name: gradlewに権限を付与 (Unix)
@@ -73,11 +72,11 @@ jobs:
         if: runner.os != 'macOS'
         shell: bash
         run: |
-          ${{ github.workspace }}/gradlew sample:test --tests "stories.TinyStoriesTest" --info --no-build-cache
+          ./gradlew sample:test --tests "stories.TinyStoriesTest" --info --no-build-cache
 
       - name: TinyStoriesテストを実行（macOS）
         if: runner.os == 'macOS'
         shell: bash
         run: |
           export OpenMP_ROOT=$(brew --prefix)/opt/libomp
-          ${{ github.workspace }}/gradlew sample:test --tests "stories.TinyStoriesTest" --info --no-build-cache
+          ./gradlew sample:test --tests "stories.TinyStoriesTest" --info --no-build-cache
