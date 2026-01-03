@@ -8,11 +8,28 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os.image }}
+    name: Build (${{ matrix.os.name }}/${{ matrix.os.arch }})/${{ matrix.index }}
     strategy:
       fail-fast: false
       matrix:
-        index: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+        index: [ 0, 1, 2, 3, 4 ]
+        os:
+          # macOS
+          - image: macos-latest
+            name: macos
+            arch: Arm64
+          # Linux
+          - image: ubuntu-latest
+            name: linux
+            arch: X64
+          - image: ubuntu-24.04-arm
+            name: linux
+            arch: Arm64
+          # Windows
+          - image: windows-latest
+            name: windows
+            arch: X64
     steps:
       - name: リポジトリにチェックアウト
         uses: actions/checkout@v4
@@ -24,6 +41,11 @@ jobs:
           java-version: 17
           cache: 'gradle'
 
+      - name: OpenMPのセットアップ（macOS）
+        if: runner.os == 'macOS'
+        run: |
+          brew install libomp
+
       - name: TinyStoriesデータセットのキャッシュを復元
         id: cache-tiny-stories
         uses: actions/cache@v4
@@ -33,21 +55,28 @@ jobs:
 
       - name: TinyStoriesデータセットをダウンロード
         if: steps.cache-tiny-stories.outputs.cache-hit != 'true'
+        shell: bash
         run: |
           mkdir -p sample/src/main/resources/stories
           echo "TinyStories-train.txtをダウンロード中..."
-          curl -L -o sample/src/main/resources/stories/TinyStories-train.txt \
-            "https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStories-train.txt"
+          curl -L -o "sample/src/main/resources/stories/TinyStories-train.txt" "https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStories-train.txt"
           echo "TinyStories-valid.txtをダウンロード中..."
-          curl -L -o sample/src/main/resources/stories/TinyStories-valid.txt \
-            "https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStories-valid.txt"
+          curl -L -o "sample/src/main/resources/stories/TinyStories-valid.txt" "https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStories-valid.txt"
           echo "ダウンロード完了"
-          ls -lh sample/src/main/resources/stories/
 
-      - name: ./gradlewに権限を付与
-        run: |
-          chmod 777 ${{ github.workspace }}/gradlew
+      - name: gradlewに権限を付与 (Unix)
+        if: runner.os != 'Windows'
+        run: chmod 777 ${{ github.workspace }}/gradlew
 
-      - name: TinyStoriesテストを実行
+      - name: TinyStoriesテストを実行（macOS以外）
+        if: runner.os != 'macOS'
+        shell: bash
         run: |
-          ${{ github.workspace }}/gradlew sample:test --tests "stories.TinyStoriesTest" --info --no-build-cache
+          ./gradlew sample:test --tests "stories.TinyStoriesTest" --info --no-build-cache
+
+      - name: TinyStoriesテストを実行（macOS）
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          export OpenMP_ROOT=$(brew --prefix)/opt/libomp
+          ./gradlew sample:test --tests "stories.TinyStoriesTest" --info --no-build-cache
