@@ -31,18 +31,22 @@ inline float reduce_d1(const float* x, size_t size) {
 template<Operation Op>
 inline void reduce_d2(const float* x, int xi, int xj, int axis, float* result) {
     if (axis == 0) {
+        int stride = xj;
         for (int j = 0; j < xj; j++) {
-            float acc = x[j];
-            for (size_t i = 1; i < xi; i++) {
-                PERFORM_OPERATION(acc, x[i * xj + j])
+            int offset = j;
+            float acc = x[offset];
+            for (size_t ii = stride; ii < xi * stride; ii += stride) {
+                PERFORM_OPERATION(acc, x[offset + ii])
             }
             result[j] = acc;
         }
     } else if (axis == 1) {
+        int stride = 1;
         for (int i = 0; i < xi; i++) {
-            float acc = x[i * xj];
-            for (int j = 1; j < xj; j++) {
-                PERFORM_OPERATION(acc, x[i * xj + j])
+            int offset = i * xj;
+            float acc = x[offset];
+            for (int j = stride; j < xj * stride; j += stride) {
+                PERFORM_OPERATION(acc, x[offset + j])
             }
             result[i] = acc;
         }
@@ -52,31 +56,37 @@ inline void reduce_d2(const float* x, int xi, int xj, int axis, float* result) {
 template<Operation Op>
 inline void reduce_d3(const float* x, int xi, int xj, int xk, int axis, float* result) {
     if (axis == 0) {
+        int stride = xj * xk;
         for (int j = 0; j < xj; j++) {
             for (int k = 0; k < xk; k++) {
-                float acc = x[j * xk + k];
-                for (int i = 1; i < xi; i++) {
-                    PERFORM_OPERATION(acc, x[(i * xj + j) * xk + k])
+                int offset = j * xk + k;
+                float acc = x[offset];
+                for (int ii = stride; ii < xi * stride; ii += stride) {
+                    PERFORM_OPERATION(acc, x[offset + ii])
                 }
                 result[j * xk + k] = acc;
             }
         }
     } else if (axis == 1) {
+        int stride = xk;
         for (int i = 0; i < xi; i++) {
             for (int k = 0; k < xk; k++) {
-                float acc = x[i * xj * xk + k];
-                for (int j = 1; j < xj; j++) {
-                    PERFORM_OPERATION(acc, x[(i * xj + j) * xk + k])
+                int offset = i * xj * xk + k;
+                float acc = x[offset];
+                for (int ji = stride; ji < xj * stride; ji += stride) {
+                    PERFORM_OPERATION(acc, x[offset + ji])
                 }
                 result[i * xk + k] = acc;
             }
         }
     } else if (axis == 2) {
+        int stride = 1;
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
-                float acc = x[(i * xj + j) * xk];
-                for (int k = 1; k < xk; k++) {
-                    PERFORM_OPERATION(acc, x[(i * xj + j) * xk + k])
+                int offset = (i * xj + j) * xk;
+                float acc = x[offset];
+                for (int k = stride; k < xk * stride; k += stride) {
+                    PERFORM_OPERATION(acc, x[offset + k])
                 }
                 result[i * xj + j] = acc;
             }
@@ -87,48 +97,56 @@ inline void reduce_d3(const float* x, int xi, int xj, int xk, int axis, float* r
 template<Operation Op>
 inline void reduce_d4(const float* x, int xi, int xj, int xk, int xl, int axis, float* result) {
     if (axis == 0) {
+        int stride = xj * xk * xl;
         for (int j = 0; j < xj; j++) {
             for (int k = 0; k < xk; k++) {
                 for (int l = 0; l < xl; l++) {
-                    float acc = x[(j * xk + k) * xl + l];
-                    for (int i = 1; i < xi; i++) {
-                        PERFORM_OPERATION(acc, x[((i * xj + j) * xk + k) * xl + l])
+                    int offset = (j * xk + k) * xl + l;
+                    float acc = x[offset];
+                    for (int ii = stride; ii < xi * stride; ii += stride) {
+                        PERFORM_OPERATION(acc, x[offset + ii])
                     }
                     result[(j * xk + k) * xl + l] = acc;
                 }
             }
         }
     } else if (axis == 1) {
+        int stride = xk * xl;
         for (int i = 0; i < xi; i++) {
             for (int k = 0; k < xk; k++) {
                 for (int l = 0; l < xl; l++) {
-                    float acc = x[(i * xj * xk + k) * xl + l];
-                    for (int j = 1; j < xj; j++) {
-                        PERFORM_OPERATION(acc, x[((i * xj + j) * xk + k) * xl + l])
+                    int offset = (i * xj * xk + k) * xl + l;
+                    float acc = x[offset];
+                    for (int ji = stride; ji < xj * stride; ji += stride) {
+                        PERFORM_OPERATION(acc, x[offset + ji])
                     }
                     result[(i * xk + k) * xl + l] = acc;
                 }
             }
         }
     } else if (axis == 2) {
+        int stride = xl;
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int l = 0; l < xl; l++) {
-                    float acc = x[(i * xj + j) * xk * xl + l];
-                    for (int k = 1; k < xk; k++) {
-                        PERFORM_OPERATION(acc, x[((i * xj + j) * xk + k) * xl + l])
+                    int offset = (i * xj + j) * xk * xl + l;
+                    float acc = x[offset];
+                    for (int ki = stride; ki < xk * stride; ki += stride) {
+                        PERFORM_OPERATION(acc, x[offset + ki])
                     }
                     result[(i * xj + j) * xl + l] = acc;
                 }
             }
         }
     } else if (axis == 3) {
+        int stride = 1;
         for (int i = 0; i < xi; i++) {
             for (int j = 0; j < xj; j++) {
                 for (int k = 0; k < xk; k++) {
-                    float acc = x[((i * xj + j) * xk + k) * xl];
-                    for (int l = 1; l < xl; l++) {
-                        PERFORM_OPERATION(acc, x[((i * xj + j) * xk + k) * xl + l])
+                    int offset = ((i * xj + j) * xk + k) * xl;
+                    float acc = x[offset];
+                    for (int li = stride; li < xl * stride; li += stride) {
+                        PERFORM_OPERATION(acc, x[offset + li])
                     }
                     result[(i * xj + j) * xk + k] = acc;
                 }
