@@ -1,21 +1,27 @@
 package com.wsr.core.collection.average
 
+import com.wsr.Backend
 import com.wsr.core.IOType
-import com.wsr.core.collection.sum.sum
-import com.wsr.core.operation.div.div
 
-fun IOType.D1.average(): Float = sum() / shape[0]
+fun IOType.D1.average(): Float = Backend.average(value)
 
-fun IOType.D2.average(): Float = sum() / (shape[0] * shape[1])
+fun IOType.D2.average(): Float = Backend.average(value)
 
-fun IOType.D2.average(axis: Int): IOType.D1 = when (axis) {
-    0, 1 -> sum(axis = axis) / shape[axis].toFloat()
-    else -> throw IllegalArgumentException("IOType.D2.average axis is $axis not 0 or 1.")
+fun IOType.D2.average(axis: Int): IOType.D1 {
+    val result = Backend.average(x = value, xi = i, xj = j, axis = axis)
+    return IOType.D1(value = result)
 }
 
-fun IOType.D3.average(): Float = sum() / (shape[0] * shape[1] * shape[2])
+fun IOType.D3.average(): Float = Backend.average(value)
 
-fun IOType.D3.average(axis: Int) = when (axis) {
-    0, 1, 2 -> sum(axis = axis) / shape[axis].toFloat()
-    else -> throw IllegalArgumentException("IOType.D3.average axis is $axis not 0, 1 or 2.")
+fun IOType.D3.average(axis: Int): IOType.D2 {
+    val result = Backend.average(x = value, xi = i, xj = j, xk = k, axis = axis)
+    return IOType.D2(
+        shape = when (axis) {
+            0 -> listOf(j, k)
+            1 -> listOf(i, k)
+            else -> listOf(i, j)
+        },
+        value = result,
+    )
 }
