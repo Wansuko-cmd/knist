@@ -41,6 +41,11 @@ jobs:
           java-version: 17
           cache: 'gradle'
 
+      - name: OpenMPのセットアップ（macOS）
+        if: runner.os == 'macOS'
+        run: |
+          brew install libomp
+
       - name: TinyStoriesデータセットのキャッシュを復元
         id: cache-tiny-stories
         uses: actions/cache@v4
@@ -59,12 +64,20 @@ jobs:
           curl -L -o sample/src/main/resources/stories/TinyStories-valid.txt \
             "https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStories-valid.txt"
           echo "ダウンロード完了"
-          ls -lh sample/src/main/resources/stories/
 
       - name: gradlewに権限を付与 (Unix)
         if: runner.os != 'Windows'
         run: chmod 777 ${{ github.workspace }}/gradlew
 
-      - name: TinyStoriesテストを実行
+      - name: TinyStoriesテストを実行（macOS以外）
+        if: runner.os != 'macOS'
+        shell: bash
         run: |
+          ${{ github.workspace }}/gradlew sample:test --tests "stories.TinyStoriesTest" --info --no-build-cache
+
+      - name: TinyStoriesテストを実行（macOS）
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          export OpenMP_ROOT=$(brew --prefix)/opt/libomp
           ${{ github.workspace }}/gradlew sample:test --tests "stories.TinyStoriesTest" --info --no-build-cache
