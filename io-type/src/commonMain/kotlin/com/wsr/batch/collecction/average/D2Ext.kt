@@ -2,7 +2,10 @@ package com.wsr.batch.collecction.average
 
 import com.wsr.Backend
 import com.wsr.batch.Batch
+import com.wsr.batch.get
 import com.wsr.core.IOType
+import com.wsr.core.operation.div.div
+import com.wsr.core.operation.plus.plus
 
 @JvmName("batchD2sAverageBatch")
 fun Batch<IOType.D2>.average(): Batch<IOType.D0> {
@@ -25,6 +28,7 @@ fun Batch<IOType.D2>.average(axis: Int): Batch<IOType.D1> {
 
 @JvmName("batchD2sBatchAverage")
 fun Batch<IOType.D2>.batchAverage(): IOType.D2 {
-    val result = Backend.average(x = value, xi = size, xj = step, axis = 0)
-    return IOType.D2(shape = shape, value = result)
+    var sum = this[0]
+    for (i in 1 until size) sum += this[i]
+    return sum / size.toFloat()
 }
