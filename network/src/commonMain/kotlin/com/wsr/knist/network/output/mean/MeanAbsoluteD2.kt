@@ -15,10 +15,7 @@ import kotlinx.serialization.Serializable
 internal class MeanAbsoluteD2 internal constructor() : Output.D2() {
     override fun IOScope.expect(input: Batch<IOType.D2>): Batch<IOType.D2> = input
 
-    override fun IOScope.train(
-        input: Batch<IOType.D2>,
-        label: (Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): TResult<IOType.D2> {
+    override fun IOScope.train(input: Batch<IOType.D2>, label: (Batch<IOType.D2>) -> Batch<IOType.D2>): TResult<IOType.D2> {
         val diff = input - label(input)
         val condition = diff gt 0f
         val delta = where(condition = condition, onTrue = 1f, onFalse = -1f)

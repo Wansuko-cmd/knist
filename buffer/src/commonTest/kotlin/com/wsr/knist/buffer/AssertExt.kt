@@ -5,12 +5,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.test.fail
 
-fun assertContentEquals(
-    expected: DataBuffer,
-    actual: DataBuffer,
-    absoluteTolerance: Float = 1e-4f,
-    relativeTolerance: Float = 1e-4f,
-) {
+fun assertContentEquals(expected: DataBuffer, actual: DataBuffer, absoluteTolerance: Float = 1e-4f, relativeTolerance: Float = 1e-4f) {
     if (expected.size != actual.size) {
         fail("Expected <$expected> with absolute tolerance <$relativeTolerance>, actual <$actual>.")
     }

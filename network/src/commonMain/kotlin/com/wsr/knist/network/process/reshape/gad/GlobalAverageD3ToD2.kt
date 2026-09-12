@@ -12,22 +12,13 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class GlobalAverageD3ToD2(
-    override val inputI: Int,
-    override val inputJ: Int,
-    override val inputK: Int,
-    override val id: String = Uuid.random().toString(),
-) : Reshape.D3ToD2() {
+internal class GlobalAverageD3ToD2(override val inputI: Int, override val inputJ: Int, override val inputK: Int, override val id: String = Uuid.random().toString()) : Reshape.D3ToD2() {
     override val outputI: Int = inputJ
     override val outputJ: Int = inputK
 
     override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D2> = forward(input)
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D3> {
         val output = forward(input)
         val delta = calcDelta(output)
         return (delta / inputI.toFloat()).broadcastToD3(axis = 0, size = inputI)

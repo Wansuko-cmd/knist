@@ -172,12 +172,10 @@ sealed class IOType {
         fun d2(shape: List<Int>, value: FloatArray): D2.Local = d2Impl(shape, value).toLocal()
 
         context(_: IOScope)
-        inline fun d2(i: Int, j: Int, init: (Int, Int) -> Float = { _, _ -> 0f }): D2.Local =
-            d2Impl(i, j, init).toLocal()
+        inline fun d2(i: Int, j: Int, init: (Int, Int) -> Float = { _, _ -> 0f }): D2.Local = d2Impl(i, j, init).toLocal()
 
         context(_: IOScope)
-        inline fun d2(shape: List<Int>, init: (Int, Int) -> Float = { _, _ -> 0f }): D2.Local =
-            d2Impl(shape, init).toLocal()
+        inline fun d2(shape: List<Int>, init: (Int, Int) -> Float = { _, _ -> 0f }): D2.Local = d2Impl(shape, init).toLocal()
 
         context(_: IOScope)
         fun d2(shape: List<Int>, value: List<Float>): D2.Local = d2Impl(shape, value).toLocal()
@@ -190,12 +188,10 @@ sealed class IOType {
         fun d3(shape: List<Int>, value: FloatArray): D3.Local = d3Impl(shape, value).toLocal()
 
         context(_: IOScope)
-        inline fun d3(i: Int, j: Int, k: Int, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): D3.Local =
-            d3Impl(i, j, k, init).toLocal()
+        inline fun d3(i: Int, j: Int, k: Int, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): D3.Local = d3Impl(i, j, k, init).toLocal()
 
         context(_: IOScope)
-        inline fun d3(shape: List<Int>, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): D3.Local =
-            d3Impl(shape, init).toLocal()
+        inline fun d3(shape: List<Int>, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): D3.Local = d3Impl(shape, init).toLocal()
 
         context(_: IOScope)
         fun d3(shape: List<Int>, value: List<Float>): D3.Local = d3Impl(shape, value).toLocal()
@@ -208,17 +204,10 @@ sealed class IOType {
         fun d4(shape: List<Int>, value: FloatArray): D4.Local = d4Impl(shape, value).toLocal()
 
         context(_: IOScope)
-        inline fun d4(
-            i: Int,
-            j: Int,
-            k: Int,
-            l: Int,
-            init: (Int, Int, Int, Int) -> Float = { _, _, _, _ -> 0f },
-        ): D4.Local = d4Impl(i, j, k, l, init).toLocal()
+        inline fun d4(i: Int, j: Int, k: Int, l: Int, init: (Int, Int, Int, Int) -> Float = { _, _, _, _ -> 0f }): D4.Local = d4Impl(i, j, k, l, init).toLocal()
 
         context(_: IOScope)
-        inline fun d4(shape: List<Int>, init: (Int, Int, Int, Int) -> Float = { _, _, _, _ -> 0f }): D4.Local =
-            d4Impl(shape, init).toLocal()
+        inline fun d4(shape: List<Int>, init: (Int, Int, Int, Int) -> Float = { _, _, _, _ -> 0f }): D4.Local = d4Impl(shape, init).toLocal()
 
         context(_: IOScope)
         fun d4(shape: List<Int>, value: List<Float>): D4.Local = d4Impl(shape, value).toLocal()

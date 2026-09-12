@@ -11,12 +11,7 @@ import com.wsr.knist.network.optimizer.Scheduler
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Momentum(
-    private val scheduler: Scheduler,
-    private val momentum: Float = 0.9f,
-    private val maxNorm: Float = Float.MAX_VALUE,
-    private val stepUnit: Int = 1,
-) : Optimizer {
+data class Momentum(private val scheduler: Scheduler, private val momentum: Float = 0.9f, private val maxNorm: Float = Float.MAX_VALUE, private val stepUnit: Int = 1) : Optimizer {
     override fun d1(i: Int): Optimizer.D1 = MomentumD1(
         scheduler = scheduler,
         momentum = momentum,
@@ -51,13 +46,8 @@ data class Momentum(
 }
 
 @Serializable
-internal data class MomentumD1(
-    private val scheduler: Scheduler,
-    private val momentum: Float,
-    private val maxNorm: Float,
-    private val stepUnit: Int,
-    private val shape: List<Int>,
-) : Optimizer.D1(maxNorm, stepUnit) {
+internal data class MomentumD1(private val scheduler: Scheduler, private val momentum: Float, private val maxNorm: Float, private val stepUnit: Int, private val shape: List<Int>) :
+    Optimizer.D1(maxNorm, stepUnit) {
     private var velocity: IOType.D1.Global = IOType.d1(shape)
     override fun IOScope.adapt(weight: IOType.D1, dw: IOType.D1): IOType.D1 {
         velocity = (momentum * velocity + dw).toGlobal()
@@ -66,13 +56,8 @@ internal data class MomentumD1(
 }
 
 @Serializable
-internal data class MomentumD2(
-    private val scheduler: Scheduler,
-    private val momentum: Float,
-    private val maxNorm: Float,
-    private val stepUnit: Int,
-    private val shape: List<Int>,
-) : Optimizer.D2(maxNorm, stepUnit) {
+internal data class MomentumD2(private val scheduler: Scheduler, private val momentum: Float, private val maxNorm: Float, private val stepUnit: Int, private val shape: List<Int>) :
+    Optimizer.D2(maxNorm, stepUnit) {
     private var velocity: IOType.D2.Global = IOType.d2(shape)
     override fun IOScope.adapt(weight: IOType.D2, dw: IOType.D2): IOType.D2 {
         velocity = (momentum * velocity + dw).toGlobal()
@@ -81,13 +66,8 @@ internal data class MomentumD2(
 }
 
 @Serializable
-internal data class MomentumD3(
-    private val scheduler: Scheduler,
-    private val momentum: Float,
-    private val maxNorm: Float,
-    private val stepUnit: Int,
-    private val shape: List<Int>,
-) : Optimizer.D3(maxNorm, stepUnit) {
+internal data class MomentumD3(private val scheduler: Scheduler, private val momentum: Float, private val maxNorm: Float, private val stepUnit: Int, private val shape: List<Int>) :
+    Optimizer.D3(maxNorm, stepUnit) {
     private var velocity: IOType.D3.Global = IOType.d3(shape)
     override fun IOScope.adapt(weight: IOType.D3, dw: IOType.D3): IOType.D3 {
         velocity = (momentum * velocity + dw).toGlobal()
@@ -96,13 +76,8 @@ internal data class MomentumD3(
 }
 
 @Serializable
-internal data class MomentumD4(
-    private val scheduler: Scheduler,
-    private val momentum: Float,
-    private val maxNorm: Float,
-    private val stepUnit: Int,
-    private val shape: List<Int>,
-) : Optimizer.D4(maxNorm, stepUnit) {
+internal data class MomentumD4(private val scheduler: Scheduler, private val momentum: Float, private val maxNorm: Float, private val stepUnit: Int, private val shape: List<Int>) :
+    Optimizer.D4(maxNorm, stepUnit) {
     private var velocity: IOType.D4.Global = IOType.d4(shape)
     override fun IOScope.adapt(weight: IOType.D4, dw: IOType.D4): IOType.D4 {
         velocity = (momentum * velocity + dw).toGlobal()

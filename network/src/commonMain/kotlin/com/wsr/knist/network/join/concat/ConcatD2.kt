@@ -13,14 +13,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal class ConcatD2(override val outputI: Int, override val outputJ: Int, private val axis: Int) : Join.D2() {
-    override fun IOScope.expect(inputs: List<Batch<IOType.D2>>, env: GraphEnv): Batch<IOType.D2> =
-        inputs.reduce { acc, batch -> acc.concat(batch, axis = axis) }
+    override fun IOScope.expect(inputs: List<Batch<IOType.D2>>, env: GraphEnv): Batch<IOType.D2> = inputs.reduce { acc, batch -> acc.concat(batch, axis = axis) }
 
-    override fun IOScope.train(
-        inputs: List<Batch<IOType.D2>>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): List<Batch<IOType.D2>> {
+    override fun IOScope.train(inputs: List<Batch<IOType.D2>>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): List<Batch<IOType.D2>> {
         val output = inputs.reduce { acc, batch -> acc.concat(batch, axis = axis) }
         val delta = calcDelta(output)
         var from = 0

@@ -15,12 +15,7 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class RoPED2 internal constructor(
-    override val inputI: Int,
-    override val inputJ: Int,
-    private val waveLength: Float,
-    override val id: String = Uuid.random().toString(),
-) : Compute.D2() {
+class RoPED2 internal constructor(override val inputI: Int, override val inputJ: Int, private val waveLength: Float, override val id: String = Uuid.random().toString()) : Compute.D2() {
     override val outputI: Int get() = inputI
     override val outputJ: Int get() = inputJ
     private val theta by lazy {
@@ -37,11 +32,7 @@ class RoPED2 internal constructor(
 
     override fun IOScope.expect(input: Batch<IOType.D2>, env: GraphEnv): Batch<IOType.D2> = forward(input)
 
-    override fun IOScope.train(
-        input: Batch<IOType.D2>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D2> {
+    override fun IOScope.train(input: Batch<IOType.D2>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D2> {
         val output = forward(input)
         val delta = calcDelta(output)
         return forward(delta)

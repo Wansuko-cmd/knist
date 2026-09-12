@@ -56,8 +56,7 @@ fun Batch<IOType.D3>.times(other: IOType.D1, axis: Int): Batch<IOType.D3.Global>
 
 @JvmName("batchD3sTimesD2")
 @ScopeOp
-operator fun Batch<IOType.D3>.times(other: IOType.D2): Batch<IOType.D3.Global> =
-    times(other = other, axis1 = 1, axis2 = 2)
+operator fun Batch<IOType.D3>.times(other: IOType.D2): Batch<IOType.D3.Global> = times(other = other, axis1 = 1, axis2 = 2)
 
 @JvmName("batchD3sTimesD2WithAxis")
 @ScopeOp

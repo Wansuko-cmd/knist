@@ -22,11 +22,7 @@ fun IOType.D2.matMul(other: IOType.D1, @ScopeOpDefault("false") trans: Boolean =
 }
 
 @ScopeOp
-fun IOType.D2.matMul(
-    other: IOType.D2,
-    @ScopeOpDefault("false") transA: Boolean = false,
-    @ScopeOpDefault("false") transB: Boolean = false,
-): IOType.D2.Global {
+fun IOType.D2.matMul(other: IOType.D2, @ScopeOpDefault("false") transA: Boolean = false, @ScopeOpDefault("false") transB: Boolean = false): IOType.D2.Global {
     val m = if (transA) shape[1] else shape[0]
     val n = if (transB) other.shape[0] else other.shape[1]
     val k = if (transA) shape[0] else shape[1]

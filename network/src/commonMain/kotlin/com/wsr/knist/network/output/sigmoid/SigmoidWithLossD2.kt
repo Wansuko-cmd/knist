@@ -15,10 +15,7 @@ import kotlinx.serialization.Serializable
 internal class SigmoidWithLossD2 internal constructor(val outputI: Int, val outputJ: Int) : Output.D2() {
     override fun IOScope.expect(input: Batch<IOType.D2>): Batch<IOType.D2> = input.sigmoid()
 
-    override fun IOScope.train(
-        input: Batch<IOType.D2>,
-        label: (Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): TResult<IOType.D2> {
+    override fun IOScope.train(input: Batch<IOType.D2>, label: (Batch<IOType.D2>) -> Batch<IOType.D2>): TResult<IOType.D2> {
         val output = input.sigmoid()
         val label = label(output)
         val one = Batch.d2(label.size, outputI, outputJ) { _, _ -> 1f }

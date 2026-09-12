@@ -49,22 +49,14 @@ fun Batch<IOType.D2>.maxIndex(axis: Int): Batch<IOType.D1.Global> {
 
 @JvmName("batchD2sTopKWithAxis")
 @ScopeOp
-fun Batch<IOType.D2>.topK(
-    k: Int,
-    axis: Int,
-    @ScopeOpDefault("kotlin.random.Random") random: Random = Random,
-): Batch<IOType.D1.Global> {
+fun Batch<IOType.D2>.topK(k: Int, axis: Int, @ScopeOpDefault("kotlin.random.Random") random: Random = Random): Batch<IOType.D1.Global> {
     val result = Backend.topK(x = value, xi = size, xj = i, xk = j, k = k, axis = axis + 1, random = random)
     return Batch.d1(size, if (axis == 0) j else i, result)
 }
 
 @JvmName("batchD2sTopPWithAxis")
 @ScopeOp
-fun Batch<IOType.D2>.topP(
-    p: Float,
-    axis: Int,
-    @ScopeOpDefault("kotlin.random.Random") random: Random = Random,
-): Batch<IOType.D1.Global> {
+fun Batch<IOType.D2>.topP(p: Float, axis: Int, @ScopeOpDefault("kotlin.random.Random") random: Random = Random): Batch<IOType.D1.Global> {
     val result = Backend.topP(x = value, xi = size, xj = i, xk = j, p = p, axis = axis + 1, random = random)
     return Batch.d1(size, if (axis == 0) j else i, result)
 }

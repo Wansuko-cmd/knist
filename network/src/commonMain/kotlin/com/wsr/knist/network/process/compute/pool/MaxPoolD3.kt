@@ -11,15 +11,8 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MaxPoolD3 internal constructor(
-    val poolSize: Int,
-    val channel: Int,
-    val height: Int,
-    val width: Int,
-    val padding: Int,
-    val stride: Int,
-    override val id: String = Uuid.random().toString(),
-) : Compute.D3() {
+class MaxPoolD3 internal constructor(val poolSize: Int, val channel: Int, val height: Int, val width: Int, val padding: Int, val stride: Int, override val id: String = Uuid.random().toString()) :
+    Compute.D3() {
     override val inputI: Int = channel
     override val inputJ: Int = height
     override val inputK: Int = width
@@ -54,11 +47,7 @@ class MaxPoolD3 internal constructor(
     )
         .max(axis = 3)
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3> {
         val unfold = input.unfold(window = poolSize, stride = stride, dilation = 1, padding = padding)
         val output = unfold.max(axis = 3)
         val delta = calcDelta(output)
@@ -71,12 +60,7 @@ class MaxPoolD3 internal constructor(
     }
 }
 
-fun GraphBuilder.Node.D3.maxPool(
-    size: Int,
-    stride: Int = size,
-    padding: Int = 0,
-    id: String = Uuid.random().toString(),
-) = addCompute(
+fun GraphBuilder.Node.D3.maxPool(size: Int, stride: Int = size, padding: Int = 0, id: String = Uuid.random().toString()) = addCompute(
     compute = MaxPoolD3(
         poolSize = size,
         channel = inputI,

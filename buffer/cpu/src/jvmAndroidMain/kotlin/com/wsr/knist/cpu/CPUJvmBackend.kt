@@ -70,17 +70,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUJvmBuffer.create(y.size)
         JPlus.plusD2ToD3(
             x.toCPUBuffer().ptr,
@@ -112,17 +102,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JPlus.plusD3ToD2(
             x.toCPUBuffer().ptr,
@@ -139,20 +119,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUJvmBuffer.create(y.size)
         JPlus.plusD3ToD4(
             x.toCPUBuffer().ptr,
@@ -188,18 +155,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JPlus.plusD4ToD2(
             x.toCPUBuffer().ptr,
@@ -217,20 +173,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JPlus.plusD4ToD3(
             x.toCPUBuffer().ptr,
@@ -297,17 +240,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUJvmBuffer.create(y.size)
         JMinus.minusD2ToD3(
             x.toCPUBuffer().ptr,
@@ -339,17 +272,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JMinus.minusD3ToD2(
             x.toCPUBuffer().ptr,
@@ -366,20 +289,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUJvmBuffer.create(y.size)
         JMinus.minusD3ToD4(
             x.toCPUBuffer().ptr,
@@ -415,18 +325,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JMinus.minusD4ToD2(
             x.toCPUBuffer().ptr,
@@ -444,20 +343,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JMinus.minusD4ToD3(
             x.toCPUBuffer().ptr,
@@ -524,17 +410,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUJvmBuffer.create(y.size)
         JTimes.timesD2ToD3(
             x.toCPUBuffer().ptr,
@@ -566,17 +442,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JTimes.timesD3ToD2(
             x.toCPUBuffer().ptr,
@@ -593,20 +459,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUJvmBuffer.create(y.size)
         JTimes.timesD3ToD4(
             x.toCPUBuffer().ptr,
@@ -642,18 +495,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JTimes.timesD4ToD2(
             x.toCPUBuffer().ptr,
@@ -671,20 +513,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JTimes.timesD4ToD3(
             x.toCPUBuffer().ptr,
@@ -751,17 +580,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUJvmBuffer.create(y.size)
         JDiv.divD2ToD3(
             x.toCPUBuffer().ptr,
@@ -793,17 +612,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JDiv.divD3ToD2(
             x.toCPUBuffer().ptr,
@@ -820,20 +629,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUJvmBuffer.create(y.size)
         JDiv.divD3ToD4(
             x.toCPUBuffer().ptr,
@@ -869,18 +665,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JDiv.divD4ToD2(
             x.toCPUBuffer().ptr,
@@ -898,20 +683,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JDiv.divD4ToD3(
             x.toCPUBuffer().ptr,
@@ -968,16 +740,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun matMul(
-        x: DataBuffer,
-        transX: Boolean,
-        y: DataBuffer,
-        transY: Boolean,
-        m: Int,
-        n: Int,
-        k: Int,
-        b: Int,
-    ): DataBuffer {
+    override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, transY: Boolean, m: Int, n: Int, k: Int, b: Int): DataBuffer {
         val result = CPUJvmBuffer.create(b * m * n)
         JMatMul.matMulD2ToD2(
             x.toCPUBuffer().ptr,
@@ -1244,35 +1007,13 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun transpose(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        axisI: Int,
-        axisJ: Int,
-        axisK: Int,
-        axisL: Int,
-    ): DataBuffer {
+    override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JShape.transposeD4(x.toCPUBuffer().ptr, xi, xj, xk, xl, axisI, axisJ, axisK, axisL, result.ptr)
         return result
     }
 
-    override fun transpose(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        xm: Int,
-        axisI: Int,
-        axisJ: Int,
-        axisK: Int,
-        axisL: Int,
-        axisM: Int,
-    ): DataBuffer {
+    override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, xm: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int, axisM: Int): DataBuffer {
         val result = CPUJvmBuffer.create(x.size)
         JShape.transposeD5(
             x.toCPUBuffer().ptr,
@@ -1477,16 +1218,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun unfold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        b: Int,
-        window: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun unfold(x: DataBuffer, xi: Int, xj: Int, b: Int, window: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val windowSize = (window - 1) * dilation + 1
         val oj = (xj + padding * 2 - windowSize) / stride + 1
         val result = CPUJvmBuffer.create(b * xi * oj * window)
@@ -1494,17 +1226,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun unfold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        b: Int,
-        window: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun unfold(x: DataBuffer, xi: Int, xj: Int, xk: Int, b: Int, window: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val windowSize = (window - 1) * dilation + 1
         val oj = (xj + padding * 2 - windowSize) / stride + 1
         val ok = (xk + padding * 2 - windowSize) / stride + 1
@@ -1514,16 +1236,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun fold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        b: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun fold(x: DataBuffer, xi: Int, xj: Int, xk: Int, b: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val windowSize = (xk - 1) * dilation + 1
         val oj = windowSize + (xj - 1) * stride - padding * 2
         val result = CPUJvmBuffer.create(b * xi * oj)
@@ -1531,17 +1244,7 @@ class CPUJvmBackend(fallback: IBackend, maxPoolBytes: Long) : IBackend by fallba
         return result
     }
 
-    override fun fold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        b: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun fold(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, b: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val window = kotlin.math.sqrt(xl.toDouble()).toInt()
         val windowSize = (window - 1) * dilation + 1
         val oj = windowSize + (xj - 1) * stride - padding * 2

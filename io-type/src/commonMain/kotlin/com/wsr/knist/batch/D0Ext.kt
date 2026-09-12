@@ -7,11 +7,9 @@ import com.wsr.knist.scope.ScopeOp
 import kotlin.jvm.JvmName
 
 @PublishedApi
-internal inline fun Batch.Companion.d0Impl(size: Int, init: (Int) -> Float = { 0f }): Batch<IOType.D0.Global> =
-    Batch(size) { IOType.d0(init(it)) }
+internal inline fun Batch.Companion.d0Impl(size: Int, init: (Int) -> Float = { 0f }): Batch<IOType.D0.Global> = Batch(size) { IOType.d0(init(it)) }
 
-internal fun Batch.Companion.d0Impl(size: Int, value: DataBuffer): Batch<IOType.D0.Global> =
-    Batch(value = value, size = size, shape = listOf(1))
+internal fun Batch.Companion.d0Impl(size: Int, value: DataBuffer): Batch<IOType.D0.Global> = Batch(value = value, size = size, shape = listOf(1))
 
 @JvmName("batchD0sGet")
 @ScopeOp

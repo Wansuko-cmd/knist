@@ -124,8 +124,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned
 
-actual fun loadCPUBackend(fallback: IBackend, maxReservedBytes: Long, maxPoolBytes: Long): IBackend =
-    CPUNativeBackend(fallback, maxPoolBytes)
+actual fun loadCPUBackend(fallback: IBackend, maxReservedBytes: Long, maxPoolBytes: Long): IBackend = CPUNativeBackend(fallback, maxPoolBytes)
 
 class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBackend by fallback {
     private val runtime = com_wsr_cpu_runtime_allocate(pool_size = maxPoolBytes)!!
@@ -196,17 +195,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUNativeBuffer.create(y.size)
         com_wsr_cpu_plus_d2_to_d3(
             x = x.toCPUBuffer().buffer,
@@ -238,17 +227,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_plus_d3_to_d2(
             x = x.toCPUBuffer().buffer,
@@ -265,20 +244,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUNativeBuffer.create(y.size)
         com_wsr_cpu_plus_d3_to_d4(
             x = x.toCPUBuffer().buffer,
@@ -314,18 +280,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_plus_d4_to_d2(
             x = x.toCPUBuffer().buffer,
@@ -343,20 +298,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_plus_d4_to_d3(
             x = x.toCPUBuffer().buffer,
@@ -441,17 +383,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUNativeBuffer.create(y.size)
         com_wsr_cpu_minus_d2_to_d3(
             x = x.toCPUBuffer().buffer,
@@ -483,17 +415,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_minus_d3_to_d2(
             x = x.toCPUBuffer().buffer,
@@ -510,20 +432,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUNativeBuffer.create(y.size)
         com_wsr_cpu_minus_d3_to_d4(
             x = x.toCPUBuffer().buffer,
@@ -559,18 +468,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_minus_d4_to_d2(
             x = x.toCPUBuffer().buffer,
@@ -588,20 +486,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_minus_d4_to_d3(
             x = x.toCPUBuffer().buffer,
@@ -686,17 +571,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUNativeBuffer.create(y.size)
         com_wsr_cpu_times_d2_to_d3(
             x = x.toCPUBuffer().buffer,
@@ -728,17 +603,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_times_d3_to_d2(
             x = x.toCPUBuffer().buffer,
@@ -755,20 +620,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUNativeBuffer.create(y.size)
         com_wsr_cpu_times_d3_to_d4(
             x = x.toCPUBuffer().buffer,
@@ -804,18 +656,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_times_d4_to_d2(
             x = x.toCPUBuffer().buffer,
@@ -833,20 +674,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_times_d4_to_d3(
             x = x.toCPUBuffer().buffer,
@@ -931,17 +759,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUNativeBuffer.create(y.size)
         com_wsr_cpu_div_d2_to_d3(
             x = x.toCPUBuffer().buffer,
@@ -973,17 +791,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_div_d3_to_d2(
             x = x.toCPUBuffer().buffer,
@@ -1000,20 +808,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUNativeBuffer.create(y.size)
         com_wsr_cpu_div_d3_to_d4(
             x = x.toCPUBuffer().buffer,
@@ -1049,18 +844,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_div_d4_to_d2(
             x = x.toCPUBuffer().buffer,
@@ -1078,20 +862,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_div_d4_to_d3(
             x = x.toCPUBuffer().buffer,
@@ -1148,16 +919,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun matMul(
-        x: DataBuffer,
-        transX: Boolean,
-        y: DataBuffer,
-        transY: Boolean,
-        m: Int,
-        n: Int,
-        k: Int,
-        b: Int,
-    ): DataBuffer {
+    override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, transY: Boolean, m: Int, n: Int, k: Int, b: Int): DataBuffer {
         val result = CPUNativeBuffer.create(b * m * n)
         com_wsr_cpu_mat_mul_d2_to_d2(
             x = x.toCPUBuffer().buffer,
@@ -1491,17 +1253,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun transpose(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        axisI: Int,
-        axisJ: Int,
-        axisK: Int,
-        axisL: Int,
-    ): DataBuffer {
+    override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_transpose_d4(
             x = x.toCPUBuffer().buffer,
@@ -1518,19 +1270,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun transpose(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        xm: Int,
-        axisI: Int,
-        axisJ: Int,
-        axisK: Int,
-        axisL: Int,
-        axisM: Int,
-    ): DataBuffer {
+    override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, xm: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int, axisM: Int): DataBuffer {
         val result = CPUNativeBuffer.create(x.size)
         com_wsr_cpu_transpose_d5(
             x = x.toCPUBuffer().buffer,
@@ -1794,16 +1534,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun unfold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        b: Int,
-        window: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun unfold(x: DataBuffer, xi: Int, xj: Int, b: Int, window: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val windowSize = (window - 1) * dilation + 1
         val oj = (xj + padding * 2 - windowSize) / stride + 1
         val result = CPUNativeBuffer.create(b * xi * oj * window)
@@ -1821,17 +1552,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun unfold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        b: Int,
-        window: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun unfold(x: DataBuffer, xi: Int, xj: Int, xk: Int, b: Int, window: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val windowSize = (window - 1) * dilation + 1
         val oj = (xj + padding * 2 - windowSize) / stride + 1
         val ok = (xk + padding * 2 - windowSize) / stride + 1
@@ -1852,16 +1573,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun fold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        b: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun fold(x: DataBuffer, xi: Int, xj: Int, xk: Int, b: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val windowSize = (xk - 1) * dilation + 1
         val oj = windowSize + (xj - 1) * stride - padding * 2
         val result = CPUNativeBuffer.create(b * xi * oj)
@@ -1879,17 +1591,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         return result
     }
 
-    override fun fold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        b: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun fold(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, b: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val window = kotlin.math.sqrt(xl.toDouble()).toInt()
         val windowSize = (window - 1) * dilation + 1
         val oj = windowSize + (xj - 1) * stride - padding * 2

@@ -41,8 +41,7 @@ fun Batch<IOType.D3>.minus(other: IOType.D1, axis: Int): Batch<IOType.D3.Global>
 
 @JvmName("batchD3sMinusD2")
 @ScopeOp
-operator fun Batch<IOType.D3>.minus(other: IOType.D2): Batch<IOType.D3.Global> =
-    minus(other = other, axis1 = 1, axis2 = 2)
+operator fun Batch<IOType.D3>.minus(other: IOType.D2): Batch<IOType.D3.Global> = minus(other = other, axis1 = 1, axis2 = 2)
 
 @JvmName("batchD3sMinusD2WithAxis")
 @ScopeOp

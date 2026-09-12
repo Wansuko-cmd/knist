@@ -71,11 +71,7 @@ class ConvD2 internal constructor(
             .toBatch()
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3> {
         val col = input.unfold(window = kernel, stride = stride, dilation = dilation, padding = padding)
             .reshapeToD3(i = channel, j = outputJ * outputK, k = kernel * kernel)
             .toD4()

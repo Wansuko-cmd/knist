@@ -25,11 +25,7 @@ class TokenEmbeddingD1ToD2 internal constructor(
 
     override fun IOScope.expect(input: Batch<IOType.D1>, env: GraphEnv): Batch<IOType.D2> = input.gather(other = weight)
 
-    override fun IOScope.train(
-        input: Batch<IOType.D1>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D1> {
+    override fun IOScope.train(input: Batch<IOType.D1>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D1> {
         val output = input.gather(other = weight)
         val delta = calcDelta(output)
 

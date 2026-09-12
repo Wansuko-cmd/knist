@@ -11,11 +11,7 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class LayerNormD1 internal constructor(
-    override val inputI: Int,
-    private val e: Float,
-    override val id: String = Uuid.random().toString(),
-) : Compute.D1() {
+class LayerNormD1 internal constructor(override val inputI: Int, private val e: Float, override val id: String = Uuid.random().toString()) : Compute.D1() {
     override val outputI: Int get() = inputI
     override fun IOScope.expect(input: Batch<IOType.D1>, env: GraphEnv): Batch<IOType.D1> {
         val average = input.average()
@@ -27,11 +23,7 @@ class LayerNormD1 internal constructor(
         return numerator / denominator
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D1>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>,
-    ): Batch<IOType.D1> {
+    override fun IOScope.train(input: Batch<IOType.D1>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>): Batch<IOType.D1> {
         val average = input.average()
         val numerator = input - average
 

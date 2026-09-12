@@ -27,11 +27,7 @@ class BiasD3(
     override val outputK: Int get() = inputK
     override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> = input + weight
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3> {
         val output = input + weight
         val delta = calcDelta(output)
         weight = optimizer.adapt(weight = weight, dw = delta).toGlobal()
@@ -43,12 +39,7 @@ class BiasD3(
     }
 }
 
-fun GraphBuilder.Node.D3.bias(
-    axis: Int? = null,
-    optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = Fixed(0f),
-    id: String = Uuid.random().toString(),
-): GraphBuilder.Node.D3 {
+fun GraphBuilder.Node.D3.bias(axis: Int? = null, optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = Fixed(0f), id: String = Uuid.random().toString()): GraphBuilder.Node.D3 {
     val process = when (axis) {
         null -> BiasD3(
             inputI = inputI,

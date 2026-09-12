@@ -7,15 +7,5 @@ object JMatMul {
 
     external fun matMulD2ToD1(x: Long, transX: Boolean, y: Long, m: Int, k: Int, result: Long)
 
-    external fun matMulD2ToD2(
-        x: Long,
-        transX: Boolean,
-        y: Long,
-        transY: Boolean,
-        m: Int,
-        n: Int,
-        k: Int,
-        b: Int,
-        result: Long,
-    )
+    external fun matMulD2ToD2(x: Long, transX: Boolean, y: Long, transY: Boolean, m: Int, n: Int, k: Int, b: Int, result: Long)
 }

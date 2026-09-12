@@ -12,14 +12,12 @@ internal inline fun IOType.Companion.d1Impl(i: Int, init: (Int) -> Float = { 0f 
 }
 
 @PublishedApi
-internal inline fun IOType.Companion.d1Impl(shape: List<Int>, init: (Int) -> Float = { 0f }): IOType.D1.Global =
-    d1Impl(shape[0], init)
+internal inline fun IOType.Companion.d1Impl(shape: List<Int>, init: (Int) -> Float = { 0f }): IOType.D1.Global = d1Impl(shape[0], init)
 
 internal fun IOType.Companion.d1Impl(value: List<Float>): IOType.D1.Global = d1Impl(value = value.toFloatArray())
 
 @PublishedApi
-internal fun IOType.Companion.d1Impl(value: FloatArray): IOType.D1.Global =
-    IOType.D1.Global(value = DataBuffer.create(value))
+internal fun IOType.Companion.d1Impl(value: FloatArray): IOType.D1.Global = IOType.D1.Global(value = DataBuffer.create(value))
 
 operator fun IOType.D1.get(index: Int): IOType.D0 = IOType.d0(value[index])
 

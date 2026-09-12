@@ -19,8 +19,7 @@ import com.wsr.knist.gpu.reduction.JReduction
 import com.wsr.knist.gpu.shape.JShape
 import kotlin.random.Random
 
-class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfiler: Boolean = false) :
-    IBackend by fallback {
+class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfiler: Boolean = false) : IBackend by fallback {
     private val runtime = JRuntime.allocate(maxPoolBytes, enableProfiler)
     override val generator: IDataBufferGenerator = GPUJvmBuffer.createGenerator(runtime = runtime)
 
@@ -95,17 +94,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = GPUJvmBuffer.create(y.size)
         JPlus.plusD2ToD3(
             x = x.toGPUBuffer().ptr,
@@ -139,17 +128,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = GPUJvmBuffer.create(x.size)
         JPlus.plusD3ToD2(
             x = x.toGPUBuffer().ptr,
@@ -167,20 +146,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = GPUJvmBuffer.create(y.size)
         JPlus.plusD3ToD4(
             x = x.toGPUBuffer().ptr,
@@ -218,18 +184,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = GPUJvmBuffer.create(x.size)
         JPlus.plusD4ToD2(
             x = x.toGPUBuffer().ptr,
@@ -248,20 +203,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = GPUJvmBuffer.create(x.size)
         JPlus.plusD4ToD3(
             x = x.toGPUBuffer().ptr,
@@ -346,17 +288,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = GPUJvmBuffer.create(y.size)
         JMinus.minusD2ToD3(
             x = x.toGPUBuffer().ptr,
@@ -390,17 +322,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = GPUJvmBuffer.create(x.size)
         JMinus.minusD3ToD2(
             x = x.toGPUBuffer().ptr,
@@ -418,20 +340,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = GPUJvmBuffer.create(y.size)
         JMinus.minusD3ToD4(
             x = x.toGPUBuffer().ptr,
@@ -469,18 +378,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = GPUJvmBuffer.create(x.size)
         JMinus.minusD4ToD2(
             x = x.toGPUBuffer().ptr,
@@ -499,20 +397,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = GPUJvmBuffer.create(x.size)
         JMinus.minusD4ToD3(
             x = x.toGPUBuffer().ptr,
@@ -597,17 +482,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = GPUJvmBuffer.create(y.size)
         JTimes.timesD2ToD3(
             x = x.toGPUBuffer().ptr,
@@ -641,17 +516,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = GPUJvmBuffer.create(x.size)
         JTimes.timesD3ToD2(
             x = x.toGPUBuffer().ptr,
@@ -669,20 +534,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = GPUJvmBuffer.create(y.size)
         JTimes.timesD3ToD4(
             x = x.toGPUBuffer().ptr,
@@ -720,18 +572,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = GPUJvmBuffer.create(x.size)
         JTimes.timesD4ToD2(
             x = x.toGPUBuffer().ptr,
@@ -750,20 +591,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = GPUJvmBuffer.create(x.size)
         JTimes.timesD4ToD3(
             x = x.toGPUBuffer().ptr,
@@ -848,17 +676,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = GPUJvmBuffer.create(y.size)
         JDiv.divD2ToD3(
             x = x.toGPUBuffer().ptr,
@@ -892,17 +710,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = GPUJvmBuffer.create(x.size)
         JDiv.divD3ToD2(
             x = x.toGPUBuffer().ptr,
@@ -920,20 +728,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = GPUJvmBuffer.create(y.size)
         JDiv.divD3ToD4(
             x = x.toGPUBuffer().ptr,
@@ -971,18 +766,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer {
         val result = GPUJvmBuffer.create(x.size)
         JDiv.divD4ToD2(
             x = x.toGPUBuffer().ptr,
@@ -1001,20 +785,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer {
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer {
         val result = GPUJvmBuffer.create(x.size)
         JDiv.divD4ToD3(
             x = x.toGPUBuffer().ptr,
@@ -1086,16 +857,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun matMul(
-        x: DataBuffer,
-        transX: Boolean,
-        y: DataBuffer,
-        transY: Boolean,
-        m: Int,
-        n: Int,
-        k: Int,
-        b: Int,
-    ): DataBuffer {
+    override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, transY: Boolean, m: Int, n: Int, k: Int, b: Int): DataBuffer {
         val result = GPUJvmBuffer.create(b * m * n)
         JMatMul.matMul(
             x = x.toGPUBuffer().ptr,
@@ -1370,17 +1132,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun transpose(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        axisI: Int,
-        axisJ: Int,
-        axisK: Int,
-        axisL: Int,
-    ): DataBuffer {
+    override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int): DataBuffer {
         val result = GPUJvmBuffer.create(x.size)
         JShape.transposeD4(
             x = x.toGPUBuffer().ptr,
@@ -1664,16 +1416,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun unfold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        b: Int,
-        window: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun unfold(x: DataBuffer, xi: Int, xj: Int, b: Int, window: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val windowSize = (window - 1) * dilation + 1
         val rj = (xj - windowSize + padding * 2) / stride + 1
         val result = GPUJvmBuffer.create(b * xi * rj * window)
@@ -1692,17 +1435,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun unfold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        b: Int,
-        window: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun unfold(x: DataBuffer, xi: Int, xj: Int, xk: Int, b: Int, window: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val windowSize = (window - 1) * dilation + 1
         val rj = (xj - windowSize + padding * 2) / stride + 1
         val rk = (xk - windowSize + padding * 2) / stride + 1
@@ -1723,16 +1456,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun fold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        b: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun fold(x: DataBuffer, xi: Int, xj: Int, xk: Int, b: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val windowSize = (xk - 1) * dilation + 1
         val nj = windowSize + (xj - 1) * stride - padding * 2
         val result = GPUJvmBuffer.create(b * xi * nj)
@@ -1751,17 +1475,7 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
         return result
     }
 
-    override fun fold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        b: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun fold(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, b: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val window = kotlin.math.sqrt(xl.toDouble()).toInt()
         val windowSize = (window - 1) * dilation + 1
         val nj = windowSize + (xj - 1) * stride - padding * 2

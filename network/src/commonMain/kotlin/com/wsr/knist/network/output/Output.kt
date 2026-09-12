@@ -19,37 +19,27 @@ sealed interface Output {
     abstract class D1 : Output {
         protected abstract fun IOScope.expect(input: Batch<IOType.D1>): Batch<IOType.D1>
 
-        protected abstract fun IOScope.train(
-            input: Batch<IOType.D1>,
-            label: (Batch<IOType.D1>) -> Batch<IOType.D1>,
-        ): TResult<IOType.D1>
+        protected abstract fun IOScope.train(input: Batch<IOType.D1>, label: (Batch<IOType.D1>) -> Batch<IOType.D1>): TResult<IOType.D1>
 
-        final override fun IOScope._expect(input: Batch<IOType>): Batch<IOType> =
-            expect(input = input as Batch<IOType.D1>)
+        final override fun IOScope._expect(input: Batch<IOType>): Batch<IOType> = expect(input = input as Batch<IOType.D1>)
 
-        final override fun IOScope._train(input: Batch<IOType>, label: (Batch<IOType>) -> Batch<IOType>): TResult<*> =
-            train(
-                input = input as Batch<IOType.D1>,
-                label = label as (Batch<IOType.D1>) -> Batch<IOType.D1>,
-            )
+        final override fun IOScope._train(input: Batch<IOType>, label: (Batch<IOType>) -> Batch<IOType>): TResult<*> = train(
+            input = input as Batch<IOType.D1>,
+            label = label as (Batch<IOType.D1>) -> Batch<IOType.D1>,
+        )
     }
 
     @Serializable
     abstract class D2 : Output {
         protected abstract fun IOScope.expect(input: Batch<IOType.D2>): Batch<IOType.D2>
 
-        protected abstract fun IOScope.train(
-            input: Batch<IOType.D2>,
-            label: (Batch<IOType.D2>) -> Batch<IOType.D2>,
-        ): TResult<IOType.D2>
+        protected abstract fun IOScope.train(input: Batch<IOType.D2>, label: (Batch<IOType.D2>) -> Batch<IOType.D2>): TResult<IOType.D2>
 
-        final override fun IOScope._expect(input: Batch<IOType>): Batch<IOType> =
-            expect(input = input as Batch<IOType.D2>)
+        final override fun IOScope._expect(input: Batch<IOType>): Batch<IOType> = expect(input = input as Batch<IOType.D2>)
 
-        final override fun IOScope._train(input: Batch<IOType>, label: (Batch<IOType>) -> Batch<IOType>): TResult<*> =
-            train(
-                input = input as Batch<IOType.D2>,
-                label = label as (Batch<IOType.D2>) -> Batch<IOType.D2>,
-            )
+        final override fun IOScope._train(input: Batch<IOType>, label: (Batch<IOType>) -> Batch<IOType>): TResult<*> = train(
+            input = input as Batch<IOType.D2>,
+            label = label as (Batch<IOType.D2>) -> Batch<IOType.D2>,
+        )
     }
 }

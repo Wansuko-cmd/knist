@@ -25,11 +25,7 @@ class ScaleD2 internal constructor(
     override val outputJ: Int get() = inputJ
     override fun IOScope.expect(input: Batch<IOType.D2>, env: GraphEnv): Batch<IOType.D2> = input * weight
 
-    override fun IOScope.train(
-        input: Batch<IOType.D2>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D2> {
+    override fun IOScope.train(input: Batch<IOType.D2>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D2> {
         val output = input * weight
         val delta = calcDelta(output)
 
@@ -47,12 +43,7 @@ class ScaleD2 internal constructor(
     }
 }
 
-fun GraphBuilder.Node.D2.scale(
-    axis: Int? = null,
-    optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = Fixed(1f),
-    id: String = Uuid.random().toString(),
-): GraphBuilder.Node.D2 {
+fun GraphBuilder.Node.D2.scale(axis: Int? = null, optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = Fixed(1f), id: String = Uuid.random().toString()): GraphBuilder.Node.D2 {
     val process = when (axis) {
         null -> ScaleD2(
             inputI = inputI,

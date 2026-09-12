@@ -9,16 +9,7 @@ import com.wsr.knist.scope.ScopeOpDefault
 import kotlin.random.Random
 
 @ScopeOp
-fun Batch.Companion.random(
-    size: Int,
-    i: Int,
-    j: Int,
-    k: Int,
-    l: Int,
-    from: Float,
-    until: Float,
-    @ScopeOpDefault("kotlin.random.Random") random: Random = Random,
-): Batch<IOType.D4.Global> {
+fun Batch.Companion.random(size: Int, i: Int, j: Int, k: Int, l: Int, from: Float, until: Float, @ScopeOpDefault("kotlin.random.Random") random: Random = Random): Batch<IOType.D4.Global> {
     val result = Backend.random(size = size * i * j * k * l, from = from, until = until, random = random)
     return Batch.d4(size = size, i = i, j = j, k = k, l = l, value = result)
 }

@@ -45,11 +45,7 @@ class LayerNormAxisD3 internal constructor(
         return numerator.div(other = denominator, axis1 = axis1, axis2 = axis2)
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3> {
         val average = input.average(axis = axis)
         val numerator = input.minus(other = average, axis1 = axis1, axis2 = axis2)
 

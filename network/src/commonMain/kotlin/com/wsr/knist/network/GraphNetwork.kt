@@ -35,77 +35,71 @@ abstract class GraphNetwork<T : GraphNetwork<T>> {
     internal val mutex = Mutex()
 
     @Suppress("FunctionName")
-    protected suspend inline fun <O> _expect(
-        inputs: List<Batch<IOType>>,
-        dispatcher: CoroutineDispatcher = Dispatchers.Default,
-        crossinline decode: (outputs: List<Batch<IOType>>) -> O,
-    ): O = withContext(dispatcher) {
-        val env = GraphEnv()
-        sources.forEachIndexed { i, source -> env[source.id] = inputs[i] }
-        IOScope.launch {
-            val scope = this
-            graph.forEach { node ->
-                when (node) {
-                    is Graph.Node.Attach -> {
-                        with(node.process) {
-                            env[node.id] = scope._expect(env[node.from], env)
+    protected suspend inline fun <O> _expect(inputs: List<Batch<IOType>>, dispatcher: CoroutineDispatcher = Dispatchers.Default, crossinline decode: (outputs: List<Batch<IOType>>) -> O): O =
+        withContext(dispatcher) {
+            val env = GraphEnv()
+            sources.forEachIndexed { i, source -> env[source.id] = inputs[i] }
+            IOScope.launch {
+                val scope = this
+                graph.forEach { node ->
+                    when (node) {
+                        is Graph.Node.Attach -> {
+                            with(node.process) {
+                                env[node.id] = scope._expect(env[node.from], env)
+                            }
                         }
-                    }
 
-                    is Graph.Node.Connect -> {
-                        with(node.join) {
-                            env[node.id] = scope._expect(node.from.map { env[it] }, env)
+                        is Graph.Node.Connect -> {
+                            with(node.join) {
+                                env[node.id] = scope._expect(node.from.map { env[it] }, env)
+                            }
                         }
-                    }
 
-                    is Graph.Node.Observe -> {
-                        env[node.id] = env[node.from]
+                        is Graph.Node.Observe -> {
+                            env[node.id] = env[node.from]
+                        }
                     }
                 }
+                val outputs = sinks.map { sink -> with(sink.output) { scope._expect(env[sink.from]) } }
+                decode(outputs)
             }
-            val outputs = sinks.map { sink -> with(sink.output) { scope._expect(env[sink.from]) } }
-            decode(outputs)
         }
-    }
 
     @Suppress("UNCHECKED_CAST", "FunctionName")
     @PublishedApi
-    internal suspend fun _loss(
-        inputs: List<Batch<IOType>>,
-        labels: List<(output: Batch<IOType>) -> Batch<IOType>>,
-        dispatcher: CoroutineDispatcher = Dispatchers.Default,
-    ): List<IOType.D0.Global> = withContext(dispatcher) {
-        val env = GraphEnv()
-        sources.forEachIndexed { i, source -> env[source.id] = inputs[i] }
-        IOScope.launch {
-            val scope = this
-            graph.forEach { node ->
-                when (node) {
-                    is Graph.Node.Attach -> {
-                        with(node.process) {
-                            env[node.id] = scope._expect(env[node.from], env)
+    internal suspend fun _loss(inputs: List<Batch<IOType>>, labels: List<(output: Batch<IOType>) -> Batch<IOType>>, dispatcher: CoroutineDispatcher = Dispatchers.Default): List<IOType.D0.Global> =
+        withContext(dispatcher) {
+            val env = GraphEnv()
+            sources.forEachIndexed { i, source -> env[source.id] = inputs[i] }
+            IOScope.launch {
+                val scope = this
+                graph.forEach { node ->
+                    when (node) {
+                        is Graph.Node.Attach -> {
+                            with(node.process) {
+                                env[node.id] = scope._expect(env[node.from], env)
+                            }
+                        }
+
+                        is Graph.Node.Connect -> {
+                            with(node.join) {
+                                env[node.id] = scope._expect(node.from.map { env[it] }, env)
+                            }
+                        }
+
+                        is Graph.Node.Observe -> {
+                            env[node.id] = env[node.from]
                         }
                     }
-
-                    is Graph.Node.Connect -> {
-                        with(node.join) {
-                            env[node.id] = scope._expect(node.from.map { env[it] }, env)
-                        }
-                    }
-
-                    is Graph.Node.Observe -> {
-                        env[node.id] = env[node.from]
-                    }
                 }
-            }
-            sinks.mapIndexed { i, sink ->
-                val result = with(sink.output) {
-                    scope._train(input = env[sink.from], label = labels[i])
+                sinks.mapIndexed { i, sink ->
+                    val result = with(sink.output) {
+                        scope._train(input = env[sink.from], label = labels[i])
+                    }
+                    result.loss.toGlobal()
                 }
-                result.loss.toGlobal()
             }
         }
-    }
 
     private val trainLambda: (TrainLambda) -> TrainLambda by lazy {
         val initial: (TrainLambda) -> TrainLambda = { it }
@@ -151,30 +145,27 @@ abstract class GraphNetwork<T : GraphNetwork<T>> {
 
     @Suppress("UNCHECKED_CAST", "FunctionName")
     @PublishedApi
-    internal suspend fun _train(
-        inputs: List<Batch<IOType>>,
-        labels: List<(output: Batch<IOType>) -> Batch<IOType>>,
-        dispatcher: CoroutineDispatcher = Dispatchers.Default,
-    ): List<IOType.D0.Global> = withContext(dispatcher) {
-        mutex.withLock {
-            val env = GraphEnv()
-            sources.forEachIndexed { i, source -> env[source.id] = inputs[i] }
-            IOScope.launch {
-                var losses: List<IOType.D0.Global>? = null
-                val sinkStep: TrainLambda = {
-                    val outputs = sinks.map { sink -> env.get<IOType>(sink.from) }
-                    env.reset()
-                    losses = sinks.mapIndexed { i, sink ->
-                        val result = with(sink.output) { _train(outputs[i], labels[i]) }
-                        env.plus(sink.from, result.delta)
-                        result.loss.toGlobal()
+    internal suspend fun _train(inputs: List<Batch<IOType>>, labels: List<(output: Batch<IOType>) -> Batch<IOType>>, dispatcher: CoroutineDispatcher = Dispatchers.Default): List<IOType.D0.Global> =
+        withContext(dispatcher) {
+            mutex.withLock {
+                val env = GraphEnv()
+                sources.forEachIndexed { i, source -> env[source.id] = inputs[i] }
+                IOScope.launch {
+                    var losses: List<IOType.D0.Global>? = null
+                    val sinkStep: TrainLambda = {
+                        val outputs = sinks.map { sink -> env.get<IOType>(sink.from) }
+                        env.reset()
+                        losses = sinks.mapIndexed { i, sink ->
+                            val result = with(sink.output) { _train(outputs[i], labels[i]) }
+                            env.plus(sink.from, result.delta)
+                            result.loss.toGlobal()
+                        }
                     }
+                    trainLambda(sinkStep)(env)
+                    losses!!
                 }
-                trainLambda(sinkStep)(env)
-                losses!!
             }
         }
-    }
 
     @JvmName("replaceOptimizer")
     fun replace(condition: (Process) -> Boolean, optimizer: Optimizer): T = clone().also { copy ->
@@ -452,13 +443,7 @@ abstract class GraphNetwork<T : GraphNetwork<T>> {
     }
 
     @PublishedApi
-    internal abstract fun create(
-        sources: List<Graph.Source<*>>,
-        graph: List<Graph.Node>,
-        sinks: List<Graph.Sink<*>>,
-        optimizer: Optimizer,
-        initializer: WeightInitializer,
-    ): T
+    internal abstract fun create(sources: List<Graph.Source<*>>, graph: List<Graph.Node>, sinks: List<Graph.Sink<*>>, optimizer: Optimizer, initializer: WeightInitializer): T
 
     internal abstract fun serializer(): GraphNetworkSerializer<T>
 

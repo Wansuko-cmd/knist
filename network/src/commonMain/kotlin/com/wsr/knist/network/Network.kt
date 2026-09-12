@@ -17,13 +17,8 @@ import okio.BufferedSource
 
 interface Network {
     interface Src1 {
-        class Sink1<I, O>(
-            val source: Graph.Source<I>,
-            override val graph: List<Graph.Node>,
-            val sink: Graph.Sink<O>,
-            override val optimizer: Optimizer,
-            override val initializer: WeightInitializer,
-        ) : GraphNetwork<Sink1<I, O>>() {
+        class Sink1<I, O>(val source: Graph.Source<I>, override val graph: List<Graph.Node>, val sink: Graph.Sink<O>, override val optimizer: Optimizer, override val initializer: WeightInitializer) :
+            GraphNetwork<Sink1<I, O>>() {
             override val sources: List<Graph.Source<*>> = listOf(source)
             override val sinks: List<Graph.Sink<*>> = listOf(sink)
 
@@ -32,21 +27,13 @@ interface Network {
                 dispatcher = dispatcher,
             ) { outputs -> sink.converter._decode(outputs[0]) }
 
-            suspend fun loss(
-                input: I,
-                label: O,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): IOType.D0.Global {
+            suspend fun loss(input: I, label: O, dispatcher: CoroutineDispatcher = Dispatchers.Default): IOType.D0.Global {
                 val inputs = listOf(source.converter._encode(input))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>> { sink.converter._encode(label) }
                 return _loss(inputs = inputs, labels = labels, dispatcher = dispatcher)[0]
             }
 
-            suspend inline fun loss(
-                input: I,
-                crossinline label: (O) -> O,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): IOType.D0.Global {
+            suspend inline fun loss(input: I, crossinline label: (O) -> O, dispatcher: CoroutineDispatcher = Dispatchers.Default): IOType.D0.Global {
                 val inputs = listOf(source.converter._encode(input))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>> {
                     val output = sink.converter._decode(it)
@@ -55,21 +42,13 @@ interface Network {
                 return _loss(inputs = inputs, labels = labels, dispatcher = dispatcher)[0]
             }
 
-            suspend fun train(
-                input: I,
-                label: O,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): IOType.D0.Global {
+            suspend fun train(input: I, label: O, dispatcher: CoroutineDispatcher = Dispatchers.Default): IOType.D0.Global {
                 val inputs = listOf(source.converter._encode(input))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>> { sink.converter._encode(label) }
                 return _train(inputs = inputs, labels = labels, dispatcher = dispatcher)[0]
             }
 
-            suspend inline fun train(
-                input: I,
-                crossinline label: (O) -> O,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): IOType.D0.Global {
+            suspend inline fun train(input: I, crossinline label: (O) -> O, dispatcher: CoroutineDispatcher = Dispatchers.Default): IOType.D0.Global {
                 val inputs = listOf(source.converter._encode(input))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>> {
                     val output = sink.converter._decode(it)
@@ -146,25 +125,14 @@ interface Network {
                 )
             }
 
-            override fun create(
-                sources: List<Graph.Source<*>>,
-                graph: List<Graph.Node>,
-                sinks: List<Graph.Sink<*>>,
-                optimizer: Optimizer,
-                initializer: WeightInitializer,
-            ): Sink1<I, O> = build(sources, graph, sinks, optimizer, initializer)
+            override fun create(sources: List<Graph.Source<*>>, graph: List<Graph.Node>, sinks: List<Graph.Sink<*>>, optimizer: Optimizer, initializer: WeightInitializer): Sink1<I, O> =
+                build(sources, graph, sinks, optimizer, initializer)
 
             override fun serializer(): GraphNetworkSerializer<Sink1<I, O>> = serializer<I, O>()
 
             companion object {
                 @Suppress("UNCHECKED_CAST")
-                private fun <I, O> build(
-                    sources: List<Graph.Source<*>>,
-                    graph: List<Graph.Node>,
-                    sinks: List<Graph.Sink<*>>,
-                    optimizer: Optimizer,
-                    initializer: WeightInitializer,
-                ): Sink1<I, O> {
+                private fun <I, O> build(sources: List<Graph.Source<*>>, graph: List<Graph.Node>, sinks: List<Graph.Sink<*>>, optimizer: Optimizer, initializer: WeightInitializer): Sink1<I, O> {
                     check(sources.size == 1) { "invalid Network format. sources.size=${sources.size}." }
                     check(sinks.size == 1) { "invalid Network format. sinks.size=${sinks.size}." }
                     return Sink1(
@@ -178,17 +146,13 @@ interface Network {
 
                 private fun <I, O> serializer(): GraphNetworkSerializer<Sink1<I, O>> = GraphNetworkSerializer(::build)
 
-                fun <I, O> fromJson(value: String): Sink1<I, O> =
-                    networkSerializerJson.decodeFromString(serializer(), value)
+                fun <I, O> fromJson(value: String): Sink1<I, O> = networkSerializerJson.decodeFromString(serializer(), value)
 
-                fun <I, O> fromJson(source: BufferedSource): Sink1<I, O> =
-                    networkSerializerJson.decodeFromBufferedSource(serializer(), source)
+                fun <I, O> fromJson(source: BufferedSource): Sink1<I, O> = networkSerializerJson.decodeFromBufferedSource(serializer(), source)
 
-                fun <I, O> fromCbor(bytes: ByteArray): Sink1<I, O> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
+                fun <I, O> fromCbor(bytes: ByteArray): Sink1<I, O> = networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
 
-                fun <I, O> fromCbor(source: BufferedSource): Sink1<I, O> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
+                fun <I, O> fromCbor(source: BufferedSource): Sink1<I, O> = networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
             }
         }
 
@@ -210,12 +174,7 @@ interface Network {
                 sink1.converter._decode(outputs[0]) to sink2.converter._decode(outputs[1])
             }
 
-            suspend fun loss(
-                input: I,
-                label1: O1,
-                label2: O2,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): Pair<IOType.D0.Global, IOType.D0.Global> {
+            suspend fun loss(input: I, label1: O1, label2: O2, dispatcher: CoroutineDispatcher = Dispatchers.Default): Pair<IOType.D0.Global, IOType.D0.Global> {
                 val inputs = listOf(source.converter._encode(input))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>>(
                     { sink1.converter._encode(label1) },
@@ -246,12 +205,7 @@ interface Network {
                 return loss1 to loss2
             }
 
-            suspend fun train(
-                input: I,
-                label1: O1,
-                label2: O2,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): Pair<IOType.D0.Global, IOType.D0.Global> {
+            suspend fun train(input: I, label1: O1, label2: O2, dispatcher: CoroutineDispatcher = Dispatchers.Default): Pair<IOType.D0.Global, IOType.D0.Global> {
                 val inputs = listOf(source.converter._encode(input))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>>(
                     { sink1.converter._encode(label1) },
@@ -412,13 +366,8 @@ interface Network {
                 )
             }
 
-            override fun create(
-                sources: List<Graph.Source<*>>,
-                graph: List<Graph.Node>,
-                sinks: List<Graph.Sink<*>>,
-                optimizer: Optimizer,
-                initializer: WeightInitializer,
-            ): Sink2<I, O1, O2> = build(sources, graph, sinks, optimizer, initializer)
+            override fun create(sources: List<Graph.Source<*>>, graph: List<Graph.Node>, sinks: List<Graph.Sink<*>>, optimizer: Optimizer, initializer: WeightInitializer): Sink2<I, O1, O2> =
+                build(sources, graph, sinks, optimizer, initializer)
 
             override fun serializer(): GraphNetworkSerializer<Sink2<I, O1, O2>> = serializer<I, O1, O2>()
 
@@ -443,20 +392,15 @@ interface Network {
                     )
                 }
 
-                private fun <I, O1, O2> serializer(): GraphNetworkSerializer<Sink2<I, O1, O2>> =
-                    GraphNetworkSerializer(::build)
+                private fun <I, O1, O2> serializer(): GraphNetworkSerializer<Sink2<I, O1, O2>> = GraphNetworkSerializer(::build)
 
-                fun <I, O1, O2> fromJson(value: String): Sink2<I, O1, O2> =
-                    networkSerializerJson.decodeFromString(serializer(), value)
+                fun <I, O1, O2> fromJson(value: String): Sink2<I, O1, O2> = networkSerializerJson.decodeFromString(serializer(), value)
 
-                fun <I, O1, O2> fromJson(source: BufferedSource): Sink2<I, O1, O2> =
-                    networkSerializerJson.decodeFromBufferedSource(serializer(), source)
+                fun <I, O1, O2> fromJson(source: BufferedSource): Sink2<I, O1, O2> = networkSerializerJson.decodeFromBufferedSource(serializer(), source)
 
-                fun <I, O1, O2> fromCbor(bytes: ByteArray): Sink2<I, O1, O2> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
+                fun <I, O1, O2> fromCbor(bytes: ByteArray): Sink2<I, O1, O2> = networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
 
-                fun <I, O1, O2> fromCbor(source: BufferedSource): Sink2<I, O1, O2> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
+                fun <I, O1, O2> fromCbor(source: BufferedSource): Sink2<I, O1, O2> = networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
             }
         }
 
@@ -472,10 +416,7 @@ interface Network {
             override val sources: List<Graph.Source<*>> = listOf(source)
             override val sinks: List<Graph.Sink<*>> = listOf(sink1, sink2, sink3)
 
-            suspend fun expect(
-                input: I,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): Triple<O1, O2, O3> = _expect(
+            suspend fun expect(input: I, dispatcher: CoroutineDispatcher = Dispatchers.Default): Triple<O1, O2, O3> = _expect(
                 inputs = listOf(source.converter._encode(input)),
                 dispatcher = dispatcher,
             ) { outputs ->
@@ -486,13 +427,7 @@ interface Network {
                 )
             }
 
-            suspend fun loss(
-                input: I,
-                label1: O1,
-                label2: O2,
-                label3: O3,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): Triple<IOType.D0.Global, IOType.D0.Global, IOType.D0.Global> {
+            suspend fun loss(input: I, label1: O1, label2: O2, label3: O3, dispatcher: CoroutineDispatcher = Dispatchers.Default): Triple<IOType.D0.Global, IOType.D0.Global, IOType.D0.Global> {
                 val inputs = listOf(source.converter._encode(input))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>>(
                     { sink1.converter._encode(label1) },
@@ -529,13 +464,7 @@ interface Network {
                 return Triple(loss1, loss2, loss3)
             }
 
-            suspend fun train(
-                input: I,
-                label1: O1,
-                label2: O2,
-                label3: O3,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): Triple<IOType.D0.Global, IOType.D0.Global, IOType.D0.Global> {
+            suspend fun train(input: I, label1: O1, label2: O2, label3: O3, dispatcher: CoroutineDispatcher = Dispatchers.Default): Triple<IOType.D0.Global, IOType.D0.Global, IOType.D0.Global> {
                 val inputs = listOf(source.converter._encode(input))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>>(
                     { sink1.converter._encode(label1) },
@@ -768,13 +697,8 @@ interface Network {
                 )
             }
 
-            override fun create(
-                sources: List<Graph.Source<*>>,
-                graph: List<Graph.Node>,
-                sinks: List<Graph.Sink<*>>,
-                optimizer: Optimizer,
-                initializer: WeightInitializer,
-            ): Sink3<I, O1, O2, O3> = build(sources, graph, sinks, optimizer, initializer)
+            override fun create(sources: List<Graph.Source<*>>, graph: List<Graph.Node>, sinks: List<Graph.Sink<*>>, optimizer: Optimizer, initializer: WeightInitializer): Sink3<I, O1, O2, O3> =
+                build(sources, graph, sinks, optimizer, initializer)
 
             override fun serializer(): GraphNetworkSerializer<Sink3<I, O1, O2, O3>> = serializer<I, O1, O2, O3>()
 
@@ -800,20 +724,15 @@ interface Network {
                     )
                 }
 
-                private fun <I, O1, O2, O3> serializer(): GraphNetworkSerializer<Sink3<I, O1, O2, O3>> =
-                    GraphNetworkSerializer(::build)
+                private fun <I, O1, O2, O3> serializer(): GraphNetworkSerializer<Sink3<I, O1, O2, O3>> = GraphNetworkSerializer(::build)
 
-                fun <I, O1, O2, O3> fromJson(value: String): Sink3<I, O1, O2, O3> =
-                    networkSerializerJson.decodeFromString(serializer(), value)
+                fun <I, O1, O2, O3> fromJson(value: String): Sink3<I, O1, O2, O3> = networkSerializerJson.decodeFromString(serializer(), value)
 
-                fun <I, O1, O2, O3> fromJson(source: BufferedSource): Sink3<I, O1, O2, O3> =
-                    networkSerializerJson.decodeFromBufferedSource(serializer(), source)
+                fun <I, O1, O2, O3> fromJson(source: BufferedSource): Sink3<I, O1, O2, O3> = networkSerializerJson.decodeFromBufferedSource(serializer(), source)
 
-                fun <I, O1, O2, O3> fromCbor(bytes: ByteArray): Sink3<I, O1, O2, O3> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
+                fun <I, O1, O2, O3> fromCbor(bytes: ByteArray): Sink3<I, O1, O2, O3> = networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
 
-                fun <I, O1, O2, O3> fromCbor(source: BufferedSource): Sink3<I, O1, O2, O3> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
+                fun <I, O1, O2, O3> fromCbor(source: BufferedSource): Sink3<I, O1, O2, O3> = networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
             }
         }
     }
@@ -830,29 +749,18 @@ interface Network {
             override val sources: List<Graph.Source<*>> = listOf(source1, source2)
             override val sinks: List<Graph.Sink<*>> = listOf(sink)
 
-            suspend fun expect(input1: I1, input2: I2, dispatcher: CoroutineDispatcher = Dispatchers.Default): O =
-                _expect(
-                    inputs = listOf(source1.converter._encode(input1), source2.converter._encode(input2)),
-                    dispatcher = dispatcher,
-                ) { outputs -> sink.converter._decode(outputs[0]) }
+            suspend fun expect(input1: I1, input2: I2, dispatcher: CoroutineDispatcher = Dispatchers.Default): O = _expect(
+                inputs = listOf(source1.converter._encode(input1), source2.converter._encode(input2)),
+                dispatcher = dispatcher,
+            ) { outputs -> sink.converter._decode(outputs[0]) }
 
-            suspend fun loss(
-                input1: I1,
-                input2: I2,
-                label: O,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): IOType.D0.Global {
+            suspend fun loss(input1: I1, input2: I2, label: O, dispatcher: CoroutineDispatcher = Dispatchers.Default): IOType.D0.Global {
                 val inputs = listOf(source1.converter._encode(input1), source2.converter._encode(input2))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>> { sink.converter._encode(label) }
                 return _loss(inputs = inputs, labels = labels, dispatcher = dispatcher)[0]
             }
 
-            suspend inline fun loss(
-                input1: I1,
-                input2: I2,
-                crossinline label: (O) -> O,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): IOType.D0.Global {
+            suspend inline fun loss(input1: I1, input2: I2, crossinline label: (O) -> O, dispatcher: CoroutineDispatcher = Dispatchers.Default): IOType.D0.Global {
                 val inputs = listOf(source1.converter._encode(input1), source2.converter._encode(input2))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>> {
                     val output = sink.converter._decode(it)
@@ -861,23 +769,13 @@ interface Network {
                 return _loss(inputs = inputs, labels = labels, dispatcher = dispatcher)[0]
             }
 
-            suspend fun train(
-                input1: I1,
-                input2: I2,
-                label: O,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): IOType.D0.Global {
+            suspend fun train(input1: I1, input2: I2, label: O, dispatcher: CoroutineDispatcher = Dispatchers.Default): IOType.D0.Global {
                 val inputs = listOf(source1.converter._encode(input1), source2.converter._encode(input2))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>> { sink.converter._encode(label) }
                 return _train(inputs = inputs, labels = labels, dispatcher = dispatcher)[0]
             }
 
-            suspend inline fun train(
-                input1: I1,
-                input2: I2,
-                crossinline label: (O) -> O,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): IOType.D0.Global {
+            suspend inline fun train(input1: I1, input2: I2, crossinline label: (O) -> O, dispatcher: CoroutineDispatcher = Dispatchers.Default): IOType.D0.Global {
                 val inputs = listOf(source1.converter._encode(input1), source2.converter._encode(input2))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>> {
                     val output = sink.converter._decode(it)
@@ -969,13 +867,8 @@ interface Network {
                 )
             }
 
-            override fun create(
-                sources: List<Graph.Source<*>>,
-                graph: List<Graph.Node>,
-                sinks: List<Graph.Sink<*>>,
-                optimizer: Optimizer,
-                initializer: WeightInitializer,
-            ): Sink1<I1, I2, O> = build(sources, graph, sinks, optimizer, initializer)
+            override fun create(sources: List<Graph.Source<*>>, graph: List<Graph.Node>, sinks: List<Graph.Sink<*>>, optimizer: Optimizer, initializer: WeightInitializer): Sink1<I1, I2, O> =
+                build(sources, graph, sinks, optimizer, initializer)
 
             override fun serializer(): GraphNetworkSerializer<Sink1<I1, I2, O>> = serializer<I1, I2, O>()
 
@@ -1000,20 +893,15 @@ interface Network {
                     )
                 }
 
-                private fun <I1, I2, O> serializer(): GraphNetworkSerializer<Sink1<I1, I2, O>> =
-                    GraphNetworkSerializer(::build)
+                private fun <I1, I2, O> serializer(): GraphNetworkSerializer<Sink1<I1, I2, O>> = GraphNetworkSerializer(::build)
 
-                fun <I1, I2, O> fromJson(value: String): Sink1<I1, I2, O> =
-                    networkSerializerJson.decodeFromString(serializer(), value)
+                fun <I1, I2, O> fromJson(value: String): Sink1<I1, I2, O> = networkSerializerJson.decodeFromString(serializer(), value)
 
-                fun <I1, I2, O> fromJson(source: BufferedSource): Sink1<I1, I2, O> =
-                    networkSerializerJson.decodeFromBufferedSource(serializer(), source)
+                fun <I1, I2, O> fromJson(source: BufferedSource): Sink1<I1, I2, O> = networkSerializerJson.decodeFromBufferedSource(serializer(), source)
 
-                fun <I1, I2, O> fromCbor(bytes: ByteArray): Sink1<I1, I2, O> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
+                fun <I1, I2, O> fromCbor(bytes: ByteArray): Sink1<I1, I2, O> = networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
 
-                fun <I1, I2, O> fromCbor(source: BufferedSource): Sink1<I1, I2, O> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
+                fun <I1, I2, O> fromCbor(source: BufferedSource): Sink1<I1, I2, O> = networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
             }
         }
 
@@ -1029,24 +917,14 @@ interface Network {
             override val sources: List<Graph.Source<*>> = listOf(source1, source2)
             override val sinks: List<Graph.Sink<*>> = listOf(sink1, sink2)
 
-            suspend fun expect(
-                input1: I1,
-                input2: I2,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): Pair<O1, O2> = _expect(
+            suspend fun expect(input1: I1, input2: I2, dispatcher: CoroutineDispatcher = Dispatchers.Default): Pair<O1, O2> = _expect(
                 inputs = listOf(source1.converter._encode(input1), source2.converter._encode(input2)),
                 dispatcher = dispatcher,
             ) { outputs ->
                 sink1.converter._decode(outputs[0]) to sink2.converter._decode(outputs[1])
             }
 
-            suspend fun loss(
-                input1: I1,
-                input2: I2,
-                label1: O1,
-                label2: O2,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): Pair<IOType.D0.Global, IOType.D0.Global> {
+            suspend fun loss(input1: I1, input2: I2, label1: O1, label2: O2, dispatcher: CoroutineDispatcher = Dispatchers.Default): Pair<IOType.D0.Global, IOType.D0.Global> {
                 val inputs = listOf(source1.converter._encode(input1), source2.converter._encode(input2))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>>(
                     { sink1.converter._encode(label1) },
@@ -1078,13 +956,7 @@ interface Network {
                 return loss1 to loss2
             }
 
-            suspend fun train(
-                input1: I1,
-                input2: I2,
-                label1: O1,
-                label2: O2,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): Pair<IOType.D0.Global, IOType.D0.Global> {
+            suspend fun train(input1: I1, input2: I2, label1: O1, label2: O2, dispatcher: CoroutineDispatcher = Dispatchers.Default): Pair<IOType.D0.Global, IOType.D0.Global> {
                 val inputs = listOf(source1.converter._encode(input1), source2.converter._encode(input2))
                 val labels = listOf<(Batch<IOType>) -> Batch<IOType>>(
                     { sink1.converter._encode(label1) },
@@ -1264,13 +1136,8 @@ interface Network {
                 )
             }
 
-            override fun create(
-                sources: List<Graph.Source<*>>,
-                graph: List<Graph.Node>,
-                sinks: List<Graph.Sink<*>>,
-                optimizer: Optimizer,
-                initializer: WeightInitializer,
-            ): Sink2<I1, I2, O1, O2> = build(sources, graph, sinks, optimizer, initializer)
+            override fun create(sources: List<Graph.Source<*>>, graph: List<Graph.Node>, sinks: List<Graph.Sink<*>>, optimizer: Optimizer, initializer: WeightInitializer): Sink2<I1, I2, O1, O2> =
+                build(sources, graph, sinks, optimizer, initializer)
 
             override fun serializer(): GraphNetworkSerializer<Sink2<I1, I2, O1, O2>> = serializer<I1, I2, O1, O2>()
 
@@ -1296,20 +1163,15 @@ interface Network {
                     )
                 }
 
-                private fun <I1, I2, O1, O2> serializer(): GraphNetworkSerializer<Sink2<I1, I2, O1, O2>> =
-                    GraphNetworkSerializer(::build)
+                private fun <I1, I2, O1, O2> serializer(): GraphNetworkSerializer<Sink2<I1, I2, O1, O2>> = GraphNetworkSerializer(::build)
 
-                fun <I1, I2, O1, O2> fromJson(value: String): Sink2<I1, I2, O1, O2> =
-                    networkSerializerJson.decodeFromString(serializer(), value)
+                fun <I1, I2, O1, O2> fromJson(value: String): Sink2<I1, I2, O1, O2> = networkSerializerJson.decodeFromString(serializer(), value)
 
-                fun <I1, I2, O1, O2> fromJson(source: BufferedSource): Sink2<I1, I2, O1, O2> =
-                    networkSerializerJson.decodeFromBufferedSource(serializer(), source)
+                fun <I1, I2, O1, O2> fromJson(source: BufferedSource): Sink2<I1, I2, O1, O2> = networkSerializerJson.decodeFromBufferedSource(serializer(), source)
 
-                fun <I1, I2, O1, O2> fromCbor(bytes: ByteArray): Sink2<I1, I2, O1, O2> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
+                fun <I1, I2, O1, O2> fromCbor(bytes: ByteArray): Sink2<I1, I2, O1, O2> = networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
 
-                fun <I1, I2, O1, O2> fromCbor(source: BufferedSource): Sink2<I1, I2, O1, O2> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
+                fun <I1, I2, O1, O2> fromCbor(source: BufferedSource): Sink2<I1, I2, O1, O2> = networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
             }
         }
 
@@ -1326,11 +1188,7 @@ interface Network {
             override val sources: List<Graph.Source<*>> = listOf(source1, source2)
             override val sinks: List<Graph.Sink<*>> = listOf(sink1, sink2, sink3)
 
-            suspend fun expect(
-                input1: I1,
-                input2: I2,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): Triple<O1, O2, O3> = _expect(
+            suspend fun expect(input1: I1, input2: I2, dispatcher: CoroutineDispatcher = Dispatchers.Default): Triple<O1, O2, O3> = _expect(
                 inputs = listOf(source1.converter._encode(input1), source2.converter._encode(input2)),
                 dispatcher = dispatcher,
             ) { outputs ->
@@ -1648,16 +1506,10 @@ interface Network {
                 )
             }
 
-            override fun create(
-                sources: List<Graph.Source<*>>,
-                graph: List<Graph.Node>,
-                sinks: List<Graph.Sink<*>>,
-                optimizer: Optimizer,
-                initializer: WeightInitializer,
-            ): Sink3<I1, I2, O1, O2, O3> = build(sources, graph, sinks, optimizer, initializer)
+            override fun create(sources: List<Graph.Source<*>>, graph: List<Graph.Node>, sinks: List<Graph.Sink<*>>, optimizer: Optimizer, initializer: WeightInitializer): Sink3<I1, I2, O1, O2, O3> =
+                build(sources, graph, sinks, optimizer, initializer)
 
-            override fun serializer(): GraphNetworkSerializer<Sink3<I1, I2, O1, O2, O3>> =
-                serializer<I1, I2, O1, O2, O3>()
+            override fun serializer(): GraphNetworkSerializer<Sink3<I1, I2, O1, O2, O3>> = serializer<I1, I2, O1, O2, O3>()
 
             companion object {
                 @Suppress("UNCHECKED_CAST")
@@ -1682,20 +1534,15 @@ interface Network {
                     )
                 }
 
-                private fun <I1, I2, O1, O2, O3> serializer(): GraphNetworkSerializer<Sink3<I1, I2, O1, O2, O3>> =
-                    GraphNetworkSerializer(::build)
+                private fun <I1, I2, O1, O2, O3> serializer(): GraphNetworkSerializer<Sink3<I1, I2, O1, O2, O3>> = GraphNetworkSerializer(::build)
 
-                fun <I1, I2, O1, O2, O3> fromJson(value: String): Sink3<I1, I2, O1, O2, O3> =
-                    networkSerializerJson.decodeFromString(serializer(), value)
+                fun <I1, I2, O1, O2, O3> fromJson(value: String): Sink3<I1, I2, O1, O2, O3> = networkSerializerJson.decodeFromString(serializer(), value)
 
-                fun <I1, I2, O1, O2, O3> fromJson(source: BufferedSource): Sink3<I1, I2, O1, O2, O3> =
-                    networkSerializerJson.decodeFromBufferedSource(serializer(), source)
+                fun <I1, I2, O1, O2, O3> fromJson(source: BufferedSource): Sink3<I1, I2, O1, O2, O3> = networkSerializerJson.decodeFromBufferedSource(serializer(), source)
 
-                fun <I1, I2, O1, O2, O3> fromCbor(bytes: ByteArray): Sink3<I1, I2, O1, O2, O3> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
+                fun <I1, I2, O1, O2, O3> fromCbor(bytes: ByteArray): Sink3<I1, I2, O1, O2, O3> = networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
 
-                fun <I1, I2, O1, O2, O3> fromCbor(source: BufferedSource): Sink3<I1, I2, O1, O2, O3> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
+                fun <I1, I2, O1, O2, O3> fromCbor(source: BufferedSource): Sink3<I1, I2, O1, O2, O3> = networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
             }
         }
     }
@@ -1713,12 +1560,7 @@ interface Network {
             override val sources: List<Graph.Source<*>> = listOf(source1, source2, source3)
             override val sinks: List<Graph.Sink<*>> = listOf(sink)
 
-            suspend fun expect(
-                input1: I1,
-                input2: I2,
-                input3: I3,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): O = _expect(
+            suspend fun expect(input1: I1, input2: I2, input3: I3, dispatcher: CoroutineDispatcher = Dispatchers.Default): O = _expect(
                 inputs = listOf(
                     source1.converter._encode(input1),
                     source2.converter._encode(input2),
@@ -1727,13 +1569,7 @@ interface Network {
                 dispatcher = dispatcher,
             ) { outputs -> sink.converter._decode(outputs[0]) }
 
-            suspend fun loss(
-                input1: I1,
-                input2: I2,
-                input3: I3,
-                label: O,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): IOType.D0.Global {
+            suspend fun loss(input1: I1, input2: I2, input3: I3, label: O, dispatcher: CoroutineDispatcher = Dispatchers.Default): IOType.D0.Global {
                 val inputs = listOf(
                     source1.converter._encode(input1),
                     source2.converter._encode(input2),
@@ -1743,13 +1579,7 @@ interface Network {
                 return _loss(inputs = inputs, labels = labels, dispatcher = dispatcher)[0]
             }
 
-            suspend inline fun loss(
-                input1: I1,
-                input2: I2,
-                input3: I3,
-                crossinline label: (O) -> O,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): IOType.D0.Global {
+            suspend inline fun loss(input1: I1, input2: I2, input3: I3, crossinline label: (O) -> O, dispatcher: CoroutineDispatcher = Dispatchers.Default): IOType.D0.Global {
                 val inputs = listOf(
                     source1.converter._encode(input1),
                     source2.converter._encode(input2),
@@ -1762,13 +1592,7 @@ interface Network {
                 return _loss(inputs = inputs, labels = labels, dispatcher = dispatcher)[0]
             }
 
-            suspend fun train(
-                input1: I1,
-                input2: I2,
-                input3: I3,
-                label: O,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): IOType.D0.Global {
+            suspend fun train(input1: I1, input2: I2, input3: I3, label: O, dispatcher: CoroutineDispatcher = Dispatchers.Default): IOType.D0.Global {
                 val inputs = listOf(
                     source1.converter._encode(input1),
                     source2.converter._encode(input2),
@@ -1778,13 +1602,7 @@ interface Network {
                 return _train(inputs = inputs, labels = labels, dispatcher = dispatcher)[0]
             }
 
-            suspend inline fun train(
-                input1: I1,
-                input2: I2,
-                input3: I3,
-                crossinline label: (O) -> O,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): IOType.D0.Global {
+            suspend inline fun train(input1: I1, input2: I2, input3: I3, crossinline label: (O) -> O, dispatcher: CoroutineDispatcher = Dispatchers.Default): IOType.D0.Global {
                 val inputs = listOf(
                     source1.converter._encode(input1),
                     source2.converter._encode(input2),
@@ -1897,13 +1715,8 @@ interface Network {
                 )
             }
 
-            override fun create(
-                sources: List<Graph.Source<*>>,
-                graph: List<Graph.Node>,
-                sinks: List<Graph.Sink<*>>,
-                optimizer: Optimizer,
-                initializer: WeightInitializer,
-            ): Sink1<I1, I2, I3, O> = build(sources, graph, sinks, optimizer, initializer)
+            override fun create(sources: List<Graph.Source<*>>, graph: List<Graph.Node>, sinks: List<Graph.Sink<*>>, optimizer: Optimizer, initializer: WeightInitializer): Sink1<I1, I2, I3, O> =
+                build(sources, graph, sinks, optimizer, initializer)
 
             override fun serializer(): GraphNetworkSerializer<Sink1<I1, I2, I3, O>> = serializer<I1, I2, I3, O>()
 
@@ -1929,20 +1742,15 @@ interface Network {
                     )
                 }
 
-                private fun <I1, I2, I3, O> serializer(): GraphNetworkSerializer<Sink1<I1, I2, I3, O>> =
-                    GraphNetworkSerializer(::build)
+                private fun <I1, I2, I3, O> serializer(): GraphNetworkSerializer<Sink1<I1, I2, I3, O>> = GraphNetworkSerializer(::build)
 
-                fun <I1, I2, I3, O> fromJson(value: String): Sink1<I1, I2, I3, O> =
-                    networkSerializerJson.decodeFromString(serializer(), value)
+                fun <I1, I2, I3, O> fromJson(value: String): Sink1<I1, I2, I3, O> = networkSerializerJson.decodeFromString(serializer(), value)
 
-                fun <I1, I2, I3, O> fromJson(source: BufferedSource): Sink1<I1, I2, I3, O> =
-                    networkSerializerJson.decodeFromBufferedSource(serializer(), source)
+                fun <I1, I2, I3, O> fromJson(source: BufferedSource): Sink1<I1, I2, I3, O> = networkSerializerJson.decodeFromBufferedSource(serializer(), source)
 
-                fun <I1, I2, I3, O> fromCbor(bytes: ByteArray): Sink1<I1, I2, I3, O> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
+                fun <I1, I2, I3, O> fromCbor(bytes: ByteArray): Sink1<I1, I2, I3, O> = networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
 
-                fun <I1, I2, I3, O> fromCbor(source: BufferedSource): Sink1<I1, I2, I3, O> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
+                fun <I1, I2, I3, O> fromCbor(source: BufferedSource): Sink1<I1, I2, I3, O> = networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
             }
         }
 
@@ -1959,12 +1767,7 @@ interface Network {
             override val sources: List<Graph.Source<*>> = listOf(source1, source2, source3)
             override val sinks: List<Graph.Sink<*>> = listOf(sink1, sink2)
 
-            suspend fun expect(
-                input1: I1,
-                input2: I2,
-                input3: I3,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): Pair<O1, O2> = _expect(
+            suspend fun expect(input1: I1, input2: I2, input3: I3, dispatcher: CoroutineDispatcher = Dispatchers.Default): Pair<O1, O2> = _expect(
                 inputs = listOf(
                     source1.converter._encode(input1),
                     source2.converter._encode(input2),
@@ -1975,14 +1778,7 @@ interface Network {
                 sink1.converter._decode(outputs[0]) to sink2.converter._decode(outputs[1])
             }
 
-            suspend fun loss(
-                input1: I1,
-                input2: I2,
-                input3: I3,
-                label1: O1,
-                label2: O2,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): Pair<IOType.D0.Global, IOType.D0.Global> {
+            suspend fun loss(input1: I1, input2: I2, input3: I3, label1: O1, label2: O2, dispatcher: CoroutineDispatcher = Dispatchers.Default): Pair<IOType.D0.Global, IOType.D0.Global> {
                 val inputs = listOf(
                     source1.converter._encode(input1),
                     source2.converter._encode(input2),
@@ -2023,14 +1819,7 @@ interface Network {
                 return loss1 to loss2
             }
 
-            suspend fun train(
-                input1: I1,
-                input2: I2,
-                input3: I3,
-                label1: O1,
-                label2: O2,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): Pair<IOType.D0.Global, IOType.D0.Global> {
+            suspend fun train(input1: I1, input2: I2, input3: I3, label1: O1, label2: O2, dispatcher: CoroutineDispatcher = Dispatchers.Default): Pair<IOType.D0.Global, IOType.D0.Global> {
                 val inputs = listOf(
                     source1.converter._encode(input1),
                     source2.converter._encode(input2),
@@ -2239,16 +2028,10 @@ interface Network {
                 )
             }
 
-            override fun create(
-                sources: List<Graph.Source<*>>,
-                graph: List<Graph.Node>,
-                sinks: List<Graph.Sink<*>>,
-                optimizer: Optimizer,
-                initializer: WeightInitializer,
-            ): Sink2<I1, I2, I3, O1, O2> = build(sources, graph, sinks, optimizer, initializer)
+            override fun create(sources: List<Graph.Source<*>>, graph: List<Graph.Node>, sinks: List<Graph.Sink<*>>, optimizer: Optimizer, initializer: WeightInitializer): Sink2<I1, I2, I3, O1, O2> =
+                build(sources, graph, sinks, optimizer, initializer)
 
-            override fun serializer(): GraphNetworkSerializer<Sink2<I1, I2, I3, O1, O2>> =
-                serializer<I1, I2, I3, O1, O2>()
+            override fun serializer(): GraphNetworkSerializer<Sink2<I1, I2, I3, O1, O2>> = serializer<I1, I2, I3, O1, O2>()
 
             companion object {
                 @Suppress("UNCHECKED_CAST")
@@ -2273,20 +2056,15 @@ interface Network {
                     )
                 }
 
-                private fun <I1, I2, I3, O1, O2> serializer(): GraphNetworkSerializer<Sink2<I1, I2, I3, O1, O2>> =
-                    GraphNetworkSerializer(::build)
+                private fun <I1, I2, I3, O1, O2> serializer(): GraphNetworkSerializer<Sink2<I1, I2, I3, O1, O2>> = GraphNetworkSerializer(::build)
 
-                fun <I1, I2, I3, O1, O2> fromJson(value: String): Sink2<I1, I2, I3, O1, O2> =
-                    networkSerializerJson.decodeFromString(serializer(), value)
+                fun <I1, I2, I3, O1, O2> fromJson(value: String): Sink2<I1, I2, I3, O1, O2> = networkSerializerJson.decodeFromString(serializer(), value)
 
-                fun <I1, I2, I3, O1, O2> fromJson(source: BufferedSource): Sink2<I1, I2, I3, O1, O2> =
-                    networkSerializerJson.decodeFromBufferedSource(serializer(), source)
+                fun <I1, I2, I3, O1, O2> fromJson(source: BufferedSource): Sink2<I1, I2, I3, O1, O2> = networkSerializerJson.decodeFromBufferedSource(serializer(), source)
 
-                fun <I1, I2, I3, O1, O2> fromCbor(bytes: ByteArray): Sink2<I1, I2, I3, O1, O2> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
+                fun <I1, I2, I3, O1, O2> fromCbor(bytes: ByteArray): Sink2<I1, I2, I3, O1, O2> = networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
 
-                fun <I1, I2, I3, O1, O2> fromCbor(source: BufferedSource): Sink2<I1, I2, I3, O1, O2> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
+                fun <I1, I2, I3, O1, O2> fromCbor(source: BufferedSource): Sink2<I1, I2, I3, O1, O2> = networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
             }
         }
 
@@ -2304,12 +2082,7 @@ interface Network {
             override val sources: List<Graph.Source<*>> = listOf(source1, source2, source3)
             override val sinks: List<Graph.Sink<*>> = listOf(sink1, sink2, sink3)
 
-            suspend fun expect(
-                input1: I1,
-                input2: I2,
-                input3: I3,
-                dispatcher: CoroutineDispatcher = Dispatchers.Default,
-            ): Triple<O1, O2, O3> = _expect(
+            suspend fun expect(input1: I1, input2: I2, input3: I3, dispatcher: CoroutineDispatcher = Dispatchers.Default): Triple<O1, O2, O3> = _expect(
                 inputs = listOf(
                     source1.converter._encode(input1),
                     source2.converter._encode(input2),
@@ -2682,8 +2455,7 @@ interface Network {
                 initializer: WeightInitializer,
             ): Sink3<I1, I2, I3, O1, O2, O3> = build(sources, graph, sinks, optimizer, initializer)
 
-            override fun serializer(): GraphNetworkSerializer<Sink3<I1, I2, I3, O1, O2, O3>> =
-                serializer<I1, I2, I3, O1, O2, O3>()
+            override fun serializer(): GraphNetworkSerializer<Sink3<I1, I2, I3, O1, O2, O3>> = serializer<I1, I2, I3, O1, O2, O3>()
 
             companion object {
                 @Suppress("UNCHECKED_CAST")
@@ -2709,20 +2481,15 @@ interface Network {
                     )
                 }
 
-                private fun <I1, I2, I3, O1, O2, O3> serializer(): GraphNetworkSerializer<Sink3<I1, I2, I3, O1, O2, O3>> =
-                    GraphNetworkSerializer(::build)
+                private fun <I1, I2, I3, O1, O2, O3> serializer(): GraphNetworkSerializer<Sink3<I1, I2, I3, O1, O2, O3>> = GraphNetworkSerializer(::build)
 
-                fun <I1, I2, I3, O1, O2, O3> fromJson(value: String): Sink3<I1, I2, I3, O1, O2, O3> =
-                    networkSerializerJson.decodeFromString(serializer(), value)
+                fun <I1, I2, I3, O1, O2, O3> fromJson(value: String): Sink3<I1, I2, I3, O1, O2, O3> = networkSerializerJson.decodeFromString(serializer(), value)
 
-                fun <I1, I2, I3, O1, O2, O3> fromJson(source: BufferedSource): Sink3<I1, I2, I3, O1, O2, O3> =
-                    networkSerializerJson.decodeFromBufferedSource(serializer(), source)
+                fun <I1, I2, I3, O1, O2, O3> fromJson(source: BufferedSource): Sink3<I1, I2, I3, O1, O2, O3> = networkSerializerJson.decodeFromBufferedSource(serializer(), source)
 
-                fun <I1, I2, I3, O1, O2, O3> fromCbor(bytes: ByteArray): Sink3<I1, I2, I3, O1, O2, O3> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
+                fun <I1, I2, I3, O1, O2, O3> fromCbor(bytes: ByteArray): Sink3<I1, I2, I3, O1, O2, O3> = networkSerializerCbor.decodeFromByteArray(serializer(), bytes)
 
-                fun <I1, I2, I3, O1, O2, O3> fromCbor(source: BufferedSource): Sink3<I1, I2, I3, O1, O2, O3> =
-                    networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
+                fun <I1, I2, I3, O1, O2, O3> fromCbor(source: BufferedSource): Sink3<I1, I2, I3, O1, O2, O3> = networkSerializerCbor.decodeFromByteArray(serializer(), source.readByteArray())
             }
         }
     }

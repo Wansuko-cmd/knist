@@ -43,11 +43,7 @@ interface Optimizer {
         }
 
         context(scope: IOScope)
-        open fun adapt(
-            weight: IOType.D1,
-            dw: Batch<IOType.D1>,
-            enableClip: Boolean = _maxNorm != Float.MAX_VALUE,
-        ): IOType.D1 = with(scope) { adapt(weight, dw.batchAverage(), enableClip) }
+        open fun adapt(weight: IOType.D1, dw: Batch<IOType.D1>, enableClip: Boolean = _maxNorm != Float.MAX_VALUE): IOType.D1 = with(scope) { adapt(weight, dw.batchAverage(), enableClip) }
     }
 
     @Serializable
@@ -80,11 +76,7 @@ interface Optimizer {
         }
 
         context(scope: IOScope)
-        open fun adapt(
-            weight: IOType.D2,
-            dw: Batch<IOType.D2>,
-            enableClip: Boolean = _maxNorm != Float.MAX_VALUE,
-        ): IOType.D2 = with(scope) { adapt(weight, dw.batchAverage(), enableClip) }
+        open fun adapt(weight: IOType.D2, dw: Batch<IOType.D2>, enableClip: Boolean = _maxNorm != Float.MAX_VALUE): IOType.D2 = with(scope) { adapt(weight, dw.batchAverage(), enableClip) }
     }
 
     @Serializable
@@ -117,11 +109,7 @@ interface Optimizer {
         }
 
         context(scope: IOScope)
-        open fun adapt(
-            weight: IOType.D3,
-            dw: Batch<IOType.D3>,
-            enableClip: Boolean = _maxNorm != Float.MAX_VALUE,
-        ): IOType.D3 = with(scope) { adapt(weight, dw.batchAverage(), enableClip) }
+        open fun adapt(weight: IOType.D3, dw: Batch<IOType.D3>, enableClip: Boolean = _maxNorm != Float.MAX_VALUE): IOType.D3 = with(scope) { adapt(weight, dw.batchAverage(), enableClip) }
     }
 
     @Serializable
@@ -154,10 +142,6 @@ interface Optimizer {
         }
 
         context(scope: IOScope)
-        open fun adapt(
-            weight: IOType.D4,
-            dw: Batch<IOType.D4>,
-            enableClip: Boolean = _maxNorm != Float.MAX_VALUE,
-        ): IOType.D4 = with(scope) { adapt(weight, dw.batchAverage(), enableClip) }
+        open fun adapt(weight: IOType.D4, dw: Batch<IOType.D4>, enableClip: Boolean = _maxNorm != Float.MAX_VALUE): IOType.D4 = with(scope) { adapt(weight, dw.batchAverage(), enableClip) }
     }
 }

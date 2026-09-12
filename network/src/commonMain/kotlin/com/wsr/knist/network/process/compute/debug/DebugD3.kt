@@ -12,12 +12,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-class DebugD3 internal constructor(
-    override val inputI: Int,
-    override val inputJ: Int,
-    override val inputK: Int,
-    override val id: String = Uuid.random().toString(),
-) : Compute.D3() {
+class DebugD3 internal constructor(override val inputI: Int, override val inputJ: Int, override val inputK: Int, override val id: String = Uuid.random().toString()) : Compute.D3() {
     override val outputI: Int get() = inputI
     override val outputJ: Int get() = inputJ
     override val outputK: Int get() = inputK
@@ -32,11 +27,7 @@ class DebugD3 internal constructor(
         onInput(it)
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3> {
         val input = input.also { onInput(it) }
         val delta = calcDelta(input).also { onDelta(it) }
         return delta
@@ -46,11 +37,7 @@ class DebugD3 internal constructor(
 /**
  * ※Json化するとラムダ式はリセットされる
  */
-fun GraphBuilder.Node.D3.debug(
-    onInput: (Batch<IOType.D3>) -> Unit = {},
-    onDelta: (Batch<IOType.D3>) -> Unit = {},
-    id: String = Uuid.random().toString(),
-) = addCompute(
+fun GraphBuilder.Node.D3.debug(onInput: (Batch<IOType.D3>) -> Unit = {}, onDelta: (Batch<IOType.D3>) -> Unit = {}, id: String = Uuid.random().toString()) = addCompute(
     compute = DebugD3(
         inputI = inputI,
         inputJ = inputJ,

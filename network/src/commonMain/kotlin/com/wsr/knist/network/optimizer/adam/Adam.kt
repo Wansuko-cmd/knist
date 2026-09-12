@@ -14,13 +14,8 @@ import kotlinx.serialization.Serializable
 private const val E = 1e-8f
 
 @Serializable
-data class Adam(
-    private val scheduler: Scheduler,
-    private val momentum: Float = 0.9f,
-    private val rms: Float = 0.999f,
-    private val maxNorm: Float = Float.MAX_VALUE,
-    private val stepUnit: Int = 1,
-) : Optimizer {
+data class Adam(private val scheduler: Scheduler, private val momentum: Float = 0.9f, private val rms: Float = 0.999f, private val maxNorm: Float = Float.MAX_VALUE, private val stepUnit: Int = 1) :
+    Optimizer {
     override fun d1(i: Int): Optimizer.D1 = AdamD1(
         scheduler = scheduler,
         momentum = momentum,

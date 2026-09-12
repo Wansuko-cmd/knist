@@ -34,11 +34,7 @@ class RmsNormAxisD3 internal constructor(
         return input.div(other = deviation, axis1 = axis1, axis2 = axis2)
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3> {
         val variance = input.pow(2).average(axis = axis)
         val deviation = variance.sqrt(e = e)
         val output = input.div(other = deviation, axis1 = axis1, axis2 = axis2)

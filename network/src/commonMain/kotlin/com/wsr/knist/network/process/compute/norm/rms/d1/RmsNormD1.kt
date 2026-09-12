@@ -11,22 +11,14 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class RmsNormD1 internal constructor(
-    override val inputI: Int,
-    private val e: Float,
-    override val id: String = Uuid.random().toString(),
-) : Compute.D1() {
+class RmsNormD1 internal constructor(override val inputI: Int, private val e: Float, override val id: String = Uuid.random().toString()) : Compute.D1() {
     override val outputI: Int get() = inputI
     override fun IOScope.expect(input: Batch<IOType.D1>, env: GraphEnv): Batch<IOType.D1> {
         val deviation = input.pow(n = 2).average().sqrt(e = e)
         return input / deviation
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D1>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>,
-    ): Batch<IOType.D1> {
+    override fun IOScope.train(input: Batch<IOType.D1>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>): Batch<IOType.D1> {
         val variance = input.pow(2).average()
         val deviation = variance.sqrt(e = e)
         val output = input / deviation

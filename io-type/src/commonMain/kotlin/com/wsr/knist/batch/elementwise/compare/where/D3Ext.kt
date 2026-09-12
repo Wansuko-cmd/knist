@@ -45,57 +45,36 @@ fun Batch<IOType.D3>.where(condition: Batch<IOType.D3>, onTrue: Float, onFalse: 
 
 @JvmName("batchFloatWhereFloatWithLambda")
 @ScopeOp
-inline fun Batch<IOType.D3>.where(
-    onTrue: Float,
-    onFalse: Float,
-    condition: (Batch<IOType.D3>) -> Batch<IOType.D3>,
-): Batch<IOType.D3.Global> = where(onTrue = onTrue, onFalse = onFalse, condition = condition(this))
+inline fun Batch<IOType.D3>.where(onTrue: Float, onFalse: Float, condition: (Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3.Global> =
+    where(onTrue = onTrue, onFalse = onFalse, condition = condition(this))
 
 @JvmName("batchFloatWhereD3s")
 @ScopeOp
-fun Batch<IOType.D3>.where(
-    condition: Batch<IOType.D3>,
-    onTrue: Float,
-    @ScopeOpDefault("this") onFalse: Batch<IOType.D3> = this,
-): Batch<IOType.D3.Global> {
+fun Batch<IOType.D3>.where(condition: Batch<IOType.D3>, onTrue: Float, @ScopeOpDefault("this") onFalse: Batch<IOType.D3> = this): Batch<IOType.D3.Global> {
     val result = Backend.where(condition.value, onTrue, onFalse.value)
     return Batch.d3(size, shape, result)
 }
 
 @JvmName("batchFloatWhereD3sWithLambda")
 @ScopeOp
-inline fun Batch<IOType.D3>.where(
-    onTrue: Float,
-    @ScopeOpDefault("this") onFalse: Batch<IOType.D3> = this,
-    condition: (Batch<IOType.D3>) -> Batch<IOType.D3>,
-): Batch<IOType.D3.Global> = where(onTrue = onTrue, onFalse = onFalse, condition = condition(this))
+inline fun Batch<IOType.D3>.where(onTrue: Float, @ScopeOpDefault("this") onFalse: Batch<IOType.D3> = this, condition: (Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3.Global> =
+    where(onTrue = onTrue, onFalse = onFalse, condition = condition(this))
 
 @JvmName("batchD3sWhereFloat")
 @ScopeOp
-fun Batch<IOType.D3>.where(
-    condition: Batch<IOType.D3>,
-    @ScopeOpDefault("this") onTrue: Batch<IOType.D3> = this,
-    onFalse: Float,
-): Batch<IOType.D3.Global> {
+fun Batch<IOType.D3>.where(condition: Batch<IOType.D3>, @ScopeOpDefault("this") onTrue: Batch<IOType.D3> = this, onFalse: Float): Batch<IOType.D3.Global> {
     val result = Backend.where(condition.value, onTrue.value, onFalse)
     return Batch.d3(size, shape, result)
 }
 
 @JvmName("batchD3sWhereFloatWithLambda")
 @ScopeOp
-inline fun Batch<IOType.D3>.where(
-    @ScopeOpDefault("this") onTrue: Batch<IOType.D3> = this,
-    onFalse: Float,
-    condition: (Batch<IOType.D3>) -> Batch<IOType.D3>,
-) = where(onTrue = onTrue, onFalse = onFalse, condition = condition(this))
+inline fun Batch<IOType.D3>.where(@ScopeOpDefault("this") onTrue: Batch<IOType.D3> = this, onFalse: Float, condition: (Batch<IOType.D3>) -> Batch<IOType.D3>) =
+    where(onTrue = onTrue, onFalse = onFalse, condition = condition(this))
 
 @JvmName("batchD3sWhereD3s")
 @ScopeOp
-fun Batch<IOType.D3>.where(
-    condition: Batch<IOType.D3>,
-    @ScopeOpDefault("this") onTrue: Batch<IOType.D3> = this,
-    @ScopeOpDefault("this") onFalse: Batch<IOType.D3> = this,
-): Batch<IOType.D3.Global> {
+fun Batch<IOType.D3>.where(condition: Batch<IOType.D3>, @ScopeOpDefault("this") onTrue: Batch<IOType.D3> = this, @ScopeOpDefault("this") onFalse: Batch<IOType.D3> = this): Batch<IOType.D3.Global> {
     val result = Backend.where(condition.value, onTrue.value, onFalse.value)
     return Batch.d3(size, shape, result)
 }

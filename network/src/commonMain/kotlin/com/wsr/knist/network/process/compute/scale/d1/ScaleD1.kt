@@ -14,20 +14,12 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class ScaleD1 internal constructor(
-    override val inputI: Int,
-    private var optimizer: Optimizer.D1,
-    private var weight: IOType.D1.Global,
-    override val id: String = Uuid.random().toString(),
-) : Compute.D1() {
+class ScaleD1 internal constructor(override val inputI: Int, private var optimizer: Optimizer.D1, private var weight: IOType.D1.Global, override val id: String = Uuid.random().toString()) :
+    Compute.D1() {
     override val outputI: Int get() = inputI
     override fun IOScope.expect(input: Batch<IOType.D1>, env: GraphEnv): Batch<IOType.D1> = input * weight
 
-    override fun IOScope.train(
-        input: Batch<IOType.D1>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>,
-    ): Batch<IOType.D1> {
+    override fun IOScope.train(input: Batch<IOType.D1>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>): Batch<IOType.D1> {
         val output = input * weight
         val delta = calcDelta(output)
 
@@ -45,11 +37,7 @@ class ScaleD1 internal constructor(
     }
 }
 
-fun GraphBuilder.Node.D1.scale(
-    optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = Fixed(1f),
-    id: String = Uuid.random().toString(),
-) = addCompute(
+fun GraphBuilder.Node.D1.scale(optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = Fixed(1f), id: String = Uuid.random().toString()) = addCompute(
     compute = ScaleD1(
         inputI = inputI,
         optimizer = optimizer.d1(inputI),
