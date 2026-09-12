@@ -55,6 +55,8 @@ import com.wsr.knist.network.optimizer.sgd.SgdD2
 import com.wsr.knist.network.optimizer.sgd.SgdD3
 import com.wsr.knist.network.optimizer.sgd.SgdD4
 import com.wsr.knist.network.output.Output
+import com.wsr.knist.network.output.mean.MeanAbsoluteD1
+import com.wsr.knist.network.output.mean.MeanAbsoluteD2
 import com.wsr.knist.network.output.mean.MeanSquareD1
 import com.wsr.knist.network.output.mean.MeanSquareD2
 import com.wsr.knist.network.output.sigmoid.SigmoidWithLossD1
@@ -385,6 +387,9 @@ private val buildInSerializersModule = SerializersModule {
     }
 
     polymorphic(Output::class) {
+        subclass(MeanAbsoluteD1::class)
+        subclass(MeanAbsoluteD2::class)
+
         subclass(MeanSquareD1::class)
         subclass(MeanSquareD2::class)
 
