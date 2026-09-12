@@ -6,11 +6,7 @@ import com.wsr.knist.scope.ScopeOp
 import kotlin.jvm.JvmName
 
 @PublishedApi
-internal inline fun IOType.Companion.d2Impl(
-    i: Int,
-    j: Int,
-    init: (Int, Int) -> Float = { _, _ -> 0f },
-): IOType.D2.Global {
+internal inline fun IOType.Companion.d2Impl(i: Int, j: Int, init: (Int, Int) -> Float = { _, _ -> 0f }): IOType.D2.Global {
     val value = FloatArray(i * j)
     for (_i in 0 until i) {
         for (_j in 0 until j) {
@@ -21,10 +17,7 @@ internal inline fun IOType.Companion.d2Impl(
 }
 
 @PublishedApi
-internal inline fun IOType.Companion.d2Impl(
-    shape: List<Int>,
-    init: (Int, Int) -> Float = { _, _ -> 0f },
-): IOType.D2.Global = d2Impl(
+internal inline fun IOType.Companion.d2Impl(shape: List<Int>, init: (Int, Int) -> Float = { _, _ -> 0f }): IOType.D2.Global = d2Impl(
     i = shape[0],
     j = shape[1],
     init = init,
@@ -49,8 +42,7 @@ internal fun IOType.Companion.d2Impl(vararg elements: IOType.D1): IOType.D2.Glob
 }
 
 @PublishedApi
-internal fun IOType.Companion.d2Impl(shape: List<Int>, value: FloatArray): IOType.D2.Global =
-    IOType.D2.Global(shape = shape, value = DataBuffer.create(value))
+internal fun IOType.Companion.d2Impl(shape: List<Int>, value: FloatArray): IOType.D2.Global = IOType.D2.Global(shape = shape, value = DataBuffer.create(value))
 
 operator fun IOType.D2.get(i: Int, j: Int): IOType.D0 = IOType.d0(value[i * shape[1] + j])
 

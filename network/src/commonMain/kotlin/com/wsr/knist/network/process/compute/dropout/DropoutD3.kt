@@ -28,11 +28,7 @@ class DropoutD3 internal constructor(
 
     override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> = input
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3> {
         val uniform = Batch.random(
             size = input.size,
             i = outputI,

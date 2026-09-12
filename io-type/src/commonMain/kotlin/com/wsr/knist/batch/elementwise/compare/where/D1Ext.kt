@@ -45,57 +45,36 @@ fun Batch<IOType.D1>.where(condition: Batch<IOType.D1>, onTrue: Float, onFalse: 
 
 @JvmName("batchFloatWhereFloatWithLambda")
 @ScopeOp
-inline fun Batch<IOType.D1>.where(
-    onTrue: Float,
-    onFalse: Float,
-    condition: (Batch<IOType.D1>) -> Batch<IOType.D1>,
-): Batch<IOType.D1.Global> = where(onTrue = onTrue, onFalse = onFalse, condition = condition(this))
+inline fun Batch<IOType.D1>.where(onTrue: Float, onFalse: Float, condition: (Batch<IOType.D1>) -> Batch<IOType.D1>): Batch<IOType.D1.Global> =
+    where(onTrue = onTrue, onFalse = onFalse, condition = condition(this))
 
 @JvmName("batchFloatWhereD1s")
 @ScopeOp
-fun Batch<IOType.D1>.where(
-    condition: Batch<IOType.D1>,
-    onTrue: Float,
-    @ScopeOpDefault("this")onFalse: Batch<IOType.D1> = this,
-): Batch<IOType.D1.Global> {
+fun Batch<IOType.D1>.where(condition: Batch<IOType.D1>, onTrue: Float, @ScopeOpDefault("this")onFalse: Batch<IOType.D1> = this): Batch<IOType.D1.Global> {
     val result = Backend.where(condition.value, onTrue, onFalse.value)
     return Batch.d1(size, shape, result)
 }
 
 @JvmName("batchFloatWhereD1sWithLambda")
 @ScopeOp
-inline fun Batch<IOType.D1>.where(
-    onTrue: Float,
-    @ScopeOpDefault("this") onFalse: Batch<IOType.D1> = this,
-    condition: (Batch<IOType.D1>) -> Batch<IOType.D1>,
-): Batch<IOType.D1.Global> = where(onTrue = onTrue, onFalse = onFalse, condition = condition(this))
+inline fun Batch<IOType.D1>.where(onTrue: Float, @ScopeOpDefault("this") onFalse: Batch<IOType.D1> = this, condition: (Batch<IOType.D1>) -> Batch<IOType.D1>): Batch<IOType.D1.Global> =
+    where(onTrue = onTrue, onFalse = onFalse, condition = condition(this))
 
 @JvmName("batchD1sWhereFloat")
 @ScopeOp
-fun Batch<IOType.D1>.where(
-    condition: Batch<IOType.D1>,
-    @ScopeOpDefault("this") onTrue: Batch<IOType.D1> = this,
-    onFalse: Float,
-): Batch<IOType.D1.Global> {
+fun Batch<IOType.D1>.where(condition: Batch<IOType.D1>, @ScopeOpDefault("this") onTrue: Batch<IOType.D1> = this, onFalse: Float): Batch<IOType.D1.Global> {
     val result = Backend.where(condition.value, onTrue.value, onFalse)
     return Batch.d1(size, shape, result)
 }
 
 @JvmName("batchD1sWhereFloatWithLambda")
 @ScopeOp
-inline fun Batch<IOType.D1>.where(
-    @ScopeOpDefault("this") onTrue: Batch<IOType.D1> = this,
-    onFalse: Float,
-    condition: (Batch<IOType.D1>) -> Batch<IOType.D1>,
-) = where(onTrue = onTrue, onFalse = onFalse, condition = condition(this))
+inline fun Batch<IOType.D1>.where(@ScopeOpDefault("this") onTrue: Batch<IOType.D1> = this, onFalse: Float, condition: (Batch<IOType.D1>) -> Batch<IOType.D1>) =
+    where(onTrue = onTrue, onFalse = onFalse, condition = condition(this))
 
 @JvmName("batchD1sWhereD1s")
 @ScopeOp
-fun Batch<IOType.D1>.where(
-    condition: Batch<IOType.D1>,
-    @ScopeOpDefault("this") onTrue: Batch<IOType.D1> = this,
-    @ScopeOpDefault("this") onFalse: Batch<IOType.D1> = this,
-): Batch<IOType.D1.Global> {
+fun Batch<IOType.D1>.where(condition: Batch<IOType.D1>, @ScopeOpDefault("this") onTrue: Batch<IOType.D1> = this, @ScopeOpDefault("this") onFalse: Batch<IOType.D1> = this): Batch<IOType.D1.Global> {
     val result = Backend.where(condition.value, onTrue.value, onFalse.value)
     return Batch.d1(size, shape, result)
 }

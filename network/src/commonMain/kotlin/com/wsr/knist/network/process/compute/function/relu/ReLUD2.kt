@@ -11,11 +11,7 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class ReLUD2 internal constructor(
-    override val inputI: Int,
-    override val inputJ: Int,
-    override val id: String = Uuid.random().toString(),
-) : Compute.D2() {
+class ReLUD2 internal constructor(override val inputI: Int, override val inputJ: Int, override val id: String = Uuid.random().toString()) : Compute.D2() {
     override val outputI: Int get() = inputI
     override val outputJ: Int get() = inputJ
     override fun IOScope.expect(input: Batch<IOType.D2>, env: GraphEnv): Batch<IOType.D2> {
@@ -23,11 +19,7 @@ class ReLUD2 internal constructor(
         return input.where(condition = mask, onFalse = 0f)
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D2>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D2> {
+    override fun IOScope.train(input: Batch<IOType.D2>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D2> {
         val mask = input gt 0f
         val output = input.where(condition = mask, onFalse = 0f)
         val delta = calcDelta(output)

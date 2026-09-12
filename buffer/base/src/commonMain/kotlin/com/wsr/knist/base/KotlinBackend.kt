@@ -20,25 +20,12 @@ object KotlinBackend : IBackend {
     // 1次元
     override fun plus(x: DataBuffer, y: Float): DataBuffer = x.map { it + y }
     override fun plus(x: DataBuffer, y: DataBuffer): DataBuffer = x.zipWith(other = y) { a, b -> a + b }
-    override fun plus(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, axis: Int): DataBuffer =
-        x.zipWith(other = y, yi = yi, yj = yj, axis = axis) { a, b -> a + b }
-    override fun plus(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis: Int): DataBuffer =
-        x.zipWith(other = y, yi = yi, yj = yj, yk = yk, axis = axis) { a, b -> a + b }
+    override fun plus(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, axis: Int): DataBuffer = x.zipWith(other = y, yi = yi, yj = yj, axis = axis) { a, b -> a + b }
+    override fun plus(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis: Int): DataBuffer = x.zipWith(other = y, yi = yi, yj = yj, yk = yk, axis = axis) { a, b -> a + b }
 
     // 2次元
-    override fun plus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer =
-        x.zipWith(xi = xi, xj = xj, other = y, axis = axis) { a, b -> a + b }
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer = x.zipWith(
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer = x.zipWith(xi = xi, xj = xj, other = y, axis = axis) { a, b -> a + b }
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         other = y,
@@ -50,20 +37,9 @@ object KotlinBackend : IBackend {
     ) { a, b -> a + b }
 
     // 3次元
-    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer =
-        x.zipWith(xi = xi, xj = xj, xk = xk, other = y, axis = axis) { a, b -> a + b }
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer = x.zipWith(xi = xi, xj = xj, xk = xk, other = y, axis = axis) { a, b -> a + b }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer = x.zipWith(
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -74,20 +50,7 @@ object KotlinBackend : IBackend {
         axis2 = axis2,
     ) { a, b -> a + b }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer = x.zipWith(
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -102,28 +65,16 @@ object KotlinBackend : IBackend {
     ) { a, b -> a + b }
 
     // 4次元
-    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer =
-        x.zipWith(
-            xi = xi,
-            xj = xj,
-            xk = xk,
-            xl = xl,
-            other = y,
-            axis = axis,
-        ) { a, b -> a + b }
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        xl = xl,
+        other = y,
+        axis = axis,
+    ) { a, b -> a + b }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer = x.zipWith(
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -135,20 +86,7 @@ object KotlinBackend : IBackend {
         axis2 = axis2,
     ) { a, b -> a + b }
 
-    override fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer = x.zipWith(
+    override fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -168,25 +106,12 @@ object KotlinBackend : IBackend {
     // 1次元
     override fun minus(x: DataBuffer, y: Float): DataBuffer = x.map { it - y }
     override fun minus(x: DataBuffer, y: DataBuffer): DataBuffer = x.zipWith(other = y) { a, b -> a - b }
-    override fun minus(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, axis: Int): DataBuffer =
-        x.zipWith(other = y, yi = yi, yj = yj, axis = axis) { a, b -> a - b }
-    override fun minus(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis: Int): DataBuffer =
-        x.zipWith(other = y, yi = yi, yj = yj, yk = yk, axis = axis) { a, b -> a - b }
+    override fun minus(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, axis: Int): DataBuffer = x.zipWith(other = y, yi = yi, yj = yj, axis = axis) { a, b -> a - b }
+    override fun minus(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis: Int): DataBuffer = x.zipWith(other = y, yi = yi, yj = yj, yk = yk, axis = axis) { a, b -> a - b }
 
     // 2次元
-    override fun minus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer =
-        x.zipWith(xi = xi, xj = xj, other = y, axis = axis) { a, b -> a - b }
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer = x.zipWith(
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer = x.zipWith(xi = xi, xj = xj, other = y, axis = axis) { a, b -> a - b }
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         other = y,
@@ -198,20 +123,9 @@ object KotlinBackend : IBackend {
     ) { a, b -> a - b }
 
     // 3次元
-    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer =
-        x.zipWith(xi = xi, xj = xj, xk = xk, other = y, axis = axis) { a, b -> a - b }
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer = x.zipWith(xi = xi, xj = xj, xk = xk, other = y, axis = axis) { a, b -> a - b }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer = x.zipWith(
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -222,20 +136,7 @@ object KotlinBackend : IBackend {
         axis2 = axis2,
     ) { a, b -> a - b }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer = x.zipWith(
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -250,28 +151,16 @@ object KotlinBackend : IBackend {
     ) { a, b -> a - b }
 
     // 4次元
-    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer =
-        x.zipWith(
-            xi = xi,
-            xj = xj,
-            xk = xk,
-            xl = xl,
-            other = y,
-            axis = axis,
-        ) { a, b -> a - b }
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        xl = xl,
+        other = y,
+        axis = axis,
+    ) { a, b -> a - b }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer = x.zipWith(
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -283,20 +172,7 @@ object KotlinBackend : IBackend {
         axis2 = axis2,
     ) { a, b -> a - b }
 
-    override fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer = x.zipWith(
+    override fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -316,25 +192,12 @@ object KotlinBackend : IBackend {
     // 1次元
     override fun times(x: DataBuffer, y: Float): DataBuffer = x.map { it * y }
     override fun times(x: DataBuffer, y: DataBuffer): DataBuffer = x.zipWith(other = y) { a, b -> a * b }
-    override fun times(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, axis: Int): DataBuffer =
-        x.zipWith(other = y, yi = yi, yj = yj, axis = axis) { a, b -> a * b }
-    override fun times(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis: Int): DataBuffer =
-        x.zipWith(other = y, yi = yi, yj = yj, yk = yk, axis = axis) { a, b -> a * b }
+    override fun times(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, axis: Int): DataBuffer = x.zipWith(other = y, yi = yi, yj = yj, axis = axis) { a, b -> a * b }
+    override fun times(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis: Int): DataBuffer = x.zipWith(other = y, yi = yi, yj = yj, yk = yk, axis = axis) { a, b -> a * b }
 
     // 2次元
-    override fun times(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer =
-        x.zipWith(xi = xi, xj = xj, other = y, axis = axis) { a, b -> a * b }
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer = x.zipWith(
+    override fun times(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer = x.zipWith(xi = xi, xj = xj, other = y, axis = axis) { a, b -> a * b }
+    override fun times(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         other = y,
@@ -346,20 +209,9 @@ object KotlinBackend : IBackend {
     ) { a, b -> a * b }
 
     // 3次元
-    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer =
-        x.zipWith(xi = xi, xj = xj, xk = xk, other = y, axis = axis) { a, b -> a * b }
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer = x.zipWith(xi = xi, xj = xj, xk = xk, other = y, axis = axis) { a, b -> a * b }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer = x.zipWith(
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -370,20 +222,7 @@ object KotlinBackend : IBackend {
         axis2 = axis2,
     ) { a, b -> a * b }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer = x.zipWith(
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -398,28 +237,16 @@ object KotlinBackend : IBackend {
     ) { a, b -> a * b }
 
     // 4次元
-    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer =
-        x.zipWith(
-            xi = xi,
-            xj = xj,
-            xk = xk,
-            xl = xl,
-            other = y,
-            axis = axis,
-        ) { a, b -> a * b }
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        xl = xl,
+        other = y,
+        axis = axis,
+    ) { a, b -> a * b }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer = x.zipWith(
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -431,20 +258,7 @@ object KotlinBackend : IBackend {
         axis2 = axis2,
     ) { a, b -> a * b }
 
-    override fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer = x.zipWith(
+    override fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -464,25 +278,12 @@ object KotlinBackend : IBackend {
     // 1次元
     override fun div(x: DataBuffer, y: Float): DataBuffer = x.map { it / y }
     override fun div(x: DataBuffer, y: DataBuffer): DataBuffer = x.zipWith(other = y) { a, b -> a / b }
-    override fun div(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, axis: Int): DataBuffer =
-        x.zipWith(other = y, yi = yi, yj = yj, axis = axis) { a, b -> a / b }
-    override fun div(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis: Int): DataBuffer =
-        x.zipWith(other = y, yi = yi, yj = yj, yk = yk, axis = axis) { a, b -> a / b }
+    override fun div(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, axis: Int): DataBuffer = x.zipWith(other = y, yi = yi, yj = yj, axis = axis) { a, b -> a / b }
+    override fun div(x: DataBuffer, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis: Int): DataBuffer = x.zipWith(other = y, yi = yi, yj = yj, yk = yk, axis = axis) { a, b -> a / b }
 
     // 2次元
-    override fun div(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer =
-        x.zipWith(xi = xi, xj = xj, other = y, axis = axis) { a, b -> a / b }
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer = x.zipWith(
+    override fun div(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer = x.zipWith(xi = xi, xj = xj, other = y, axis = axis) { a, b -> a / b }
+    override fun div(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         other = y,
@@ -494,20 +295,9 @@ object KotlinBackend : IBackend {
     ) { a, b -> a / b }
 
     // 3次元
-    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer =
-        x.zipWith(xi = xi, xj = xj, xk = xk, other = y, axis = axis) { a, b -> a / b }
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer = x.zipWith(xi = xi, xj = xj, xk = xk, other = y, axis = axis) { a, b -> a / b }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer = x.zipWith(
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -518,20 +308,7 @@ object KotlinBackend : IBackend {
         axis2 = axis2,
     ) { a, b -> a / b }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer = x.zipWith(
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -546,28 +323,16 @@ object KotlinBackend : IBackend {
     ) { a, b -> a / b }
 
     // 4次元
-    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer =
-        x.zipWith(
-            xi = xi,
-            xj = xj,
-            xk = xk,
-            xl = xl,
-            other = y,
-            axis = axis,
-        ) { a, b -> a / b }
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer = x.zipWith(
+        xi = xi,
+        xj = xj,
+        xk = xk,
+        xl = xl,
+        other = y,
+        axis = axis,
+    ) { a, b -> a / b }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer = x.zipWith(
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -579,20 +344,7 @@ object KotlinBackend : IBackend {
         axis2 = axis2,
     ) { a, b -> a / b }
 
-    override fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer = x.zipWith(
+    override fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer = x.zipWith(
         xi = xi,
         xj = xj,
         xk = xk,
@@ -646,16 +398,7 @@ object KotlinBackend : IBackend {
         return result
     }
 
-    override fun matMul(
-        x: DataBuffer,
-        transX: Boolean,
-        y: DataBuffer,
-        transY: Boolean,
-        m: Int,
-        n: Int,
-        k: Int,
-        b: Int,
-    ): DataBuffer {
+    override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, transY: Boolean, m: Int, n: Int, k: Int, b: Int): DataBuffer {
         val result = DataBufferGenerator.create(b * m * n)
         val strideX = m * k
         val strideY = k * n
@@ -726,27 +469,21 @@ object KotlinBackend : IBackend {
 
     override fun max(x: DataBuffer): DataBuffer = x.reduce { acc, i -> maxOf(acc, i) }
 
-    override fun max(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer =
-        x.reduce(xi = xi, xj = xj, axis = axis) { acc, i -> maxOf(acc, i) }
+    override fun max(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer = x.reduce(xi = xi, xj = xj, axis = axis) { acc, i -> maxOf(acc, i) }
 
-    override fun max(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer =
-        x.reduce(xi = xi, xj = xj, xk = xk, axis = axis) { acc, i -> maxOf(acc, i) }
+    override fun max(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer = x.reduce(xi = xi, xj = xj, xk = xk, axis = axis) { acc, i -> maxOf(acc, i) }
 
     override fun min(x: DataBuffer): DataBuffer = x.reduce { acc, i -> minOf(acc, i) }
 
-    override fun min(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer =
-        x.reduce(xi = xi, xj = xj, axis = axis) { acc, i -> minOf(acc, i) }
+    override fun min(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer = x.reduce(xi = xi, xj = xj, axis = axis) { acc, i -> minOf(acc, i) }
 
-    override fun min(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer =
-        x.reduce(xi = xi, xj = xj, xk = xk, axis = axis) { acc, i -> minOf(acc, i) }
+    override fun min(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer = x.reduce(xi = xi, xj = xj, xk = xk, axis = axis) { acc, i -> minOf(acc, i) }
 
     override fun sum(x: DataBuffer): DataBuffer = x.reduce { acc, i -> acc + i }
 
-    override fun sum(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer =
-        x.reduce(xi = xi, xj = xj, axis = axis) { acc, i -> acc + i }
+    override fun sum(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer = x.reduce(xi = xi, xj = xj, axis = axis) { acc, i -> acc + i }
 
-    override fun sum(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer =
-        x.reduce(xi = xi, xj = xj, xk = xk, axis = axis) { acc, i -> acc + i }
+    override fun sum(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer = x.reduce(xi = xi, xj = xj, xk = xk, axis = axis) { acc, i -> acc + i }
 
     override fun maxIndex(x: DataBuffer): DataBuffer {
         val x = x.toFloatArray()
@@ -761,11 +498,9 @@ object KotlinBackend : IBackend {
         return Default(1).apply { this[0] = index.toFloat() }
     }
 
-    override fun maxIndex(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer =
-        x.reduceIndex(xi, xj, axis) { maxIndex(it)[0] }
+    override fun maxIndex(x: DataBuffer, xi: Int, xj: Int, axis: Int): DataBuffer = x.reduceIndex(xi, xj, axis) { maxIndex(it)[0] }
 
-    override fun maxIndex(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer =
-        x.reduceIndex(xi, xj, xk, axis) { maxIndex(it)[0] }
+    override fun maxIndex(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer = x.reduceIndex(xi, xj, xk, axis) { maxIndex(it)[0] }
 
     override fun topK(x: DataBuffer, k: Int, random: Random): DataBuffer {
         val x = x.toFloatArray()
@@ -776,11 +511,9 @@ object KotlinBackend : IBackend {
             .randomIndex(random)
         return Default(1).apply { this[0] = index.toFloat() }
     }
-    override fun topK(x: DataBuffer, xi: Int, xj: Int, k: Int, axis: Int, random: Random): DataBuffer =
-        x.reduceIndex(xi, xj, axis) { topK(it, k, random)[0] }
+    override fun topK(x: DataBuffer, xi: Int, xj: Int, k: Int, axis: Int, random: Random): DataBuffer = x.reduceIndex(xi, xj, axis) { topK(it, k, random)[0] }
 
-    override fun topK(x: DataBuffer, xi: Int, xj: Int, xk: Int, k: Int, axis: Int, random: Random): DataBuffer =
-        x.reduceIndex(xi, xj, xk, axis) { topK(it, k, random)[0] }
+    override fun topK(x: DataBuffer, xi: Int, xj: Int, xk: Int, k: Int, axis: Int, random: Random): DataBuffer = x.reduceIndex(xi, xj, xk, axis) { topK(it, k, random)[0] }
 
     override fun topP(x: DataBuffer, p: Float, random: Random): DataBuffer {
         val x = x.toFloatArray()
@@ -798,11 +531,9 @@ object KotlinBackend : IBackend {
         return Default(1).apply { this[0] = index.toFloat() }
     }
 
-    override fun topP(x: DataBuffer, xi: Int, xj: Int, p: Float, axis: Int, random: Random): DataBuffer =
-        x.reduceIndex(xi, xj, axis) { topP(it, p, random)[0] }
+    override fun topP(x: DataBuffer, xi: Int, xj: Int, p: Float, axis: Int, random: Random): DataBuffer = x.reduceIndex(xi, xj, axis) { topP(it, p, random)[0] }
 
-    override fun topP(x: DataBuffer, xi: Int, xj: Int, xk: Int, p: Float, axis: Int, random: Random): DataBuffer =
-        x.reduceIndex(xi, xj, xk, axis) { topP(it, p, random)[0] }
+    override fun topP(x: DataBuffer, xi: Int, xj: Int, xk: Int, p: Float, axis: Int, random: Random): DataBuffer = x.reduceIndex(xi, xj, xk, axis) { topP(it, p, random)[0] }
 
     private fun Array<Pair<Float, Int>>.randomIndex(random: Random): Int {
         val sum = sumOf { (value, _) -> value.toDouble() }
@@ -851,17 +582,7 @@ object KotlinBackend : IBackend {
         return result
     }
 
-    override fun transpose(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        axisI: Int,
-        axisJ: Int,
-        axisK: Int,
-        axisL: Int,
-    ): DataBuffer {
+    override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int): DataBuffer {
         val oldShape = listOf(xi, xj, xk, xl)
         val newShape = listOf(oldShape[axisI], oldShape[axisJ], oldShape[axisK], oldShape[axisL])
         val result = DataBufferGenerator.create(x.size)
@@ -890,19 +611,7 @@ object KotlinBackend : IBackend {
         return result
     }
 
-    override fun transpose(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        xm: Int,
-        axisI: Int,
-        axisJ: Int,
-        axisK: Int,
-        axisL: Int,
-        axisM: Int,
-    ): DataBuffer {
+    override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, xm: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int, axisM: Int): DataBuffer {
         val oldShape = listOf(xi, xj, xk, xl, xm)
         val newShape = listOf(oldShape[axisI], oldShape[axisJ], oldShape[axisK], oldShape[axisL], oldShape[axisM])
         val result = DataBufferGenerator.create(x.size)
@@ -972,50 +681,49 @@ object KotlinBackend : IBackend {
         }
     }
 
-    override fun slice(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int, indices: IntProgression): DataBuffer =
-        when (axis) {
-            0 -> {
-                val count = min(xi, indices.size)
-                val result = DataBufferGenerator.create(count * xj * xk)
-                var resultIndex = 0
-                for (i in indices) {
-                    val xOffset = i * xj * xk
-                    for (jk in 0 until xj * xk) {
-                        result[resultIndex++] = x[xOffset + jk]
-                    }
+    override fun slice(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int, indices: IntProgression): DataBuffer = when (axis) {
+        0 -> {
+            val count = min(xi, indices.size)
+            val result = DataBufferGenerator.create(count * xj * xk)
+            var resultIndex = 0
+            for (i in indices) {
+                val xOffset = i * xj * xk
+                for (jk in 0 until xj * xk) {
+                    result[resultIndex++] = x[xOffset + jk]
                 }
-                result
             }
+            result
+        }
 
-            1 -> {
-                val count = min(xj, indices.size)
-                val result = DataBufferGenerator.create(xi * count * xk)
-                for (i in 0 until xi) {
-                    val xii = i * xj * xk
-                    var resultIndex = i * count * xk
-                    for (j in indices) {
-                        val xOffset = xii + j * xk
-                        for (k in 0 until xk) {
-                            result[resultIndex++] = x[xOffset + k]
-                        }
-                    }
-                }
-                result
-            }
-
-            else -> {
-                val count = min(xk, indices.size)
-                val result = DataBufferGenerator.create(xi * xj * count)
-                for (ij in 0 until xi * xj) {
-                    val xOffset = ij * xk
-                    var resultIndex = ij * count
-                    for (k in indices) {
+        1 -> {
+            val count = min(xj, indices.size)
+            val result = DataBufferGenerator.create(xi * count * xk)
+            for (i in 0 until xi) {
+                val xii = i * xj * xk
+                var resultIndex = i * count * xk
+                for (j in indices) {
+                    val xOffset = xii + j * xk
+                    for (k in 0 until xk) {
                         result[resultIndex++] = x[xOffset + k]
                     }
                 }
-                result
             }
+            result
         }
+
+        else -> {
+            val count = min(xk, indices.size)
+            val result = DataBufferGenerator.create(xi * xj * count)
+            for (ij in 0 until xi * xj) {
+                val xOffset = ij * xk
+                var resultIndex = ij * count
+                for (k in indices) {
+                    result[resultIndex++] = x[xOffset + k]
+                }
+            }
+            result
+        }
+    }
 
     override fun copyInto(x: DataBuffer, y: DataBuffer, indices: IntProgression) {
         var xIndex = 0
@@ -1188,16 +896,7 @@ object KotlinBackend : IBackend {
         return result
     }
 
-    override fun unfold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        b: Int,
-        window: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun unfold(x: DataBuffer, xi: Int, xj: Int, b: Int, window: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val windowSize = (window - 1) * dilation + 1
         val oj = (xj - windowSize + padding * 2) / stride + 1
         val result = DataBufferGenerator.create(b * xi * oj * window)
@@ -1218,17 +917,7 @@ object KotlinBackend : IBackend {
         return result
     }
 
-    override fun unfold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        b: Int,
-        window: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun unfold(x: DataBuffer, xi: Int, xj: Int, xk: Int, b: Int, window: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val windowSize = (window - 1) * dilation + 1
         val oj = (xj - windowSize + padding * 2) / stride + 1
         val ok = (xk - windowSize + padding * 2) / stride + 1
@@ -1256,16 +945,7 @@ object KotlinBackend : IBackend {
         return result
     }
 
-    override fun fold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        b: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun fold(x: DataBuffer, xi: Int, xj: Int, xk: Int, b: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val windowSize = (xk - 1) * dilation + 1
         val oj = windowSize + (xj - 1) * stride - padding * 2
         val result = DataBufferGenerator.create(b * xi * oj)
@@ -1286,17 +966,7 @@ object KotlinBackend : IBackend {
         return result
     }
 
-    override fun fold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        b: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer {
+    override fun fold(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, b: Int, stride: Int, dilation: Int, padding: Int): DataBuffer {
         val window = kotlin.math.sqrt(xl.toDouble()).toInt()
         val windowSize = (window - 1) * dilation + 1
         val oj = windowSize + (xj - 1) * stride - padding * 2

@@ -15,11 +15,7 @@ sealed interface Process {
     fun IOScope._expect(input: Batch<IOType>, env: GraphEnv): Batch<IOType>
 
     @Suppress("FunctionName")
-    fun IOScope._train(
-        input: Batch<IOType>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType>) -> Batch<IOType>,
-    ): Batch<IOType>
+    fun IOScope._train(input: Batch<IOType>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType>) -> Batch<IOType>): Batch<IOType>
 
     fun update(optimizer: Optimizer) {}
 }

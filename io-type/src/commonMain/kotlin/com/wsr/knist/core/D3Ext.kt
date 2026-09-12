@@ -6,12 +6,7 @@ import com.wsr.knist.scope.ScopeOp
 import kotlin.jvm.JvmName
 
 @PublishedApi
-internal inline fun IOType.Companion.d3Impl(
-    i: Int,
-    j: Int,
-    k: Int,
-    init: (Int, Int, Int) -> Float = { _, _, _ -> 0f },
-): IOType.D3.Global {
+internal inline fun IOType.Companion.d3Impl(i: Int, j: Int, k: Int, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): IOType.D3.Global {
     val value = FloatArray(i * j * k)
     for (_i in 0 until i) {
         for (_j in 0 until j) {
@@ -24,10 +19,7 @@ internal inline fun IOType.Companion.d3Impl(
 }
 
 @PublishedApi
-internal inline fun IOType.Companion.d3Impl(
-    shape: List<Int>,
-    init: (Int, Int, Int) -> Float = { _, _, _ -> 0f },
-): IOType.D3.Global = d3Impl(
+internal inline fun IOType.Companion.d3Impl(shape: List<Int>, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): IOType.D3.Global = d3Impl(
     i = shape[0],
     j = shape[1],
     k = shape[2],
@@ -53,8 +45,7 @@ internal fun IOType.Companion.d3Impl(vararg elements: IOType.D2): IOType.D3.Glob
 }
 
 @PublishedApi
-internal fun IOType.Companion.d3Impl(shape: List<Int>, value: FloatArray): IOType.D3.Global =
-    IOType.D3.Global(shape = shape, value = DataBuffer.create(value))
+internal fun IOType.Companion.d3Impl(shape: List<Int>, value: FloatArray): IOType.D3.Global = IOType.D3.Global(shape = shape, value = DataBuffer.create(value))
 
 operator fun IOType.D3.get(i: Int, j: Int, k: Int): IOType.D0 = IOType.d0(value[(i * shape[1] + j) * shape[2] + k])
 

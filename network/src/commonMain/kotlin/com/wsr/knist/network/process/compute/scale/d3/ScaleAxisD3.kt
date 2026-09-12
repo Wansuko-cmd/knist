@@ -31,14 +31,9 @@ class ScaleAxisD3 internal constructor(
         else -> 0
     }
 
-    override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> =
-        input.times(other = weight, axis = axis)
+    override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> = input.times(other = weight, axis = axis)
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3> {
         val output = input.times(other = weight, axis = axis)
         val delta = calcDelta(output)
 

@@ -14,16 +14,14 @@ import kotlin.math.pow
 import kotlinx.serialization.Serializable
 
 context(scope: IOScope)
-fun List<AttentionBiasD2>.forward(scaled: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> =
-    fold(scaled) { batch, bias ->
-        with(bias) { scope.forward(batch, env) }
-    }
+fun List<AttentionBiasD2>.forward(scaled: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> = fold(scaled) { batch, bias ->
+    with(bias) { scope.forward(batch, env) }
+}
 
 context(scope: IOScope)
-fun List<AttentionBiasD2>.backward(delta: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> =
-    foldRight(delta) { bias, batch ->
-        with(bias) { scope.backward(batch, env) }
-    }
+fun List<AttentionBiasD2>.backward(delta: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> = foldRight(delta) { bias, batch ->
+    with(bias) { scope.backward(batch, env) }
+}
 
 interface AttentionBiasD2 {
     fun IOScope.forward(scaled: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3>
@@ -60,13 +58,7 @@ interface AttentionBiasD2 {
     }
 }
 
-data class AttentionBiasD2Builder(
-    val inputI: Int,
-    val inputJ: Int,
-    val numOfHeads: Int,
-    val nodes: List<Graph.Node> = emptyList(),
-    val biases: List<AttentionBiasD2> = emptyList(),
-) {
+data class AttentionBiasD2Builder(val inputI: Int, val inputJ: Int, val numOfHeads: Int, val nodes: List<Graph.Node> = emptyList(), val biases: List<AttentionBiasD2> = emptyList()) {
     fun causal() = copy(biases = biases + AttentionBiasD2.Causal(inputI))
 
     fun mask(node: GraphBuilder.Node.D1, value: Float): AttentionBiasD2Builder {

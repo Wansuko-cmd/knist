@@ -13,33 +13,18 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class ReshapeD1ToD3(
-    override val inputI: Int,
-    override val outputI: Int,
-    override val outputJ: Int,
-    override val outputK: Int,
-    override val id: String = Uuid.random().toString(),
-) : Reshape.D1ToD3() {
-    override fun IOScope.expect(input: Batch<IOType.D1>, env: GraphEnv): Batch<IOType.D3> =
-        input.reshapeToD3(i = outputI, j = outputJ, k = outputK)
+internal class ReshapeD1ToD3(override val inputI: Int, override val outputI: Int, override val outputJ: Int, override val outputK: Int, override val id: String = Uuid.random().toString()) :
+    Reshape.D1ToD3() {
+    override fun IOScope.expect(input: Batch<IOType.D1>, env: GraphEnv): Batch<IOType.D3> = input.reshapeToD3(i = outputI, j = outputJ, k = outputK)
 
-    override fun IOScope.train(
-        input: Batch<IOType.D1>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>,
-    ): Batch<IOType.D1> {
+    override fun IOScope.train(input: Batch<IOType.D1>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D1> {
         val output = input.reshapeToD3(i = outputI, j = outputJ, k = outputK)
         val delta = calcDelta(output)
         return delta.flatten()
     }
 }
 
-fun GraphBuilder.Node.D1.reshapeToD3(
-    i: Int = 1,
-    j: Int = 1,
-    k: Int = inputI,
-    id: String = Uuid.random().toString(),
-): GraphBuilder.Node.D3 {
+fun GraphBuilder.Node.D1.reshapeToD3(i: Int = 1, j: Int = 1, k: Int = inputI, id: String = Uuid.random().toString()): GraphBuilder.Node.D3 {
     check(i * j * k == inputI) {
         """
             invalid parameter.

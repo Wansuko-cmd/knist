@@ -239,7 +239,7 @@ network.train(input1 = inputA, input2 = inputB, label1 = labelA, label2 = labelB
 
 `train` / `loss` にはラベルジェネレータ版（現在の出力を受け取って目標値を返す）もあり、`Sink2`（2出力）モデルでも `label1` / `label2` の両方をラムダで渡せる。
 
-`Sink2` 系の `train` / `loss` が返す `IOType.D0.Global` は1つだけで、これは `sink1` 側の損失。head 毎の内訳は取得できない。
+`Sink2` 系の `train` / `loss` は `Pair<IOType.D0.Global, IOType.D0.Global>`（`sink1` 側・`sink2` 側の損失）を返す。
 
 どの出力にも繋がっていない port を作ってもエラーにはならず、その入力は単に無視される。
 

@@ -91,11 +91,7 @@ fun Batch<IOType.D4>.maxIndex(axis: Int): Batch<IOType.D3.Global> = when (axis) 
 
 @JvmName("batchD4sTopKAxis")
 @ScopeOp
-fun Batch<IOType.D4>.topK(
-    k: Int,
-    axis: Int,
-    @ScopeOpDefault("kotlin.random.Random") random: Random = Random,
-): Batch<IOType.D3.Global> = when (axis) {
+fun Batch<IOType.D4>.topK(k: Int, axis: Int, @ScopeOpDefault("kotlin.random.Random") random: Random = Random): Batch<IOType.D3.Global> = when (axis) {
     0 -> Batch.d3(
         size,
         j,
@@ -133,11 +129,7 @@ fun Batch<IOType.D4>.topK(
 
 @JvmName("batchD4sTopPAxis")
 @ScopeOp
-fun Batch<IOType.D4>.topP(
-    p: Float,
-    axis: Int,
-    @ScopeOpDefault("kotlin.random.Random") random: Random = Random,
-): Batch<IOType.D3.Global> = when (axis) {
+fun Batch<IOType.D4>.topP(p: Float, axis: Int, @ScopeOpDefault("kotlin.random.Random") random: Random = Random): Batch<IOType.D3.Global> = when (axis) {
     0 -> Batch.d3(
         size,
         j,

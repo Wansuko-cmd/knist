@@ -27,11 +27,7 @@ class AffineD2 internal constructor(
 
     override fun IOScope.expect(input: Batch<IOType.D2>, env: GraphEnv): Batch<IOType.D2> = input.matMul(weight)
 
-    override fun IOScope.train(
-        input: Batch<IOType.D2>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D2> {
+    override fun IOScope.train(input: Batch<IOType.D2>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D2> {
         val output = input.matMul(weight)
         val delta = calcDelta(output)
 
@@ -47,12 +43,7 @@ class AffineD2 internal constructor(
     }
 }
 
-fun GraphBuilder.Node.D2.affine(
-    neuron: Int,
-    optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = this.initializer,
-    id: String = Uuid.random().toString(),
-) = addCompute(
+fun GraphBuilder.Node.D2.affine(neuron: Int, optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = this.initializer, id: String = Uuid.random().toString()) = addCompute(
     compute =
         AffineD2(
             channel = inputI,

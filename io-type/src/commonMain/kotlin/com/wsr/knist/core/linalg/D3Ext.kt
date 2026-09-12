@@ -7,11 +7,7 @@ import com.wsr.knist.scope.ScopeOp
 import com.wsr.knist.scope.ScopeOpDefault
 
 @ScopeOp
-fun IOType.D3.matMul(
-    other: IOType.D3,
-    @ScopeOpDefault("false") transA: Boolean = false,
-    @ScopeOpDefault("false") transB: Boolean = false,
-): IOType.D3.Global {
+fun IOType.D3.matMul(other: IOType.D3, @ScopeOpDefault("false") transA: Boolean = false, @ScopeOpDefault("false") transB: Boolean = false): IOType.D3.Global {
     val m = if (transA) shape[2] else shape[1]
     val n = if (transB) other.shape[1] else other.shape[2]
     val k = if (transA) shape[1] else shape[2]

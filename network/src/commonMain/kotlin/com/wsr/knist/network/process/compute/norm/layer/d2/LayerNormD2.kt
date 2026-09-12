@@ -11,12 +11,7 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class LayerNormD2 internal constructor(
-    override val inputI: Int,
-    override val inputJ: Int,
-    private val e: Float,
-    override val id: String = Uuid.random().toString(),
-) : Compute.D2() {
+class LayerNormD2 internal constructor(override val inputI: Int, override val inputJ: Int, private val e: Float, override val id: String = Uuid.random().toString()) : Compute.D2() {
     override val outputI: Int get() = inputI
     override val outputJ: Int get() = inputJ
     private val outputSize = outputI * outputJ
@@ -31,11 +26,7 @@ class LayerNormD2 internal constructor(
         return numerator / denominator
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D2>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D2> {
+    override fun IOScope.train(input: Batch<IOType.D2>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D2> {
         val average = input.average()
         val numerator = input - average
 
@@ -87,11 +78,7 @@ class LayerNormD2 internal constructor(
     }
 }
 
-fun GraphBuilder.Node.D2.layerNorm(
-    axis: Int? = null,
-    e: Float = 1e-6f,
-    id: String = Uuid.random().toString(),
-): GraphBuilder.Node.D2 {
+fun GraphBuilder.Node.D2.layerNorm(axis: Int? = null, e: Float = 1e-6f, id: String = Uuid.random().toString()): GraphBuilder.Node.D2 {
     val process = when (axis) {
         null -> LayerNormD2(
             inputI = inputI,

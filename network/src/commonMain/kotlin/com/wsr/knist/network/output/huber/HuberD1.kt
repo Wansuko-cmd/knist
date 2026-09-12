@@ -15,10 +15,7 @@ import kotlinx.serialization.Serializable
 internal class HuberD1 internal constructor(val threshold: Float) : Output.D1() {
     override fun IOScope.expect(input: Batch<IOType.D1>): Batch<IOType.D1> = input
 
-    override fun IOScope.train(
-        input: Batch<IOType.D1>,
-        label: (Batch<IOType.D1>) -> Batch<IOType.D1>,
-    ): TResult<IOType.D1> {
+    override fun IOScope.train(input: Batch<IOType.D1>, label: (Batch<IOType.D1>) -> Batch<IOType.D1>): TResult<IOType.D1> {
         val diff = input - label(input)
         val isPositive = diff gt 0f
         val abs = where(condition = isPositive, onTrue = diff, onFalse = -1f * diff)

@@ -59,8 +59,7 @@ fun Batch<IOType.D3>.plus(other: Batch<IOType.D1>, axis: Int): Batch<IOType.D3.G
 
 @JvmName("batchD3sPlusD2")
 @ScopeOp
-operator fun Batch<IOType.D3>.plus(other: IOType.D2): Batch<IOType.D3.Global> =
-    plus(other = other, axis1 = 1, axis2 = 2)
+operator fun Batch<IOType.D3>.plus(other: IOType.D2): Batch<IOType.D3.Global> = plus(other = other, axis1 = 1, axis2 = 2)
 
 @JvmName("batchD3sPlusD2WithAxis")
 @ScopeOp

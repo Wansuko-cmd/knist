@@ -9,8 +9,7 @@ import com.wsr.knist.network.converter.Converter
 import kotlinx.serialization.Serializable
 
 @Serializable
-class WordD2(private val words: List<String>, private val length: Int, private val unknownIndex: Int) :
-    Converter.D2<List<List<String>>>() {
+class WordD2(private val words: List<String>, private val length: Int, private val unknownIndex: Int) : Converter.D2<List<List<String>>>() {
     override val outputI = length
     override val outputJ = words.size
     private val wordToId = words.mapIndexed { index, word -> word to index }.toMap()

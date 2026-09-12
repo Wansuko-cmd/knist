@@ -24,11 +24,7 @@ class PositionEmbeddingD2 internal constructor(
     override val outputJ: Int get() = inputJ
     override fun IOScope.expect(input: Batch<IOType.D2>, env: GraphEnv): Batch<IOType.D2> = input + weight
 
-    override fun IOScope.train(
-        input: Batch<IOType.D2>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D2> {
+    override fun IOScope.train(input: Batch<IOType.D2>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D2> {
         val output = input + weight
         val delta = calcDelta(output)
         weight = optimizer.adapt(weight = weight, dw = delta).toGlobal()
@@ -40,11 +36,7 @@ class PositionEmbeddingD2 internal constructor(
     }
 }
 
-fun GraphBuilder.Node.D2.positionEmbedding(
-    optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = this.initializer,
-    id: String = Uuid.random().toString(),
-) = addCompute(
+fun GraphBuilder.Node.D2.positionEmbedding(optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = this.initializer, id: String = Uuid.random().toString()) = addCompute(
     compute = PositionEmbeddingD2(
         inputI = inputI,
         inputJ = inputJ,

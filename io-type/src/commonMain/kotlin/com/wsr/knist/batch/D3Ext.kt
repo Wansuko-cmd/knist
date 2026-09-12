@@ -9,26 +9,14 @@ import com.wsr.knist.scope.ScopeOp
 import kotlin.jvm.JvmName
 
 @PublishedApi
-internal inline fun Batch.Companion.d3Impl(
-    size: Int,
-    i: Int,
-    j: Int,
-    k: Int,
-    init: (Int, Int, Int) -> Float = { _, _, _ -> 0f },
-): Batch<IOType.D3.Global> = Batch(size) { IOType.d3(i, j, k, init) }
+internal inline fun Batch.Companion.d3Impl(size: Int, i: Int, j: Int, k: Int, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): Batch<IOType.D3.Global> = Batch(size) { IOType.d3(i, j, k, init) }
 
 @PublishedApi
-internal inline fun Batch.Companion.d3Impl(
-    size: Int,
-    shape: List<Int>,
-    init: (Int, Int, Int) -> Float = { _, _, _ -> 0f },
-): Batch<IOType.D3.Global> = d3Impl(size, shape[0], shape[1], shape[2], init)
+internal inline fun Batch.Companion.d3Impl(size: Int, shape: List<Int>, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): Batch<IOType.D3.Global> = d3Impl(size, shape[0], shape[1], shape[2], init)
 
-internal fun Batch.Companion.d3Impl(size: Int, i: Int, j: Int, k: Int, value: DataBuffer): Batch<IOType.D3.Global> =
-    Batch(value = value, size = size, shape = listOf(i, j, k))
+internal fun Batch.Companion.d3Impl(size: Int, i: Int, j: Int, k: Int, value: DataBuffer): Batch<IOType.D3.Global> = Batch(value = value, size = size, shape = listOf(i, j, k))
 
-internal fun Batch.Companion.d3Impl(size: Int, shape: List<Int>, value: DataBuffer): Batch<IOType.D3.Global> =
-    Batch(value = value, size = size, shape = shape)
+internal fun Batch.Companion.d3Impl(size: Int, shape: List<Int>, value: DataBuffer): Batch<IOType.D3.Global> = Batch(value = value, size = size, shape = shape)
 
 val Batch<IOType.D3>.i get() = shape[0]
 

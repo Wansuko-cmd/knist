@@ -11,13 +11,8 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class RmsNormD3 internal constructor(
-    override val inputI: Int,
-    override val inputJ: Int,
-    override val inputK: Int,
-    private val e: Float,
-    override val id: String = Uuid.random().toString(),
-) : Compute.D3() {
+class RmsNormD3 internal constructor(override val inputI: Int, override val inputJ: Int, override val inputK: Int, private val e: Float, override val id: String = Uuid.random().toString()) :
+    Compute.D3() {
     override val outputI: Int get() = inputI
     override val outputJ: Int get() = inputJ
     override val outputK: Int get() = inputK
@@ -26,11 +21,7 @@ class RmsNormD3 internal constructor(
         return input / deviation
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3> {
         val variance = input.pow(2).average()
         val deviation = variance.sqrt(e = e)
         val output = input / deviation
@@ -46,11 +37,7 @@ class RmsNormD3 internal constructor(
     }
 }
 
-fun GraphBuilder.Node.D3.rmsNorm(
-    axis: Int? = null,
-    e: Float = 1e-6f,
-    id: String = Uuid.random().toString(),
-): GraphBuilder.Node.D3 {
+fun GraphBuilder.Node.D3.rmsNorm(axis: Int? = null, e: Float = 1e-6f, id: String = Uuid.random().toString()): GraphBuilder.Node.D3 {
     val process = when (axis) {
         null -> RmsNormD3(
             inputI = inputI,

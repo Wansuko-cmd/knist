@@ -43,117 +43,113 @@ private const val NUM_OF_STORIES = 1000
 private const val PAD_INDEX = 0
 private const val UNK_INDEX = 1
 
-fun createTinyStoriesModel(seed: Int? = null): Network.Src1.Sink1<List<List<String>>, List<List<String>>> =
-    runBlocking {
-        NetworkSerializer.apply {
-            register(WordsD1::class)
-            register(WordD2::class)
-        }
+fun createTinyStoriesModel(seed: Int? = null): Network.Src1.Sink1<List<List<String>>, List<List<String>>> = runBlocking {
+    NetworkSerializer.apply {
+        register(WordsD1::class)
+        register(WordD2::class)
+    }
 
-        println("単語リスト生成開始")
-        val words: List<String> = createWordList(TRAIN_PATH, VOCAB_SIZE)
+    println("単語リスト生成開始")
+    val words: List<String> = createWordList(TRAIN_PATH, VOCAB_SIZE)
 
-        // ニューラルネットワークを構築
-        val network = Network.create(
-            port = port(
-                wordsD1(
-                    maxLength = MAX_LENGTH,
-                    words = words,
-                    unknownIndex = UNK_INDEX,
-                    paddingIndex = PAD_INDEX,
-                ),
+    // ニューラルネットワークを構築
+    val network = Network.create(
+        port = port(
+            wordsD1(
+                maxLength = MAX_LENGTH,
+                words = words,
+                unknownIndex = UNK_INDEX,
+                paddingIndex = PAD_INDEX,
             ),
-            optimizer = AdamW(
-                scheduler = Scheduler.CosineAnnealing(
-                    minRate = 0.0005f,
-                    maxRate = 0.001f,
-                    stepSize = NUM_OF_STORIES,
-                    warmUp = 200,
-                    initialRate = 0f,
-                ),
+        ),
+        optimizer = AdamW(
+            scheduler = Scheduler.CosineAnnealing(
+                minRate = 0.0005f,
+                maxRate = 0.001f,
+                stepSize = NUM_OF_STORIES,
+                warmUp = 200,
+                initialRate = 0f,
             ),
-            initializer = Xavier(seed = seed),
-        ) { input ->
-            input
-                .tokenEmbedding(
-                    vocabSize = words.size,
-                    tokenSize = EMBEDDING_DIM,
-                )
-                .positionEmbedding()
-                .repeat(NUM_LAYERS) {
-                    this
-                        .skip {
-                            this
-                                .layerNorm(axis = 1).scale(axis = 1).bias(axis = 1)
-                                .attention(numOfHeads = NUM_HEADS, biases = {
-                                    causal().mask(input, PAD_INDEX.toFloat())
-                                })
-                                .dropout(ratio = 0.9f)
-                        }
-                        .skip {
-                            this
-                                .layerNorm(axis = 1).scale(axis = 1).bias(axis = 1)
-                                .affine(neuron = FFN_DIM).bias(axis = 1).swish()
-                                .affine(neuron = EMBEDDING_DIM).bias(axis = 1)
-                                .dropout(ratio = 0.9f)
-                        }
-                }
-                .layerNorm(axis = 1).scale(axis = 1).bias(axis = 1)
-                .affine(neuron = words.size)
-                .softmaxWithLoss(
-                    converter = {
-                        WordD2(
-                            words = words,
-                            length = MAX_LENGTH,
-                            unknownIndex = UNK_INDEX,
-                        )
-                    },
-                )
-        }
+        ),
+        initializer = Xavier(seed = seed),
+    ) { input ->
+        input
+            .tokenEmbedding(
+                vocabSize = words.size,
+                tokenSize = EMBEDDING_DIM,
+            )
+            .positionEmbedding()
+            .repeat(NUM_LAYERS) {
+                this
+                    .skip {
+                        this
+                            .layerNorm(axis = 1).scale(axis = 1).bias(axis = 1)
+                            .attention(numOfHeads = NUM_HEADS, biases = {
+                                causal().mask(input, PAD_INDEX.toFloat())
+                            })
+                            .dropout(ratio = 0.9f)
+                    }
+                    .skip {
+                        this
+                            .layerNorm(axis = 1).scale(axis = 1).bias(axis = 1)
+                            .affine(neuron = FFN_DIM).bias(axis = 1).swish()
+                            .affine(neuron = EMBEDDING_DIM).bias(axis = 1)
+                            .dropout(ratio = 0.9f)
+                    }
+            }
+            .layerNorm(axis = 1).scale(axis = 1).bias(axis = 1)
+            .affine(neuron = words.size)
+            .softmaxWithLoss(
+                converter = {
+                    WordD2(
+                        words = words,
+                        length = MAX_LENGTH,
+                        unknownIndex = UNK_INDEX,
+                    )
+                },
+            )
+    }
 
-        println("学習開始")
-        FileSystem.SYSTEM.resource(TRAIN_PATH).buffer().use { buffer ->
-            generateSequence { buffer.readUtf8Line() }
-                .generateStories()
-                .flatMap { tokenize(it).toData() }
-                // バッチサイズ
-                .chunked(BATCH_SIZE)
-                // 学習バッチ数
-                .take(NUM_OF_STORIES)
-                .forEachIndexed { lineIndex, trainData ->
-                    val inputs = trainData.map { it.first }
-                    val labels = trainData.map { it.second }
-                    val random = Random.nextInt(inputs.indices)
-                    println(
-                        """
+    println("学習開始")
+    FileSystem.SYSTEM.resource(TRAIN_PATH).buffer().use { buffer ->
+        generateSequence { buffer.readUtf8Line() }
+            .generateStories()
+            .flatMap { tokenize(it).toData() }
+            // バッチサイズ
+            .chunked(BATCH_SIZE)
+            // 学習バッチ数
+            .take(NUM_OF_STORIES)
+            .forEachIndexed { lineIndex, trainData ->
+                val inputs = trainData.map { it.first }
+                val labels = trainData.map { it.second }
+                val random = Random.nextInt(inputs.indices)
+                println(
+                    """
                             ---------------------------
                             train line: $lineIndex
                             入力例: ${inputs[random]}
                             ラベル: ${labels[random]}
-                        """.trimIndent(),
-                    )
+                    """.trimIndent(),
+                )
 
-                    val loss = network.train(inputs, labels).unwrap()
-                    println(
-                        """
+                val loss = network.train(inputs, labels).unwrap()
+                println(
+                    """
                             loss: $loss
                             ---------------------------
-                        """.trimIndent(),
-                    )
-                }
-        }
-
-        println("出力確認")
-        val story = network.createStories(beginning = "One day, a sheep named Bob was very happy.", maxLength = 300)
-        println(story)
-
-        network
+                    """.trimIndent(),
+                )
+            }
     }
 
-private suspend fun Network.Src1.Sink1<List<List<String>>, List<List<String>>>.createStories(
-    beginning: String,
-    maxLength: Int,
-): String {
+    println("出力確認")
+    val story = network.createStories(beginning = "One day, a sheep named Bob was very happy.", maxLength = 300)
+    println(story)
+
+    network
+}
+
+private suspend fun Network.Src1.Sink1<List<List<String>>, List<List<String>>>.createStories(beginning: String, maxLength: Int): String {
     val text = tokenize(beginning).take(MAX_LENGTH).toMutableList()
     repeat(maxLength) {
         val input = text.takeLast(MAX_LENGTH)

@@ -39,8 +39,7 @@ fun IOType.D2.reshapeToD3(i: Int, j: Int, k: Int): IOType.D3.Global = reshapeToD
 
 fun IOType.D2.reshapeToD3(shape: List<Int>): IOType.D3.Global = IOType.D3(shape = shape, value = value)
 
-fun IOType.D2.reshapeToD4(i: Int, j: Int, k: Int, l: Int): IOType.D4.Global =
-    IOType.D4(shape = listOf(i, j, k, l), value = value)
+fun IOType.D2.reshapeToD4(i: Int, j: Int, k: Int, l: Int): IOType.D4.Global = IOType.D4(shape = listOf(i, j, k, l), value = value)
 
 @ScopeOp
 fun IOType.D2.slice(indices: IntProgression, axis: Int): IOType.D2.Global {

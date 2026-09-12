@@ -136,11 +136,7 @@ fun IOType.D4.maxIndex(axis: Int): IOType.D3.Global = when (axis) {
 }
 
 @ScopeOp
-fun IOType.D4.topK(
-    k: Int,
-    axis: Int,
-    @ScopeOpDefault("kotlin.random.Random") random: Random = Random,
-): IOType.D3.Global = when (axis) {
+fun IOType.D4.topK(k: Int, axis: Int, @ScopeOpDefault("kotlin.random.Random") random: Random = Random): IOType.D3.Global = when (axis) {
     0 -> IOType.D3(
         shape = listOf(j, this.k, l),
         value = Backend.topK(x = value, xi = i, xj = j, xk = this.k * l, k = k, random = random, axis = 0),
@@ -163,11 +159,7 @@ fun IOType.D4.topK(
 }
 
 @ScopeOp
-fun IOType.D4.topP(
-    p: Float,
-    axis: Int,
-    @ScopeOpDefault("kotlin.random.Random") random: Random = Random,
-): IOType.D3.Global = when (axis) {
+fun IOType.D4.topP(p: Float, axis: Int, @ScopeOpDefault("kotlin.random.Random") random: Random = Random): IOType.D3.Global = when (axis) {
     0 -> IOType.D3(
         shape = listOf(j, k, l),
         value = Backend.topP(x = value, xi = i, xj = j, xk = k * l, p = p, random = random, axis = 0),

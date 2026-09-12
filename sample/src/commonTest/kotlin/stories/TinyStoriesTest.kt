@@ -172,10 +172,7 @@ class TinyStoriesTest {
             )
     }
 
-    private suspend fun Network.Src1.Sink1<List<List<String>>, List<List<String>>>.createStories(
-        beginning: String,
-        maxLength: Int,
-    ): String {
+    private suspend fun Network.Src1.Sink1<List<List<String>>, List<List<String>>>.createStories(beginning: String, maxLength: Int): String {
         val text = tokenize(beginning).take(MAX_LENGTH).toMutableList()
         repeat(maxLength) {
             val input = text.takeLast(MAX_LENGTH)

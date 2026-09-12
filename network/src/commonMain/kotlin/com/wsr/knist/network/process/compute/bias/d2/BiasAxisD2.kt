@@ -22,14 +22,9 @@ class BiasAxisD2(
     override val outputJ: Int get() = inputJ
     private val sumAxis = if (axis == 0) 1 else 0
 
-    override fun IOScope.expect(input: Batch<IOType.D2>, env: GraphEnv): Batch<IOType.D2> =
-        input.plus(other = weight, axis = axis)
+    override fun IOScope.expect(input: Batch<IOType.D2>, env: GraphEnv): Batch<IOType.D2> = input.plus(other = weight, axis = axis)
 
-    override fun IOScope.train(
-        input: Batch<IOType.D2>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D2> {
+    override fun IOScope.train(input: Batch<IOType.D2>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D2> {
         val output = input.plus(other = weight, axis = axis)
         val delta = calcDelta(output)
         weight = optimizer.adapt(weight = weight, dw = delta.sum(axis = sumAxis)).toGlobal()

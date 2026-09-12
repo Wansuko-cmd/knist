@@ -9,90 +9,13 @@ object JTimes {
     external fun timesD1ToD3(x: Long, y: Long, yi: Int, yj: Int, yk: Int, axis: Int, result: Long, runtime: Long)
 
     external fun timesD2ToD1(x: Long, xi: Int, xj: Int, y: Long, axis: Int, result: Long, runtime: Long)
-    external fun timesD2ToD3(
-        x: Long,
-        xi: Int,
-        xj: Int,
-        y: Long,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        result: Long,
-        runtime: Long,
-    )
+    external fun timesD2ToD3(x: Long, xi: Int, xj: Int, y: Long, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, result: Long, runtime: Long)
 
     external fun timesD3ToD1(x: Long, xi: Int, xj: Int, xk: Int, y: Long, axis: Int, result: Long, runtime: Long)
-    external fun timesD3ToD2(
-        x: Long,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: Long,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-        result: Long,
-        runtime: Long,
-    )
-    external fun timesD3ToD4(
-        x: Long,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: Long,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-        result: Long,
-        runtime: Long,
-    )
+    external fun timesD3ToD2(x: Long, xi: Int, xj: Int, xk: Int, y: Long, yi: Int, yj: Int, axis1: Int, axis2: Int, result: Long, runtime: Long)
+    external fun timesD3ToD4(x: Long, xi: Int, xj: Int, xk: Int, y: Long, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int, result: Long, runtime: Long)
 
-    external fun timesD4ToD1(
-        x: Long,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: Long,
-        axis: Int,
-        result: Long,
-        runtime: Long,
-    )
-    external fun timesD4ToD2(
-        x: Long,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: Long,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-        result: Long,
-        runtime: Long,
-    )
-    external fun timesD4ToD3(
-        x: Long,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: Long,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-        result: Long,
-        runtime: Long,
-    )
+    external fun timesD4ToD1(x: Long, xi: Int, xj: Int, xk: Int, xl: Int, y: Long, axis: Int, result: Long, runtime: Long)
+    external fun timesD4ToD2(x: Long, xi: Int, xj: Int, xk: Int, xl: Int, y: Long, yi: Int, yj: Int, axis1: Int, axis2: Int, result: Long, runtime: Long)
+    external fun timesD4ToD3(x: Long, xi: Int, xj: Int, xk: Int, xl: Int, y: Long, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int, result: Long, runtime: Long)
 }

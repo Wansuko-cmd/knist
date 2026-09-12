@@ -18,78 +18,21 @@ interface IBackend {
 
     // 2次元
     fun plus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer
-    fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer
+    fun plus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer
 
     // 3次元
     fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer
 
-    fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer
+    fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer
 
-    fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer
+    fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer
 
     // 4次元
     fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer
 
-    fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer
+    fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer
 
-    fun plus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer
+    fun plus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer
 
     // 0次元
     fun minus(x: Float, y: DataBuffer): DataBuffer
@@ -102,78 +45,21 @@ interface IBackend {
 
     // 2次元
     fun minus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer
-    fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer
+    fun minus(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer
 
     // 3次元
     fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer
 
-    fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer
+    fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer
 
-    fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer
+    fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer
 
     // 4次元
     fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer
 
-    fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer
+    fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer
 
-    fun minus(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer
+    fun minus(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer
 
     // 0次元
     fun times(x: Float, y: DataBuffer): DataBuffer
@@ -186,78 +72,21 @@ interface IBackend {
 
     // 2次元
     fun times(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer
-    fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer
+    fun times(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer
 
     // 3次元
     fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer
 
-    fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer
+    fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer
 
-    fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer
+    fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer
 
     // 4次元
     fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer
 
-    fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer
+    fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer
 
-    fun times(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer
+    fun times(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer
 
     // 0次元
     fun div(x: Float, y: DataBuffer): DataBuffer
@@ -270,78 +99,21 @@ interface IBackend {
 
     // 2次元
     fun div(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, axis: Int): DataBuffer
-    fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer
+    fun div(x: DataBuffer, xi: Int, xj: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int): DataBuffer
 
     // 3次元
     fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, axis: Int): DataBuffer
 
-    fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer
+    fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer
 
-    fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        yl: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer
+    fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, yl: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer
 
     // 4次元
     fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, axis: Int): DataBuffer
 
-    fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        axis1: Int,
-        axis2: Int,
-    ): DataBuffer
+    fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int): DataBuffer
 
-    fun div(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        y: DataBuffer,
-        yi: Int,
-        yj: Int,
-        yk: Int,
-        axis1: Int,
-        axis2: Int,
-        axis3: Int,
-    ): DataBuffer
+    fun div(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, y: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, axis3: Int): DataBuffer
 
     fun inner(x: DataBuffer, y: DataBuffer, b: Int): DataBuffer
 
@@ -349,16 +121,7 @@ interface IBackend {
 
     fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, m: Int, k: Int): DataBuffer
 
-    fun matMul(
-        x: DataBuffer,
-        transX: Boolean,
-        y: DataBuffer,
-        transY: Boolean,
-        m: Int,
-        n: Int,
-        k: Int,
-        b: Int,
-    ): DataBuffer
+    fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, transY: Boolean, m: Int, n: Int, k: Int, b: Int): DataBuffer
 
     fun exp(x: DataBuffer): DataBuffer
     fun ln(x: DataBuffer, e: Float): DataBuffer
@@ -398,31 +161,9 @@ interface IBackend {
 
     fun transpose(x: DataBuffer, xi: Int, xj: Int): DataBuffer
     fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, axisI: Int, axisJ: Int, axisK: Int): DataBuffer
-    fun transpose(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        axisI: Int,
-        axisJ: Int,
-        axisK: Int,
-        axisL: Int,
-    ): DataBuffer
+    fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int): DataBuffer
 
-    fun transpose(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        xm: Int,
-        axisI: Int,
-        axisJ: Int,
-        axisK: Int,
-        axisL: Int,
-        axisM: Int,
-    ): DataBuffer
+    fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, xm: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int, axisM: Int): DataBuffer
 
     fun slice(x: DataBuffer, indices: IntProgression): DataBuffer
 
@@ -454,40 +195,11 @@ interface IBackend {
     fun where(condition: DataBuffer, x: DataBuffer, y: Float): DataBuffer
     fun where(condition: DataBuffer, x: DataBuffer, y: DataBuffer): DataBuffer
 
-    fun unfold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        b: Int,
-        window: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer
-    fun unfold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        b: Int,
-        window: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer
+    fun unfold(x: DataBuffer, xi: Int, xj: Int, b: Int, window: Int, stride: Int, dilation: Int, padding: Int): DataBuffer
+    fun unfold(x: DataBuffer, xi: Int, xj: Int, xk: Int, b: Int, window: Int, stride: Int, dilation: Int, padding: Int): DataBuffer
 
     fun fold(x: DataBuffer, xi: Int, xj: Int, xk: Int, b: Int, stride: Int, dilation: Int, padding: Int): DataBuffer
-    fun fold(
-        x: DataBuffer,
-        xi: Int,
-        xj: Int,
-        xk: Int,
-        xl: Int,
-        b: Int,
-        stride: Int,
-        dilation: Int,
-        padding: Int,
-    ): DataBuffer
+    fun fold(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, b: Int, stride: Int, dilation: Int, padding: Int): DataBuffer
 
     fun flip(x: DataBuffer, xi: Int, xj: Int, xk: Int, axis: Int): DataBuffer
 

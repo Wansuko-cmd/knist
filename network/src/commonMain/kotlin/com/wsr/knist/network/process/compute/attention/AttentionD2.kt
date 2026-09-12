@@ -63,11 +63,7 @@ class AttentionD2 internal constructor(
         return concat.matMul(weightO)
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D2>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D2> {
+    override fun IOScope.train(input: Batch<IOType.D2>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D2> {
         val query = input.matMul(weightQ)
             .reshapeToD3(i = outputI, j = numOfHeads, k = dim)
             .transpose(axisI = 1, axisJ = 0, axisK = 2)

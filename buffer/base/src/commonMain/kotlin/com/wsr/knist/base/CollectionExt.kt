@@ -16,13 +16,7 @@ internal inline fun DataBuffer.zipWith(other: DataBuffer, block: (Float, Float) 
     return result
 }
 
-internal inline fun DataBuffer.zipWith(
-    other: DataBuffer,
-    yi: Int,
-    yj: Int,
-    axis: Int,
-    block: (Float, Float) -> Float,
-): DataBuffer {
+internal inline fun DataBuffer.zipWith(other: DataBuffer, yi: Int, yj: Int, axis: Int, block: (Float, Float) -> Float): DataBuffer {
     val result = Default(other.size)
     when (axis) {
         0 -> {
@@ -49,14 +43,7 @@ internal inline fun DataBuffer.zipWith(
     return result
 }
 
-internal inline fun DataBuffer.zipWith(
-    other: DataBuffer,
-    yi: Int,
-    yj: Int,
-    yk: Int,
-    axis: Int,
-    block: (Float, Float) -> Float,
-): DataBuffer {
+internal inline fun DataBuffer.zipWith(other: DataBuffer, yi: Int, yj: Int, yk: Int, axis: Int, block: (Float, Float) -> Float): DataBuffer {
     val result = Default(other.size)
     when (axis) {
         0 -> {
@@ -100,13 +87,7 @@ internal inline fun DataBuffer.zipWith(
     return result
 }
 
-internal inline fun DataBuffer.zipWith(
-    xi: Int,
-    xj: Int,
-    other: DataBuffer,
-    axis: Int,
-    block: (Float, Float) -> Float,
-): DataBuffer {
+internal inline fun DataBuffer.zipWith(xi: Int, xj: Int, other: DataBuffer, axis: Int, block: (Float, Float) -> Float): DataBuffer {
     val result = Default(size)
     when (axis) {
         0 -> {
@@ -133,17 +114,7 @@ internal inline fun DataBuffer.zipWith(
     return result
 }
 
-internal inline fun DataBuffer.zipWith(
-    xi: Int,
-    xj: Int,
-    other: DataBuffer,
-    yi: Int,
-    yj: Int,
-    yk: Int,
-    axis1: Int,
-    axis2: Int,
-    block: (Float, Float) -> Float,
-): DataBuffer {
+internal inline fun DataBuffer.zipWith(xi: Int, xj: Int, other: DataBuffer, yi: Int, yj: Int, yk: Int, axis1: Int, axis2: Int, block: (Float, Float) -> Float): DataBuffer {
     val result = Default(other.size)
     when (axis1) {
         0 -> when (axis2) {
@@ -194,14 +165,7 @@ internal inline fun DataBuffer.zipWith(
     return result
 }
 
-internal inline fun DataBuffer.zipWith(
-    xi: Int,
-    xj: Int,
-    xk: Int,
-    other: DataBuffer,
-    axis: Int,
-    block: (Float, Float) -> Float,
-): DataBuffer {
+internal inline fun DataBuffer.zipWith(xi: Int, xj: Int, xk: Int, other: DataBuffer, axis: Int, block: (Float, Float) -> Float): DataBuffer {
     val result = Default(size)
     when (axis) {
         0 -> {
@@ -246,17 +210,7 @@ internal inline fun DataBuffer.zipWith(
     return result
 }
 
-internal inline fun DataBuffer.zipWith(
-    xi: Int,
-    xj: Int,
-    xk: Int,
-    other: DataBuffer,
-    yi: Int,
-    yj: Int,
-    axis1: Int,
-    axis2: Int,
-    block: (Float, Float) -> Float,
-): DataBuffer {
+internal inline fun DataBuffer.zipWith(xi: Int, xj: Int, xk: Int, other: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int, block: (Float, Float) -> Float): DataBuffer {
     val result = Default(size)
     when (axis1) {
         0 -> when (axis2) {
@@ -394,15 +348,7 @@ internal inline fun DataBuffer.zipWith(
     return result
 }
 
-internal inline fun DataBuffer.zipWith(
-    xi: Int,
-    xj: Int,
-    xk: Int,
-    xl: Int,
-    other: DataBuffer,
-    axis: Int,
-    block: (Float, Float) -> Float,
-): DataBuffer {
+internal inline fun DataBuffer.zipWith(xi: Int, xj: Int, xk: Int, xl: Int, other: DataBuffer, axis: Int, block: (Float, Float) -> Float): DataBuffer {
     val result = Default(size)
     when (axis) {
         0 -> {
@@ -467,18 +413,7 @@ internal inline fun DataBuffer.zipWith(
     return result
 }
 
-internal inline fun DataBuffer.zipWith(
-    xi: Int,
-    xj: Int,
-    xk: Int,
-    xl: Int,
-    other: DataBuffer,
-    yi: Int,
-    yj: Int,
-    axis1: Int,
-    axis2: Int,
-    block: (Float, Float) -> Float,
-): DataBuffer {
+internal inline fun DataBuffer.zipWith(xi: Int, xj: Int, xk: Int, xl: Int, other: DataBuffer, yi: Int, yj: Int, axis1: Int, axis2: Int, block: (Float, Float) -> Float): DataBuffer {
     val result = Default(size)
     when (axis1) {
         0 -> when (axis2) {
@@ -683,42 +618,35 @@ internal inline fun DataBuffer.reduce(operation: (Float, Float) -> Float): DataB
     return Default(floatArrayOf(acc))
 }
 
-internal inline fun DataBuffer.reduce(xi: Int, xj: Int, axis: Int, operation: (Float, Float) -> Float): DataBuffer =
-    when (axis) {
-        0 -> {
-            val result = Default(size = xj)
-            for (j in 0 until xj) {
-                var acc = this[j]
-                for (i in 1 until xi) {
-                    acc = operation(acc, this[i * xj + j])
-                }
-                result[j] = acc
+internal inline fun DataBuffer.reduce(xi: Int, xj: Int, axis: Int, operation: (Float, Float) -> Float): DataBuffer = when (axis) {
+    0 -> {
+        val result = Default(size = xj)
+        for (j in 0 until xj) {
+            var acc = this[j]
+            for (i in 1 until xi) {
+                acc = operation(acc, this[i * xj + j])
             }
-            result
+            result[j] = acc
         }
-
-        1 -> {
-            val result = Default(size = xi)
-            for (i in 0 until xi) {
-                var acc = this[i * xj]
-                for (j in 1 until xj) {
-                    acc = operation(acc, this[i * xj + j])
-                }
-                result[i] = acc
-            }
-            result
-        }
-
-        else -> throw IllegalArgumentException()
+        result
     }
 
-internal inline fun DataBuffer.reduce(
-    xi: Int,
-    xj: Int,
-    xk: Int,
-    axis: Int,
-    operation: (Float, Float) -> Float,
-): DataBuffer = when (axis) {
+    1 -> {
+        val result = Default(size = xi)
+        for (i in 0 until xi) {
+            var acc = this[i * xj]
+            for (j in 1 until xj) {
+                acc = operation(acc, this[i * xj + j])
+            }
+            result[i] = acc
+        }
+        result
+    }
+
+    else -> throw IllegalArgumentException()
+}
+
+internal inline fun DataBuffer.reduce(xi: Int, xj: Int, xk: Int, axis: Int, operation: (Float, Float) -> Float): DataBuffer = when (axis) {
     0 -> {
         val result = Default(xj * xk)
         for (j in 0 until xj) {
@@ -789,13 +717,7 @@ internal inline fun DataBuffer.reduceIndex(xi: Int, xj: Int, axis: Int, operatio
     }
 }
 
-internal inline fun DataBuffer.reduceIndex(
-    xi: Int,
-    xj: Int,
-    xk: Int,
-    axis: Int,
-    operation: (DataBuffer) -> Float,
-): DataBuffer {
+internal inline fun DataBuffer.reduceIndex(xi: Int, xj: Int, xk: Int, axis: Int, operation: (DataBuffer) -> Float): DataBuffer {
     val x = toFloatArray()
     return when (axis) {
         0 -> {

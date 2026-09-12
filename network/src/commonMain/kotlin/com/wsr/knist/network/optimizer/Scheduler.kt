@@ -24,13 +24,7 @@ sealed interface Scheduler {
     }
 
     @Serializable
-    data class CosineAnnealing(
-        val minRate: Float,
-        val maxRate: Float,
-        val stepSize: Int,
-        val warmUp: Int = 0,
-        val initialRate: Float = minRate,
-    ) : Scheduler {
+    data class CosineAnnealing(val minRate: Float, val maxRate: Float, val stepSize: Int, val warmUp: Int = 0, val initialRate: Float = minRate) : Scheduler {
         override fun calcRate(step: Int): Float = if (step < warmUp) {
             initialRate + (maxRate - initialRate) * (step / warmUp.toFloat())
         } else {

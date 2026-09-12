@@ -27,18 +27,10 @@ internal fun DataBuffer.toCPUBuffer(runtime: CPointer<Runtime>): CPUNativeBuffer
 }
 
 @OptIn(ExperimentalAtomicApi::class)
-private class CPUNativeBufferState(
-    val ptr: CPointer<CPUBuffer>,
-    val released: AtomicInt,
-    val runtime: CPointer<Runtime>,
-)
+private class CPUNativeBufferState(val ptr: CPointer<CPUBuffer>, val released: AtomicInt, val runtime: CPointer<Runtime>)
 
 @OptIn(ExperimentalAtomicApi::class)
-class CPUNativeBuffer(
-    val buffer: CPointer<CPUBuffer>,
-    override val size: Int,
-    private val runtime: CPointer<Runtime>,
-) : DataBuffer {
+class CPUNativeBuffer(val buffer: CPointer<CPUBuffer>, override val size: Int, private val runtime: CPointer<Runtime>) : DataBuffer {
     private val state = CPUNativeBufferState(buffer, AtomicInt(0), runtime)
 
     @Suppress("UNUSED")

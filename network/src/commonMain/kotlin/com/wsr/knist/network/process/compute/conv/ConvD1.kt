@@ -64,11 +64,7 @@ class ConvD1 internal constructor(
             .toBatch()
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D2>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D2> {
+    override fun IOScope.train(input: Batch<IOType.D2>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D2> {
         val col = input.unfold(window = kernel, stride = stride, dilation = dilation, padding = padding)
             .toD4()
             .transpose(axisI = 1, axisJ = 3, axisK = 0, axisL = 2)

@@ -21,10 +21,7 @@ internal class SoftmaxWithLossD1 internal constructor(val temperature: Float) : 
         return exp / sum
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D1>,
-        label: (Batch<IOType.D1>) -> Batch<IOType.D1>,
-    ): TResult<IOType.D1> {
+    override fun IOScope.train(input: Batch<IOType.D1>, label: (Batch<IOType.D1>) -> Batch<IOType.D1>): TResult<IOType.D1> {
         val input = input / temperature
         val max = input.max()
         val exp = (input - max).exp()
@@ -46,10 +43,7 @@ fun GraphBuilder.Node.D1.softmaxWithLoss(temperature: Float = 1f) = addOutput(
     converter = RawD1(inputI),
 )
 
-fun <O> GraphBuilder.Node.D1.softmaxWithLoss(
-    temperature: Float = 1f,
-    converter: GraphBuilder.Node.D1.() -> Converter.D1<O>,
-) = addOutput(
+fun <O> GraphBuilder.Node.D1.softmaxWithLoss(temperature: Float = 1f, converter: GraphBuilder.Node.D1.() -> Converter.D1<O>) = addOutput(
     output = SoftmaxWithLossD1(temperature = temperature),
     converter = converter(),
 )

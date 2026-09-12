@@ -13,21 +13,12 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class ReshapeD3ToD1(
-    override val inputI: Int,
-    override val inputJ: Int,
-    override val inputK: Int,
-    override val id: String = Uuid.random().toString(),
-) : Reshape.D3ToD1() {
+internal class ReshapeD3ToD1(override val inputI: Int, override val inputJ: Int, override val inputK: Int, override val id: String = Uuid.random().toString()) : Reshape.D3ToD1() {
     override val outputI: Int = inputI * inputJ * inputK
 
     override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D1> = input.flatten()
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>): Batch<IOType.D3> {
         val output = input.flatten()
         val delta = calcDelta(output)
         return delta.reshapeToD3(input.shape)

@@ -13,20 +13,10 @@ import com.wsr.knist.network.join.Join
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class ConcatD3(
-    override val outputI: Int,
-    override val outputJ: Int,
-    override val outputK: Int,
-    private val axis: Int,
-) : Join.D3() {
-    override fun IOScope.expect(inputs: List<Batch<IOType.D3>>, env: GraphEnv): Batch<IOType.D3> =
-        inputs.reduce { acc, batch -> acc.concat(batch, axis = axis) }
+internal class ConcatD3(override val outputI: Int, override val outputJ: Int, override val outputK: Int, private val axis: Int) : Join.D3() {
+    override fun IOScope.expect(inputs: List<Batch<IOType.D3>>, env: GraphEnv): Batch<IOType.D3> = inputs.reduce { acc, batch -> acc.concat(batch, axis = axis) }
 
-    override fun IOScope.train(
-        inputs: List<Batch<IOType.D3>>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>,
-    ): List<Batch<IOType.D3>> {
+    override fun IOScope.train(inputs: List<Batch<IOType.D3>>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): List<Batch<IOType.D3>> {
         val output = inputs.reduce { acc, batch -> acc.concat(batch, axis = axis) }
         val delta = calcDelta(output)
         var from = 0

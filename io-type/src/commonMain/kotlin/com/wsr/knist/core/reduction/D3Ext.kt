@@ -86,11 +86,7 @@ fun IOType.D3.maxIndex(axis: Int): IOType.D2.Global {
 }
 
 @ScopeOp
-fun IOType.D3.topK(
-    k: Int,
-    axis: Int,
-    @ScopeOpDefault("kotlin.random.Random") random: Random = Random,
-): IOType.D2.Global {
+fun IOType.D3.topK(k: Int, axis: Int, @ScopeOpDefault("kotlin.random.Random") random: Random = Random): IOType.D2.Global {
     val result = Backend.topK(x = value, xi = i, xj = j, xk = this.k, k = k, axis = axis, random = random)
     return IOType.D2(
         shape = when (axis) {
@@ -103,11 +99,7 @@ fun IOType.D3.topK(
 }
 
 @ScopeOp
-fun IOType.D3.topP(
-    p: Float,
-    axis: Int,
-    @ScopeOpDefault("kotlin.random.Random") random: Random = Random,
-): IOType.D2.Global {
+fun IOType.D3.topP(p: Float, axis: Int, @ScopeOpDefault("kotlin.random.Random") random: Random = Random): IOType.D2.Global {
     val result = Backend.topP(x = value, xi = i, xj = j, xk = this.k, p = p, axis = axis, random = random)
     return IOType.D2(
         shape = when (axis) {

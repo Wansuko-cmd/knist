@@ -21,14 +21,9 @@ class AffineD1 internal constructor(
     private var weight: IOType.D2.Global,
     override val id: String = Uuid.random().toString(),
 ) : Compute.D1() {
-    override fun IOScope.expect(input: Batch<IOType.D1>, env: GraphEnv): Batch<IOType.D1> =
-        weight.matMul(input, trans = true)
+    override fun IOScope.expect(input: Batch<IOType.D1>, env: GraphEnv): Batch<IOType.D1> = weight.matMul(input, trans = true)
 
-    override fun IOScope.train(
-        input: Batch<IOType.D1>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>,
-    ): Batch<IOType.D1> {
+    override fun IOScope.train(input: Batch<IOType.D1>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>): Batch<IOType.D1> {
         val output = weight.matMul(input, trans = true)
         val delta = calcDelta(output)
         val dx = weight.matMul(delta)
@@ -42,12 +37,7 @@ class AffineD1 internal constructor(
     }
 }
 
-fun GraphBuilder.Node.D1.affine(
-    neuron: Int,
-    optimizer: Optimizer = this.optimizer,
-    initializer: WeightInitializer = this.initializer,
-    id: String = Uuid.random().toString(),
-) = addCompute(
+fun GraphBuilder.Node.D1.affine(neuron: Int, optimizer: Optimizer = this.optimizer, initializer: WeightInitializer = this.initializer, id: String = Uuid.random().toString()) = addCompute(
     compute =
         AffineD1(
             inputI = inputI,

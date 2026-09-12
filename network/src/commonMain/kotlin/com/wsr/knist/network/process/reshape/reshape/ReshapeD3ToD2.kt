@@ -21,14 +21,9 @@ internal class ReshapeD3ToD2(
     override val outputJ: Int,
     override val id: String = Uuid.random().toString(),
 ) : Reshape.D3ToD2() {
-    override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D2> =
-        input.reshapeToD2(i = outputI, j = outputJ)
+    override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D2> = input.reshapeToD2(i = outputI, j = outputJ)
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D3> {
         val output = input.reshapeToD2(i = outputI, j = outputJ)
         val delta = calcDelta(output)
         return delta.reshapeToD3(input.shape)

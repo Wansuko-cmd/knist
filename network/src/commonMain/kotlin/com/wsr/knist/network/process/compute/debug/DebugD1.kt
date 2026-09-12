@@ -12,8 +12,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-class DebugD1 internal constructor(override val inputI: Int, override val id: String = Uuid.random().toString()) :
-    Compute.D1() {
+class DebugD1 internal constructor(override val inputI: Int, override val id: String = Uuid.random().toString()) : Compute.D1() {
     override val outputI: Int get() = inputI
 
     @Transient
@@ -26,11 +25,7 @@ class DebugD1 internal constructor(override val inputI: Int, override val id: St
         onInput(it)
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D1>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>,
-    ): Batch<IOType.D1> {
+    override fun IOScope.train(input: Batch<IOType.D1>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>): Batch<IOType.D1> {
         val input = input.also { onInput(it) }
         val delta = calcDelta(input).also { onDelta(it) }
         return delta
@@ -40,11 +35,7 @@ class DebugD1 internal constructor(override val inputI: Int, override val id: St
 /**
  * ※Json化するとラムダ式はリセットされる
  */
-fun GraphBuilder.Node.D1.debug(
-    onInput: (Batch<IOType.D1>) -> Unit = {},
-    onDelta: (Batch<IOType.D1>) -> Unit = {},
-    id: String = Uuid.random().toString(),
-) = addCompute(
+fun GraphBuilder.Node.D1.debug(onInput: (Batch<IOType.D1>) -> Unit = {}, onDelta: (Batch<IOType.D1>) -> Unit = {}, id: String = Uuid.random().toString()) = addCompute(
     compute = DebugD1(inputI = inputI, id = id)
         .apply {
             this.onInput = onInput
