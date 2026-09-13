@@ -57,12 +57,16 @@ import com.wsr.knist.network.optimizer.sgd.SgdD4
 import com.wsr.knist.network.output.Output
 import com.wsr.knist.network.output.huber.HuberD1
 import com.wsr.knist.network.output.huber.HuberD2
+import com.wsr.knist.network.output.huber.HuberD3
 import com.wsr.knist.network.output.mean.MeanAbsoluteD1
 import com.wsr.knist.network.output.mean.MeanAbsoluteD2
+import com.wsr.knist.network.output.mean.MeanAbsoluteD3
 import com.wsr.knist.network.output.mean.MeanSquareD1
 import com.wsr.knist.network.output.mean.MeanSquareD2
+import com.wsr.knist.network.output.mean.MeanSquareD3
 import com.wsr.knist.network.output.sigmoid.SigmoidWithLossD1
 import com.wsr.knist.network.output.sigmoid.SigmoidWithLossD2
+import com.wsr.knist.network.output.sigmoid.SigmoidWithLossD3
 import com.wsr.knist.network.output.softmax.SoftmaxWithLossD1
 import com.wsr.knist.network.output.softmax.SoftmaxWithLossD2
 import com.wsr.knist.network.process.Process
@@ -391,15 +395,19 @@ private val buildInSerializersModule = SerializersModule {
     polymorphic(Output::class) {
         subclass(HuberD1::class)
         subclass(HuberD2::class)
+        subclass(HuberD3::class)
 
         subclass(MeanAbsoluteD1::class)
         subclass(MeanAbsoluteD2::class)
+        subclass(MeanAbsoluteD3::class)
 
         subclass(MeanSquareD1::class)
         subclass(MeanSquareD2::class)
+        subclass(MeanSquareD3::class)
 
         subclass(SigmoidWithLossD1::class)
         subclass(SigmoidWithLossD2::class)
+        subclass(SigmoidWithLossD3::class)
 
         subclass(SoftmaxWithLossD1::class)
         subclass(SoftmaxWithLossD2::class)
