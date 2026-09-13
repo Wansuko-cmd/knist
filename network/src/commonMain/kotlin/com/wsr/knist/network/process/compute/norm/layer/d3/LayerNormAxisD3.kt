@@ -1,6 +1,7 @@
 package com.wsr.knist.network.process.compute.norm.layer.d3
 
 import com.wsr.knist.batch.Batch
+import com.wsr.knist.batch.unaryMinus
 import com.wsr.knist.core.IOScope
 import com.wsr.knist.core.IOType
 import com.wsr.knist.network.GraphEnv
@@ -62,7 +63,7 @@ class LayerNormAxisD3 internal constructor(
         val dx1 = dNumerator
 
         // dy/x <- x-average(x)のaverage(x)のx
-        val dx2 = -1f * dNumerator.average(axis = axis)
+        val dx2 = -dNumerator.average(axis = axis)
 
         // dy/x <- variance(x)のx
         val dx3 = run {

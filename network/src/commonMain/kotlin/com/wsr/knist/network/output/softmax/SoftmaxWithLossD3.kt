@@ -1,6 +1,7 @@
 package com.wsr.knist.network.output.softmax
 
 import com.wsr.knist.batch.Batch
+import com.wsr.knist.batch.unaryMinus
 import com.wsr.knist.core.IOScope
 import com.wsr.knist.core.IOType
 import com.wsr.knist.network.GraphBuilder
@@ -26,7 +27,7 @@ internal class SoftmaxWithLossD3 internal constructor(val outputI: Int, val outp
         val mask = label.sum() gt 0f
 
         // -log(p)
-        val losses = -1f * (output * label).sum().ln(1e-7f)
+        val losses = -(output * label).sum().ln(1e-7f)
         val maskedLosses = losses * mask
 
         // 有効値のみの平均を取る

@@ -2,6 +2,7 @@ package com.wsr.knist.core
 
 import com.wsr.knist.Backend
 import com.wsr.knist.base.data.DataBuffer
+import com.wsr.knist.core.elementwise.operation.times.times
 import com.wsr.knist.scope.ScopeOp
 
 @PublishedApi
@@ -33,3 +34,6 @@ fun IOType.D1.concat(other: IOType.D1): IOType.D1.Global {
     Backend.copyInto(x = other.value, y = result, indices = i until newI)
     return IOType.D1.Global(value = result)
 }
+
+@ScopeOp
+operator fun IOType.D1.unaryMinus(): IOType.D1 = -1f * this

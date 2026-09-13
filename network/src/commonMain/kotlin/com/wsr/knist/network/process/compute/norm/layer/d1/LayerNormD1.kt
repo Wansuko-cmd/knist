@@ -1,6 +1,7 @@
 package com.wsr.knist.network.process.compute.norm.layer.d1
 
 import com.wsr.knist.batch.Batch
+import com.wsr.knist.batch.unaryMinus
 import com.wsr.knist.core.IOScope
 import com.wsr.knist.core.IOType
 import com.wsr.knist.network.GraphBuilder
@@ -40,7 +41,7 @@ class LayerNormD1 internal constructor(override val inputI: Int, private val e: 
         val dx1 = dNumerator
 
         // dy/x <- average(x)のx
-        val dx2 = -1f * dNumerator.sum() / outputI.toFloat()
+        val dx2 = -dNumerator.sum() / outputI.toFloat()
 
         // dy/x <- variance(x)のx
         val dx3 = run {
@@ -55,7 +56,7 @@ class LayerNormD1 internal constructor(override val inputI: Int, private val e: 
              * dy/[variance(x)]
              *   = -sum(delta * output) / (denominator^2 * outputSize)
              */
-            val dvn = -1f * (delta * output).sum()
+            val dvn = -(delta * output).sum()
             val dvd = 2f * denominator.pow(2) * outputI.toFloat()
             val dVariance = dvn / dvd
 
@@ -65,7 +66,7 @@ class LayerNormD1 internal constructor(override val inputI: Int, private val e: 
             // dy/[x]
             val dx1 = dSquared
             // dy/[-average(x)]
-            val dx2 = -1f * dSquared.sum() / outputI.toFloat()
+            val dx2 = -dSquared.sum() / outputI.toFloat()
 
             dx1 + dx2
         }

@@ -2,6 +2,7 @@ package com.wsr.knist.core
 
 import com.wsr.knist.Backend
 import com.wsr.knist.base.data.DataBuffer
+import com.wsr.knist.core.elementwise.operation.times.times
 import com.wsr.knist.scope.ScopeOp
 import kotlin.jvm.JvmName
 
@@ -114,3 +115,6 @@ fun IOType.D3.concat(other: IOType.D3, axis: Int): IOType.D3.Global = when (axis
 
     else -> throw IllegalArgumentException("IOType.D3.concat axis is $axis, not 0, 1 or 2.")
 }
+
+@ScopeOp
+operator fun IOType.D3.unaryMinus(): IOType.D3 = -1f * this
