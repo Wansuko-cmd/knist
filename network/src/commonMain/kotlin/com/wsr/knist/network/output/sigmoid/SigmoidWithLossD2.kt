@@ -22,7 +22,7 @@ internal class SigmoidWithLossD2 internal constructor(val outputI: Int, val outp
         val loss = run {
             val y = label * output.ln(1e-7f)
             val p = (one - label) * (one - output).ln(1e-7f)
-            0f - (y + p).sum().batchAverage()
+            -(y + p).sum().batchAverage()
         }
         val delta = output - label
         return TResult(loss = loss, delta = delta)

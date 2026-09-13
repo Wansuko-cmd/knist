@@ -1,6 +1,7 @@
 package com.wsr.knist.network.output.huber
 
 import com.wsr.knist.batch.Batch
+import com.wsr.knist.batch.unaryMinus
 import com.wsr.knist.core.IOScope
 import com.wsr.knist.core.IOType
 import com.wsr.knist.network.GraphBuilder
@@ -18,7 +19,7 @@ internal class HuberD1 internal constructor(val threshold: Float) : Output.D1() 
     override fun IOScope.train(input: Batch<IOType.D1>, label: (Batch<IOType.D1>) -> Batch<IOType.D1>): TResult<IOType.D1> {
         val diff = input - label(input)
         val isPositive = diff gt 0f
-        val abs = where(condition = isPositive, onTrue = diff, onFalse = -1f * diff)
+        val abs = where(condition = isPositive, onTrue = diff, onFalse = -diff)
         val sign = where(condition = isPositive, onTrue = 1f, onFalse = -1f)
 
         val condition = abs lt threshold

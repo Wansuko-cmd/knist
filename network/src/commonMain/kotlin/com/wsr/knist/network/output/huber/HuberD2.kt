@@ -18,7 +18,7 @@ internal class HuberD2 internal constructor(val threshold: Float) : Output.D2() 
     override fun IOScope.train(input: Batch<IOType.D2>, label: (Batch<IOType.D2>) -> Batch<IOType.D2>): TResult<IOType.D2> {
         val diff = input - label(input)
         val isPositive = diff gt 0f
-        val abs = where(condition = isPositive, onTrue = diff, onFalse = -1f * diff)
+        val abs = where(condition = isPositive, onTrue = diff, onFalse = -diff)
         val sign = where(condition = isPositive, onTrue = 1f, onFalse = -1f)
 
         val condition = abs lt threshold

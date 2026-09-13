@@ -1,6 +1,7 @@
 package com.wsr.knist.network.output.mean
 
 import com.wsr.knist.batch.Batch
+import com.wsr.knist.batch.unaryMinus
 import com.wsr.knist.core.IOScope
 import com.wsr.knist.core.IOType
 import com.wsr.knist.network.GraphBuilder
@@ -19,7 +20,7 @@ internal class MeanAbsoluteD2 internal constructor() : Output.D2() {
         val diff = input - label(input)
         val condition = diff gt 0f
         val delta = where(condition = condition, onTrue = 1f, onFalse = -1f)
-        val loss = where(condition = condition, onTrue = diff, onFalse = -1f * diff)
+        val loss = where(condition = condition, onTrue = diff, onFalse = -diff)
             .batchAverage().average()
         return TResult(loss = loss, delta = delta)
     }
