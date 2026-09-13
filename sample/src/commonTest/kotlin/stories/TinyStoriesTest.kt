@@ -162,6 +162,7 @@ class TinyStoriesTest {
             .layerNorm(axis = 1).scale(axis = 1).bias(axis = 1)
             .affine(words.size)
             .softmaxWithLoss(
+                axis = 1,
                 converter = {
                     WordD2(
                         words = words,
