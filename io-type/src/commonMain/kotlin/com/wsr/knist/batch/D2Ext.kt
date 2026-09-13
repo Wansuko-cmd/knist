@@ -2,6 +2,7 @@ package com.wsr.knist.batch
 
 import com.wsr.knist.Backend
 import com.wsr.knist.base.data.DataBuffer
+import com.wsr.knist.batch.elementwise.operation.times.times
 import com.wsr.knist.core.D2
 import com.wsr.knist.core.IOType
 import com.wsr.knist.core.d2
@@ -36,3 +37,6 @@ operator fun Batch<IOType.D2>.set(i: Int, element: IOType.D2) {
     val start = i * step
     Backend.copyInto(element.value, value, start until start + element.value.size)
 }
+
+@ScopeOp
+operator fun Batch<IOType.D2>.unaryMinus(): Batch<IOType.D2> = -1f * this

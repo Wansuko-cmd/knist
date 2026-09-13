@@ -1,6 +1,7 @@
 package com.wsr.knist.batch
 
 import com.wsr.knist.base.data.DataBuffer
+import com.wsr.knist.batch.elementwise.operation.times.times
 import com.wsr.knist.core.IOType
 import com.wsr.knist.core.d0
 import com.wsr.knist.scope.ScopeOp
@@ -21,3 +22,6 @@ operator fun Batch<IOType.D0>.get(i: Int): IOType.D0 {
 operator fun Batch<IOType.D0>.set(i: Int, element: IOType.D0) {
     value[i] = element.value[0]
 }
+
+@ScopeOp
+operator fun Batch<IOType.D0>.unaryMinus(): Batch<IOType.D0> = -1f * this
