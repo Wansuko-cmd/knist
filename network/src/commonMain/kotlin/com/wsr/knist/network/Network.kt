@@ -125,6 +125,36 @@ interface Network {
                 )
             }
 
+            @JvmName("replaceSinkD3")
+            fun <T : Output.D3, O2> replaceSink(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<O2>,
+            ): Sink1<I, O2> {
+                val copy = clone()
+                val last = copy.graph.last() as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
+                    from = copy.sink.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink1(
+                    source = copy.source,
+                    graph = result.nodes,
+                    sink = result.sink,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
             override fun create(sources: List<Graph.Source<*>>, graph: List<Graph.Node>, sinks: List<Graph.Sink<*>>, optimizer: Optimizer, initializer: WeightInitializer): Sink1<I, O> =
                 build(sources, graph, sinks, optimizer, initializer)
 
@@ -336,6 +366,37 @@ interface Network {
                 )
             }
 
+            @JvmName("replaceSink1D3")
+            fun <T : Output.D3, ON> replaceSink1(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink2<I, ON, O2> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink1.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink1. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
+                    from = copy.sink1.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink2(
+                    source = copy.source,
+                    graph = result.nodes,
+                    sink1 = result.sink,
+                    sink2 = copy.sink2,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
             @JvmName("replaceSink2D2")
             fun <T : Output.D2, ON> replaceSink2(
                 optimizer: Optimizer = this.optimizer,
@@ -350,6 +411,37 @@ interface Network {
                 val builder = GraphBuilder.Node.D2(
                     inputI = last.process.outputShape[0],
                     inputJ = last.process.outputShape[1],
+                    from = copy.sink2.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink2(
+                    source = copy.source,
+                    graph = result.nodes,
+                    sink1 = copy.sink1,
+                    sink2 = result.sink,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
+            @JvmName("replaceSink2D3")
+            fun <T : Output.D3, ON> replaceSink2(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink2<I, O1, ON> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink2.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink2. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
                     from = copy.sink2.from,
                     nodes = copy.graph,
                     optimizer = optimizer,
@@ -635,6 +727,38 @@ interface Network {
                 )
             }
 
+            @JvmName("replaceSink1D3")
+            fun <T : Output.D3, ON> replaceSink1(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink3<I, ON, O2, O3> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink1.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink1. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
+                    from = copy.sink1.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink3(
+                    source = copy.source,
+                    graph = result.nodes,
+                    sink1 = result.sink,
+                    sink2 = copy.sink2,
+                    sink3 = copy.sink3,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
             @JvmName("replaceSink2D2")
             fun <T : Output.D2, ON> replaceSink2(
                 optimizer: Optimizer = this.optimizer,
@@ -666,6 +790,38 @@ interface Network {
                 )
             }
 
+            @JvmName("replaceSink2D3")
+            fun <T : Output.D3, ON> replaceSink2(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink3<I, O1, ON, O3> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink2.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink2. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
+                    from = copy.sink2.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink3(
+                    source = copy.source,
+                    graph = result.nodes,
+                    sink1 = copy.sink1,
+                    sink2 = result.sink,
+                    sink3 = copy.sink3,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
             @JvmName("replaceSink3D2")
             fun <T : Output.D2, ON> replaceSink3(
                 optimizer: Optimizer = this.optimizer,
@@ -680,6 +836,38 @@ interface Network {
                 val builder = GraphBuilder.Node.D2(
                     inputI = last.process.outputShape[0],
                     inputJ = last.process.outputShape[1],
+                    from = copy.sink3.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink3(
+                    source = copy.source,
+                    graph = result.nodes,
+                    sink1 = copy.sink1,
+                    sink2 = copy.sink2,
+                    sink3 = result.sink,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
+            @JvmName("replaceSink3D3")
+            fun <T : Output.D3, ON> replaceSink3(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink3<I, O1, O2, ON> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink3.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink3. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
                     from = copy.sink3.from,
                     nodes = copy.graph,
                     optimizer = optimizer,
@@ -851,6 +1039,37 @@ interface Network {
                 val builder = GraphBuilder.Node.D2(
                     inputI = last.process.outputShape[0],
                     inputJ = last.process.outputShape[1],
+                    from = copy.sink.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink1(
+                    source1 = copy.source1,
+                    source2 = copy.source2,
+                    graph = result.nodes,
+                    sink = result.sink,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
+            @JvmName("replaceSinkD3")
+            fun <T : Output.D3, O2> replaceSink(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<O2>,
+            ): Sink1<I1, I2, O2> {
+                val copy = clone()
+                val last = copy.graph.last() as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
                     from = copy.sink.from,
                     nodes = copy.graph,
                     optimizer = optimizer,
@@ -1105,6 +1324,38 @@ interface Network {
                 )
             }
 
+            @JvmName("replaceSink1D3")
+            fun <T : Output.D3, ON> replaceSink1(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink2<I1, I2, ON, O2> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink1.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink1. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
+                    from = copy.sink1.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink2(
+                    source1 = copy.source1,
+                    source2 = copy.source2,
+                    graph = result.nodes,
+                    sink1 = result.sink,
+                    sink2 = copy.sink2,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
             @JvmName("replaceSink2D2")
             fun <T : Output.D2, ON> replaceSink2(
                 optimizer: Optimizer = this.optimizer,
@@ -1119,6 +1370,38 @@ interface Network {
                 val builder = GraphBuilder.Node.D2(
                     inputI = last.process.outputShape[0],
                     inputJ = last.process.outputShape[1],
+                    from = copy.sink2.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink2(
+                    source1 = copy.source1,
+                    source2 = copy.source2,
+                    graph = result.nodes,
+                    sink1 = copy.sink1,
+                    sink2 = result.sink,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
+            @JvmName("replaceSink2D3")
+            fun <T : Output.D3, ON> replaceSink2(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink2<I1, I2, O1, ON> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink2.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink2. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
                     from = copy.sink2.from,
                     nodes = copy.graph,
                     optimizer = optimizer,
@@ -1442,6 +1725,39 @@ interface Network {
                 )
             }
 
+            @JvmName("replaceSink1D3")
+            fun <T : Output.D3, ON> replaceSink1(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink3<I1, I2, ON, O2, O3> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink1.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink1. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
+                    from = copy.sink1.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink3(
+                    source1 = copy.source1,
+                    source2 = copy.source2,
+                    graph = result.nodes,
+                    sink1 = result.sink,
+                    sink2 = copy.sink2,
+                    sink3 = copy.sink3,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
             @JvmName("replaceSink2D2")
             fun <T : Output.D2, ON> replaceSink2(
                 optimizer: Optimizer = this.optimizer,
@@ -1474,6 +1790,39 @@ interface Network {
                 )
             }
 
+            @JvmName("replaceSink2D3")
+            fun <T : Output.D3, ON> replaceSink2(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink3<I1, I2, O1, ON, O3> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink2.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink2. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
+                    from = copy.sink2.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink3(
+                    source1 = copy.source1,
+                    source2 = copy.source2,
+                    graph = result.nodes,
+                    sink1 = copy.sink1,
+                    sink2 = result.sink,
+                    sink3 = copy.sink3,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
             @JvmName("replaceSink3D2")
             fun <T : Output.D2, ON> replaceSink3(
                 optimizer: Optimizer = this.optimizer,
@@ -1488,6 +1837,39 @@ interface Network {
                 val builder = GraphBuilder.Node.D2(
                     inputI = last.process.outputShape[0],
                     inputJ = last.process.outputShape[1],
+                    from = copy.sink3.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink3(
+                    source1 = copy.source1,
+                    source2 = copy.source2,
+                    graph = result.nodes,
+                    sink1 = copy.sink1,
+                    sink2 = copy.sink2,
+                    sink3 = result.sink,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
+            @JvmName("replaceSink3D3")
+            fun <T : Output.D3, ON> replaceSink3(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink3<I1, I2, O1, O2, ON> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink3.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink3. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
                     from = copy.sink3.from,
                     nodes = copy.graph,
                     optimizer = optimizer,
@@ -1698,6 +2080,38 @@ interface Network {
                 val builder = GraphBuilder.Node.D2(
                     inputI = last.process.outputShape[0],
                     inputJ = last.process.outputShape[1],
+                    from = copy.sink.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink1(
+                    source1 = copy.source1,
+                    source2 = copy.source2,
+                    source3 = copy.source3,
+                    graph = result.nodes,
+                    sink = result.sink,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
+            @JvmName("replaceSinkD3")
+            fun <T : Output.D3, O2> replaceSink(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<O2>,
+            ): Sink1<I1, I2, I3, O2> {
+                val copy = clone()
+                val last = copy.graph.last() as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
                     from = copy.sink.from,
                     nodes = copy.graph,
                     optimizer = optimizer,
@@ -1996,6 +2410,39 @@ interface Network {
                 )
             }
 
+            @JvmName("replaceSink1D3")
+            fun <T : Output.D3, ON> replaceSink1(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink2<I1, I2, I3, ON, O2> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink1.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink1. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
+                    from = copy.sink1.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink2(
+                    source1 = copy.source1,
+                    source2 = copy.source2,
+                    source3 = copy.source3,
+                    graph = result.nodes,
+                    sink1 = result.sink,
+                    sink2 = copy.sink2,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
             @JvmName("replaceSink2D2")
             fun <T : Output.D2, ON> replaceSink2(
                 optimizer: Optimizer = this.optimizer,
@@ -2010,6 +2457,39 @@ interface Network {
                 val builder = GraphBuilder.Node.D2(
                     inputI = last.process.outputShape[0],
                     inputJ = last.process.outputShape[1],
+                    from = copy.sink2.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink2(
+                    source1 = copy.source1,
+                    source2 = copy.source2,
+                    source3 = copy.source3,
+                    graph = result.nodes,
+                    sink1 = copy.sink1,
+                    sink2 = result.sink,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
+            @JvmName("replaceSink2D3")
+            fun <T : Output.D3, ON> replaceSink2(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink2<I1, I2, I3, O1, ON> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink2.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink2. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
                     from = copy.sink2.from,
                     nodes = copy.graph,
                     optimizer = optimizer,
@@ -2381,6 +2861,40 @@ interface Network {
                 )
             }
 
+            @JvmName("replaceSink1D3")
+            fun <T : Output.D3, ON> replaceSink1(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink3<I1, I2, I3, ON, O2, O3> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink1.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink1. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
+                    from = copy.sink1.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink3(
+                    source1 = copy.source1,
+                    source2 = copy.source2,
+                    source3 = copy.source3,
+                    graph = result.nodes,
+                    sink1 = result.sink,
+                    sink2 = copy.sink2,
+                    sink3 = copy.sink3,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
             @JvmName("replaceSink2D2")
             fun <T : Output.D2, ON> replaceSink2(
                 optimizer: Optimizer = this.optimizer,
@@ -2414,6 +2928,40 @@ interface Network {
                 )
             }
 
+            @JvmName("replaceSink2D3")
+            fun <T : Output.D3, ON> replaceSink2(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink3<I1, I2, I3, O1, ON, O3> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink2.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink2. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
+                    from = copy.sink2.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink3(
+                    source1 = copy.source1,
+                    source2 = copy.source2,
+                    source3 = copy.source3,
+                    graph = result.nodes,
+                    sink1 = copy.sink1,
+                    sink2 = result.sink,
+                    sink3 = copy.sink3,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
             @JvmName("replaceSink3D2")
             fun <T : Output.D2, ON> replaceSink3(
                 optimizer: Optimizer = this.optimizer,
@@ -2428,6 +2976,40 @@ interface Network {
                 val builder = GraphBuilder.Node.D2(
                     inputI = last.process.outputShape[0],
                     inputJ = last.process.outputShape[1],
+                    from = copy.sink3.from,
+                    nodes = copy.graph,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+                val result = builder.block()
+                return Sink3(
+                    source1 = copy.source1,
+                    source2 = copy.source2,
+                    source3 = copy.source3,
+                    graph = result.nodes,
+                    sink1 = copy.sink1,
+                    sink2 = copy.sink2,
+                    sink3 = result.sink,
+                    optimizer = optimizer,
+                    initializer = initializer,
+                )
+            }
+
+            @JvmName("replaceSink3D3")
+            fun <T : Output.D3, ON> replaceSink3(
+                optimizer: Optimizer = this.optimizer,
+                initializer: WeightInitializer = this.initializer,
+                block: GraphBuilder.Node.D3.() -> GraphBuilder.Result.Sink1<ON>,
+            ): Sink3<I1, I2, I3, O1, O2, ON> {
+                val copy = clone()
+                val last = copy.graph.first { it.id == copy.sink3.from } as Graph.Node.Attach
+                check(last.process.outputShape.size == 3) {
+                    "invalid replaceSink3. outputShape=${last.process.outputShape}"
+                }
+                val builder = GraphBuilder.Node.D3(
+                    inputI = last.process.outputShape[0],
+                    inputJ = last.process.outputShape[1],
+                    inputK = last.process.outputShape[2],
                     from = copy.sink3.from,
                     nodes = copy.graph,
                     optimizer = optimizer,

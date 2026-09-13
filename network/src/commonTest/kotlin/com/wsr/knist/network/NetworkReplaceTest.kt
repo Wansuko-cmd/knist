@@ -66,6 +66,14 @@ class NetworkReplaceTest {
         builder.scale(id = "mid").reshapeToD1().meanSquare()
     }
 
+    private fun createD3OutputNetwork(): Network.Src1.Sink1<Batch<IOType.D3>, Batch<IOType.D3>> = Network.create(
+        port = port(RawD3(2, 2, 2)),
+        optimizer = optimizer,
+        initializer = Fixed(0.5f),
+    ) { builder ->
+        builder.scale(id = "mid").meanSquare()
+    }
+
     private val inputD1 = Batch(1) { IOType.d1(1f, 2f, 3f) }
     private val inputD2 = Batch(1) { IOType.d2(2, 3) { i, j -> (i * 3 + j + 1).toFloat() } }
     private val inputD3 = Batch(1) { IOType.d3(2, 2, 2) { i, j, k -> (i * 4 + j * 2 + k + 1).toFloat() } }
@@ -301,6 +309,16 @@ class NetworkReplaceTest {
 
         runTest {
             assertSameOutput(expected = original.expect(inputD2), actual = replaced.expect(inputD2))
+        }
+    }
+
+    @Test
+    fun `replaceSinkD3=出力層を組み直せる`() = networkTestRule {
+        val original = createD3OutputNetwork()
+        val replaced = original.replaceSink<Output.D3, Batch<IOType.D3>> { meanSquare() }
+
+        runTest {
+            assertSameOutput(expected = original.expect(inputD3), actual = replaced.expect(inputD3))
         }
     }
 

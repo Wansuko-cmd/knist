@@ -759,7 +759,7 @@ val network3: Network.Src2.Sink1<NewInput1, I2, O> = network.replaceSource1(newI
 
 ### Sink（出力）の差し替え
 
-出力層（`softmaxWithLoss` 等）から手前の層列をまとめて組み直したい場合に使う。中間層の差し替え（`replace<T>`）と違い、**グラフ末尾の Compute ノードから新しい出力までを丸ごと再構築する**（新しい層を挟む・出力の型 `O` を変える、のどちらもこの1回でできる）。単一出力なら `replaceSink`、`Sink2` 系なら対象headごとに `replaceSink1` / `replaceSink2` を呼ぶ。`T`（末尾層の出力形状。`Output.D1` / `Output.D2`）で受け取れる次元を指定する。
+出力層（`softmaxWithLoss` 等）から手前の層列をまとめて組み直したい場合に使う。中間層の差し替え（`replace<T>`）と違い、**グラフ末尾の Compute ノードから新しい出力までを丸ごと再構築する**（新しい層を挟む・出力の型 `O` を変える、のどちらもこの1回でできる）。単一出力なら `replaceSink`、`Sink2` 系なら対象headごとに `replaceSink1` / `replaceSink2` を呼ぶ。`T`（末尾層の出力形状。`Output.D1` / `Output.D2` / `Output.D3`）で受け取れる次元を指定する。`Sink3` 系では `replaceSink1` / `replaceSink2` / `replaceSink3` を呼ぶ。
 
 ```kotlin
 // temperatureだけ変えたい場合。既存の末尾層の出力形状(D1)からやり直す
