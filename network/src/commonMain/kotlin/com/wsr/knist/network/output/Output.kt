@@ -42,4 +42,18 @@ sealed interface Output {
             label = label as (Batch<IOType.D2>) -> Batch<IOType.D2>,
         )
     }
+
+    @Serializable
+    abstract class D3 : Output {
+        protected abstract fun IOScope.expect(input: Batch<IOType.D3>): Batch<IOType.D3>
+
+        protected abstract fun IOScope.train(input: Batch<IOType.D3>, label: (Batch<IOType.D3>) -> Batch<IOType.D3>): TResult<IOType.D3>
+
+        final override fun IOScope._expect(input: Batch<IOType>): Batch<IOType> = expect(input = input as Batch<IOType.D3>)
+
+        final override fun IOScope._train(input: Batch<IOType>, label: (Batch<IOType>) -> Batch<IOType>): TResult<*> = train(
+            input = input as Batch<IOType.D3>,
+            label = label as (Batch<IOType.D3>) -> Batch<IOType.D3>,
+        )
+    }
 }
