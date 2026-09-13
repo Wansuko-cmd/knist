@@ -459,11 +459,12 @@ reshapeToD3 (D2→D3) の制約: `i * j * k == inputI * inputJ`
 | `meanSquare(converter?)` | `com.wsr.knist.network.output.mean.meanSquare` | D1(n) | `Network.Src1.Sink1<I, Batch<IOType.D1>>` |
 | `meanSquare(converter?)` | 同上 | D2(i, j) | `Network.Src1.Sink1<I, Batch<IOType.D2>>` |
 | `meanSquare(converter?)` | 同上 | D3(i, j, k) | `Network.Src1.Sink1<I, Batch<IOType.D3>>` |
-| `huber(threshold, converter?)` | `com.wsr.knist.network.output.huber.huber` | D1(n) | `Network.Src1.Sink1<I, Batch<IOType.D1>>` |
-| `huber(threshold, converter?)` | 同上 | D2(i, j) | `Network.Src1.Sink1<I, Batch<IOType.D2>>` |
-| `huber(threshold, converter?)` | 同上 | D3(i, j, k) | `Network.Src1.Sink1<I, Batch<IOType.D3>>` |
+| `huber(threshold?, converter?)` | `com.wsr.knist.network.output.huber.huber` | D1(n) | `Network.Src1.Sink1<I, Batch<IOType.D1>>` |
+| `huber(threshold?, converter?)` | 同上 | D2(i, j) | `Network.Src1.Sink1<I, Batch<IOType.D2>>` |
+| `huber(threshold?, converter?)` | 同上 | D3(i, j, k) | `Network.Src1.Sink1<I, Batch<IOType.D3>>` |
 
-`huber` の `threshold` に既定値は無く必須。`|diff| < threshold` では二乗誤差、`|diff| >= threshold` では絶対誤差（Huber損失）として扱う。
+`huber` デフォルト値: `threshold=1f`
+`|diff| < threshold` では二乗誤差、`|diff| >= threshold` では絶対誤差（Huber損失）として扱う。
 
 `softmaxWithLoss` デフォルト値: `temperature=1f`
 `temperature` は**構築時に固定**され、学習・推論の両方の softmax に適用される。構築後・読み込み後に変更する手段は無いため、推論時に温度を変えたい場合はモデルを構築し直す必要がある。

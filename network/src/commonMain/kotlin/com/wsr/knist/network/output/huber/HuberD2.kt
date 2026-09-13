@@ -32,12 +32,12 @@ internal class HuberD2 internal constructor(val threshold: Float) : Output.D2() 
     }
 }
 
-fun GraphBuilder.Node.D2.huber(threshold: Float) = addOutput(
+fun GraphBuilder.Node.D2.huber(threshold: Float = 1f) = addOutput(
     output = HuberD2(threshold),
     converter = RawD2(inputI, inputJ),
 )
 
-fun <O> GraphBuilder.Node.D2.huber(threshold: Float, converter: GraphBuilder.Node.D2.() -> Converter.D2<O>) = addOutput(
+fun <O> GraphBuilder.Node.D2.huber(threshold: Float = 1f, converter: GraphBuilder.Node.D2.() -> Converter.D2<O>) = addOutput(
     output = HuberD2(threshold),
     converter = converter(),
 )
