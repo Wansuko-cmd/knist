@@ -25,6 +25,29 @@ class SoftmaxD3 internal constructor(override val inputI: Int, override val inpu
     }
 }
 
-fun GraphBuilder.Node.D3.softmax(id: String = Uuid.random().toString()) = addCompute(
-    compute = SoftmaxD3(inputI = inputI, inputJ = inputJ, inputK = inputK, id = id),
-)
+fun GraphBuilder.Node.D3.softmax(axis: Int? = null, id: String = Uuid.random().toString()): GraphBuilder.Node.D3 {
+    val process = when (axis) {
+        null -> SoftmaxD3(
+            inputI = inputI,
+            inputJ = inputJ,
+            inputK = inputK,
+            id = id,
+        )
+
+        0, 1, 2 -> SoftmaxAxisD3(
+            inputI = inputI,
+            inputJ = inputJ,
+            inputK = inputK,
+            axis = axis,
+            id = id,
+        )
+
+        else -> throw IllegalStateException(
+            """
+            invalid parameter.
+            axis: $axis
+            """.trimIndent(),
+        )
+    }
+    return addCompute(compute = process)
+}

@@ -67,8 +67,11 @@ import com.wsr.knist.network.output.mean.MeanSquareD3
 import com.wsr.knist.network.output.sigmoid.SigmoidWithLossD1
 import com.wsr.knist.network.output.sigmoid.SigmoidWithLossD2
 import com.wsr.knist.network.output.sigmoid.SigmoidWithLossD3
+import com.wsr.knist.network.output.softmax.SoftmaxWithLossAxisD2
+import com.wsr.knist.network.output.softmax.SoftmaxWithLossAxisD3
 import com.wsr.knist.network.output.softmax.SoftmaxWithLossD1
 import com.wsr.knist.network.output.softmax.SoftmaxWithLossD2
+import com.wsr.knist.network.output.softmax.SoftmaxWithLossD3
 import com.wsr.knist.network.process.Process
 import com.wsr.knist.network.process.compute.affine.AffineD1
 import com.wsr.knist.network.process.compute.affine.AffineD2
@@ -102,6 +105,8 @@ import com.wsr.knist.network.process.compute.function.relu.SwishD3
 import com.wsr.knist.network.process.compute.function.sigmoid.SigmoidD1
 import com.wsr.knist.network.process.compute.function.sigmoid.SigmoidD2
 import com.wsr.knist.network.process.compute.function.sigmoid.SigmoidD3
+import com.wsr.knist.network.process.compute.function.softmax.SoftmaxAxisD2
+import com.wsr.knist.network.process.compute.function.softmax.SoftmaxAxisD3
 import com.wsr.knist.network.process.compute.function.softmax.SoftmaxD1
 import com.wsr.knist.network.process.compute.function.softmax.SoftmaxD2
 import com.wsr.knist.network.process.compute.function.softmax.SoftmaxD3
@@ -315,7 +320,9 @@ private val buildInSerializersModule = SerializersModule {
 
         subclass(SoftmaxD1::class)
         subclass(SoftmaxD2::class)
+        subclass(SoftmaxAxisD2::class)
         subclass(SoftmaxD3::class)
+        subclass(SoftmaxAxisD3::class)
 
         subclass(TanhD1::class)
         subclass(TanhD2::class)
@@ -411,6 +418,9 @@ private val buildInSerializersModule = SerializersModule {
 
         subclass(SoftmaxWithLossD1::class)
         subclass(SoftmaxWithLossD2::class)
+        subclass(SoftmaxWithLossAxisD2::class)
+        subclass(SoftmaxWithLossD3::class)
+        subclass(SoftmaxWithLossAxisD3::class)
     }
 
     polymorphic(Optimizer::class) {
