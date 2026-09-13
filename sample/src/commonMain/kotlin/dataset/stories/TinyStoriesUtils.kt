@@ -100,6 +100,7 @@ fun createTinyStoriesModel(seed: Int? = null): Network.Src1.Sink1<List<List<Stri
             .layerNorm(axis = 1).scale(axis = 1).bias(axis = 1)
             .affine(neuron = words.size)
             .softmaxWithLoss(
+                axis = 1,
                 converter = {
                     WordD2(
                         words = words,

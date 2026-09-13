@@ -24,6 +24,27 @@ class SoftmaxD2 internal constructor(override val inputI: Int, override val inpu
     }
 }
 
-fun GraphBuilder.Node.D2.softmax(id: String = Uuid.random().toString()) = addCompute(
-    compute = SoftmaxD2(inputI = inputI, inputJ = inputJ, id = id),
-)
+fun GraphBuilder.Node.D2.softmax(axis: Int? = null, id: String = Uuid.random().toString()): GraphBuilder.Node.D2 {
+    val process = when (axis) {
+        null -> SoftmaxD2(
+            inputI = inputI,
+            inputJ = inputJ,
+            id = id,
+        )
+
+        0, 1 -> SoftmaxAxisD2(
+            inputI = inputI,
+            inputJ = inputJ,
+            axis = axis,
+            id = id,
+        )
+
+        else -> throw IllegalStateException(
+            """
+            invalid parameter.
+            axis: $axis
+            """.trimIndent(),
+        )
+    }
+    return addCompute(compute = process)
+}

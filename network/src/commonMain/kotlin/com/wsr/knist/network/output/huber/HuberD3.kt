@@ -6,16 +6,16 @@ import com.wsr.knist.core.IOType
 import com.wsr.knist.network.GraphBuilder
 import com.wsr.knist.network.GraphScope.addOutput
 import com.wsr.knist.network.converter.Converter
-import com.wsr.knist.network.converter.raw.RawD2
+import com.wsr.knist.network.converter.raw.RawD3
 import com.wsr.knist.network.output.Output
 import com.wsr.knist.network.output.TResult
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class HuberD2 internal constructor(val threshold: Float) : Output.D2() {
-    override fun IOScope.expect(input: Batch<IOType.D2>): Batch<IOType.D2> = input
+internal class HuberD3 internal constructor(val threshold: Float) : Output.D3() {
+    override fun IOScope.expect(input: Batch<IOType.D3>): Batch<IOType.D3> = input
 
-    override fun IOScope.train(input: Batch<IOType.D2>, label: (Batch<IOType.D2>) -> Batch<IOType.D2>): TResult<IOType.D2> {
+    override fun IOScope.train(input: Batch<IOType.D3>, label: (Batch<IOType.D3>) -> Batch<IOType.D3>): TResult<IOType.D3> {
         val diff = input - label(input)
         val isPositive = diff gt 0f
         val abs = where(condition = isPositive, onTrue = diff, onFalse = -1f * diff)
@@ -32,12 +32,12 @@ internal class HuberD2 internal constructor(val threshold: Float) : Output.D2() 
     }
 }
 
-fun GraphBuilder.Node.D2.huber(threshold: Float = 1f) = addOutput(
-    output = HuberD2(threshold),
-    converter = RawD2(inputI, inputJ),
+fun GraphBuilder.Node.D3.huber(threshold: Float = 1f) = addOutput(
+    output = HuberD3(threshold),
+    converter = RawD3(inputI, inputJ, inputK),
 )
 
-fun <O> GraphBuilder.Node.D2.huber(threshold: Float = 1f, converter: GraphBuilder.Node.D2.() -> Converter.D2<O>) = addOutput(
-    output = HuberD2(threshold),
+fun <O> GraphBuilder.Node.D3.huber(threshold: Float = 1f, converter: GraphBuilder.Node.D3.() -> Converter.D3<O>) = addOutput(
+    output = HuberD3(threshold),
     converter = converter(),
 )

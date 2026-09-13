@@ -357,9 +357,11 @@ input.attention(numOfHeads = 8, biases = { alibi().mask(input, 0f) })
 | `swish()` | `com.wsr.knist.network.process.compute.function.relu.swish` |
 | `sigmoid()` | `com.wsr.knist.network.process.compute.function.sigmoid.sigmoid` |
 | `tanh()` | `com.wsr.knist.network.process.compute.function.tanh.tanh` |
-| `softmax()` | `com.wsr.knist.network.process.compute.function.softmax.softmax` |
+| `softmax()`（D1） | `com.wsr.knist.network.process.compute.function.softmax.softmax` |
+| `softmax(axis?)`（D2/D3） | 同上 |
 
 同パッケージに D1/D2/D3 版が共存するため、import 1行で全次元に対応する。
+D2/D3 の `softmax(axis?)` は `layerNorm(axis?)` と同じ規約：`axis=null`（デフォルト）は全次元をフラット化した1グループで softmax、`0`〜`inputの次元数-1` を指定するとその軸方向にのみ softmax を計算する。
 
 ### 恒等層
 
@@ -444,22 +446,33 @@ reshapeToD3 (D2→D3) の制約: `i * j * k == inputI * inputJ`
 
 ### 出力層
 
-いずれも D1 版・D2 版があり、`converter` を渡すと `Network.Src1.Sink1<I, O>`、省略すると Raw 系 Converter が使われて `Network.Src1.Sink1<I, Batch<IOType.Dx>>` になる。
+いずれも D1 版・D2 版・D3 版があり、`converter` を渡すと `Network.Src1.Sink1<I, O>`、省略すると Raw 系 Converter が使われて `Network.Src1.Sink1<I, Batch<IOType.Dx>>` になる。
 
 | 関数 | import | 入力 | 出力型（converter 省略時） |
 |------|--------|------|--------|
 | `softmaxWithLoss(converter?, temperature?)` | `com.wsr.knist.network.output.softmax.softmaxWithLoss` | D1(n) | `Network.Src1.Sink1<I, Batch<IOType.D1>>` |
-| `softmaxWithLoss(converter?, temperature?)` | 同上 | D2(i, j) | `Network.Src1.Sink1<I, Batch<IOType.D2>>` |
+| `softmaxWithLoss(axis?, converter?, temperature?)` | 同上 | D2(i, j) | `Network.Src1.Sink1<I, Batch<IOType.D2>>` |
+| `softmaxWithLoss(axis?, converter?, temperature?)` | 同上 | D3(i, j, k) | `Network.Src1.Sink1<I, Batch<IOType.D3>>` |
 | `sigmoidWithLoss(converter?)` | `com.wsr.knist.network.output.sigmoid.sigmoidWithLoss` | D1(n) | `Network.Src1.Sink1<I, Batch<IOType.D1>>` |
 | `sigmoidWithLoss(converter?)` | 同上 | D2(i, j) | `Network.Src1.Sink1<I, Batch<IOType.D2>>` |
+| `sigmoidWithLoss(converter?)` | 同上 | D3(i, j, k) | `Network.Src1.Sink1<I, Batch<IOType.D3>>` |
 | `meanSquare(converter?)` | `com.wsr.knist.network.output.mean.meanSquare` | D1(n) | `Network.Src1.Sink1<I, Batch<IOType.D1>>` |
 | `meanSquare(converter?)` | 同上 | D2(i, j) | `Network.Src1.Sink1<I, Batch<IOType.D2>>` |
+| `meanSquare(converter?)` | 同上 | D3(i, j, k) | `Network.Src1.Sink1<I, Batch<IOType.D3>>` |
+| `huber(threshold?, converter?)` | `com.wsr.knist.network.output.huber.huber` | D1(n) | `Network.Src1.Sink1<I, Batch<IOType.D1>>` |
+| `huber(threshold?, converter?)` | 同上 | D2(i, j) | `Network.Src1.Sink1<I, Batch<IOType.D2>>` |
+| `huber(threshold?, converter?)` | 同上 | D3(i, j, k) | `Network.Src1.Sink1<I, Batch<IOType.D3>>` |
+
+`huber` デフォルト値: `threshold=1f`
+`|diff| < threshold` では二乗誤差、`|diff| >= threshold` では絶対誤差（Huber損失）として扱う。
 
 `softmaxWithLoss` デフォルト値: `temperature=1f`
 `temperature` は**構築時に固定**され、学習・推論の両方の softmax に適用される。構築後・読み込み後に変更する手段は無いため、推論時に温度を変えたい場合はモデルを構築し直す必要がある。
 `softmaxWithLoss` の `converter` ラムダ内では `inputI` が参照可能
 
-ラベルのある行を丸ごとロス計算から除外したい場合（パディング等）は、`maskValue` のような専用パラメータは無く、Converter の `encode` 側でその行を全ゼロベクトルとして出力する。**D2 版の** `softmaxWithLoss` は合計が 0 のラベル行を自動的に除外する（D1 版にこの除外は無い）。
+`softmaxWithLoss` の D2 版・D3 版は `axis: Int? = null` を取る。`null`（デフォルト）は全次元をフラット化した1グループとして softmax を計算し、`0`〜`inputの次元数-1`を指定するとその軸方向にのみ softmax を計算する（D2 は `0, 1`、D3 は `0, 1, 2` が有効値）。範囲外の値を渡すと構築時に例外になる。D1 版は次元が1つしか無いため `axis` は無い。
+
+ラベルのある行を丸ごとロス計算から除外したい場合（パディング等）は、`maskValue` のような専用パラメータは無く、Converter の `encode` 側でその行を全ゼロベクトルとして出力する。**D2 版・D3 版の** `softmaxWithLoss` は合計が 0 のラベルを自動的に除外する（`axis` で指定した軸ごとの合計が対象。D1 版にこの除外は無い）。
 
 ---
 
@@ -746,7 +759,7 @@ val network3: Network.Src2.Sink1<NewInput1, I2, O> = network.replaceSource1(newI
 
 ### Sink（出力）の差し替え
 
-出力層（`softmaxWithLoss` 等）から手前の層列をまとめて組み直したい場合に使う。中間層の差し替え（`replace<T>`）と違い、**グラフ末尾の Compute ノードから新しい出力までを丸ごと再構築する**（新しい層を挟む・出力の型 `O` を変える、のどちらもこの1回でできる）。単一出力なら `replaceSink`、`Sink2` 系なら対象headごとに `replaceSink1` / `replaceSink2` を呼ぶ。`T`（末尾層の出力形状。`Output.D1` / `Output.D2`）で受け取れる次元を指定する。
+出力層（`softmaxWithLoss` 等）から手前の層列をまとめて組み直したい場合に使う。中間層の差し替え（`replace<T>`）と違い、**グラフ末尾の Compute ノードから新しい出力までを丸ごと再構築する**（新しい層を挟む・出力の型 `O` を変える、のどちらもこの1回でできる）。単一出力なら `replaceSink`、`Sink2` 系なら対象headごとに `replaceSink1` / `replaceSink2` を呼ぶ。`T`（末尾層の出力形状。`Output.D1` / `Output.D2` / `Output.D3`）で受け取れる次元を指定する。`Sink3` 系では `replaceSink1` / `replaceSink2` / `replaceSink3` を呼ぶ。
 
 ```kotlin
 // temperatureだけ変えたい場合。既存の末尾層の出力形状(D1)からやり直す

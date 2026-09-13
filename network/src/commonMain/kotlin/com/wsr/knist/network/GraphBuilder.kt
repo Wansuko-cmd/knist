@@ -206,6 +206,11 @@ object GraphScope {
         return GraphBuilder.Result.Sink1(nodes = nodes, sink = sink)
     }
 
+    fun <O> GraphBuilder.Node.D3.addOutput(output: Output.D3, converter: Converter<O>): GraphBuilder.Result.Sink1<O> {
+        val sink = Graph.Sink(from = from, output = output, converter = converter)
+        return GraphBuilder.Result.Sink1(nodes = nodes, sink = sink)
+    }
+
     fun <O1, O2> outputs(o1: GraphBuilder.Result.Sink1<O1>, o2: GraphBuilder.Result.Sink1<O2>): GraphBuilder.Result.Sink2<O1, O2> = GraphBuilder.Result.Sink2(
         nodes = (o1.nodes + o2.nodes).distinctBy { it.id },
         sink1 = o1.sink,
