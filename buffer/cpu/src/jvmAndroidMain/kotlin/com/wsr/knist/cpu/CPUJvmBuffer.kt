@@ -3,7 +3,6 @@ package com.wsr.knist.cpu
 import com.wsr.knist.base.data.DataBuffer
 import com.wsr.knist.base.data.IDataBufferGenerator
 import java.lang.ref.Cleaner
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 
 private val reservedBytes = AtomicLong(0)
@@ -15,19 +14,16 @@ internal fun DataBuffer.toCPUBuffer(runtime: Long): CPUJvmBuffer = when (this) {
 }
 
 class CPUJvmBuffer private constructor(internal val ptr: Long, override val size: Int, private val runtime: Long) : DataBuffer {
-    private val isReleased = AtomicBoolean(false)
+    private val cleanable: Cleaner.Cleanable
 
     init {
         val ptr = this@CPUJvmBuffer.ptr
         val runtime = runtime
         val byteSize = size * Float.SIZE_BYTES
-        val isReleased = isReleased
         if (reservedBytes.addAndGet(byteSize.toLong()) >= cpuMaxReservedBytes) System.gc()
-        cleaner.register(this) {
-            if (!isReleased.getAndSet(true)) {
-                JBuffer.release(ptr, runtime)
-                reservedBytes.addAndGet(-byteSize.toLong())
-            }
+        cleanable = cleaner.register(this) {
+            JBuffer.release(ptr, runtime)
+            reservedBytes.addAndGet(-byteSize.toLong())
         }
     }
 
@@ -42,10 +38,7 @@ class CPUJvmBuffer private constructor(internal val ptr: Long, override val size
     override fun toString(): String = toFloatArray().joinToString(prefix = "CPUJvmBuffer[", postfix = "]")
 
     override fun release() {
-        if (!isReleased.getAndSet(true)) {
-            JBuffer.release(ptr, runtime)
-            reservedBytes.addAndGet(-(size * Float.SIZE_BYTES).toLong())
-        }
+        cleanable.clean()
     }
 
     companion object Companion {
