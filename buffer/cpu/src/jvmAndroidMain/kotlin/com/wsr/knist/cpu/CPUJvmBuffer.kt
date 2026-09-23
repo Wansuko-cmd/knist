@@ -8,6 +8,9 @@ import java.util.concurrent.atomic.AtomicLong
 private val reservedBytes = AtomicLong(0)
 internal var cpuMaxReservedBytes: Long = 1_500_000_000L
 
+private val lastGcAtMillis = AtomicLong(0)
+private const val GC_COOLDOWN_MILLIS = 500L
+
 internal fun DataBuffer.toCPUBuffer(runtime: Long): CPUJvmBuffer = when (this) {
     is CPUJvmBuffer -> this
     else -> CPUJvmBuffer.create(this.toFloatArray(), runtime)
@@ -20,7 +23,11 @@ class CPUJvmBuffer private constructor(internal val ptr: Long, override val size
         val ptr = this@CPUJvmBuffer.ptr
         val runtime = runtime
         val byteSize = size.toLong() * Float.SIZE_BYTES
-        if (reservedBytes.addAndGet(byteSize) >= cpuMaxReservedBytes) System.gc()
+        if (reservedBytes.addAndGet(byteSize) >= cpuMaxReservedBytes) {
+            val now = System.currentTimeMillis()
+            val last = lastGcAtMillis.get()
+            if (now - last >= GC_COOLDOWN_MILLIS && lastGcAtMillis.compareAndSet(last, now)) System.gc()
+        }
         cleanable = cleaner.register(this) {
             JBuffer.release(ptr, runtime)
             reservedBytes.addAndGet(-byteSize)
