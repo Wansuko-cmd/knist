@@ -19,11 +19,11 @@ class CPUJvmBuffer private constructor(internal val ptr: Long, override val size
     init {
         val ptr = this@CPUJvmBuffer.ptr
         val runtime = runtime
-        val byteSize = size * Float.SIZE_BYTES
-        if (reservedBytes.addAndGet(byteSize.toLong()) >= cpuMaxReservedBytes) System.gc()
+        val byteSize = size.toLong() * Float.SIZE_BYTES
+        if (reservedBytes.addAndGet(byteSize) >= cpuMaxReservedBytes) System.gc()
         cleanable = cleaner.register(this) {
             JBuffer.release(ptr, runtime)
-            reservedBytes.addAndGet(-byteSize.toLong())
+            reservedBytes.addAndGet(-byteSize)
         }
     }
 
