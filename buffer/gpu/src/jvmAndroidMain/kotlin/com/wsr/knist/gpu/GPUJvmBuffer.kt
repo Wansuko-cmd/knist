@@ -12,6 +12,9 @@ import kotlin.concurrent.atomics.minusAssign
 private val reservedBytes = AtomicLong(0)
 internal var gpuMaxReservedBytes: Long = 4_000_000_000L
 
+private val lastGcAtMillis = AtomicLong(0)
+private const val GC_COOLDOWN_MILLIS = 500L
+
 internal fun DataBuffer.toGPUBuffer(runtime: Long): GPUJvmBuffer = when (this) {
     is GPUJvmBuffer -> this
     else -> GPUJvmBuffer.create(this.toFloatArray(), runtime)
@@ -25,7 +28,11 @@ class GPUJvmBuffer(override val size: Int, internal val ptr: Long, private val r
         val ptr = ptr
         val runtime = runtime
         val byteSize = size.toLong() * Float.SIZE_BYTES
-        if (reservedBytes.addAndFetch(byteSize) >= gpuMaxReservedBytes) System.gc()
+        if (reservedBytes.addAndFetch(byteSize) >= gpuMaxReservedBytes) {
+            val now = System.currentTimeMillis()
+            val last = lastGcAtMillis.load()
+            if (now - last >= GC_COOLDOWN_MILLIS && lastGcAtMillis.compareAndSet(last, now)) System.gc()
+        }
         cleanable = cleaner.register(this) {
             JBuffer.release(ptr, runtime)
             reservedBytes.minusAssign(byteSize)
