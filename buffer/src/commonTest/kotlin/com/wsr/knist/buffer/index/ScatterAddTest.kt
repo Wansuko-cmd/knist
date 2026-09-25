@@ -38,4 +38,34 @@ class ScatterAddTest {
             actual = actual,
         )
     }
+
+    @Test
+    fun `scatterAdd=バッチごとに異なるYの値を元にXを圧縮する`() = bufferTestRule {
+        val x = DataBuffer.create(FloatArray(16) { it.toFloat() })
+        val y = DataBuffer.create(floatArrayOf(0f, 1f, 2f, 0f))
+
+        val actual = Backend.scatterAdd(
+            x = x,
+            y = y,
+            i = 2,
+            j = 3,
+            k = 2,
+            b = 2,
+        )
+
+        assertContentEquals(
+            expected = DataBuffer.create(
+                floatArrayOf(
+                    10f, 12f,
+                    2f, 3f,
+                    8f, 9f,
+
+                    18f, 20f,
+                    6f, 7f,
+                    12f, 13f,
+                ),
+            ),
+            actual = actual,
+        )
+    }
 }
