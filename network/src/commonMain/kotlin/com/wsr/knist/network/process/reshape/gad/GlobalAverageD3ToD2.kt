@@ -12,24 +12,29 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class GlobalAverageD3ToD2(override val inputI: Int, override val inputJ: Int, override val inputK: Int, override val id: String = Uuid.random().toString()) : Reshape.D3ToD2() {
-    override val outputI: Int = inputJ
-    override val outputJ: Int = inputK
+internal class GlobalAverageD3ToD2(override val inputI: Int, override val inputJ: Int, override val inputK: Int, private val axis: Int, override val id: String = Uuid.random().toString()) :
+    Reshape.D3ToD2() {
+    override val outputI: Int = if (axis == 0) inputJ else inputI
+    override val outputJ: Int = if (axis == 2) inputJ else inputK
 
-    override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D2> = forward(input)
-
-    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D3> {
-        val output = forward(input)
-        val delta = calcDelta(output)
-        return (delta / inputI.toFloat()).broadcastToD3(axis = 0, size = inputI)
+    init {
+        check(axis in 0..2) {
+            """
+            invalid parameter.
+            axis: $axis
+            """.trimIndent()
+        }
     }
 
-    private fun IOScope.forward(input: Batch<IOType.D3>) = input
-        .reshapeToD2(i = inputI, j = inputJ * inputK)
-        .average(axis = 0)
-        .reshapeToD2(i = inputJ, j = inputK)
+    override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D2> = input.average(axis = axis)
+
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D3> {
+        val output = input.average(axis = axis)
+        val delta = calcDelta(output)
+        return (delta / inputShape[axis].toFloat()).broadcastToD3(axis = axis, size = inputShape[axis])
+    }
 }
 
-fun GraphBuilder.Node.D3.globalAverageToD2(id: String = Uuid.random().toString()) = addReshape(
-    reshape = GlobalAverageD3ToD2(inputI, inputJ, inputK, id),
+fun GraphBuilder.Node.D3.globalAverageToD2(axis: Int, id: String = Uuid.random().toString()) = addReshape(
+    reshape = GlobalAverageD3ToD2(inputI, inputJ, inputK, axis, id),
 )
