@@ -40,6 +40,20 @@ fun Batch<IOType.D2>.min(): Batch<IOType.D0.Global> {
     return Batch.d0(size, result)
 }
 
+@JvmName("batchD2sMaxWithAxis")
+@ScopeOp
+fun Batch<IOType.D2>.max(axis: Int): Batch<IOType.D1.Global> {
+    val result = Backend.max(x = value, xi = size, xj = i, xk = j, axis = axis + 1)
+    return Batch.d1(size, if (axis == 0) j else i, result)
+}
+
+@JvmName("batchD2sMinWithAxis")
+@ScopeOp
+fun Batch<IOType.D2>.min(axis: Int): Batch<IOType.D1.Global> {
+    val result = Backend.min(x = value, xi = size, xj = i, xk = j, axis = axis + 1)
+    return Batch.d1(size, if (axis == 0) j else i, result)
+}
+
 @JvmName("batchD2sMaxIndexWithAxis")
 @ScopeOp
 fun Batch<IOType.D2>.maxIndex(axis: Int): Batch<IOType.D1.Global> {

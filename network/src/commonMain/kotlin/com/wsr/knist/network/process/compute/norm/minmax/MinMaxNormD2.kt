@@ -50,11 +50,27 @@ class MinMaxNormD2 internal constructor(override val inputI: Int, override val i
     }
 }
 
-fun GraphBuilder.Node.D2.minMaxNorm(id: String = Uuid.random().toString()) = addCompute(
-    compute =
-        MinMaxNormD2(
+fun GraphBuilder.Node.D2.minMaxNorm(axis: Int? = null, id: String = Uuid.random().toString()): GraphBuilder.Node.D2 {
+    val process = when (axis) {
+        null -> MinMaxNormD2(
             inputI = inputI,
             inputJ = inputJ,
             id = id,
-        ),
-)
+        )
+
+        0, 1 -> MinMaxNormAxisD2(
+            inputI = inputI,
+            inputJ = inputJ,
+            axis = axis,
+            id = id,
+        )
+
+        else -> throw IllegalStateException(
+            """
+            invalid parameter.
+            axis: $axis
+            """.trimIndent(),
+        )
+    }
+    return addCompute(compute = process)
+}
