@@ -22,7 +22,7 @@ pub fn scatter_add(x: &CPUBuffer, y: &CPUBuffer, i: usize, j: usize, k: usize, b
     for xb in 0..b {
         for xi in 0..i {
             for xj in 0..n {
-                let index = y[xj] as usize;
+                let index = y[xb * n + xj] as usize;
                 let x_offset = ((xb * i + xi) * n + xj) * k;
                 let result_offset = (xi * j + index) * k;
 
