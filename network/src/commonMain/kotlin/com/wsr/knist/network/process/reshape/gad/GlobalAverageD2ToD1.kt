@@ -11,18 +11,27 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal class GlobalAverageD2ToD1(override val inputI: Int, override val inputJ: Int, override val id: String = Uuid.random().toString()) : Reshape.D2ToD1() {
-    override val outputI: Int = inputI
+internal class GlobalAverageD2ToD1(override val inputI: Int, override val inputJ: Int, private val axis: Int, override val id: String = Uuid.random().toString()) : Reshape.D2ToD1() {
+    override val outputI: Int = if (axis == 0) inputJ else inputI
 
-    override fun IOScope.expect(input: Batch<IOType.D2>, env: GraphEnv): Batch<IOType.D1> = input.average(axis = 1)
+    init {
+        check(axis == 0 || axis == 1) {
+            """
+            invalid parameter.
+            axis: $axis
+            """.trimIndent()
+        }
+    }
+
+    override fun IOScope.expect(input: Batch<IOType.D2>, env: GraphEnv): Batch<IOType.D1> = input.average(axis = axis)
 
     override fun IOScope.train(input: Batch<IOType.D2>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>): Batch<IOType.D2> {
-        val output = input.average(axis = 1)
+        val output = input.average(axis = axis)
         val delta = calcDelta(output)
-        return (delta / inputJ.toFloat()).broadcastToD2(1, inputJ)
+        return (delta / inputShape[axis].toFloat()).broadcastToD2(axis = axis, size = inputShape[axis])
     }
 }
 
-fun GraphBuilder.Node.D2.globalAverageToD1(id: String = Uuid.random().toString()) = addReshape(
-    reshape = GlobalAverageD2ToD1(inputI, inputJ, id),
+fun GraphBuilder.Node.D2.globalAverageToD1(axis: Int, id: String = Uuid.random().toString()) = addReshape(
+    reshape = GlobalAverageD2ToD1(inputI, inputJ, axis, id),
 )
