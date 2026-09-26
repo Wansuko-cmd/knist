@@ -381,7 +381,9 @@ D2/D3 の `softmax(axis?)` は `layerNorm(axis?)` と同じ規約：`axis=null`�
 | `rmsNorm(e?)` | `com.wsr.knist.network.process.compute.norm.rms.d1.rmsNorm` | D1(n)→D1(n) | e=1e-6f |
 | `rmsNorm(axis?, e?)` | `com.wsr.knist.network.process.compute.norm.rms.d2.rmsNorm` | D2→D2 | axis=null, e=1e-6f |
 | `rmsNorm(axis?, e?)` | `com.wsr.knist.network.process.compute.norm.rms.d3.rmsNorm` | D3→D3 | axis=null, e=1e-6f |
-| `minMaxNorm()` | `com.wsr.knist.network.process.compute.norm.minmax.minMaxNorm` | D1/D2/D3→同形 | — |
+| `minMaxNorm()` | `com.wsr.knist.network.process.compute.norm.minmax.minMaxNorm` | D1→D1 | — |
+| `minMaxNorm(axis?)` | `com.wsr.knist.network.process.compute.norm.minmax.minMaxNorm` | D2→D2 | axis=null |
+| `minMaxNorm(axis?)` | `com.wsr.knist.network.process.compute.norm.minmax.minMaxNorm` | D3→D3 | axis=null |
 
 ### 位置エンコーディング
 
@@ -443,8 +445,6 @@ reshapeToD2 (D1→D2) の制約: `i * j == inputI`
 reshapeToD2 (D3→D2) の制約: `inputI * inputJ * inputK == i * j`
 reshapeToD3 (D1→D3) の制約: `i * j * k == inputI`
 reshapeToD3 (D2→D3) の制約: `i * j * k == inputI * inputJ`
-
-`globalAverageToD1` / `globalAverageToD2` の `axis` は必須引数（デフォルト値なし）で、指定した軸方向に平均を取って次元を1つ潰す。D2 版は `axis: 0 または 1`、D3→D2 版は `axis: 0〜2`。D3→D1 版は2軸を同時に潰すため `axis1 < axis2` を満たす `axis1, axis2: 0〜2` の組を渡す（`(0,1)` `(0,2)` `(1,2)` の3通り）。範囲外の値や `axis1 < axis2` を満たさない組を渡すと構築時に例外になる。
 
 ### 出力層
 

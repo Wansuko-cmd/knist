@@ -88,6 +88,33 @@ fun Batch<IOType.D3>.max(axis: Int): Batch<IOType.D2.Global> = when (axis) {
     else -> throw IllegalArgumentException("axis is $axis, not 0, 1 or 2.")
 }
 
+@JvmName("batchD3sMinWithAxis")
+@ScopeOp
+fun Batch<IOType.D3>.min(axis: Int): Batch<IOType.D2.Global> = when (axis) {
+    0 -> Batch.d2(
+        size,
+        j,
+        k,
+        Backend.min(x = value, xi = size, xj = i, xk = j * k, axis = 1),
+    )
+
+    1 -> Batch.d2(
+        size,
+        i,
+        k,
+        Backend.min(x = value, xi = size * i, xj = j, xk = k, axis = 1),
+    )
+
+    2 -> Batch.d2(
+        size,
+        i,
+        j,
+        Backend.min(x = value, xi = size, xj = i * j, xk = k, axis = 2),
+    )
+
+    else -> throw IllegalArgumentException("axis is $axis, not 0, 1 or 2.")
+}
+
 @JvmName("batchD3sMaxIndexWithAxis")
 @ScopeOp
 fun Batch<IOType.D3>.maxIndex(axis: Int): Batch<IOType.D2.Global> = when (axis) {
