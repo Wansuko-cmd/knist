@@ -113,6 +113,7 @@ import com.wsr.knist.network.process.compute.function.softmax.SoftmaxD3
 import com.wsr.knist.network.process.compute.function.tanh.TanhD1
 import com.wsr.knist.network.process.compute.function.tanh.TanhD2
 import com.wsr.knist.network.process.compute.function.tanh.TanhD3
+import com.wsr.knist.network.process.compute.norm.batch.d1.BatchNormD1
 import com.wsr.knist.network.process.compute.norm.layer.d1.LayerNormD1
 import com.wsr.knist.network.process.compute.norm.layer.d2.LayerNormAxisD2
 import com.wsr.knist.network.process.compute.norm.layer.d2.LayerNormD2
@@ -329,6 +330,8 @@ private val buildInSerializersModule = SerializersModule {
         subclass(TanhD3::class)
 
         // Norm
+        subclass(BatchNormD1::class)
+
         subclass(LayerNormD1::class)
         subclass(LayerNormD2::class)
         subclass(LayerNormAxisD2::class)

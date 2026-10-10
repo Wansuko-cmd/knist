@@ -1,26 +1,32 @@
 package com.wsr.knist.network.process.compute.norm.batch.d1
 
 import com.wsr.knist.batch.Batch
-import com.wsr.knist.batch.shape.toBatch
-import com.wsr.knist.batch.shape.toD2
 import com.wsr.knist.core.IOScope
 import com.wsr.knist.core.IOType
+import com.wsr.knist.core.d1
+import com.wsr.knist.network.GraphBuilder
 import com.wsr.knist.network.GraphEnv
+import com.wsr.knist.network.GraphScope.addCompute
 import com.wsr.knist.network.process.Compute
+import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 
+@Serializable
 class BatchNormD1(
     override val inputI: Int,
     private val e: Float,
+    private val momentum: Float,
     override val id: String = Uuid.random().toString(),
 ) : Compute.D1() {
     override val outputI = inputI
+    private var rm: IOType.D1.Global = IOType.d1(i = inputI)
+    private var rv: IOType.D1.Global = IOType.d1(i = inputI) { 1f }
 
     override fun IOScope.expect(
         input: Batch<IOType.D1>,
         env: GraphEnv,
     ): Batch<IOType.D1> {
-        TODO("Not yet implemented")
+        return (input - rm) / rv.sqrt(e = e)
     }
 
     override fun IOScope.train(
@@ -40,19 +46,16 @@ class BatchNormD1(
         val dNumerator = delta / denominator
 
         val dx1 = dNumerator
-
         val dx2 = -dNumerator.batchAverage()
+        val dx3 = (-output * dNumerator).batchAverage() * output
 
-        // dy/x <- variance(x)のx
-        val dx3 = run {
-            // dy/d[5]
-            val d5 = (delta * -(numerator / denominator.pow(2))).batchAverage()
-            val d4 = d5 / (2f * denominator)
-            val d3 = d4 * 2f * numerator
-            d3 - d3.batchAverage()
-        }
+        rm = (momentum * rm  + (1 - momentum) * average).toGlobal()
+        rv = (momentum * rv  + (1 - momentum) * variance).toGlobal()
 
-        // dy/dx
         return dx1 + dx2 + dx3
     }
 }
+
+fun GraphBuilder.Node.D1.batchNorm(e: Float = 1e-6f, momentum: Float = 0.9f, id: String = Uuid.random().toString()) = addCompute(
+    compute = BatchNormD1(inputI = inputI, e = e, momentum = momentum, id = id),
+)
