@@ -384,6 +384,14 @@ D2/D3 の `softmax(axis?)` は `layerNorm(axis?)` と同じ規約：`axis=null`�
 | `minMaxNorm()` | `com.wsr.knist.network.process.compute.norm.minmax.minMaxNorm` | D1→D1 | — |
 | `minMaxNorm(axis?)` | `com.wsr.knist.network.process.compute.norm.minmax.minMaxNorm` | D2→D2 | axis=null |
 | `minMaxNorm(axis?)` | `com.wsr.knist.network.process.compute.norm.minmax.minMaxNorm` | D3→D3 | axis=null |
+| `batchNorm(e?, momentum?)` | `com.wsr.knist.network.process.compute.norm.batch.d1.batchNorm` | D1(n)→D1(n) | e=1e-6f, momentum=0.9f |
+| `batchNorm(axis?, e?, momentum?)` | `com.wsr.knist.network.process.compute.norm.batch.d2.batchNorm` | D2→D2 | axis=null, e=1e-6f, momentum=0.9f |
+| `batchNorm(axis?, e?, momentum?)` | `com.wsr.knist.network.process.compute.norm.batch.d3.batchNorm` | D3→D3 | axis=null, e=1e-6f, momentum=0.9f |
+
+D2/D3 の `layerNorm` / `rmsNorm` / `minMaxNorm` / `batchNorm` は、`axis` で指定した軸を正規化の対象にする。
+- `layerNorm` / `rmsNorm` / `minMaxNorm`: `axis=null`（デフォルト）は全次元をフラット化した1グループ、`0`〜`inputの次元数-1` を指定するとその軸方向にのみ正規化する
+- `batchNorm`: batch 次元 + 指定された軸で正規化する。`axis=null` は batch 次元のみ（要素ごと）
+  学習時のミニバッチの統計量を `momentum`（保持率）で移動平均して保持し、推論時はその統計量を使う
 
 ### 位置エンコーディング
 
