@@ -58,6 +58,31 @@ class BatchNormD2(
     }
 }
 
-fun GraphBuilder.Node.D2.batchNorm(e: Float = 1e-6f, momentum: Float = 0.9f, id: String = Uuid.random().toString()) = addCompute(
-    compute = BatchNormD2(inputI = inputI, inputJ = inputJ, e = e, momentum = momentum, id = id),
-)
+fun GraphBuilder.Node.D2.batchNorm(axis: Int? = null, e: Float = 1e-6f, momentum: Float = 0.9f, id: String = Uuid.random().toString()): GraphBuilder.Node.D2 {
+    val process = when (axis) {
+        null -> BatchNormD2(
+            inputI = inputI,
+            inputJ = inputJ,
+            e = e,
+            momentum = momentum,
+            id = id,
+        )
+
+        0, 1 -> BatchNormAxisD2(
+            inputI = inputI,
+            inputJ = inputJ,
+            axis = axis,
+            e = e,
+            momentum = momentum,
+            id = id,
+        )
+
+        else -> throw IllegalStateException(
+            """
+            invalid parameter.
+            axis: $axis
+            """.trimIndent(),
+        )
+    }
+    return addCompute(compute = process)
+}
