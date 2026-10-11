@@ -36,19 +36,12 @@ class BatchNormAxisD3(
     private var rm: IOType.D2.Global = IOType.d2(i = outputR.first, j = outputR.second)
     private var rv: IOType.D2.Global = IOType.d2(i = outputR.first, j = outputR.second) { _, _ -> 1f }
 
-    override fun IOScope.expect(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-    ): Batch<IOType.D3> {
+    override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> {
         val numerator = input.minus(rm, axis1 = basicOpAxis1, axis2 = basicOpAxis2)
         return numerator.div(rv.sqrt(e = e), axis1 = basicOpAxis1, axis2 = basicOpAxis2)
     }
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3> {
         val average = input.batchAverage().average(axis = axis)
         val numerator = input.minus(average, axis1 = basicOpAxis1, axis2 = basicOpAxis2)
 

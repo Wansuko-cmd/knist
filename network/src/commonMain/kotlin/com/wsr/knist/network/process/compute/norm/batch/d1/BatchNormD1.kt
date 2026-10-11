@@ -12,28 +12,14 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class BatchNormD1(
-    override val inputI: Int,
-    private val e: Float,
-    private val momentum: Float,
-    override val id: String = Uuid.random().toString(),
-) : Compute.D1() {
+class BatchNormD1(override val inputI: Int, private val e: Float, private val momentum: Float, override val id: String = Uuid.random().toString()) : Compute.D1() {
     override val outputI = inputI
     private var rm: IOType.D1.Global = IOType.d1(i = inputI)
     private var rv: IOType.D1.Global = IOType.d1(i = inputI) { 1f }
 
-    override fun IOScope.expect(
-        input: Batch<IOType.D1>,
-        env: GraphEnv,
-    ): Batch<IOType.D1> {
-        return (input - rm) / rv.sqrt(e = e)
-    }
+    override fun IOScope.expect(input: Batch<IOType.D1>, env: GraphEnv): Batch<IOType.D1> = (input - rm) / rv.sqrt(e = e)
 
-    override fun IOScope.train(
-        input: Batch<IOType.D1>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>,
-    ): Batch<IOType.D1> {
+    override fun IOScope.train(input: Batch<IOType.D1>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D1>) -> Batch<IOType.D1>): Batch<IOType.D1> {
         val average = input.batchAverage()
         val numerator = input - average
 

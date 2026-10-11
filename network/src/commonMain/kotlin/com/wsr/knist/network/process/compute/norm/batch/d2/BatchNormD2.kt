@@ -12,30 +12,15 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class BatchNormD2(
-    override val inputI: Int,
-    override val inputJ: Int,
-    private val e: Float,
-    private val momentum: Float,
-    override val id: String = Uuid.random().toString(),
-) : Compute.D2() {
+class BatchNormD2(override val inputI: Int, override val inputJ: Int, private val e: Float, private val momentum: Float, override val id: String = Uuid.random().toString()) : Compute.D2() {
     override val outputI = inputI
     override val outputJ = inputJ
     private var rm: IOType.D2.Global = IOType.d2(i = inputI, j = inputJ)
     private var rv: IOType.D2.Global = IOType.d2(i = inputI, j = inputJ) { _, _ -> 1f }
 
-    override fun IOScope.expect(
-        input: Batch<IOType.D2>,
-        env: GraphEnv,
-    ): Batch<IOType.D2> {
-        return (input - rm) / rv.sqrt(e = e)
-    }
+    override fun IOScope.expect(input: Batch<IOType.D2>, env: GraphEnv): Batch<IOType.D2> = (input - rm) / rv.sqrt(e = e)
 
-    override fun IOScope.train(
-        input: Batch<IOType.D2>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>,
-    ): Batch<IOType.D2> {
+    override fun IOScope.train(input: Batch<IOType.D2>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D2> {
         val average = input.batchAverage()
         val numerator = input - average
 

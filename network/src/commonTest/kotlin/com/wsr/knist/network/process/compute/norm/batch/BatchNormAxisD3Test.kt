@@ -42,8 +42,14 @@ class BatchNormAxisD3Test {
         }
 
         private val members = HashMap<Int, MutableList<IntArray>>().also { map ->
-            for (b in 0 until n) for (i in 0 until di) for (j in 0 until dj) for (k in 0 until dk) {
-                map.getOrPut(key(i, j, k)) { mutableListOf() }.add(intArrayOf(b, i, j, k))
+            for (b in 0 until n) {
+                for (i in 0 until di) {
+                    for (j in 0 until dj) {
+                        for (k in 0 until dk) {
+                            map.getOrPut(key(i, j, k)) { mutableListOf() }.add(intArrayOf(b, i, j, k))
+                        }
+                    }
+                }
             }
         }
         private val mean = members.mapValues { (_, v) -> v.map { x(it[0], it[1], it[2], it[3]) }.average().toFloat() }
@@ -78,8 +84,14 @@ class BatchNormAxisD3Test {
     private fun reference(axis: Int) = Reference(axis, n, di, dj, dk, e, momentum, ::x)
 
     private fun assertEach(actual: Batch<IOType.D3>, expected: (Int, Int, Int, Int) -> Float) {
-        for (b in 0 until n) for (i in 0 until di) for (j in 0 until dj) for (k in 0 until dk) {
-            assertEquals(expected(b, i, j, k), actual[b][i, j, k].unwrap(), absoluteTolerance = 1e-3f, message = "[$b, $i, $j, $k]")
+        for (b in 0 until n) {
+            for (i in 0 until di) {
+                for (j in 0 until dj) {
+                    for (k in 0 until dk) {
+                        assertEquals(expected(b, i, j, k), actual[b][i, j, k].unwrap(), absoluteTolerance = 1e-3f, message = "[$b, $i, $j, $k]")
+                    }
+                }
+            }
         }
     }
 

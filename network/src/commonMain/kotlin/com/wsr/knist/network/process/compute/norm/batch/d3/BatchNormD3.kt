@@ -26,18 +26,9 @@ class BatchNormD3(
     private var rm: IOType.D3.Global = IOType.d3(i = inputI, j = inputJ, k = inputK)
     private var rv: IOType.D3.Global = IOType.d3(i = inputI, j = inputJ, k = inputK) { _, _, _ -> 1f }
 
-    override fun IOScope.expect(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-    ): Batch<IOType.D3> {
-        return (input - rm) / rv.sqrt(e = e)
-    }
+    override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> = (input - rm) / rv.sqrt(e = e)
 
-    override fun IOScope.train(
-        input: Batch<IOType.D3>,
-        env: GraphEnv,
-        calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>,
-    ): Batch<IOType.D3> {
+    override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3> {
         val average = input.batchAverage()
         val numerator = input - average
 
