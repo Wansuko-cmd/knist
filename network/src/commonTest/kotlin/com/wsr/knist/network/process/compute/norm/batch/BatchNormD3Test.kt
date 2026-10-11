@@ -5,7 +5,6 @@ package com.wsr.knist.network.process.compute.norm.batch
 import com.wsr.knist.batch.Batch
 import com.wsr.knist.core.IOType
 import com.wsr.knist.core.d1
-import com.wsr.knist.core.d2
 import com.wsr.knist.core.d3
 import com.wsr.knist.core.get
 import com.wsr.knist.network.GraphEnv

@@ -8,8 +8,8 @@ import com.wsr.knist.network.GraphBuilder
 import com.wsr.knist.network.GraphEnv
 import com.wsr.knist.network.GraphScope.addCompute
 import com.wsr.knist.network.process.Compute
-import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
+import kotlinx.serialization.Serializable
 
 @Serializable
 class BatchNormD2(
@@ -51,8 +51,8 @@ class BatchNormD2(
         val dx2 = -dNumerator.batchAverage()
         val dx3 = (-output * dNumerator).batchAverage() * output
 
-        rm = (momentum * rm  + (1 - momentum) * average).toGlobal()
-        rv = (momentum * rv  + (1 - momentum) * variance).toGlobal()
+        rm = (momentum * rm + (1 - momentum) * average).toGlobal()
+        rv = (momentum * rv + (1 - momentum) * variance).toGlobal()
 
         return dx1 + dx2 + dx3
     }

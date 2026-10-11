@@ -6,8 +6,8 @@ import com.wsr.knist.core.IOType
 import com.wsr.knist.core.d2
 import com.wsr.knist.network.GraphEnv
 import com.wsr.knist.network.process.Compute
-import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
+import kotlinx.serialization.Serializable
 
 @Serializable
 class BatchNormAxisD3(
