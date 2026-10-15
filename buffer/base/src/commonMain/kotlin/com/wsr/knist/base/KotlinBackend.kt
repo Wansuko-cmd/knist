@@ -632,24 +632,23 @@ object KotlinBackend : IBackend {
     }
 
     override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, axisI: Int, axisJ: Int, axisK: Int): DataBuffer {
-        val oldShape = listOf(xi, xj, xk)
-        val newShape = listOf(oldShape[axisI], oldShape[axisJ], oldShape[axisK])
+        val oldShape = intArrayOf(xi, xj, xk)
+        val ni = oldShape[axisI]
+        val nj = oldShape[axisJ]
+        val nk = oldShape[axisK]
+
+        val oldStride = intArrayOf(xj * xk, xk, 1)
+        val si = oldStride[axisI]
+        val sj = oldStride[axisJ]
+        val sk = oldStride[axisK]
         val result = DataBufferGenerator.create(x.size)
-        for (ni in 0 until newShape[0]) {
-            val nii = ni * newShape[1]
-            for (nj in 0 until newShape[1]) {
-                val nji = (nii + nj) * newShape[2]
-                for (nk in 0 until newShape[2]) {
-                    val newIndex = nji + nk
-
-                    val (oi, oj, ok) = IntArray(3).apply {
-                        this[axisI] = ni
-                        this[axisJ] = nj
-                        this[axisK] = nk
-                    }
-                    val oldIndex = (oi * xj + oj) * xk + ok
-
-                    result[newIndex] = x[oldIndex]
+        var newIndex = 0
+        for (i in 0 until ni) {
+            val oi = i * si
+            for (j in 0 until nj) {
+                val oj = oi + j * sj
+                for (k in 0 until nk) {
+                    result[newIndex++] = x[oj + k * sk]
                 }
             }
         }
@@ -657,27 +656,27 @@ object KotlinBackend : IBackend {
     }
 
     override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int): DataBuffer {
-        val oldShape = listOf(xi, xj, xk, xl)
-        val newShape = listOf(oldShape[axisI], oldShape[axisJ], oldShape[axisK], oldShape[axisL])
+        val oldShape = intArrayOf(xi, xj, xk, xl)
+        val ni = oldShape[axisI]
+        val nj = oldShape[axisJ]
+        val nk = oldShape[axisK]
+        val nl = oldShape[axisL]
+
+        val oldStride = intArrayOf(xj * xk * xl, xk * xl, xl, 1)
+        val si = oldStride[axisI]
+        val sj = oldStride[axisJ]
+        val sk = oldStride[axisK]
+        val sl = oldStride[axisL]
         val result = DataBufferGenerator.create(x.size)
-        for (ni in 0 until newShape[0]) {
-            val nii = ni * newShape[1]
-            for (nj in 0 until newShape[1]) {
-                val nji = (nii + nj) * newShape[2]
-                for (nk in 0 until newShape[2]) {
-                    val nki = (nji + nk) * newShape[3]
-                    for (nl in 0 until newShape[3]) {
-                        val newIndex = nki + nl
-
-                        val (oi, oj, ok, ol) = IntArray(4).apply {
-                            this[axisI] = ni
-                            this[axisJ] = nj
-                            this[axisK] = nk
-                            this[axisL] = nl
-                        }
-                        val oldIndex = ((oi * xj + oj) * xk + ok) * xl + ol
-
-                        result[newIndex] = x[oldIndex]
+        var newIndex = 0
+        for (i in 0 until ni) {
+            val oi = i * si
+            for (j in 0 until nj) {
+                val oj = oi + j * sj
+                for (k in 0 until nk) {
+                    val ok = oj + k * sk
+                    for (l in 0 until nl) {
+                        result[newIndex++] = x[ok + l * sl]
                     }
                 }
             }
@@ -686,30 +685,32 @@ object KotlinBackend : IBackend {
     }
 
     override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, xm: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int, axisM: Int): DataBuffer {
-        val oldShape = listOf(xi, xj, xk, xl, xm)
-        val newShape = listOf(oldShape[axisI], oldShape[axisJ], oldShape[axisK], oldShape[axisL], oldShape[axisM])
+        val oldShape = intArrayOf(xi, xj, xk, xl, xm)
+
+        val ni = oldShape[axisI]
+        val nj = oldShape[axisJ]
+        val nk = oldShape[axisK]
+        val nl = oldShape[axisL]
+        val nm = oldShape[axisM]
+
+        val oldStride = intArrayOf(xj * xk * xl * xm, xk * xl * xm, xl * xm, xm, 1)
+        val si = oldStride[axisI]
+        val sj = oldStride[axisJ]
+        val sk = oldStride[axisK]
+        val sl = oldStride[axisL]
+        val sm = oldStride[axisM]
         val result = DataBufferGenerator.create(x.size)
-        for (ni in 0 until newShape[0]) {
-            val nii = ni * newShape[1]
-            for (nj in 0 until newShape[1]) {
-                val nji = (nii + nj) * newShape[2]
-                for (nk in 0 until newShape[2]) {
-                    val nki = (nji + nk) * newShape[3]
-                    for (nl in 0 until newShape[3]) {
-                        val nli = (nki + nl) * newShape[4]
-                        for (nm in 0 until newShape[4]) {
-                            val newIndex = nli + nm
-
-                            val (oi, oj, ok, ol, om) = IntArray(5).apply {
-                                this[axisI] = ni
-                                this[axisJ] = nj
-                                this[axisK] = nk
-                                this[axisL] = nl
-                                this[axisM] = nm
-                            }
-                            val oldIndex = (((oi * xj + oj) * xk + ok) * xl + ol) * xm + om
-
-                            result[newIndex] = x[oldIndex]
+        var newIndex = 0
+        for (i in 0 until ni) {
+            val oi = i * si
+            for (j in 0 until nj) {
+                val oj = oi + j * sj
+                for (k in 0 until nk) {
+                    val ok = oj + k * sk
+                    for (l in 0 until nl) {
+                        val ol = ok + l * sl
+                        for (m in 0 until nm) {
+                            result[newIndex++] = x[ol + m * sm]
                         }
                     }
                 }
