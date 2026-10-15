@@ -504,7 +504,11 @@ object KotlinBackend : IBackend {
 
     override fun sigmoid(x: DataBuffer): DataBuffer = x.map { 1 / (1 + kotlin.math.exp(-it)) }
 
-    override fun pow(x: DataBuffer, n: Int): DataBuffer = x.map { it.pow(n) }
+    // Float.pow(Int)はdoubleのMath.powを経由するため、頻出のn=2は乗算で済ませる（結果は同一）
+    override fun pow(x: DataBuffer, n: Int): DataBuffer = when (n) {
+        2 -> x.map { it * it }
+        else -> x.map { it.pow(n) }
+    }
 
     override fun sqrt(x: DataBuffer, e: Float): DataBuffer = x.map { kotlin.math.sqrt(it + e) }
 
