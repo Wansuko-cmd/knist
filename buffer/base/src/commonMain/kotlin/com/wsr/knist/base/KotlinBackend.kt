@@ -373,55 +373,129 @@ object KotlinBackend : IBackend {
     }
 
     override fun matMul(x: DataBuffer, y: DataBuffer, transY: Boolean, n: Int, k: Int): DataBuffer {
-        val result = DataBufferGenerator.create(n)
-        for (j in 0 until n) {
-            var sum = 0f
-            for (p in 0 until k) {
-                val yValue = if (transY) y[j * k + p] else y[p * n + j]
-                sum += x[p] * yValue
+        val result = FloatArray(n)
+        if (transY) {
+            for (j in 0 until n) {
+                val offsetY = j * k
+                var sum = 0f
+                for (p in 0 until k) {
+                    sum += x[p] * y[offsetY + p]
+                }
+                result[j] = sum
             }
-            result[j] = sum
-        }
-        return result
-    }
-
-    override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, m: Int, k: Int): DataBuffer {
-        val result = DataBufferGenerator.create(m)
-        for (i in 0 until m) {
-            var sum = 0f
+        } else {
             for (p in 0 until k) {
-                val xValue = if (transX) x[p * m + i] else x[i * k + p]
-                sum += xValue * y[p]
-            }
-            result[i] = sum
-        }
-        return result
-    }
-
-    override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, transY: Boolean, m: Int, n: Int, k: Int, b: Int): DataBuffer {
-        val result = DataBufferGenerator.create(b * m * n)
-        val strideX = m * k
-        val strideY = k * n
-        val stride = m * n
-        for (batchIndex in 0 until b) {
-            val offsetX = batchIndex * strideX
-            val offsetY = batchIndex * strideY
-            val offset = batchIndex * stride
-
-            for (i in 0 until m) {
+                val xValue = x[p]
+                val offsetY = p * n
                 for (j in 0 until n) {
-                    var sum = 0f
-                    for (p in 0 until k) {
-                        val xValue = if (transX) x[offsetX + p * m + i] else x[offsetX + i * k + p]
-                        val yValue = if (transY) y[offsetY + j * k + p] else y[offsetY + p * n + j]
-                        sum += xValue * yValue
-                    }
-                    val index = offset + i * n + j
-                    result[index] = sum
+                    result[j] += xValue * y[offsetY + j]
                 }
             }
         }
-        return result
+        return DataBufferGenerator.create(result)
+    }
+
+    override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, m: Int, k: Int): DataBuffer {
+        val result = FloatArray(m)
+        if (transX) {
+            for (p in 0 until k) {
+                val yValue = y[p]
+                val offsetX = p * m
+                for (i in 0 until m) {
+                    result[i] += x[offsetX + i] * yValue
+                }
+            }
+        } else {
+            for (i in 0 until m) {
+                val offsetX = i * k
+                var sum = 0f
+                for (p in 0 until k) {
+                    sum += x[offsetX + p] * y[p]
+                }
+                result[i] = sum
+            }
+        }
+        return DataBufferGenerator.create(result)
+    }
+
+    override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, transY: Boolean, m: Int, n: Int, k: Int, b: Int): DataBuffer {
+        val result = FloatArray(b * m * n)
+        val strideX = m * k
+        val strideY = k * n
+        val stride = m * n
+
+        when {
+            !transX && !transY -> {
+                val sum = FloatArray(n)
+                for (batchIndex in 0 until b) {
+                    val offsetX = batchIndex * strideX
+                    val offsetY = batchIndex * strideY
+                    val offset = batchIndex * stride
+                    for (i in 0 until m) {
+                        sum.fill(0f)
+                        val rowX = offsetX + i * k
+                        for (p in 0 until k) {
+                            val xValue = x[rowX + p]
+                            val rowY = offsetY + p * n
+                            for (j in 0 until n) sum[j] += xValue * y[rowY + j]
+                        }
+                        sum.copyInto(destination = result, destinationOffset = offset + i * n)
+                    }
+                }
+            }
+
+            !transX && transY -> {
+                for (batchIndex in 0 until b) {
+                    val offsetX = batchIndex * strideX
+                    val offsetY = batchIndex * strideY
+                    val offset = batchIndex * stride
+                    for (i in 0 until m) {
+                        val rowX = offsetX + i * k
+                        for (j in 0 until n) {
+                            val rowY = offsetY + j * k
+                            var sum = 0f
+                            for (p in 0 until k) sum += x[rowX + p] * y[rowY + p]
+                            result[offset + i * n + j] = sum
+                        }
+                    }
+                }
+            }
+
+            transX && !transY -> {
+                val sum = FloatArray(n)
+                for (batchIndex in 0 until b) {
+                    val offsetX = batchIndex * strideX
+                    val offsetY = batchIndex * strideY
+                    val offset = batchIndex * stride
+                    for (i in 0 until m) {
+                        sum.fill(0f)
+                        for (p in 0 until k) {
+                            val xValue = x[offsetX + p * m + i]
+                            val rowY = offsetY + p * n
+                            for (j in 0 until n) sum[j] += xValue * y[rowY + j]
+                        }
+                        sum.copyInto(destination = result, destinationOffset = offset + i * n)
+                    }
+                }
+            }
+
+            else -> {
+                for (batchIndex in 0 until b) {
+                    val offsetX = batchIndex * strideX
+                    val offsetY = batchIndex * strideY
+                    val offset = batchIndex * stride
+                    for (i in 0 until m) {
+                        for (j in 0 until n) {
+                            val rowY = offsetY + j * k
+                            var sum = 0f
+                            for (p in 0 until k) sum += x[offsetX + p * m + i] * y[rowY + p]
+                            result[offset + i * n + j] = sum
+                        }
+                    }
+                }
+            }
+        }
+        return DataBufferGenerator.create(result)
     }
 
     override fun exp(x: DataBuffer): DataBuffer = x.map { kotlin.math.exp(it) }
