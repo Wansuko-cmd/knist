@@ -620,15 +620,14 @@ internal inline fun DataBuffer.reduce(operation: (Float, Float) -> Float): DataB
 
 internal inline fun DataBuffer.reduce(xi: Int, xj: Int, axis: Int, operation: (Float, Float) -> Float): DataBuffer = when (axis) {
     0 -> {
-        val result = Default(size = xj)
-        for (j in 0 until xj) {
-            var acc = this[j]
-            for (i in 1 until xi) {
-                acc = operation(acc, this[i * xj + j])
+        val result = FloatArray(xj) { j -> this[j] }
+        for (i in 1 until xi) {
+            val offset = i * xj
+            for (j in 0 until xj) {
+                result[j] = operation(result[j], this[offset + j])
             }
-            result[j] = acc
         }
-        result
+        Default(result)
     }
 
     1 -> {
@@ -648,40 +647,41 @@ internal inline fun DataBuffer.reduce(xi: Int, xj: Int, axis: Int, operation: (F
 
 internal inline fun DataBuffer.reduce(xi: Int, xj: Int, xk: Int, axis: Int, operation: (Float, Float) -> Float): DataBuffer = when (axis) {
     0 -> {
-        val result = Default(xj * xk)
-        for (j in 0 until xj) {
-            for (k in 0 until xk) {
-                var acc = this[j * xk + k]
-                for (i in 1 until xi) {
-                    acc = operation(acc, this[(i * xj + j) * xk + k])
-                }
-                result[j * xk + k] = acc
+        val jk = xj * xk
+        val result = FloatArray(jk) { this[it] }
+        for (i in 1 until xi) {
+            val offset = i * jk
+            for (index in 0 until jk) {
+                result[index] = operation(result[index], this[offset + index])
             }
         }
-        result
+        Default(result)
     }
 
     1 -> {
-        val result = Default(xi * xk)
+        val result = FloatArray(xi * xk)
         for (i in 0 until xi) {
-            for (k in 0 until xk) {
-                var acc = this[i * xj * xk + k]
-                for (j in 1 until xj) {
-                    acc = operation(acc, this[(i * xj + j) * xk + k])
+            val offset = i * xj * xk
+            val resultOffset = i * xk
+            for (k in 0 until xk) result[resultOffset + k] = this[offset + k]
+            for (j in 1 until xj) {
+                val rowOffset = offset + j * xk
+                for (k in 0 until xk) {
+                    result[resultOffset + k] = operation(result[resultOffset + k], this[rowOffset + k])
                 }
-                result[i * xk + k] = acc
             }
         }
-        result
+        Default(result)
     }
 
     2 -> {
         val result = Default(xi * xj)
         for (i in 0 until xi) {
             for (j in 0 until xj) {
-                var acc = this[(i * xj + j) * xk]
+                val offset = (i * xj + j) * xk
+                var acc = this[offset]
                 for (k in 1 until xk) {
-                    acc = operation(acc, this[(i * xj + j) * xk + k])
+                    acc = operation(acc, this[offset + k])
                 }
                 result[i * xj + j] = acc
             }

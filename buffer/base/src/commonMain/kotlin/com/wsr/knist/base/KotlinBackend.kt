@@ -373,55 +373,129 @@ object KotlinBackend : IBackend {
     }
 
     override fun matMul(x: DataBuffer, y: DataBuffer, transY: Boolean, n: Int, k: Int): DataBuffer {
-        val result = DataBufferGenerator.create(n)
-        for (j in 0 until n) {
-            var sum = 0f
-            for (p in 0 until k) {
-                val yValue = if (transY) y[j * k + p] else y[p * n + j]
-                sum += x[p] * yValue
+        val result = FloatArray(n)
+        if (transY) {
+            for (j in 0 until n) {
+                val offsetY = j * k
+                var sum = 0f
+                for (p in 0 until k) {
+                    sum += x[p] * y[offsetY + p]
+                }
+                result[j] = sum
             }
-            result[j] = sum
-        }
-        return result
-    }
-
-    override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, m: Int, k: Int): DataBuffer {
-        val result = DataBufferGenerator.create(m)
-        for (i in 0 until m) {
-            var sum = 0f
+        } else {
             for (p in 0 until k) {
-                val xValue = if (transX) x[p * m + i] else x[i * k + p]
-                sum += xValue * y[p]
-            }
-            result[i] = sum
-        }
-        return result
-    }
-
-    override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, transY: Boolean, m: Int, n: Int, k: Int, b: Int): DataBuffer {
-        val result = DataBufferGenerator.create(b * m * n)
-        val strideX = m * k
-        val strideY = k * n
-        val stride = m * n
-        for (batchIndex in 0 until b) {
-            val offsetX = batchIndex * strideX
-            val offsetY = batchIndex * strideY
-            val offset = batchIndex * stride
-
-            for (i in 0 until m) {
+                val xValue = x[p]
+                val offsetY = p * n
                 for (j in 0 until n) {
-                    var sum = 0f
-                    for (p in 0 until k) {
-                        val xValue = if (transX) x[offsetX + p * m + i] else x[offsetX + i * k + p]
-                        val yValue = if (transY) y[offsetY + j * k + p] else y[offsetY + p * n + j]
-                        sum += xValue * yValue
-                    }
-                    val index = offset + i * n + j
-                    result[index] = sum
+                    result[j] += xValue * y[offsetY + j]
                 }
             }
         }
-        return result
+        return DataBufferGenerator.create(result)
+    }
+
+    override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, m: Int, k: Int): DataBuffer {
+        val result = FloatArray(m)
+        if (transX) {
+            for (p in 0 until k) {
+                val yValue = y[p]
+                val offsetX = p * m
+                for (i in 0 until m) {
+                    result[i] += x[offsetX + i] * yValue
+                }
+            }
+        } else {
+            for (i in 0 until m) {
+                val offsetX = i * k
+                var sum = 0f
+                for (p in 0 until k) {
+                    sum += x[offsetX + p] * y[p]
+                }
+                result[i] = sum
+            }
+        }
+        return DataBufferGenerator.create(result)
+    }
+
+    override fun matMul(x: DataBuffer, transX: Boolean, y: DataBuffer, transY: Boolean, m: Int, n: Int, k: Int, b: Int): DataBuffer {
+        val result = FloatArray(b * m * n)
+        val strideX = m * k
+        val strideY = k * n
+        val stride = m * n
+
+        when {
+            !transX && !transY -> {
+                val sum = FloatArray(n)
+                for (batchIndex in 0 until b) {
+                    val offsetX = batchIndex * strideX
+                    val offsetY = batchIndex * strideY
+                    val offset = batchIndex * stride
+                    for (i in 0 until m) {
+                        sum.fill(0f)
+                        val rowX = offsetX + i * k
+                        for (p in 0 until k) {
+                            val xValue = x[rowX + p]
+                            val rowY = offsetY + p * n
+                            for (j in 0 until n) sum[j] += xValue * y[rowY + j]
+                        }
+                        sum.copyInto(destination = result, destinationOffset = offset + i * n)
+                    }
+                }
+            }
+
+            !transX && transY -> {
+                for (batchIndex in 0 until b) {
+                    val offsetX = batchIndex * strideX
+                    val offsetY = batchIndex * strideY
+                    val offset = batchIndex * stride
+                    for (i in 0 until m) {
+                        val rowX = offsetX + i * k
+                        for (j in 0 until n) {
+                            val rowY = offsetY + j * k
+                            var sum = 0f
+                            for (p in 0 until k) sum += x[rowX + p] * y[rowY + p]
+                            result[offset + i * n + j] = sum
+                        }
+                    }
+                }
+            }
+
+            transX && !transY -> {
+                val sum = FloatArray(n)
+                for (batchIndex in 0 until b) {
+                    val offsetX = batchIndex * strideX
+                    val offsetY = batchIndex * strideY
+                    val offset = batchIndex * stride
+                    for (i in 0 until m) {
+                        sum.fill(0f)
+                        for (p in 0 until k) {
+                            val xValue = x[offsetX + p * m + i]
+                            val rowY = offsetY + p * n
+                            for (j in 0 until n) sum[j] += xValue * y[rowY + j]
+                        }
+                        sum.copyInto(destination = result, destinationOffset = offset + i * n)
+                    }
+                }
+            }
+
+            else -> {
+                for (batchIndex in 0 until b) {
+                    val offsetX = batchIndex * strideX
+                    val offsetY = batchIndex * strideY
+                    val offset = batchIndex * stride
+                    for (i in 0 until m) {
+                        for (j in 0 until n) {
+                            val rowY = offsetY + j * k
+                            var sum = 0f
+                            for (p in 0 until k) sum += x[offsetX + p * m + i] * y[rowY + p]
+                            result[offset + i * n + j] = sum
+                        }
+                    }
+                }
+            }
+        }
+        return DataBufferGenerator.create(result)
     }
 
     override fun exp(x: DataBuffer): DataBuffer = x.map { kotlin.math.exp(it) }
@@ -430,7 +504,11 @@ object KotlinBackend : IBackend {
 
     override fun sigmoid(x: DataBuffer): DataBuffer = x.map { 1 / (1 + kotlin.math.exp(-it)) }
 
-    override fun pow(x: DataBuffer, n: Int): DataBuffer = x.map { it.pow(n) }
+    // Float.pow(Int)はdoubleのMath.powを経由するため、頻出のn=2は乗算で済ませる（結果は同一）
+    override fun pow(x: DataBuffer, n: Int): DataBuffer = when (n) {
+        2 -> x.map { it * it }
+        else -> x.map { it.pow(n) }
+    }
 
     override fun sqrt(x: DataBuffer, e: Float): DataBuffer = x.map { kotlin.math.sqrt(it + e) }
 
@@ -558,24 +636,23 @@ object KotlinBackend : IBackend {
     }
 
     override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, axisI: Int, axisJ: Int, axisK: Int): DataBuffer {
-        val oldShape = listOf(xi, xj, xk)
-        val newShape = listOf(oldShape[axisI], oldShape[axisJ], oldShape[axisK])
+        val oldShape = intArrayOf(xi, xj, xk)
+        val ni = oldShape[axisI]
+        val nj = oldShape[axisJ]
+        val nk = oldShape[axisK]
+
+        val oldStride = intArrayOf(xj * xk, xk, 1)
+        val si = oldStride[axisI]
+        val sj = oldStride[axisJ]
+        val sk = oldStride[axisK]
         val result = DataBufferGenerator.create(x.size)
-        for (ni in 0 until newShape[0]) {
-            val nii = ni * newShape[1]
-            for (nj in 0 until newShape[1]) {
-                val nji = (nii + nj) * newShape[2]
-                for (nk in 0 until newShape[2]) {
-                    val newIndex = nji + nk
-
-                    val (oi, oj, ok) = IntArray(3).apply {
-                        this[axisI] = ni
-                        this[axisJ] = nj
-                        this[axisK] = nk
-                    }
-                    val oldIndex = (oi * xj + oj) * xk + ok
-
-                    result[newIndex] = x[oldIndex]
+        var newIndex = 0
+        for (i in 0 until ni) {
+            val oi = i * si
+            for (j in 0 until nj) {
+                val oj = oi + j * sj
+                for (k in 0 until nk) {
+                    result[newIndex++] = x[oj + k * sk]
                 }
             }
         }
@@ -583,27 +660,27 @@ object KotlinBackend : IBackend {
     }
 
     override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int): DataBuffer {
-        val oldShape = listOf(xi, xj, xk, xl)
-        val newShape = listOf(oldShape[axisI], oldShape[axisJ], oldShape[axisK], oldShape[axisL])
+        val oldShape = intArrayOf(xi, xj, xk, xl)
+        val ni = oldShape[axisI]
+        val nj = oldShape[axisJ]
+        val nk = oldShape[axisK]
+        val nl = oldShape[axisL]
+
+        val oldStride = intArrayOf(xj * xk * xl, xk * xl, xl, 1)
+        val si = oldStride[axisI]
+        val sj = oldStride[axisJ]
+        val sk = oldStride[axisK]
+        val sl = oldStride[axisL]
         val result = DataBufferGenerator.create(x.size)
-        for (ni in 0 until newShape[0]) {
-            val nii = ni * newShape[1]
-            for (nj in 0 until newShape[1]) {
-                val nji = (nii + nj) * newShape[2]
-                for (nk in 0 until newShape[2]) {
-                    val nki = (nji + nk) * newShape[3]
-                    for (nl in 0 until newShape[3]) {
-                        val newIndex = nki + nl
-
-                        val (oi, oj, ok, ol) = IntArray(4).apply {
-                            this[axisI] = ni
-                            this[axisJ] = nj
-                            this[axisK] = nk
-                            this[axisL] = nl
-                        }
-                        val oldIndex = ((oi * xj + oj) * xk + ok) * xl + ol
-
-                        result[newIndex] = x[oldIndex]
+        var newIndex = 0
+        for (i in 0 until ni) {
+            val oi = i * si
+            for (j in 0 until nj) {
+                val oj = oi + j * sj
+                for (k in 0 until nk) {
+                    val ok = oj + k * sk
+                    for (l in 0 until nl) {
+                        result[newIndex++] = x[ok + l * sl]
                     }
                 }
             }
@@ -612,30 +689,32 @@ object KotlinBackend : IBackend {
     }
 
     override fun transpose(x: DataBuffer, xi: Int, xj: Int, xk: Int, xl: Int, xm: Int, axisI: Int, axisJ: Int, axisK: Int, axisL: Int, axisM: Int): DataBuffer {
-        val oldShape = listOf(xi, xj, xk, xl, xm)
-        val newShape = listOf(oldShape[axisI], oldShape[axisJ], oldShape[axisK], oldShape[axisL], oldShape[axisM])
+        val oldShape = intArrayOf(xi, xj, xk, xl, xm)
+
+        val ni = oldShape[axisI]
+        val nj = oldShape[axisJ]
+        val nk = oldShape[axisK]
+        val nl = oldShape[axisL]
+        val nm = oldShape[axisM]
+
+        val oldStride = intArrayOf(xj * xk * xl * xm, xk * xl * xm, xl * xm, xm, 1)
+        val si = oldStride[axisI]
+        val sj = oldStride[axisJ]
+        val sk = oldStride[axisK]
+        val sl = oldStride[axisL]
+        val sm = oldStride[axisM]
         val result = DataBufferGenerator.create(x.size)
-        for (ni in 0 until newShape[0]) {
-            val nii = ni * newShape[1]
-            for (nj in 0 until newShape[1]) {
-                val nji = (nii + nj) * newShape[2]
-                for (nk in 0 until newShape[2]) {
-                    val nki = (nji + nk) * newShape[3]
-                    for (nl in 0 until newShape[3]) {
-                        val nli = (nki + nl) * newShape[4]
-                        for (nm in 0 until newShape[4]) {
-                            val newIndex = nli + nm
-
-                            val (oi, oj, ok, ol, om) = IntArray(5).apply {
-                                this[axisI] = ni
-                                this[axisJ] = nj
-                                this[axisK] = nk
-                                this[axisL] = nl
-                                this[axisM] = nm
-                            }
-                            val oldIndex = (((oi * xj + oj) * xk + ok) * xl + ol) * xm + om
-
-                            result[newIndex] = x[oldIndex]
+        var newIndex = 0
+        for (i in 0 until ni) {
+            val oi = i * si
+            for (j in 0 until nj) {
+                val oj = oi + j * sj
+                for (k in 0 until nk) {
+                    val ok = oj + k * sk
+                    for (l in 0 until nl) {
+                        val ol = ok + l * sl
+                        for (m in 0 until nm) {
+                            result[newIndex++] = x[ol + m * sm]
                         }
                     }
                 }
