@@ -40,7 +40,7 @@ class LayerNormD3 internal constructor(override val inputI: Int, override val in
         val delta = calcDelta(output)
 
         // dy/[x-average(x)]
-        val dNumerator = output / denominator
+        val dNumerator = delta / denominator
 
         // dy/x <- (x-average(x)のx)
         val dx1 = dNumerator

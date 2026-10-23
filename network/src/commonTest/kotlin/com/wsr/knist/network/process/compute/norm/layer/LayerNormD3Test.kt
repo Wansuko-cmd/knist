@@ -89,54 +89,58 @@ class LayerNormD3Test {
 
     @Test
     fun `train=正規化および勾配を伝播`() = networkScopeTestRule {
+        val delta = Batch.of(
+            IOType.d3(2, 2, 3) { i, j, k -> (i * 6 + j * 3 + k).toFloat() },
+            IOType.d3(2, 2, 3) { i, j, k -> ((i * 6 + j * 3 + k) % 4).toFloat() },
+        )
         val actual = with(target) {
             _train(
                 input = input,
                 env = GraphEnv(),
-                calcDelta = { 1e6f * it as Batch<IOType.D2> },
+                calcDelta = { delta },
             )
         } as Batch<IOType.D3>
 
         assertContentEquals(
-            expected = IOType.d1(658641.7500f, -66468.4300f, -791578.6000f),
+            expected = IOType.d1(-5.1204f, -3.7878f, -2.4552f),
             actual = actual[0][0][0],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
         assertContentEquals(
-            expected = IOType.d1(658641.7500f, -791578.6000f, -2241799.0000f),
+            expected = IOType.d1(-2.5658f, -0.7521f, 1.0616f),
             actual = actual[0][0][1],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
         assertContentEquals(
-            expected = IOType.d1(658641.7500f, 658641.7500f, -66468.4300f),
+            expected = IOType.d1(-0.0112f, 0.8403f, 2.1729f),
             actual = actual[0][1][0],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
         assertContentEquals(
-            expected = IOType.d1(658641.7500f, 441108.7000f, 223575.6400f),
+            expected = IOType.d1(2.5434f, 3.5392f, 4.5351f),
             actual = actual[0][1][1],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
 
         assertContentEquals(
-            expected = IOType.d1(134166.4500f, -14448.6860f, -460294.1600f),
+            expected = IOType.d1(-0.4287f, -0.1342f, 0.2043f),
             actual = actual[1][0][0],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
         assertContentEquals(
-            expected = IOType.d1(-237371.4200f, -311679.0000f, -385986.5600f),
+            expected = IOType.d1(0.4439f, -0.3629f, -0.0793f),
             actual = actual[1][0][1],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
         assertContentEquals(
-            expected = IOType.d1(134166.4500f, 59858.8900f, 97012.6800f),
+            expected = IOType.d1(0.1165f, 0.4001f, -0.4232f),
             actual = actual[1][1][0],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
         assertContentEquals(
-            expected = IOType.d1(282781.6000f, 319935.3800f, 381858.3800f),
+            expected = IOType.d1(-0.1781f, 0.0891f, 0.3525f),
             actual = actual[1][1][1],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
     }
 }
