@@ -1631,12 +1631,7 @@ class CPUNativeBackend(private val fallback: IBackend, maxPoolBytes: Long) : IBa
         runtime = runtime,
     )
 
-    private fun CPUNativeBuffer.Companion.create(value: FloatArray): CPUNativeBuffer {
-        val buffer = value.usePinned { pinned ->
-            com_wsr_cpu_buffer_init(pinned.addressOf(0), value.size, runtime)!!
-        }
-        return CPUNativeBuffer(buffer = buffer, size = value.size, runtime = runtime)
-    }
+    private fun CPUNativeBuffer.Companion.create(value: FloatArray): CPUNativeBuffer = create(value, runtime)
 
     private fun DataBuffer.toCPUBuffer() = toCPUBuffer(runtime = runtime)
 }
