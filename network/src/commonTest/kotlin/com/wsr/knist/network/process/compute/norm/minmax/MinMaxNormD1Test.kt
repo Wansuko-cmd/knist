@@ -11,7 +11,7 @@ import com.wsr.knist.network.networkScopeTestRule
 import kotlin.test.Test
 
 class MinMaxNormD1Test {
-    val target get() = MinMaxNormD1(inputI = 3)
+    val target get() = MinMaxNormD1(inputI = 3, e = 1e-6f)
     val input
         get() = Batch.of(
             IOType.d1(3) { it.toFloat() },
@@ -48,6 +48,19 @@ class MinMaxNormD1Test {
         assertContentEquals(
             expected = IOType.d1(-0.0625f, 0.1250f, -0.0625f),
             actual = actual[1],
+            absoluteTolerance = 1e-4f,
+        )
+    }
+
+    @Test
+    fun `expect=定数入力でもNaNにならず0を返す`() = networkScopeTestRule {
+        val constant = Batch.of(IOType.d1(2f, 2f, 2f))
+
+        val actual = with(target) { _expect(input = constant, env = GraphEnv()) } as Batch<IOType.D1>
+
+        assertContentEquals(
+            expected = IOType.d1(0f, 0f, 0f),
+            actual = actual[0],
             absoluteTolerance = 1e-4f,
         )
     }

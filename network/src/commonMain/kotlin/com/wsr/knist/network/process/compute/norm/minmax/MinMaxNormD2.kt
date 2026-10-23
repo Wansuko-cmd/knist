@@ -11,13 +11,13 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MinMaxNormD2 internal constructor(override val inputI: Int, override val inputJ: Int, override val id: String = Uuid.random().toString()) : Compute.D2() {
+class MinMaxNormD2 internal constructor(override val inputI: Int, override val inputJ: Int, private val e: Float, override val id: String = Uuid.random().toString()) : Compute.D2() {
     override val outputI: Int get() = inputI
     override val outputJ: Int get() = inputJ
     override fun IOScope.expect(input: Batch<IOType.D2>, env: GraphEnv): Batch<IOType.D2> {
         val min = input.min()
         val max = input.max()
-        val denominator = max - min
+        val denominator = max - min + e
         return (input - min) / denominator
     }
 
@@ -25,7 +25,7 @@ class MinMaxNormD2 internal constructor(override val inputI: Int, override val i
         val min = input.min()
         val max = input.max()
         val numerator = input - min
-        val denominator = 1f / (max - min)
+        val denominator = 1f / (max - min + e)
 
         val output = denominator * numerator
         val delta = calcDelta(output)
@@ -50,11 +50,12 @@ class MinMaxNormD2 internal constructor(override val inputI: Int, override val i
     }
 }
 
-fun GraphBuilder.Node.D2.minMaxNorm(axis: Int? = null, id: String = Uuid.random().toString()): GraphBuilder.Node.D2 {
+fun GraphBuilder.Node.D2.minMaxNorm(axis: Int? = null, e: Float = 1e-6f, id: String = Uuid.random().toString()): GraphBuilder.Node.D2 {
     val process = when (axis) {
         null -> MinMaxNormD2(
             inputI = inputI,
             inputJ = inputJ,
+            e = e,
             id = id,
         )
 
@@ -62,6 +63,7 @@ fun GraphBuilder.Node.D2.minMaxNorm(axis: Int? = null, id: String = Uuid.random(
             inputI = inputI,
             inputJ = inputJ,
             axis = axis,
+            e = e,
             id = id,
         )
 

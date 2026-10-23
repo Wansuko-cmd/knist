@@ -11,12 +11,12 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MinMaxNormD1 internal constructor(override val inputI: Int, override val id: String = Uuid.random().toString()) : Compute.D1() {
+class MinMaxNormD1 internal constructor(override val inputI: Int, private val e: Float, override val id: String = Uuid.random().toString()) : Compute.D1() {
     override val outputI: Int get() = inputI
     override fun IOScope.expect(input: Batch<IOType.D1>, env: GraphEnv): Batch<IOType.D1> {
         val min = input.min()
         val max = input.max()
-        val denominator = max - min
+        val denominator = max - min + e
         return (input - min) / denominator
     }
 
@@ -25,7 +25,7 @@ class MinMaxNormD1 internal constructor(override val inputI: Int, override val i
         val max = input.max()
 
         val numerator = input - min
-        val denominator = 1f / (max - min)
+        val denominator = 1f / (max - min + e)
 
         val output = denominator * numerator
         val delta = calcDelta(output)
@@ -50,9 +50,10 @@ class MinMaxNormD1 internal constructor(override val inputI: Int, override val i
     }
 }
 
-fun GraphBuilder.Node.D1.minMaxNorm(id: String = Uuid.random().toString()) = addCompute(
+fun GraphBuilder.Node.D1.minMaxNorm(e: Float = 1e-6f, id: String = Uuid.random().toString()) = addCompute(
     compute = MinMaxNormD1(
         inputI = inputI,
+        e = e,
         id = id,
     ),
 )

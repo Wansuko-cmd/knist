@@ -11,14 +11,14 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MinMaxNormD3 internal constructor(override val inputI: Int, override val inputJ: Int, override val inputK: Int, override val id: String = Uuid.random().toString()) : Compute.D3() {
+class MinMaxNormD3 internal constructor(override val inputI: Int, override val inputJ: Int, override val inputK: Int, private val e: Float, override val id: String = Uuid.random().toString()) : Compute.D3() {
     override val outputI: Int get() = inputI
     override val outputJ: Int get() = inputJ
     override val outputK: Int get() = inputK
     override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> {
         val min = input.min()
         val max = input.max()
-        val denominator = max - min
+        val denominator = max - min + e
         return (input - min) / denominator
     }
 
@@ -27,7 +27,7 @@ class MinMaxNormD3 internal constructor(override val inputI: Int, override val i
         val max = input.max()
 
         val numerator = input - min
-        val denominator = 1f / (max - min)
+        val denominator = 1f / (max - min + e)
 
         val output = denominator * numerator
         val delta = calcDelta(output)
@@ -52,12 +52,13 @@ class MinMaxNormD3 internal constructor(override val inputI: Int, override val i
     }
 }
 
-fun GraphBuilder.Node.D3.minMaxNorm(axis: Int? = null, id: String = Uuid.random().toString()): GraphBuilder.Node.D3 {
+fun GraphBuilder.Node.D3.minMaxNorm(axis: Int? = null, e: Float = 1e-6f, id: String = Uuid.random().toString()): GraphBuilder.Node.D3 {
     val process = when (axis) {
         null -> MinMaxNormD3(
             inputI = inputI,
             inputJ = inputJ,
             inputK = inputK,
+            e = e,
             id = id,
         )
 
@@ -66,6 +67,7 @@ fun GraphBuilder.Node.D3.minMaxNorm(axis: Int? = null, id: String = Uuid.random(
             inputJ = inputJ,
             inputK = inputK,
             axis = axis,
+            e = e,
             id = id,
         )
 

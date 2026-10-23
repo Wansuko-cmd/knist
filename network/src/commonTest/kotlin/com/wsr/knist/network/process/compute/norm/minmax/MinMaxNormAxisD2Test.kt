@@ -14,14 +14,14 @@ import kotlin.test.Test
 import kotlin.test.assertFails
 
 class MinMaxNormAxisD2Test {
-    val target1 get() = MinMaxNormAxisD2(inputI = 2, inputJ = 3, axis = 1)
+    val target1 get() = MinMaxNormAxisD2(inputI = 2, inputJ = 3, axis = 1, e = 1e-6f)
     val input1
         get() = Batch.of(
             IOType.d2(IOType.d1(1f, 5f, 3f), IOType.d1(4f, 2f, 6f)),
             IOType.d2(IOType.d1(8f, 2f, 5f), IOType.d1(9f, 1f, 4f)),
         )
 
-    val target0 get() = MinMaxNormAxisD2(inputI = 3, inputJ = 3, axis = 0)
+    val target0 get() = MinMaxNormAxisD2(inputI = 3, inputJ = 3, axis = 0, e = 1e-6f)
     val input0
         get() = Batch.of(
             IOType.d2(IOType.d1(1f, 5f, 3f), IOType.d1(4f, 2f, 8f), IOType.d1(6f, 0f, 7f)),
@@ -80,7 +80,7 @@ class MinMaxNormAxisD2Test {
 
     @Test
     fun `axisが不正な場合は例外を投げる`() {
-        assertFails { MinMaxNormAxisD2(inputI = 2, inputJ = 2, axis = 2) }
-        assertFails { MinMaxNormAxisD2(inputI = 2, inputJ = 2, axis = -1) }
+        assertFails { MinMaxNormAxisD2(inputI = 2, inputJ = 2, axis = 2, e = 1e-6f) }
+        assertFails { MinMaxNormAxisD2(inputI = 2, inputJ = 2, axis = -1, e = 1e-6f) }
     }
 }
