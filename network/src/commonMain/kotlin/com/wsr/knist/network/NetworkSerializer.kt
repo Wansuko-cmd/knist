@@ -123,6 +123,8 @@ import com.wsr.knist.network.process.compute.norm.layer.d2.LayerNormAxisD2
 import com.wsr.knist.network.process.compute.norm.layer.d2.LayerNormD2
 import com.wsr.knist.network.process.compute.norm.layer.d3.LayerNormAxisD3
 import com.wsr.knist.network.process.compute.norm.layer.d3.LayerNormD3
+import com.wsr.knist.network.process.compute.norm.minmax.MinMaxNormAxisD2
+import com.wsr.knist.network.process.compute.norm.minmax.MinMaxNormAxisD3
 import com.wsr.knist.network.process.compute.norm.minmax.MinMaxNormD1
 import com.wsr.knist.network.process.compute.norm.minmax.MinMaxNormD2
 import com.wsr.knist.network.process.compute.norm.minmax.MinMaxNormD3
@@ -354,7 +356,9 @@ private val buildInSerializersModule = SerializersModule {
 
         subclass(MinMaxNormD1::class)
         subclass(MinMaxNormD2::class)
+        subclass(MinMaxNormAxisD2::class)
         subclass(MinMaxNormD3::class)
+        subclass(MinMaxNormAxisD3::class)
 
         // Padding
         subclass(PaddingD2::class)
