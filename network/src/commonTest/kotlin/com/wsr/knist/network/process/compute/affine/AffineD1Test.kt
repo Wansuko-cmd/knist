@@ -53,12 +53,12 @@ class AffineD1Test {
         val actual = with(target) { _expect(input = input, env = GraphEnv()) } as Batch<IOType.D1>
 
         assertContentEquals(
-            expected = IOType.d1(7.0000f, 9.1f, 11.2000f, 13.2999f),
+            expected = IOType.d1(13.5000f, 17.5500f, 21.6000f, 25.6500f),
             actual = actual[0],
             absoluteTolerance = 1e-4f,
         )
         assertContentEquals(
-            expected = IOType.d1(10.5000f, 13.6500f, 16.8000f, 19.95f),
+            expected = IOType.d1(20.2500f, 26.3250f, 32.4000f, 38.4750f),
             actual = actual[1],
             absoluteTolerance = 1e-4f,
         )

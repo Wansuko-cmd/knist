@@ -27,7 +27,7 @@ class AffineD1 internal constructor(
         val output = weight.matMul(input, trans = true)
         val delta = calcDelta(output)
         val dx = weight.matMul(delta)
-        val dw = input.toD2().matMul(delta.toD2(), transA = true)
+        val dw = input.toD2().matMul(delta.toD2(), transA = true) / input.size.toFloat()
         weight = optimizer.adapt(weight = weight, dw = dw).toGlobal()
         return dx
     }
