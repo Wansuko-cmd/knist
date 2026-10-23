@@ -161,7 +161,7 @@ fun GraphBuilder.Node.D2.attention(
         dim = dim,
         biases = AttentionBiasD2Builder(inputI = inputI, inputJ = inputJ, numOfHeads = numOfHeads)
             .biases()
-            .also { biasNodes.addAll(it.nodes) }
+            .also { builder -> biasNodes.addAll(builder.nodes.filter { new -> nodes.none { it.id == new.id } }) }
             .biases,
         weightQ = initializer.d2(
             input = listOf(inputJ),
