@@ -31,8 +31,8 @@ internal class SoftmaxWithLossD1 internal constructor(val temperature: Float) : 
         val label = label(output)
         val mask = label.sum() gt 0f
 
-        // -log(p)
-        val losses = -(output * label).sum().ln(1e-7f)
+        // -Σ y * log(p)
+        val losses = -(output.ln(1e-7f) * label).sum()
         val maskedLosses = losses * mask
 
         // 有効値のみの平均を取る

@@ -28,8 +28,8 @@ internal class SoftmaxWithLossAxisD2 internal constructor(val outputI: Int, val 
         val label = label(output)
         val mask = label.sum(axis = axis) gt 0f
 
-        // -log(p)
-        val losses = -(output * label).sum(axis = axis).ln(1e-7f)
+        // -Σ y * log(p)
+        val losses = -(output.ln(1e-7f) * label).sum(axis = axis)
         val maskedLosses = losses * mask
 
         // 有効値のみの平均を取る

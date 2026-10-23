@@ -43,7 +43,7 @@ class SoftmaxWithLossAxisD3Test {
         val loss = actual.loss.unwrap()
         val delta = actual.delta as Batch<IOType.D3>
 
-        assertEquals(expected = -1.6107f, actual = loss, absoluteTolerance = 1e-4f)
+        assertEquals(expected = 17.7682f, actual = loss, absoluteTolerance = 1e-4f)
         assertEquals(expected = 0.9716f, actual = delta[0][0][0][0].unwrap(), absoluteTolerance = 1e-4f)
         assertEquals(expected = -1.3026f, actual = delta[0][0][0][1].unwrap(), absoluteTolerance = 1e-4f)
         assertEquals(expected = -4.9474f, actual = delta[0][0][1][0].unwrap(), absoluteTolerance = 1e-4f)
@@ -76,7 +76,7 @@ class SoftmaxWithLossAxisD3Test {
         val loss = actual.loss.unwrap()
         val delta = actual.delta as Batch<IOType.D3>
 
-        assertEquals(expected = -1.2007f, actual = loss, absoluteTolerance = 1e-4f)
+        assertEquals(expected = 18.2106f, actual = loss, absoluteTolerance = 1e-4f)
         assertEquals(expected = 1.1552f, actual = delta[0][0][0][0].unwrap(), absoluteTolerance = 1e-4f)
         assertEquals(expected = -1.4162f, actual = delta[0][0][0][1].unwrap(), absoluteTolerance = 1e-4f)
         assertEquals(expected = -4.9052f, actual = delta[0][0][1][0].unwrap(), absoluteTolerance = 1e-4f)
@@ -109,7 +109,7 @@ class SoftmaxWithLossAxisD3Test {
         val loss = actual.loss.unwrap()
         val delta = actual.delta as Batch<IOType.D3>
 
-        assertEquals(expected = -1.7347f, actual = loss, absoluteTolerance = 1e-4f)
+        assertEquals(expected = 10.5109f, actual = loss, absoluteTolerance = 1e-4f)
         assertEquals(expected = 0.2784f, actual = delta[0][0][0][0].unwrap(), absoluteTolerance = 1e-4f)
         assertEquals(expected = -1.5284f, actual = delta[0][0][0][1].unwrap(), absoluteTolerance = 1e-4f)
         assertEquals(expected = -4.8338f, actual = delta[0][0][1][0].unwrap(), absoluteTolerance = 1e-4f)
