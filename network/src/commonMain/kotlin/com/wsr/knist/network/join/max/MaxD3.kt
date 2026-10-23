@@ -16,7 +16,12 @@ internal class MaxD3(override val outputI: Int, override val outputJ: Int, overr
     override fun IOScope.train(inputs: List<Batch<IOType.D3>>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): List<Batch<IOType.D3>> {
         val output = inputs.reduce { acc, batch -> where(condition = acc gt batch, onTrue = acc, onFalse = batch) }
         val delta = calcDelta(output)
-        return inputs.map { input -> where(condition = input eq output, onTrue = delta, onFalse = 0f) }
+
+        // 同値が複数ある場合は勾配を等分
+        val masks = inputs.map { input -> input eq output }
+        val count = masks.reduce { acc, mask -> acc + mask }
+        val onTrue = delta / count
+        return masks.map { mask -> where(condition = mask, onTrue = onTrue, onFalse = 0f) }
     }
 }
 

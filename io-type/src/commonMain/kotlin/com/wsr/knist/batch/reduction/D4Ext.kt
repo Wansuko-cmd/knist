@@ -51,6 +51,44 @@ fun Batch<IOType.D4>.max(axis: Int): Batch<IOType.D3.Global> = when (axis) {
     else -> throw IllegalArgumentException("axis is $axis, not 0, 1, 2 or 3.")
 }
 
+@JvmName("batchD4sSumWithAxis")
+@ScopeOp
+fun Batch<IOType.D4>.sum(axis: Int): Batch<IOType.D3.Global> = when (axis) {
+    0 -> Batch.d3(
+        size,
+        j,
+        k,
+        l,
+        Backend.sum(x = value, xi = size, xj = i, xk = j * k * l, axis = 1),
+    )
+
+    1 -> Batch.d3(
+        size,
+        i,
+        k,
+        l,
+        Backend.sum(x = value, xi = size * i, xj = j, xk = k * l, axis = 1),
+    )
+
+    2 -> Batch.d3(
+        size,
+        i,
+        j,
+        l,
+        Backend.sum(x = value, xi = size * i * j, xj = k, xk = l, axis = 1),
+    )
+
+    3 -> Batch.d3(
+        size,
+        i,
+        j,
+        k,
+        Backend.sum(x = value, xi = size, xj = i * j * k, xk = l, axis = 2),
+    )
+
+    else -> throw IllegalArgumentException("axis is $axis, not 0, 1, 2 or 3.")
+}
+
 @JvmName("batchD4sMaxIndexWithAxis")
 @ScopeOp
 fun Batch<IOType.D4>.maxIndex(axis: Int): Batch<IOType.D3.Global> = when (axis) {

@@ -42,12 +42,15 @@ class MaxPoolD2 internal constructor(val poolSize: Int, val channel: Int, val in
             .unfold(window = poolSize, stride = stride, dilation = 1, padding = 0)
         val output = unfold.max(axis = 2)
         val delta = calcDelta(output)
-        val dx = where(
-            condition = unfold eq output.broadcastToD3(axis = 2, size = poolSize),
-            onTrue = delta.broadcastToD3(axis = 2, size = poolSize),
-            onFalse = 0f,
-        ).fold(stride = stride, dilation = 1, padding = 0)
-        return if (padding == 0) dx else dx.slice(indices = padding until padding + inputSize, axis = 1)
+
+        // 同値が複数ある場合は勾配を等分
+        val mask = unfold eq output.broadcastToD3(axis = 2, size = poolSize)
+        val count = mask.sum(axis = 2)
+        val dx = (delta / count).broadcastToD3(axis = 2, size = poolSize)
+            .where(condition = mask, onFalse = 0f)
+            .fold(stride = stride, dilation = 1, padding = 0)
+            .let { if (padding == 0) it else it.slice(indices = padding until padding + inputSize, axis = 1) }
+        return dx
     }
 }
 
