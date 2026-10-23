@@ -39,8 +39,8 @@ fn fold_d2(@builtin(global_invocation_id) id: vec3<u32>, @builtin(num_workgroups
 
     let nb = ob;
     let ni = oi;
-    let nj = oj * params.stride + (ol % params.window) * params.dilation - params.padding;
-    let nk = ok * params.stride + (ol / params.window) * params.dilation - params.padding;
+    let nj = oj * params.stride + (ol / params.window) * params.dilation - params.padding;
+    let nk = ok * params.stride + (ol % params.window) * params.dilation - params.padding;
     if (nj < rj && nk < rk) {
         let result_index = ((nb * ri + ni) * rj + nj) * rk + nk;
         atomicAdd(result_index, x[x_index]);
