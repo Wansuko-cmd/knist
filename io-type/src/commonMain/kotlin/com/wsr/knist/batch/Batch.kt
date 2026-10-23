@@ -86,7 +86,7 @@ class Batch<out T : IOType>(val value: DataBuffer, val size: Int, val shape: Lis
 inline fun <T : IOType> Batch(size: Int, init: (index: Int) -> T): Batch<T> {
     val first = init(0)
     val value = DataBuffer.create(size * first.value.size)
-    Backend.copyInto(first.value, value, first.value.indices)
+    if (size > 0) Backend.copyInto(first.value, value, first.value.indices)
     for (i in 1 until size) {
         val src = init(i).value
         val start = i * first.value.size
