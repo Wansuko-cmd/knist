@@ -14,10 +14,9 @@ class LayerNormAxisD2 internal constructor(override val inputI: Int, override va
     Compute.D2() {
     override val outputI: Int get() = inputI
     override val outputJ: Int get() = inputJ
-    private val outputT = when (axis) {
-        0 -> outputI
-        1 -> outputJ
-        else -> throw IllegalArgumentException("LayerNormAxisD2 axis is $axis, not 0 or 1.")
+
+    init {
+        require(axis == 0 || axis == 1) { "LayerNormAxisD2 axis is $axis, not 0 or 1." }
     }
 
     // 四則演算用
@@ -44,32 +43,13 @@ class LayerNormAxisD2 internal constructor(override val inputI: Int, override va
 
         val delta = calcDelta(output)
 
-        // dy/[x-average(x)] (分子に関する勾配)
         val dNumerator = delta.div(other = denominator, axis = basicOpAxis)
 
-        // dy/x <- (x-average(x)のx)
         val dx1 = dNumerator
-
-        // dy/x <- x-average(x)のaverage(x)のx
         val dx2 = -dNumerator.average(axis = axis)
+        val dx3 = (-output * dNumerator).average(axis = axis)
+            .let { output.times(other = it, axis = basicOpAxis) }
 
-        // dy/x <- variance(x)のx
-        val dx3 = run {
-            // 各行ごとの勾配を事前計算
-            val dvn = (delta * output).sum(axis = axis)
-            val dvd = -2f * outputT.toFloat() * denominator.pow(2)
-            val dVariancePerRow = dvn / dvd
-
-            // dy/[x-average(x)]のx部分
-            val dSquared = 2f * dVariancePerRow.times(other = numerator, axis = basicOpAxis)
-
-            // dy/[x-average(x)]のaverage(x)のx部分
-            val avgGradient = -2f * dVariancePerRow * numerator.average(axis = axis)
-
-            dSquared.plus(other = avgGradient, axis = basicOpAxis)
-        }
-
-        // dy/dx
         return dx1.plus(dx2, axis = basicOpAxis) + dx3
     }
 }
