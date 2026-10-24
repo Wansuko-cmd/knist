@@ -13,6 +13,7 @@ import com.wsr.knist.batch.j
 import com.wsr.knist.core.D3
 import com.wsr.knist.core.IOType
 import com.wsr.knist.scope.ScopeOp
+import com.wsr.knist.scope.ScopeOpDefault
 import kotlin.jvm.JvmName
 
 @ScopeOp
@@ -86,10 +87,10 @@ fun Batch<IOType.D2>.concat(other: Batch<IOType.D2>, axis: Int): Batch<IOType.D2
 }
 
 @ScopeOp
-fun Batch<IOType.D2>.padding(axis: Int, left: Int, right: Int): Batch<IOType.D2.Global> {
+fun Batch<IOType.D2>.padding(axis: Int, left: Int, right: Int, @ScopeOpDefault("0f") fill: Float = 0f): Batch<IOType.D2.Global> {
     val newI = if (axis == 0) left + i + right else i
     val newJ = if (axis == 1) left + j + right else j
-    val result = DataBuffer.create(size * newI * newJ)
+    val result = DataBuffer.create(FloatArray(size * newI * newJ) { fill })
     Backend.copyInto(
         x = value,
         y = result,
