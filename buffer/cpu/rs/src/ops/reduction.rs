@@ -128,10 +128,13 @@ pub fn sum_d3(
 }
 
 pub fn max_index_d1(x: &[f32]) -> usize {
-    let result = x.iter()
-        .zip(0..x.len())
-        .max_by(|a, b| a.0.partial_cmp(b.0).unwrap_or(std::cmp::Ordering::Equal));
-    return result.unwrap().1;
+    let mut max = 0;
+    for i in 1..x.len() {
+        if x[i] > x[max] {
+            max = i;
+        }
+    }
+    return max;
 }
 
 pub fn max_index_d2(x: &CPUBuffer, xi: usize, xj: usize, axis: usize, result: &mut CPUBuffer) {
