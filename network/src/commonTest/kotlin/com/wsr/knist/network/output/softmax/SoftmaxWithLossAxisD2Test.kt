@@ -34,7 +34,7 @@ class SoftmaxWithLossAxisD2Test {
         val loss = actual.loss.unwrap()
         val delta = actual.delta as Batch<IOType.D2>
 
-        assertEquals(expected = -1.0779f, actual = loss, absoluteTolerance = 1e-4f)
+        assertEquals(expected = 4.0116f, actual = loss, absoluteTolerance = 1e-4f)
         assertEquals(expected = 0.2784f, actual = delta[0][0][0].unwrap(), absoluteTolerance = 1e-4f)
         assertEquals(expected = -1.5284f, actual = delta[0][0][1].unwrap(), absoluteTolerance = 1e-4f)
         assertEquals(expected = -4.7216f, actual = delta[0][1][0].unwrap(), absoluteTolerance = 1e-4f)

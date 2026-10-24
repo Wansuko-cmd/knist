@@ -601,7 +601,7 @@ object KotlinBackend : IBackend {
         var sum = 0.0f
         for (i in 0 until total.size) {
             sum += total[i].first
-            if (sum > p) {
+            if (sum >= p) {
                 val index = total.sliceArray(0..i).randomIndex(random)
                 return Default(1).apply { this[0] = index.toFloat() }
             }

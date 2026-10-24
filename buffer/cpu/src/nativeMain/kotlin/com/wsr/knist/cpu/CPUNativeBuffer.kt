@@ -48,8 +48,10 @@ class CPUNativeBuffer(val buffer: CPointer<CPUBuffer>, override val size: Int, p
     }
 
     override fun toFloatArray(): FloatArray = FloatArray(size).also { array ->
-        array.usePinned { pinned ->
-            com_wsr_cpu_buffer_read_all(buffer, pinned.addressOf(0))
+        if (array.isNotEmpty()) {
+            array.usePinned { pinned ->
+                com_wsr_cpu_buffer_read_all(buffer, pinned.addressOf(0))
+            }
         }
     }
 
@@ -69,8 +71,12 @@ class CPUNativeBuffer(val buffer: CPointer<CPUBuffer>, override val size: Int, p
         )
 
         fun create(value: FloatArray, runtime: CPointer<Runtime>): CPUNativeBuffer {
-            val buffer = value.usePinned { pinned ->
-                com_wsr_cpu_buffer_init(pinned.addressOf(0), value.size, runtime)!!
+            val buffer = if (value.isEmpty()) {
+                com_wsr_cpu_buffer_allocate(0, runtime)!!
+            } else {
+                value.usePinned { pinned ->
+                    com_wsr_cpu_buffer_init(pinned.addressOf(0), value.size, runtime)!!
+                }
             }
             return CPUNativeBuffer(buffer = buffer, size = value.size, runtime = runtime)
         }

@@ -164,4 +164,16 @@ class CopyIntoTest {
             actual = actual,
         )
     }
+
+    @Test
+    fun `copyInto=空の範囲なら何も書き込まない`() = bufferTestRule {
+        val x = DataBuffer.create(FloatArray(4) { it.toFloat() })
+        val actual = DataBuffer.create(24)
+
+        Backend.copyInto(x = x, y = actual, indices = 0 until 0)
+        Backend.copyInto(x = x, y = actual, yi = 4, yj = 6, axis = 1, indices = 4 until 4 step 2)
+        Backend.copyInto(x = x, y = actual, yi = 2, yj = 3, yk = 4, axis = 0, indices = 1 until 1)
+
+        assertContentEquals(expected = DataBuffer.create(24), actual = actual)
+    }
 }

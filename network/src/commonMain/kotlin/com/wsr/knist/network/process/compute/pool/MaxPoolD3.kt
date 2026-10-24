@@ -44,7 +44,7 @@ class MaxPoolD3 internal constructor(val poolSize: Int, val channel: Int, val he
             if (padding == 0) {
                 it
             } else {
-                input
+                it
                     .padding(axis = 1, left = padding, right = padding, fill = Float.NEGATIVE_INFINITY)
                     .padding(axis = 2, left = padding, right = padding, fill = Float.NEGATIVE_INFINITY)
             }
@@ -58,7 +58,7 @@ class MaxPoolD3 internal constructor(val poolSize: Int, val channel: Int, val he
                 if (padding == 0) {
                     it
                 } else {
-                    input
+                    it
                         .padding(axis = 1, left = padding, right = padding, fill = Float.NEGATIVE_INFINITY)
                         .padding(axis = 2, left = padding, right = padding, fill = Float.NEGATIVE_INFINITY)
                 }
@@ -66,19 +66,24 @@ class MaxPoolD3 internal constructor(val poolSize: Int, val channel: Int, val he
             .unfold(window = poolSize, stride = stride, dilation = 1, padding = 0)
         val output = unfold.max(axis = 3)
         val delta = calcDelta(output)
+
+        // 同値が複数ある場合は勾配を等分
         val windowSize = poolSize * poolSize
-        val dx = where(
-            condition = unfold eq output.broadcastToD4(axis = 3, size = windowSize),
-            onTrue = delta.broadcastToD4(axis = 3, size = windowSize),
-            onFalse = 0f,
-        ).fold(stride = stride, dilation = 1, padding = 0)
-        return if (padding == 0) {
-            dx
-        } else {
-            dx
-                .slice(indices = padding until padding + height, axis = 1)
-                .slice(indices = padding until padding + width, axis = 2)
-        }
+        val mask = unfold eq output.broadcastToD4(axis = 3, size = windowSize)
+        val count = mask.sum(axis = 3)
+        val dx = (delta / count).broadcastToD4(axis = 3, size = windowSize)
+            .where(condition = mask, onFalse = 0f)
+            .fold(stride = stride, dilation = 1, padding = 0)
+            .let {
+                if (padding == 0) {
+                    it
+                } else {
+                    it
+                        .slice(indices = padding until padding + height, axis = 1)
+                        .slice(indices = padding until padding + width, axis = 2)
+                }
+            }
+        return dx
     }
 }
 
