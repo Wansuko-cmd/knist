@@ -1,5 +1,6 @@
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
+use crate::ops::elementwise::generator::random_d1;
 use crate::ops::shape::{transpose_d2, transpose_d3};
 use crate::resource::buffer::CPUBuffer;
 use crate::ops::utils::FastForEachExt;
@@ -146,30 +147,46 @@ pub fn max_index_d3(x: &CPUBuffer, xi: usize, xj: usize, xk: usize, axis: usize,
 }
 
 pub fn top_k_d1(x: &[f32], k: usize, seed: u64) -> usize {
-    let mut target: Vec<(&f32, usize)> = x.iter().zip(0..x.len()).collect();
-    target.sort_by(|a, b| b.0.partial_cmp(a.0).unwrap_or(std::cmp::Ordering::Equal));
-    return random_index(&target[..k.min(target.len())], seed);
+    let unit = generate_units(seed, 1)[0];
+    return top_k(x, k, unit);
 }
 
 pub fn top_k_d2(x: &CPUBuffer, xi: usize, xj: usize, k: usize, axis: usize, result: &mut CPUBuffer, seed: u64) {
-    let mut count = 0u64;
-    reduce_index_d2(x, xi, xj, axis, result, |slice| {
-        let index = top_k_d1(slice, k, seed + count);
-        count += 1;
-        index as f32
-    });
+    let units = generate_units(seed, result.count());
+    let mut units = units.iter();
+    reduce_index_d2(x, xi, xj, axis, result, |slice| top_k(slice, k, *units.next().unwrap()) as f32);
 }
 
 pub fn top_k_d3(x: &CPUBuffer, xi: usize, xj: usize, xk: usize, k: usize, axis: usize, result: &mut CPUBuffer, seed: u64) {
-    let mut count = 0u64;
-    reduce_index_d3(x, xi, xj, xk, axis, result, |slice| {
-        let index = top_k_d1(slice, k, seed + count);
-        count += 1;
-        index as f32
-    });
+    let units = generate_units(seed, result.count());
+    let mut units = units.iter();
+    reduce_index_d3(x, xi, xj, xk, axis, result, |slice| top_k(slice, k, *units.next().unwrap()) as f32);
+}
+
+fn top_k(x: &[f32], k: usize, unit: f32) -> usize {
+    let mut target: Vec<(&f32, usize)> = x.iter().zip(0..x.len()).collect();
+    target.sort_by(|a, b| b.0.partial_cmp(a.0).unwrap_or(std::cmp::Ordering::Equal));
+    return random_index(&target[..k.min(target.len())], unit);
 }
 
 pub fn top_p_d1(x: &[f32], p: f32, seed: u64) -> usize {
+    let unit = generate_units(seed, 1)[0];
+    return top_p(x, p, unit);
+}
+
+pub fn top_p_d2(x: &CPUBuffer, xi: usize, xj: usize, p: f32, axis: usize, result: &mut CPUBuffer, seed: u64) {
+    let units = generate_units(seed, result.count());
+    let mut units = units.iter();
+    reduce_index_d2(x, xi, xj, axis, result, |slice| top_p(slice, p, *units.next().unwrap()) as f32);
+}
+
+pub fn top_p_d3(x: &CPUBuffer, xi: usize, xj: usize, xk: usize, p: f32, axis: usize, result: &mut CPUBuffer, seed: u64) {
+    let units = generate_units(seed, result.count());
+    let mut units = units.iter();
+    reduce_index_d3(x, xi, xj, xk, axis, result, |slice| top_p(slice, p, *units.next().unwrap()) as f32);
+}
+
+fn top_p(x: &[f32], p: f32, unit: f32) -> usize {
     let mut target: Vec<(&f32, usize)> = x.iter().zip(0..x.len()).collect();
     target.sort_by(|a, b| b.0.partial_cmp(a.0).unwrap_or(std::cmp::Ordering::Equal));
 
@@ -182,25 +199,7 @@ pub fn top_p_d1(x: &[f32], p: f32, seed: u64) -> usize {
             break;
         }
     }
-    return random_index(&nucleus, seed);
-}
-
-pub fn top_p_d2(x: &CPUBuffer, xi: usize, xj: usize, p: f32, axis: usize, result: &mut CPUBuffer, seed: u64) {
-    let mut count = 0u64;
-    reduce_index_d2(x, xi, xj, axis, result, |slice| {
-        let index = top_p_d1(slice, p, seed + count);
-        count += 1;
-        index as f32
-    });
-}
-
-pub fn top_p_d3(x: &CPUBuffer, xi: usize, xj: usize, xk: usize, p: f32, axis: usize, result: &mut CPUBuffer, seed: u64) {
-    let mut count = 0u64;
-    reduce_index_d3(x, xi, xj, xk, axis, result, |slice| {
-        let index = top_p_d1(slice, p, seed + count);
-        count += 1;
-        index as f32
-    });
+    return random_index(&nucleus, unit);
 }
 
 fn reduce_d2<F: Fn(f32, f32) -> f32 + Sync>(
@@ -318,13 +317,15 @@ fn reduce_index_d3<F: FnMut(&[f32]) -> f32>(
     }
 }
 
-fn random_index(x: &[(&f32, usize)], seed: u64) -> usize {
+fn generate_units(seed: u64, count: usize) -> CPUBuffer {
+    let mut result = CPUBuffer::create(count);
+    random_d1(0.0, 1.0, seed, &mut result);
+    return result;
+}
+
+fn random_index(x: &[(&f32, usize)], unit: f32) -> usize {
     let total: f32 = x.iter().map(|(v, _)| *v).sum();
-    let mut state = if seed == 0 { 1 } else { seed };
-    state ^= state << 13;
-    state ^= state >> 7;
-    state ^= state << 17;
-    let threshold = (state as f32 / u64::MAX as f32) * total;
+    let threshold = unit * total;
     let mut acc = 0f32;
     for &(val, i) in x.iter() {
         acc += val;
