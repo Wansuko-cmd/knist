@@ -64,7 +64,7 @@ data class AttentionBiasD2Builder(val inputI: Int, val inputJ: Int, val numOfHea
     fun mask(node: GraphBuilder.Node.D1, value: Float): AttentionBiasD2Builder {
         val observer = Graph.Node.Observe(from = node.from)
         return copy(
-            nodes = nodes + observer,
+            nodes = (nodes + node.nodes + observer).distinctBy { it.id },
             biases = biases + AttentionBiasD2.Mask(nodeId = observer.id, value = value),
         )
     }

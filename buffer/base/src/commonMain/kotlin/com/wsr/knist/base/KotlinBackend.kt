@@ -507,6 +507,7 @@ object KotlinBackend : IBackend {
     override fun pow(x: DataBuffer, n: Int): DataBuffer = when (n) {
         // 直接乗算した方が早い
         2 -> x.map { it * it }
+
         else -> x.map { it.pow(n) }
     }
 

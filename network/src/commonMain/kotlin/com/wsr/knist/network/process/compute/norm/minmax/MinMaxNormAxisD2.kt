@@ -9,7 +9,8 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MinMaxNormAxisD2 internal constructor(override val inputI: Int, override val inputJ: Int, private val axis: Int, override val id: String = Uuid.random().toString()) : Compute.D2() {
+class MinMaxNormAxisD2 internal constructor(override val inputI: Int, override val inputJ: Int, private val axis: Int, private val e: Float, override val id: String = Uuid.random().toString()) :
+    Compute.D2() {
     override val outputI: Int get() = inputI
     override val outputJ: Int get() = inputJ
 
@@ -29,7 +30,7 @@ class MinMaxNormAxisD2 internal constructor(override val inputI: Int, override v
         val min = input.min(axis = axis)
         val max = input.max(axis = axis)
         val numerator = input.minus(other = min, axis = basicOpAxis)
-        val denominator = max - min
+        val denominator = max - min + e
         return numerator.div(other = denominator, axis = basicOpAxis)
     }
 
@@ -37,7 +38,7 @@ class MinMaxNormAxisD2 internal constructor(override val inputI: Int, override v
         val min = input.min(axis = axis)
         val max = input.max(axis = axis)
         val numerator = input.minus(other = min, axis = basicOpAxis)
-        val denominator = 1f / (max - min)
+        val denominator = 1f / (max - min + e)
 
         val output = numerator.times(other = denominator, axis = basicOpAxis)
         val delta = calcDelta(output)

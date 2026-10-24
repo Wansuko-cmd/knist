@@ -15,6 +15,7 @@ import com.wsr.knist.batch.k
 import com.wsr.knist.core.D4
 import com.wsr.knist.core.IOType
 import com.wsr.knist.scope.ScopeOp
+import com.wsr.knist.scope.ScopeOpDefault
 import kotlin.jvm.JvmName
 
 fun Batch<IOType.D3>.toD4(): IOType.D4 = IOType.D4(shape = listOf(size, i, j, k), value = value)
@@ -79,6 +80,21 @@ fun Batch<IOType.D3>.slice(indices: IntProgression, axis: Int): Batch<IOType.D3.
     }
 
     else -> throw IllegalArgumentException("Batch<IOType.D3>.slice axis is $axis, not 0, 1 or 2.")
+}
+
+@ScopeOp
+fun Batch<IOType.D3>.padding(axis: Int, left: Int, right: Int, @ScopeOpDefault("0f") fill: Float = 0f): Batch<IOType.D3.Global> {
+    val newI = if (axis == 0) left + i + right else i
+    val newJ = if (axis == 1) left + j + right else j
+    val newK = if (axis == 2) left + k + right else k
+    val result = DataBuffer.create(FloatArray(size * newI * newJ * newK) { fill })
+    when (axis) {
+        0 -> Backend.copyInto(x = value, y = result, yi = size, yj = newI, yk = j * k, axis = 1, indices = left until left + i)
+        1 -> Backend.copyInto(x = value, y = result, yi = size * i, yj = newJ, yk = k, axis = 1, indices = left until left + j)
+        2 -> Backend.copyInto(x = value, y = result, yi = size * i * j, yj = newK, axis = 1, indices = left until left + k)
+        else -> throw IllegalArgumentException("Batch<IOType.D3>.padding axis is $axis, not 0, 1 or 2.")
+    }
+    return Batch.d3(size = size, i = newI, j = newJ, k = newK, value = result)
 }
 
 @ScopeOp

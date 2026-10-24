@@ -14,7 +14,7 @@ import com.wsr.knist.network.networkScopeTestRule
 import kotlin.test.Test
 
 class MinMaxNormD3Test {
-    val target get() = MinMaxNormD3(inputI = 2, inputJ = 2, inputK = 2)
+    val target get() = MinMaxNormD3(inputI = 2, inputJ = 2, inputK = 2, e = 1e-6f)
     val input
         get() = Batch.of(
             IOType.d3(

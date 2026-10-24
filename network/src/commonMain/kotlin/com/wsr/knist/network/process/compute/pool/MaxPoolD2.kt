@@ -31,23 +31,23 @@ class MaxPoolD2 internal constructor(val poolSize: Int, val channel: Int, val in
         }
     }
 
-    override fun IOScope.expect(input: Batch<IOType.D2>, env: GraphEnv): Batch<IOType.D2> = input.unfold(
-        window = poolSize,
-        stride = stride,
-        dilation = 1,
-        padding = padding,
-    )
+    override fun IOScope.expect(input: Batch<IOType.D2>, env: GraphEnv): Batch<IOType.D2> = input
+        .let { if (padding == 0) it else it.padding(axis = 1, left = padding, right = padding, fill = Float.NEGATIVE_INFINITY) }
+        .unfold(window = poolSize, stride = stride, dilation = 1, padding = 0)
         .max(axis = 2)
 
     override fun IOScope.train(input: Batch<IOType.D2>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D2> {
-        val unfold = input.unfold(window = poolSize, stride = stride, dilation = 1, padding = padding)
+        val unfold = input
+            .let { if (padding == 0) it else it.padding(axis = 1, left = padding, right = padding, fill = Float.NEGATIVE_INFINITY) }
+            .unfold(window = poolSize, stride = stride, dilation = 1, padding = 0)
         val output = unfold.max(axis = 2)
         val delta = calcDelta(output)
-        return where(
+        val dx = where(
             condition = unfold eq output.broadcastToD3(axis = 2, size = poolSize),
             onTrue = delta.broadcastToD3(axis = 2, size = poolSize),
             onFalse = 0f,
-        ).fold(stride = stride, dilation = 1, padding = padding)
+        ).fold(stride = stride, dilation = 1, padding = 0)
+        return if (padding == 0) dx else dx.slice(indices = padding until padding + inputSize, axis = 1)
     }
 }
 

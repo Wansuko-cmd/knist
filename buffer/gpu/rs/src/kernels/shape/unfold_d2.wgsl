@@ -37,8 +37,8 @@ fn unfold_d2(@builtin(global_invocation_id) id: vec3<u32>, @builtin(num_workgrou
 
     let ob = nb;
     let oi = ni;
-    let oj = nj * params.stride + (nl % params.window) * params.dilation - params.padding;
-    let ok = nk * params.stride + (nl / params.window) * params.dilation - params.padding;
+    let oj = nj * params.stride + (nl / params.window) * params.dilation - params.padding;
+    let ok = nk * params.stride + (nl % params.window) * params.dilation - params.padding;
     if (oj < params.xj && ok < params.xk) {
         let x_index = ((ob * params.xi + oi) * params.xj + oj) * params.xk + ok;
         result[result_index] = x[x_index];

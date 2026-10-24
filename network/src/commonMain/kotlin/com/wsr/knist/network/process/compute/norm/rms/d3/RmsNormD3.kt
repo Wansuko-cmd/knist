@@ -47,7 +47,7 @@ fun GraphBuilder.Node.D3.rmsNorm(axis: Int? = null, e: Float = 1e-6f, id: String
             id = id,
         )
 
-        0, 1 -> RmsNormAxisD3(
+        0, 1, 2 -> RmsNormAxisD3(
             inputI = inputI,
             inputJ = inputJ,
             inputK = inputK,

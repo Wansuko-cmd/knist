@@ -39,24 +39,46 @@ class MaxPoolD3 internal constructor(val poolSize: Int, val channel: Int, val he
         }
     }
 
-    override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> = input.unfold(
-        window = poolSize,
-        stride = stride,
-        dilation = 1,
-        padding = padding,
-    )
+    override fun IOScope.expect(input: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> = input
+        .let {
+            if (padding == 0) {
+                it
+            } else {
+                input
+                    .padding(axis = 1, left = padding, right = padding, fill = Float.NEGATIVE_INFINITY)
+                    .padding(axis = 2, left = padding, right = padding, fill = Float.NEGATIVE_INFINITY)
+            }
+        }
+        .unfold(window = poolSize, stride = stride, dilation = 1, padding = 0)
         .max(axis = 3)
 
     override fun IOScope.train(input: Batch<IOType.D3>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D3>) -> Batch<IOType.D3>): Batch<IOType.D3> {
-        val unfold = input.unfold(window = poolSize, stride = stride, dilation = 1, padding = padding)
+        val unfold = input
+            .let {
+                if (padding == 0) {
+                    it
+                } else {
+                    input
+                        .padding(axis = 1, left = padding, right = padding, fill = Float.NEGATIVE_INFINITY)
+                        .padding(axis = 2, left = padding, right = padding, fill = Float.NEGATIVE_INFINITY)
+                }
+            }
+            .unfold(window = poolSize, stride = stride, dilation = 1, padding = 0)
         val output = unfold.max(axis = 3)
         val delta = calcDelta(output)
         val windowSize = poolSize * poolSize
-        return where(
+        val dx = where(
             condition = unfold eq output.broadcastToD4(axis = 3, size = windowSize),
             onTrue = delta.broadcastToD4(axis = 3, size = windowSize),
             onFalse = 0f,
-        ).fold(stride = stride, dilation = 1, padding = padding)
+        ).fold(stride = stride, dilation = 1, padding = 0)
+        return if (padding == 0) {
+            dx
+        } else {
+            dx
+                .slice(indices = padding until padding + height, axis = 1)
+                .slice(indices = padding until padding + width, axis = 2)
+        }
     }
 }
 

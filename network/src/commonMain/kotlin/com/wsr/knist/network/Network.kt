@@ -91,8 +91,8 @@ interface Network {
                     source = copy.source,
                     graph = result.nodes,
                     sink = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -120,8 +120,8 @@ interface Network {
                     source = copy.source,
                     graph = result.nodes,
                     sink = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -150,8 +150,8 @@ interface Network {
                     source = copy.source,
                     graph = result.nodes,
                     sink = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -302,8 +302,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = result.sink,
                     sink2 = copy.sink2,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -331,8 +331,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = copy.sink1,
                     sink2 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -361,8 +361,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = result.sink,
                     sink2 = copy.sink2,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -392,8 +392,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = result.sink,
                     sink2 = copy.sink2,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -422,8 +422,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = copy.sink1,
                     sink2 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -453,8 +453,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = copy.sink1,
                     sink2 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -631,8 +631,8 @@ interface Network {
                     sink1 = result.sink,
                     sink2 = copy.sink2,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -661,8 +661,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = result.sink,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -691,8 +691,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = copy.sink2,
                     sink3 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -722,8 +722,8 @@ interface Network {
                     sink1 = result.sink,
                     sink2 = copy.sink2,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -754,8 +754,8 @@ interface Network {
                     sink1 = result.sink,
                     sink2 = copy.sink2,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -785,8 +785,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = result.sink,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -817,8 +817,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = result.sink,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -848,8 +848,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = copy.sink2,
                     sink3 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -880,8 +880,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = copy.sink2,
                     sink3 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1020,8 +1020,8 @@ interface Network {
                     source2 = copy.source2,
                     graph = result.nodes,
                     sink = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1050,8 +1050,8 @@ interface Network {
                     source2 = copy.source2,
                     graph = result.nodes,
                     sink = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1081,8 +1081,8 @@ interface Network {
                     source2 = copy.source2,
                     graph = result.nodes,
                     sink = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1258,8 +1258,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = result.sink,
                     sink2 = copy.sink2,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1288,8 +1288,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = copy.sink1,
                     sink2 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1319,8 +1319,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = result.sink,
                     sink2 = copy.sink2,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1351,8 +1351,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = result.sink,
                     sink2 = copy.sink2,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1382,8 +1382,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = copy.sink1,
                     sink2 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1414,8 +1414,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = copy.sink1,
                     sink2 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1626,8 +1626,8 @@ interface Network {
                     sink1 = result.sink,
                     sink2 = copy.sink2,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1657,8 +1657,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = result.sink,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1688,8 +1688,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = copy.sink2,
                     sink3 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1720,8 +1720,8 @@ interface Network {
                     sink1 = result.sink,
                     sink2 = copy.sink2,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1753,8 +1753,8 @@ interface Network {
                     sink1 = result.sink,
                     sink2 = copy.sink2,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1785,8 +1785,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = result.sink,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1818,8 +1818,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = result.sink,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1850,8 +1850,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = copy.sink2,
                     sink3 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -1883,8 +1883,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = copy.sink2,
                     sink3 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2061,8 +2061,8 @@ interface Network {
                     source3 = copy.source3,
                     graph = result.nodes,
                     sink = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2092,8 +2092,8 @@ interface Network {
                     source3 = copy.source3,
                     graph = result.nodes,
                     sink = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2124,8 +2124,8 @@ interface Network {
                     source3 = copy.source3,
                     graph = result.nodes,
                     sink = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2342,8 +2342,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = result.sink,
                     sink2 = copy.sink2,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2373,8 +2373,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = copy.sink1,
                     sink2 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2405,8 +2405,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = result.sink,
                     sink2 = copy.sink2,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2438,8 +2438,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = result.sink,
                     sink2 = copy.sink2,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2470,8 +2470,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = copy.sink1,
                     sink2 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2503,8 +2503,8 @@ interface Network {
                     graph = result.nodes,
                     sink1 = copy.sink1,
                     sink2 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2759,8 +2759,8 @@ interface Network {
                     sink1 = result.sink,
                     sink2 = copy.sink2,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2791,8 +2791,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = result.sink,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2823,8 +2823,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = copy.sink2,
                     sink3 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2856,8 +2856,8 @@ interface Network {
                     sink1 = result.sink,
                     sink2 = copy.sink2,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2890,8 +2890,8 @@ interface Network {
                     sink1 = result.sink,
                     sink2 = copy.sink2,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2923,8 +2923,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = result.sink,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2957,8 +2957,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = result.sink,
                     sink3 = copy.sink3,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -2990,8 +2990,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = copy.sink2,
                     sink3 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 
@@ -3024,8 +3024,8 @@ interface Network {
                     sink1 = copy.sink1,
                     sink2 = copy.sink2,
                     sink3 = result.sink,
-                    optimizer = optimizer,
-                    initializer = initializer,
+                    optimizer = copy.optimizer,
+                    initializer = copy.initializer,
                 )
             }
 

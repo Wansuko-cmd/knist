@@ -15,7 +15,7 @@ import kotlin.test.Test
 import kotlin.test.assertFails
 
 class MinMaxNormAxisD3Test {
-    val target0 get() = MinMaxNormAxisD3(inputI = 3, inputJ = 2, inputK = 2, axis = 0)
+    val target0 get() = MinMaxNormAxisD3(inputI = 3, inputJ = 2, inputK = 2, axis = 0, e = 1e-6f)
     val input0
         get() = Batch.of(
             IOType.d3(
@@ -30,7 +30,7 @@ class MinMaxNormAxisD3Test {
             ),
         )
 
-    val target1 get() = MinMaxNormAxisD3(inputI = 2, inputJ = 3, inputK = 2, axis = 1)
+    val target1 get() = MinMaxNormAxisD3(inputI = 2, inputJ = 3, inputK = 2, axis = 1, e = 1e-6f)
     val input1
         get() = Batch.of(
             IOType.d3(
@@ -43,7 +43,7 @@ class MinMaxNormAxisD3Test {
             ),
         )
 
-    val target2 get() = MinMaxNormAxisD3(inputI = 2, inputJ = 2, inputK = 3, axis = 2)
+    val target2 get() = MinMaxNormAxisD3(inputI = 2, inputJ = 2, inputK = 3, axis = 2, e = 1e-6f)
     val input2
         get() = Batch.of(
             IOType.d3(
@@ -132,7 +132,7 @@ class MinMaxNormAxisD3Test {
 
     @Test
     fun `axisが不正な場合は例外を投げる`() {
-        assertFails { MinMaxNormAxisD3(inputI = 2, inputJ = 2, inputK = 2, axis = 3) }
-        assertFails { MinMaxNormAxisD3(inputI = 2, inputJ = 2, inputK = 2, axis = -1) }
+        assertFails { MinMaxNormAxisD3(inputI = 2, inputJ = 2, inputK = 2, axis = 3, e = 1e-6f) }
+        assertFails { MinMaxNormAxisD3(inputI = 2, inputJ = 2, inputK = 2, axis = -1, e = 1e-6f) }
     }
 }

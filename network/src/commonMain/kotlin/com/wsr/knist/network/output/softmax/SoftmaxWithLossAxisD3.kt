@@ -1,6 +1,7 @@
 package com.wsr.knist.network.output.softmax
 
 import com.wsr.knist.batch.Batch
+import com.wsr.knist.batch.shape.toD3
 import com.wsr.knist.batch.unaryMinus
 import com.wsr.knist.core.IOScope
 import com.wsr.knist.core.IOType
@@ -37,7 +38,7 @@ internal class SoftmaxWithLossAxisD3 internal constructor(val outputI: Int, val 
         val maskedLosses = losses * mask
 
         // 有効値のみの平均を取る
-        val loss = (maskedLosses.sum() / mask.sum()).batchAverage()
+        val loss = maskedLosses.toD3().sum() / mask.toD3().sum()
 
         val delta = (output - label).times(other = mask, axis1 = axis1, axis2 = axis2) / temperature
         return TResult(loss = loss, delta = delta)

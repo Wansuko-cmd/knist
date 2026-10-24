@@ -29,6 +29,8 @@ class SchedulerTest {
         val target = Scheduler.MultiStep(rate = 1f, gamma = 0.5f, milestones = listOf(50, 100))
 
         assertEquals(expected = 1f, actual = target.calcRate(0))
+        assertEquals(expected = 1f, actual = target.calcRate(49))
+        assertEquals(expected = 0.5f, actual = target.calcRate(50))
         assertEquals(expected = 0.5f, actual = target.calcRate(51))
         assertEquals(expected = 0.25f, actual = target.calcRate(101))
     }
