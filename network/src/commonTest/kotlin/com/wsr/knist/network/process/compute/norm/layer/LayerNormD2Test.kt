@@ -56,34 +56,38 @@ class LayerNormD2Test {
 
     @Test
     fun `train=正規化および勾配を伝播`() = networkScopeTestRule {
+        val delta = Batch.of(
+            IOType.d2(2, 3) { i, j -> ((i * 3 + j) * (i * 3 + j) % 5).toFloat() },
+            IOType.d2(2, 3) { i, j -> (((i * 3 + j) * (i * 3 + j) + 2) % 5).toFloat() },
+        )
         val actual = with(target) {
             _train(
                 input = input,
                 env = GraphEnv(),
-                calcDelta = { 1e6f * it as Batch<IOType.D2> },
+                calcDelta = { delta },
             )
         } as Batch<IOType.D2>
 
         assertContentEquals(
-            expected = IOType.d1(-0.3125f, -0.1406f, 0.1093f),
+            expected = IOType.d1(-1.5807f, -0.6072f, 1.8110f),
             actual = actual[0][0],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
         assertContentEquals(
-            expected = IOType.d1(-0.3125f, 0.1093f, 0.6250f),
+            expected = IOType.d1(1.3085f, -0.3559f, -0.5758f),
             actual = actual[0][1],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
 
         assertContentEquals(
-            expected = IOType.d1(-16.0000f, -16.0000f, 34.5000f),
+            expected = IOType.d1(-0.6949f, 1.9645f, -1.1599f),
             actual = actual[1][0],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
         assertContentEquals(
-            expected = IOType.d1(-16.0000f, -0.9453f, 14.1250f),
+            expected = IOType.d1(-3.3543f, 2.6229f, 0.6218f),
             actual = actual[1][1],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
     }
 }

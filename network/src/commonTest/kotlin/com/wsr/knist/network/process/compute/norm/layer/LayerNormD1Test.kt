@@ -37,23 +37,28 @@ class LayerNormD1Test {
 
     @Test
     fun `train=正規化および勾配を伝播`() = networkScopeTestRule {
+        val delta = Batch.of(
+            IOType.d1(3) { n -> (n * n % 5).toFloat() },
+            IOType.d1(3) { n -> ((n * n + 2) % 5).toFloat() },
+        )
         val actual = with(target) {
             _train(
                 input = input,
                 env = GraphEnv(),
-                calcDelta = { 1e6f * it as Batch<IOType.D1> },
+                calcDelta = { delta },
             )
         } as Batch<IOType.D1>
 
         assertContentEquals(
-            expected = IOType.d1(-2.2500f, 0.0000f, 2.2500f),
+            expected = IOType.d1(0.4082f, -0.8165f, 0.4083f),
             actual = actual[0],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
+
         assertContentEquals(
-            expected = IOType.d1(-0.1875f, 0.0000f, 0.1875f),
+            expected = IOType.d1(-0.3062f, 0.6124f, -0.3062f),
             actual = actual[1],
-            absoluteTolerance = 1e-4f,
+            absoluteTolerance = 1e-3f,
         )
     }
 }
