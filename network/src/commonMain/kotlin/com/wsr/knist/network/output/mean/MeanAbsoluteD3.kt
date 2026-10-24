@@ -1,7 +1,7 @@
 package com.wsr.knist.network.output.mean
 
 import com.wsr.knist.batch.Batch
-import com.wsr.knist.batch.unaryMinus
+import com.wsr.knist.batch.shape.toD4
 import com.wsr.knist.core.IOScope
 import com.wsr.knist.core.IOType
 import com.wsr.knist.network.GraphBuilder
@@ -18,10 +18,8 @@ internal class MeanAbsoluteD3 internal constructor() : Output.D3() {
 
     override fun IOScope.train(input: Batch<IOType.D3>, label: (Batch<IOType.D3>) -> Batch<IOType.D3>): TResult<IOType.D3> {
         val diff = input - label(input)
-        val condition = diff gt 0f
-        val delta = where(condition = condition, onTrue = 1f, onFalse = -1f)
-        val loss = where(condition = condition, onTrue = diff, onFalse = -diff)
-            .batchAverage().average()
+        val delta = (diff gt 0f) - (diff lt 0f)
+        val loss = (diff * delta).toD4().average()
         return TResult(loss = loss, delta = delta)
     }
 }
