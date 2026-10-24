@@ -153,16 +153,13 @@ fun GraphBuilder.Node.D2.attention(
     initializer: WeightInitializer = this.initializer,
     id: String = Uuid.random().toString(),
 ): GraphBuilder.Node.D2 {
-    val biasNodes = mutableListOf<Graph.Node>()
+    val biasBuilder = AttentionBiasD2Builder(inputI = inputI, inputJ = inputJ, numOfHeads = numOfHeads).biases()
     val compute = AttentionD2(
         inputI = inputI,
         inputJ = inputJ,
         numOfHeads = numOfHeads,
         dim = dim,
-        biases = AttentionBiasD2Builder(inputI = inputI, inputJ = inputJ, numOfHeads = numOfHeads)
-            .biases()
-            .also { builder -> biasNodes.addAll(builder.nodes.filter { new -> nodes.none { it.id == new.id } }) }
-            .biases,
+        biases = biasBuilder.biases,
         weightQ = initializer.d2(
             input = listOf(inputJ),
             output = listOf(numOfHeads * dim),
@@ -197,7 +194,7 @@ fun GraphBuilder.Node.D2.attention(
 
     return GraphBuilder.Node.D2(
         from = node.id,
-        nodes = nodes + biasNodes + node,
+        nodes = (nodes + biasBuilder.nodes + node).distinctBy { it.id },
         optimizer = optimizer,
         initializer = initializer,
         inputI = compute.outputI,
