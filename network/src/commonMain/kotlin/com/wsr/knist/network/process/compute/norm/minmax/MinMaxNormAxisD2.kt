@@ -9,7 +9,8 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MinMaxNormAxisD2 internal constructor(override val inputI: Int, override val inputJ: Int, private val axis: Int, private val e: Float, override val id: String = Uuid.random().toString()) : Compute.D2() {
+class MinMaxNormAxisD2 internal constructor(override val inputI: Int, override val inputJ: Int, private val axis: Int, private val e: Float, override val id: String = Uuid.random().toString()) :
+    Compute.D2() {
     override val outputI: Int get() = inputI
     override val outputJ: Int get() = inputJ
 

@@ -11,7 +11,8 @@ import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MinMaxNormD3 internal constructor(override val inputI: Int, override val inputJ: Int, override val inputK: Int, private val e: Float, override val id: String = Uuid.random().toString()) : Compute.D3() {
+class MinMaxNormD3 internal constructor(override val inputI: Int, override val inputJ: Int, override val inputK: Int, private val e: Float, override val id: String = Uuid.random().toString()) :
+    Compute.D3() {
     override val outputI: Int get() = inputI
     override val outputJ: Int get() = inputJ
     override val outputK: Int get() = inputK
