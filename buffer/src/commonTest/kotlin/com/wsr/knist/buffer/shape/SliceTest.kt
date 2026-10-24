@@ -7,6 +7,7 @@ import com.wsr.knist.base.data.DataBuffer
 import com.wsr.knist.buffer.assertContentEquals
 import com.wsr.knist.buffer.bufferTestRule
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 
 class SliceTest {
     @Test
@@ -128,5 +129,14 @@ class SliceTest {
             ),
             actual = actual,
         )
+    }
+
+    @Test
+    fun `slice=空の範囲は例外`() = bufferTestRule {
+        val x = DataBuffer.create(FloatArray(24) { it.toFloat() })
+
+        assertFailsWith<IllegalStateException> { Backend.slice(x = x, indices = 0 until 0) }
+        assertFailsWith<IllegalStateException> { Backend.slice(x = x, xi = 4, xj = 6, axis = 1, indices = 4 until 4 step 2) }
+        assertFailsWith<IllegalStateException> { Backend.slice(x = x, xi = 2, xj = 3, xk = 4, axis = 0, indices = 1 until 1) }
     }
 }

@@ -29,4 +29,4 @@ fun DataBuffer.contentEquals(other: DataBuffer) = when {
     else -> this.toFloatArray().contentEquals(other.toFloatArray())
 }
 
-val IntProgression.size get() = (last - first) / step + 1
+val IntProgression.size get() = if (isEmpty()) 0 else (last - first) / step + 1
