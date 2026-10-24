@@ -39,7 +39,7 @@ abstract class GraphNetwork<T : GraphNetwork<T>> {
         withContext(dispatcher) {
             val env = GraphEnv()
             sources.forEachIndexed { i, source -> env[source.id] = inputs[i] }
-            IOScope.launch {
+            val outputs = IOScope.launch {
                 val scope = this
                 graph.forEach { node ->
                     when (node) {
@@ -60,9 +60,9 @@ abstract class GraphNetwork<T : GraphNetwork<T>> {
                         }
                     }
                 }
-                val outputs = sinks.map { sink -> with(sink.output) { scope._expect(env[sink.from]) } }
-                decode(outputs)
+                sinks.map { sink -> with(sink.output) { scope._expect(env[sink.from]) } }
             }
+            decode(outputs)
         }
 
     @Suppress("UNCHECKED_CAST", "FunctionName")
