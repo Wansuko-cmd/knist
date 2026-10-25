@@ -26,9 +26,7 @@ pub fn read_all(buffer: &GPUBuffer, runtime: &mut Runtime) -> Vec<f32> {
     });
     runtime.flush();
 
-    let mut dest = vec![0.0f32; buffer.count()];
-    map_buffer.copy_into(&mut dest, &runtime.device);
-    return dest;
+    map_buffer.to_vec(&runtime.device)
 }
 
 pub fn write(buffer: &GPUBuffer, index: usize, value: f32, runtime: &mut Runtime) {
