@@ -26,27 +26,17 @@ pub struct Runtime {
 impl Runtime {
     pub async fn new(pool_size: u64, enable_profiler: bool) -> Self {
         let instance = wgpu::Instance::default();
-        let request = instance
+        let adapter = instance
             .request_adapter(&wgpu::RequestAdapterOptions {
                 power_preference: wgpu::PowerPreference::HighPerformance,
                 compatible_surface: None,
                 force_fallback_adapter: false,
             })
-            .await;
-        let adapter = match request {
-            Ok(adapter) => adapter,
-            Err(_) => {
-                eprintln!("Warning: SW GPU will be used.");
-                instance
-                    .request_adapter(&wgpu::RequestAdapterOptions {
-                        power_preference: wgpu::PowerPreference::HighPerformance,
-                        compatible_surface: None,
-                        force_fallback_adapter: true,
-                    })
-                    .await
-                    .unwrap()
-            }
-        };
+            .await
+            .expect("No GPU adapter is available");
+        if adapter.get_info().device_type == wgpu::DeviceType::Cpu {
+            eprintln!("Warning: SW GPU will be used.");
+        }
 
         let limits = adapter.limits();
         let required_features = if enable_profiler {
