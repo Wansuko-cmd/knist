@@ -71,5 +71,15 @@ pub extern "system" fn Java_com_wsr_knist_cpu_linalg_JMatMul_matMulD2ToD2(
     let x = unsafe { &*(x as *const CPUBuffer) };
     let y = unsafe { &*(y as *const CPUBuffer) };
     let result = unsafe { &mut *(result as *mut CPUBuffer) };
-    linalg::mat_mul_d2_to_d2(x, trans_x != 0, y, trans_y != 0, m as usize, k as usize, n as usize, b as usize, result);
+    linalg::mat_mul_d2_to_d2(
+        x,
+        trans_x != 0,
+        y,
+        trans_y != 0,
+        m as usize,
+        k as usize,
+        n as usize,
+        b as usize,
+        result,
+    );
 }

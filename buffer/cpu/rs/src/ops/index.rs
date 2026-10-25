@@ -14,7 +14,15 @@ pub fn gather(x: &CPUBuffer, y: &CPUBuffer, i: usize, j: usize, k: usize, result
     }
 }
 
-pub fn scatter_add(x: &CPUBuffer, y: &CPUBuffer, i: usize, j: usize, k: usize, b: usize, result: &mut CPUBuffer) {
+pub fn scatter_add(
+    x: &CPUBuffer,
+    y: &CPUBuffer,
+    i: usize,
+    j: usize,
+    k: usize,
+    b: usize,
+    result: &mut CPUBuffer,
+) {
     let n = y.count() / b;
     assert_eq!(x.count(), b * i * n * k);
     assert_eq!(result.count(), i * j * k);

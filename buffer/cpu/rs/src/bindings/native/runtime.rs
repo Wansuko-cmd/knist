@@ -1,5 +1,5 @@
-use crate::runtime::Runtime;
 use crate::ops;
+use crate::runtime::Runtime;
 
 #[unsafe(no_mangle)]
 pub extern "C" fn com_wsr_cpu_runtime_allocate(pool_size: i64) -> *mut Runtime {

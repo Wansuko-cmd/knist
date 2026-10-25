@@ -3,8 +3,11 @@ use crate::resource::buffer::CPUBuffer;
 
 #[unsafe(no_mangle)]
 pub extern "system" fn com_wsr_cpu_gather(
-    x: *const CPUBuffer, y: *const CPUBuffer,
-    i: i32, j: i32, k: i32,
+    x: *const CPUBuffer,
+    y: *const CPUBuffer,
+    i: i32,
+    j: i32,
+    k: i32,
     result: *mut CPUBuffer,
 ) {
     let x = unsafe { &*x };
@@ -15,8 +18,12 @@ pub extern "system" fn com_wsr_cpu_gather(
 
 #[unsafe(no_mangle)]
 pub extern "system" fn com_wsr_cpu_scatter_add(
-    x: *const CPUBuffer, y: *const CPUBuffer,
-    i: i32, j: i32, k: i32, b: i32,
+    x: *const CPUBuffer,
+    y: *const CPUBuffer,
+    i: i32,
+    j: i32,
+    k: i32,
+    b: i32,
     result: *mut CPUBuffer,
 ) {
     let x = unsafe { &*x };

@@ -13,7 +13,9 @@ impl CPUBuffer {
     }
 
     pub fn init(value: &[f32]) -> CPUBuffer {
-        CPUBuffer { value: value.to_vec() }
+        CPUBuffer {
+            value: value.to_vec(),
+        }
     }
 
     pub fn write(&mut self, index: usize, value: f32) {

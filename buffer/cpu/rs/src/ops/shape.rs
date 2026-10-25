@@ -19,8 +19,12 @@ pub fn transpose_d2(x: &CPUBuffer, xi: usize, xj: usize, result: &mut CPUBuffer)
 
 pub fn transpose_d3(
     x: &CPUBuffer,
-    xi: usize, xj: usize, xk: usize,
-    axis_i: usize, axis_j: usize, axis_k: usize,
+    xi: usize,
+    xj: usize,
+    xk: usize,
+    axis_i: usize,
+    axis_j: usize,
+    axis_k: usize,
     result: &mut CPUBuffer,
 ) {
     let old_shape = [xi, xj, xk];
@@ -33,27 +37,42 @@ pub fn transpose_d3(
     let nk_stride = old_strides[axis_k];
 
     let chunk_size = new_shape[1] * new_shape[2];
-    result.fast_chunks_for_each(chunk_size, TRANSPOSE_D3_PAR_THRESHOLD, |index, result_iter| {
-        let ni = index * ni_stride;
-        let mut iter = result_iter.iter_mut();
-        for nj in (ni..ni + new_shape[1] * nj_stride).step_by(nj_stride) {
-            for index in (nj..nj + new_shape[2] * nk_stride).step_by(nk_stride) {
-                if let Some(res) = iter.next() {
-                    *res = x[index];
+    result.fast_chunks_for_each(
+        chunk_size,
+        TRANSPOSE_D3_PAR_THRESHOLD,
+        |index, result_iter| {
+            let ni = index * ni_stride;
+            let mut iter = result_iter.iter_mut();
+            for nj in (ni..ni + new_shape[1] * nj_stride).step_by(nj_stride) {
+                for index in (nj..nj + new_shape[2] * nk_stride).step_by(nk_stride) {
+                    if let Some(res) = iter.next() {
+                        *res = x[index];
+                    }
                 }
             }
-        }
-    });
+        },
+    );
 }
 
 pub fn transpose_d4(
     x: &CPUBuffer,
-    xi: usize, xj: usize, xk: usize, xl: usize,
-    axis_i: usize, axis_j: usize, axis_k: usize, axis_l: usize,
+    xi: usize,
+    xj: usize,
+    xk: usize,
+    xl: usize,
+    axis_i: usize,
+    axis_j: usize,
+    axis_k: usize,
+    axis_l: usize,
     result: &mut CPUBuffer,
 ) {
     let old_shape = [xi, xj, xk, xl];
-    let new_shape = [old_shape[axis_i], old_shape[axis_j], old_shape[axis_k], old_shape[axis_l]];
+    let new_shape = [
+        old_shape[axis_i],
+        old_shape[axis_j],
+        old_shape[axis_k],
+        old_shape[axis_l],
+    ];
 
     let old_strides = [xj * xk * xl, xk * xl, xl, 1];
 
@@ -63,29 +82,47 @@ pub fn transpose_d4(
     let nl_stride = old_strides[axis_l];
 
     let chunk_size = new_shape[1] * new_shape[2] * new_shape[3];
-    result.fast_chunks_for_each(chunk_size, TRANSPOSE_D4_PAR_THRESHOLD, |index, result_iter| {
-        let ni = index * ni_stride;
-        let mut iter = result_iter.iter_mut();
-        for nj in (ni..ni + new_shape[1] * nj_stride).step_by(nj_stride) {
-            for nk in (nj..nj + new_shape[2] * nk_stride).step_by(nk_stride) {
-                for index in (nk..nk + new_shape[3] * nl_stride).step_by(nl_stride) {
-                    if let Some(res) = iter.next() {
-                        *res = x[index];
+    result.fast_chunks_for_each(
+        chunk_size,
+        TRANSPOSE_D4_PAR_THRESHOLD,
+        |index, result_iter| {
+            let ni = index * ni_stride;
+            let mut iter = result_iter.iter_mut();
+            for nj in (ni..ni + new_shape[1] * nj_stride).step_by(nj_stride) {
+                for nk in (nj..nj + new_shape[2] * nk_stride).step_by(nk_stride) {
+                    for index in (nk..nk + new_shape[3] * nl_stride).step_by(nl_stride) {
+                        if let Some(res) = iter.next() {
+                            *res = x[index];
+                        }
                     }
                 }
             }
-        }
-    });
+        },
+    );
 }
 
 pub fn transpose_d5(
     x: &CPUBuffer,
-    xi: usize, xj: usize, xk: usize, xl: usize, xm: usize,
-    axis_i: usize, axis_j: usize, axis_k: usize, axis_l: usize, axis_m: usize,
+    xi: usize,
+    xj: usize,
+    xk: usize,
+    xl: usize,
+    xm: usize,
+    axis_i: usize,
+    axis_j: usize,
+    axis_k: usize,
+    axis_l: usize,
+    axis_m: usize,
     result: &mut CPUBuffer,
 ) {
     let old_shape = [xi, xj, xk, xl, xm];
-    let new_shape = [old_shape[axis_i], old_shape[axis_j], old_shape[axis_k], old_shape[axis_l], old_shape[axis_m]];
+    let new_shape = [
+        old_shape[axis_i],
+        old_shape[axis_j],
+        old_shape[axis_k],
+        old_shape[axis_l],
+        old_shape[axis_m],
+    ];
 
     let old_strides = [xj * xk * xl * xm, xk * xl * xm, xl * xm, xm, 1];
 
@@ -128,45 +165,64 @@ pub fn slice_d1(x: &CPUBuffer, start: usize, end: usize, step: isize, result: &m
     }
 }
 
-pub fn slice_d2(x: &CPUBuffer, xi: usize, xj: usize, axis: usize, start: usize, end: usize, step: isize, result: &mut CPUBuffer) {
+pub fn slice_d2(
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    axis: usize,
+    start: usize,
+    end: usize,
+    step: isize,
+    result: &mut CPUBuffer,
+) {
     match step {
         0 => panic!("invalid parameter. [axis: {}, step: {}]", axis, step),
-        _ => {
-            match axis {
-                0 => {
-                    let indices = create_indices(start, end, step);
-                    for (r_i, &x_i) in indices.iter().enumerate() {
-                        let x_offset = x_i * xj;
-                        let result_offset = r_i * xj;
-                        result[result_offset..result_offset + xj].copy_from_slice(&x[x_offset..x_offset + xj]);
-                    }
+        _ => match axis {
+            0 => {
+                let indices = create_indices(start, end, step);
+                for (r_i, &x_i) in indices.iter().enumerate() {
+                    let x_offset = x_i * xj;
+                    let result_offset = r_i * xj;
+                    result[result_offset..result_offset + xj]
+                        .copy_from_slice(&x[x_offset..x_offset + xj]);
                 }
-                1 if step == 1 => {
-                    let size = (result.count() / xi).min(end - start + 1);
-                    for i in 0..xi {
-                        let x_offset = i * xj + start;
-                        let result_offset = i * size;
-                        result[result_offset..result_offset + size].copy_from_slice(&x[x_offset..x_offset + size]);
-                    }
-                }
-                1 => {
-                    let indices = create_indices(start, end, step);
-                    let size = indices.len();
-                    for i in 0..xi {
-                        let x_offset = i * xj;
-                        let result_offset = i * size;
-                        for (r_j, &x_j) in indices.iter().enumerate() {
-                            result[result_offset + r_j] = x[x_offset + x_j];
-                        }
-                    }
-                }
-                _ => panic!("invalid parameter. [axis: {}, step: {}]", axis, step)
             }
-        }
+            1 if step == 1 => {
+                let size = (result.count() / xi).min(end - start + 1);
+                for i in 0..xi {
+                    let x_offset = i * xj + start;
+                    let result_offset = i * size;
+                    result[result_offset..result_offset + size]
+                        .copy_from_slice(&x[x_offset..x_offset + size]);
+                }
+            }
+            1 => {
+                let indices = create_indices(start, end, step);
+                let size = indices.len();
+                for i in 0..xi {
+                    let x_offset = i * xj;
+                    let result_offset = i * size;
+                    for (r_j, &x_j) in indices.iter().enumerate() {
+                        result[result_offset + r_j] = x[x_offset + x_j];
+                    }
+                }
+            }
+            _ => panic!("invalid parameter. [axis: {}, step: {}]", axis, step),
+        },
     }
 }
 
-pub fn slice_d3(x: &CPUBuffer, xi: usize, xj: usize, xk: usize, axis: usize, start: usize, end: usize, step: isize, result: &mut CPUBuffer) {
+pub fn slice_d3(
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    xk: usize,
+    axis: usize,
+    start: usize,
+    end: usize,
+    step: isize,
+    result: &mut CPUBuffer,
+) {
     match axis {
         0 => slice_d2(x, xi, xj * xk, 0, start, end, step, result),
         1 => {
@@ -178,7 +234,8 @@ pub fn slice_d3(x: &CPUBuffer, xi: usize, xj: usize, xk: usize, axis: usize, sta
                 for (r_i, &x_i) in indices.iter().enumerate() {
                     let x_offset = xii + x_i * xk;
                     let result_offset = rii + r_i * xk;
-                    result[result_offset..result_offset + xk].copy_from_slice(&x[x_offset..x_offset + xk]);
+                    result[result_offset..result_offset + xk]
+                        .copy_from_slice(&x[x_offset..x_offset + xk]);
                 }
             }
         }
@@ -203,45 +260,64 @@ pub fn copy_into_d1(x: &CPUBuffer, result: &mut CPUBuffer, start: usize, end: us
     }
 }
 
-pub fn copy_into_d2(x: &CPUBuffer, result: &mut CPUBuffer, ri: usize, rj: usize, axis: usize, start: usize, end: usize, step: isize) {
+pub fn copy_into_d2(
+    x: &CPUBuffer,
+    result: &mut CPUBuffer,
+    ri: usize,
+    rj: usize,
+    axis: usize,
+    start: usize,
+    end: usize,
+    step: isize,
+) {
     match step {
         0 => panic!("invalid parameter. [axis: {}, step: {}]", axis, step),
-        _ => {
-            match axis {
-                0 => {
-                    let indices = create_indices(start, end, step);
-                    for (x_i, &r_i) in indices.iter().enumerate() {
-                        let x_offset = x_i * rj;
-                        let result_offset = r_i * rj;
-                        result[result_offset..result_offset + rj].copy_from_slice(&x[x_offset..x_offset + rj]);
-                    }
+        _ => match axis {
+            0 => {
+                let indices = create_indices(start, end, step);
+                for (x_i, &r_i) in indices.iter().enumerate() {
+                    let x_offset = x_i * rj;
+                    let result_offset = r_i * rj;
+                    result[result_offset..result_offset + rj]
+                        .copy_from_slice(&x[x_offset..x_offset + rj]);
                 }
-                1 if step == 1 => {
-                    let size = (x.count() / ri).min(end - start + 1);
-                    for i in 0..ri {
-                        let x_offset = i * size;
-                        let result_offset = i * rj + start;
-                        result[result_offset..result_offset + size].copy_from_slice(&x[x_offset..x_offset + size]);
-                    }
-                }
-                1 => {
-                    let indices = create_indices(start, end, step);
-                    let size = indices.len();
-                    for i in 0..ri {
-                        let x_offset = i * size;
-                        let result_offset = i * rj;
-                        for (x_j, &r_j) in indices.iter().enumerate() {
-                            result[result_offset + r_j] = x[x_offset + x_j];
-                        }
-                    }
-                }
-                _ => panic!("invalid parameter. [axis: {}, step: {}]", axis, step)
             }
-        }
+            1 if step == 1 => {
+                let size = (x.count() / ri).min(end - start + 1);
+                for i in 0..ri {
+                    let x_offset = i * size;
+                    let result_offset = i * rj + start;
+                    result[result_offset..result_offset + size]
+                        .copy_from_slice(&x[x_offset..x_offset + size]);
+                }
+            }
+            1 => {
+                let indices = create_indices(start, end, step);
+                let size = indices.len();
+                for i in 0..ri {
+                    let x_offset = i * size;
+                    let result_offset = i * rj;
+                    for (x_j, &r_j) in indices.iter().enumerate() {
+                        result[result_offset + r_j] = x[x_offset + x_j];
+                    }
+                }
+            }
+            _ => panic!("invalid parameter. [axis: {}, step: {}]", axis, step),
+        },
     }
 }
 
-pub fn copy_into_d3(x: &CPUBuffer, result: &mut CPUBuffer, ri: usize, rj: usize, rk: usize, axis: usize, start: usize, end: usize, step: isize) {
+pub fn copy_into_d3(
+    x: &CPUBuffer,
+    result: &mut CPUBuffer,
+    ri: usize,
+    rj: usize,
+    rk: usize,
+    axis: usize,
+    start: usize,
+    end: usize,
+    step: isize,
+) {
     match axis {
         0 => copy_into_d2(x, result, ri, rj * rk, 0, start, end, step),
         1 => {
@@ -253,7 +329,8 @@ pub fn copy_into_d3(x: &CPUBuffer, result: &mut CPUBuffer, ri: usize, rj: usize,
                 for (x_i, &r_i) in indices.iter().enumerate() {
                     let x_offset = xii + x_i * rk;
                     let result_offset = rii + r_i * rk;
-                    result[result_offset..result_offset + rk].copy_from_slice(&x[x_offset..x_offset + rk]);
+                    result[result_offset..result_offset + rk]
+                        .copy_from_slice(&x[x_offset..x_offset + rk]);
                 }
             }
         }
@@ -264,17 +341,23 @@ pub fn copy_into_d3(x: &CPUBuffer, result: &mut CPUBuffer, ri: usize, rj: usize,
 
 fn create_indices(start: usize, end: usize, step: isize) -> Vec<usize> {
     match step {
-        step if step > 0 => {
-            (start..=end).step_by(step as usize).collect()
-        },
-        step if step < 0 => {
-            (end..=start).rev().step_by(step.unsigned_abs()).collect()
-        },
-        _ => panic!("invalid parameter. [step: {}]",step)
+        step if step > 0 => (start..=end).step_by(step as usize).collect(),
+        step if step < 0 => (end..=start).rev().step_by(step.unsigned_abs()).collect(),
+        _ => panic!("invalid parameter. [step: {}]", step),
     }
 }
 
-pub fn unfold_d1(x: &CPUBuffer, result: &mut CPUBuffer, _xi: usize, xj: usize, _b: usize, window: usize, stride: usize, dilation: usize, padding: usize) {
+pub fn unfold_d1(
+    x: &CPUBuffer,
+    result: &mut CPUBuffer,
+    _xi: usize,
+    xj: usize,
+    _b: usize,
+    window: usize,
+    stride: usize,
+    dilation: usize,
+    padding: usize,
+) {
     let window_size = (window - 1) * dilation + 1;
     let oj = (xj + padding * 2 - window_size) / stride + 1;
     result.fast_chunks_for_each(oj * window, UNFOLD_D1_PAR_THRESHOLD, |index, res_view| {
@@ -293,9 +376,14 @@ pub fn unfold_d1(x: &CPUBuffer, result: &mut CPUBuffer, _xi: usize, xj: usize, _
 pub fn unfold_d2(
     x: &CPUBuffer,
     result: &mut CPUBuffer,
-    _xi: usize, xj: usize, xk: usize,
+    _xi: usize,
+    xj: usize,
+    xk: usize,
     _b: usize,
-    window: usize, stride: usize, dilation: usize, padding: usize,
+    window: usize,
+    stride: usize,
+    dilation: usize,
+    padding: usize,
 ) {
     let window_size = (window - 1) * dilation + 1;
     let oj = (xj + padding * 2 - window_size) / stride + 1;
@@ -309,7 +397,11 @@ pub fn unfold_d2(
                     for wx in 0..window {
                         let input_x = (ox * stride + wy * dilation) as isize - padding as isize;
                         let input_y = (oy * stride + wx * dilation) as isize - padding as isize;
-                        if input_x >= 0 && input_x < xj as isize && input_y >= 0 && input_y < xk as isize {
+                        if input_x >= 0
+                            && input_x < xj as isize
+                            && input_y >= 0
+                            && input_y < xk as isize
+                        {
                             let input_x = input_x as usize;
                             let input_y = input_y as usize;
                             let result_index = (ox * ok + oy) * ww + wy * window + wx;
@@ -323,7 +415,17 @@ pub fn unfold_d2(
     });
 }
 
-pub fn fold_d1(x: &CPUBuffer, result: &mut CPUBuffer, _xi: usize, xj: usize, xk: usize, _b: usize, stride: usize, dilation: usize, padding: usize) {
+pub fn fold_d1(
+    x: &CPUBuffer,
+    result: &mut CPUBuffer,
+    _xi: usize,
+    xj: usize,
+    xk: usize,
+    _b: usize,
+    stride: usize,
+    dilation: usize,
+    padding: usize,
+) {
     let window_size = (xk - 1) * dilation + 1;
     let oj = window_size + (xj - 1) * stride - padding * 2;
     result.fast_chunks_for_each(oj, FOLD_D1_PAR_THRESHOLD, |index, res_view| {
@@ -342,9 +444,14 @@ pub fn fold_d1(x: &CPUBuffer, result: &mut CPUBuffer, _xi: usize, xj: usize, xk:
 pub fn fold_d2(
     x: &CPUBuffer,
     result: &mut CPUBuffer,
-    _xi: usize, xj: usize, xk: usize, xl: usize,
+    _xi: usize,
+    xj: usize,
+    xk: usize,
+    xl: usize,
     _b: usize,
-    stride: usize, dilation: usize, padding: usize,
+    stride: usize,
+    dilation: usize,
+    padding: usize,
 ) {
     let window = (xl as f64).sqrt() as usize;
     let window_size = (window - 1) * dilation + 1;
@@ -358,7 +465,11 @@ pub fn fold_d2(
                     for wx in 0..window {
                         let input_x = (ox * stride + wy * dilation) as isize - padding as isize;
                         let input_y = (oy * stride + wx * dilation) as isize - padding as isize;
-                        if input_x >= 0 && input_x < oj as isize && input_y >= 0 && input_y < ok as isize {
+                        if input_x >= 0
+                            && input_x < oj as isize
+                            && input_y >= 0
+                            && input_y < ok as isize
+                        {
                             let input_x = input_x as usize;
                             let input_y = input_y as usize;
                             let x_index = (ox * xk + oy) * xl + wy * window + wx;
@@ -372,7 +483,14 @@ pub fn fold_d2(
     });
 }
 
-pub fn flip_d3(x: &CPUBuffer, xi: usize, xj: usize, xk: usize, axis: usize, result: &mut CPUBuffer) {
+pub fn flip_d3(
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    xk: usize,
+    axis: usize,
+    result: &mut CPUBuffer,
+) {
     for i in 0..xi {
         for j in 0..xj {
             for k in 0..xk {

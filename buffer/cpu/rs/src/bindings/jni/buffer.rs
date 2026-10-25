@@ -63,7 +63,9 @@ pub extern "system" fn Java_com_wsr_knist_cpu_JBuffer_readAll(
     ptr: jlong,
 ) -> jfloatArray {
     let buffer = unsafe { &*(ptr as *const CPUBuffer) };
-    let result = env.new_float_array(buffer.count() as i32).expect("failed to allocate result float[]");
+    let result = env
+        .new_float_array(buffer.count() as i32)
+        .expect("failed to allocate result float[]");
     env.set_float_array_region(&result, 0, buffer)
         .expect("failed to copy into result float[]");
     result.into_raw()

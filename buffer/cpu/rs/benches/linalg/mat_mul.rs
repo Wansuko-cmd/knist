@@ -1,10 +1,10 @@
 use std::hint::black_box;
 
-use criterion::measurement::Measurement;
-use criterion::{BenchmarkGroup, BenchmarkId, Criterion, criterion_group, criterion_main};
 use cpu::ops;
 use cpu::ops::linalg;
 use cpu::runtime::Runtime;
+use criterion::measurement::Measurement;
+use criterion::{BenchmarkGroup, BenchmarkId, Criterion, criterion_group, criterion_main};
 
 fn bench_mat_mul(c: &mut Criterion) {
     let runtime = ops::runtime::allocate(0);
@@ -39,10 +39,30 @@ fn bench<M: Measurement>(
     runtime: &Runtime,
 ) {
     let configs = [
-        MatMulConfig { m: 128, n: 128, k: 128, b: 4 },
-        MatMulConfig { m: 512, n: 512, k: 512, b: 4 },
-        MatMulConfig { m: 128, n: 128, k: 32, b: 512 },
-        MatMulConfig { m: 8192, n: 3000, k: 256, b: 1 },
+        MatMulConfig {
+            m: 128,
+            n: 128,
+            k: 128,
+            b: 4,
+        },
+        MatMulConfig {
+            m: 512,
+            n: 512,
+            k: 512,
+            b: 4,
+        },
+        MatMulConfig {
+            m: 128,
+            n: 128,
+            k: 32,
+            b: 512,
+        },
+        MatMulConfig {
+            m: 8192,
+            n: 3000,
+            k: 256,
+            b: 1,
+        },
     ];
 
     for config in configs {
@@ -56,9 +76,14 @@ fn bench<M: Measurement>(
             |bencher, _| {
                 bencher.iter(|| {
                     linalg::mat_mul_d2_to_d2(
-                        black_box(&x), trans_x,
-                        black_box(&y), trans_y,
-                        config.m, config.n, config.k, config.b,
+                        black_box(&x),
+                        trans_x,
+                        black_box(&y),
+                        trans_y,
+                        config.m,
+                        config.n,
+                        config.k,
+                        config.b,
                         black_box(&mut result),
                     );
                 });

@@ -16,8 +16,11 @@ struct Inner {
 impl BufferPool {
     pub fn new(size: u64) -> Self {
         BufferPool {
-          mutex: Mutex::new(Inner { pool: HashMap::new(), total_bytes: 0 }),
-          size: size,
+            mutex: Mutex::new(Inner {
+                pool: HashMap::new(),
+                total_bytes: 0,
+            }),
+            size: size,
         }
     }
 

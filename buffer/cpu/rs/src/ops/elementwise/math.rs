@@ -1,5 +1,5 @@
-use crate::resource::buffer::CPUBuffer;
 use crate::ops::utils::FastForEachExt;
+use crate::resource::buffer::CPUBuffer;
 
 const EXP_D1_PAR_THRESHOLD: usize = 200_000;
 const SIGMOID_D1_PAR_THRESHOLD: usize = 200_000;
@@ -30,7 +30,9 @@ pub fn ln_d1(x: &CPUBuffer, e: f32, result: &mut CPUBuffer) {
 
 pub fn sigmoid_d1(x: &CPUBuffer, result: &mut CPUBuffer) {
     assert_eq!(x.count(), result.count());
-    x.fast_map(SIGMOID_D1_PAR_THRESHOLD, result, |&val| 1f32 / (1f32 + exp(-val)));
+    x.fast_map(SIGMOID_D1_PAR_THRESHOLD, result, |&val| {
+        1f32 / (1f32 + exp(-val))
+    });
 }
 
 pub fn pow_d1(x: &CPUBuffer, n: i32, result: &mut CPUBuffer) {

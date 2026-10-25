@@ -11,7 +11,9 @@ pub extern "system" fn Java_com_wsr_knist_cpu_index_JIndex_gather(
     _class: JClass,
     x: jlong,
     y: jlong,
-    i: jint, j: jint, k: jint,
+    i: jint,
+    j: jint,
+    k: jint,
     result: jlong,
 ) {
     let x = unsafe { &*(x as *const CPUBuffer) };
@@ -27,7 +29,10 @@ pub extern "system" fn Java_com_wsr_knist_cpu_index_JIndex_scatterAdd(
     _class: JClass,
     x: jlong,
     y: jlong,
-    i: jint, j: jint, k: jint, b: jint,
+    i: jint,
+    j: jint,
+    k: jint,
+    b: jint,
     result: jlong,
 ) {
     let x = unsafe { &*(x as *const CPUBuffer) };
