@@ -18,7 +18,12 @@ struct Inner {
 
 impl Inner {
     fn new() -> Self {
-        Inner { pool: HashMap::new(), next_seq: 0, num_of_buffer: 0, total_bytes: 0 }
+        Inner {
+            pool: HashMap::new(),
+            next_seq: 0,
+            num_of_buffer: 0,
+            total_bytes: 0,
+        }
     }
 
     fn take(&mut self, byte_size: u64) -> Option<GPUBuffer> {
@@ -35,7 +40,10 @@ impl Inner {
     fn push(&mut self, byte_size: u64, buffer: GPUBuffer) {
         let seq = self.next_seq;
         self.next_seq += 1;
-        self.pool.entry(byte_size).or_default().push_back((seq, buffer));
+        self.pool
+            .entry(byte_size)
+            .or_default()
+            .push_back((seq, buffer));
         self.num_of_buffer += 1;
         self.total_bytes += byte_size;
     }
@@ -63,7 +71,10 @@ impl BufferPool {
     const MAX_NUM_OF_BUFFER: usize = 4096;
 
     pub fn new(max_bytes: u64) -> Self {
-        BufferPool { mutex: Mutex::new(Inner::new()), max_bytes }
+        BufferPool {
+            mutex: Mutex::new(Inner::new()),
+            max_bytes,
+        }
     }
 
     pub fn get(&self, size: usize) -> Option<GPUBuffer> {

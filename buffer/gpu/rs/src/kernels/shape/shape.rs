@@ -33,31 +33,32 @@ impl Shape {
     const WORKGROUP_SIZE: u32 = 256;
 
     pub fn new(device: &Device) -> Self {
-        let binding_group_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
-            label: Some("Shape::new"),
-            entries: &[
-                wgpu::BindGroupLayoutEntry {
-                    binding: 0,
-                    visibility: wgpu::ShaderStages::COMPUTE,
-                    ty: wgpu::BindingType::Buffer {
-                        ty: wgpu::BufferBindingType::Storage { read_only: true },
-                        has_dynamic_offset: false,
-                        min_binding_size: None,
+        let binding_group_layout =
+            device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+                label: Some("Shape::new"),
+                entries: &[
+                    wgpu::BindGroupLayoutEntry {
+                        binding: 0,
+                        visibility: wgpu::ShaderStages::COMPUTE,
+                        ty: wgpu::BindingType::Buffer {
+                            ty: wgpu::BufferBindingType::Storage { read_only: true },
+                            has_dynamic_offset: false,
+                            min_binding_size: None,
+                        },
+                        count: None,
                     },
-                    count: None,
-                },
-                wgpu::BindGroupLayoutEntry {
-                    binding: 1,
-                    visibility: wgpu::ShaderStages::COMPUTE,
-                    ty: wgpu::BindingType::Buffer {
-                        ty: wgpu::BufferBindingType::Storage { read_only: false },
-                        has_dynamic_offset: false,
-                        min_binding_size: None,
+                    wgpu::BindGroupLayoutEntry {
+                        binding: 1,
+                        visibility: wgpu::ShaderStages::COMPUTE,
+                        ty: wgpu::BindingType::Buffer {
+                            ty: wgpu::BufferBindingType::Storage { read_only: false },
+                            has_dynamic_offset: false,
+                            min_binding_size: None,
+                        },
+                        count: None,
                     },
-                    count: None,
-                },
-            ],
-        });
+                ],
+            });
 
         let immediate_size = [
             std::mem::size_of::<CopyIntoD1Params>(),
@@ -74,7 +75,10 @@ impl Shape {
             std::mem::size_of::<UnfoldD2Params>(),
             std::mem::size_of::<FoldD1Params>(),
             std::mem::size_of::<FoldD2Params>(),
-        ].into_iter().max().unwrap();
+        ]
+        .into_iter()
+        .max()
+        .unwrap();
         let pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
             label: Some("Shape::new"),
             bind_group_layouts: &[&binding_group_layout],
@@ -287,7 +291,7 @@ struct CopyIntoD1Params {
     start: u32,
     step: i32,
     size: u32,
-    _pad : u32,
+    _pad: u32,
 }
 
 impl Shape {
@@ -295,14 +299,20 @@ impl Shape {
         &'a self,
         x: &GPUBuffer,
         result: &GPUBuffer,
-        start: usize, end: usize, step: isize,
+        start: usize,
+        end: usize,
+        step: isize,
     ) -> ComputeTask<'a> {
         let label = "copy_into_d1";
         let device = &self.device;
         let params = CopyIntoD1Params {
             start: start as u32,
             step: step as i32,
-            size: if step > 0 { (end - start) as u32 / step.unsigned_abs() as u32 + 1 } else { (start - end) as u32 / step.unsigned_abs() as u32 + 1 },
+            size: if step > 0 {
+                (end - start) as u32 / step.unsigned_abs() as u32 + 1
+            } else {
+                (start - end) as u32 / step.unsigned_abs() as u32 + 1
+            },
             _pad: 0u32,
         };
 
@@ -318,7 +328,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = x.workgroup_count(Shape::WORKGROUP_SIZE);
@@ -351,15 +361,22 @@ impl Shape {
         &'a self,
         x: &GPUBuffer,
         result: &GPUBuffer,
-        ri: usize, rj: usize,
-        start: usize, end: usize, step: isize,
+        ri: usize,
+        rj: usize,
+        start: usize,
+        end: usize,
+        step: isize,
     ) -> ComputeTask<'a> {
         self.copy_into_d2(
             "copy_into_d2_axis0",
             &self.copy_into_d2_axis0,
             x,
-            result, ri, rj,
-            start, end, step,
+            result,
+            ri,
+            rj,
+            start,
+            end,
+            step,
         )
     }
 
@@ -367,15 +384,22 @@ impl Shape {
         &'a self,
         x: &GPUBuffer,
         result: &GPUBuffer,
-        ri: usize, rj: usize,
-        start: usize, end: usize, step: isize,
+        ri: usize,
+        rj: usize,
+        start: usize,
+        end: usize,
+        step: isize,
     ) -> ComputeTask<'a> {
         self.copy_into_d2(
             "copy_into_d2_axis1",
             &self.copy_into_d2_axis1,
             x,
-            result, ri, rj,
-            start, end, step,
+            result,
+            ri,
+            rj,
+            start,
+            end,
+            step,
         )
     }
 
@@ -385,14 +409,21 @@ impl Shape {
         pipeline: &'a wgpu::ComputePipeline,
         x: &GPUBuffer,
         result: &GPUBuffer,
-        ri: usize, rj: usize,
-        start: usize, end: usize, step: isize,
+        ri: usize,
+        rj: usize,
+        start: usize,
+        end: usize,
+        step: isize,
     ) -> ComputeTask<'a> {
         let device = &self.device;
         let params = CopyIntoD2Params {
             start: start as u32,
             step: step as i32,
-            size: if step > 0 { (end - start) as u32 / step.unsigned_abs() as u32 + 1 } else { (start - end) as u32 / step.unsigned_abs() as u32 + 1 },
+            size: if step > 0 {
+                (end - start) as u32 / step.unsigned_abs() as u32 + 1
+            } else {
+                (start - end) as u32 / step.unsigned_abs() as u32 + 1
+            },
             ri: ri as u32,
             rj: rj as u32,
             _pad1: 0u32,
@@ -412,7 +443,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = x.workgroup_count(Shape::WORKGROUP_SIZE);
@@ -445,15 +476,23 @@ impl Shape {
         &'a self,
         x: &GPUBuffer,
         result: &GPUBuffer,
-        ri: usize, rj: usize, rk: usize,
-        start: usize, end: usize, step: isize,
+        ri: usize,
+        rj: usize,
+        rk: usize,
+        start: usize,
+        end: usize,
+        step: isize,
     ) -> ComputeTask<'a> {
         let label = "copy_into_d3";
         let device = &self.device;
         let params = CopyIntoD3Params {
             start: start as u32,
             step: step as i32,
-            size: if step > 0 { (end - start) as u32 / step.unsigned_abs() as u32 + 1 } else { (start - end) as u32 / step.unsigned_abs() as u32 + 1 },
+            size: if step > 0 {
+                (end - start) as u32 / step.unsigned_abs() as u32 + 1
+            } else {
+                (start - end) as u32 / step.unsigned_abs() as u32 + 1
+            },
             ri: ri as u32,
             rj: rj as u32,
             rk: rk as u32,
@@ -473,7 +512,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = x.workgroup_count(Shape::WORKGROUP_SIZE);
@@ -501,7 +540,9 @@ impl Shape {
     pub fn slice_d1<'a>(
         &'a self,
         x: &GPUBuffer,
-        start: usize, end: usize, step: isize,
+        start: usize,
+        end: usize,
+        step: isize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let label = "slice_d1";
@@ -509,7 +550,11 @@ impl Shape {
         let params = SliceD1Params {
             start: start as u32,
             step: step as i32,
-            size: if step > 0 { (end - start) as u32 / step.unsigned_abs() as u32 + 1 } else { (start - end) as u32 / step.unsigned_abs() as u32 + 1 },
+            size: if step > 0 {
+                (end - start) as u32 / step.unsigned_abs() as u32 + 1
+            } else {
+                (start - end) as u32 / step.unsigned_abs() as u32 + 1
+            },
             _pad: 0u32,
         };
 
@@ -525,7 +570,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Shape::WORKGROUP_SIZE);
@@ -557,16 +602,22 @@ impl Shape {
     pub fn slice_d2_axis0<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
-        start: usize, end: usize, step: isize,
+        xi: usize,
+        xj: usize,
+        start: usize,
+        end: usize,
+        step: isize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         self.slice_d2(
             "slice_d2_axis0",
             &self.slice_d2_axis0,
             x,
-            xi, xj,
-            start, end, step,
+            xi,
+            xj,
+            start,
+            end,
+            step,
             result,
         )
     }
@@ -574,16 +625,22 @@ impl Shape {
     pub fn slice_d2_axis1<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
-        start: usize, end: usize, step: isize,
+        xi: usize,
+        xj: usize,
+        start: usize,
+        end: usize,
+        step: isize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         self.slice_d2(
             "slice_d2_axis1",
             &self.slice_d2_axis1,
             x,
-            xi, xj,
-            start, end, step,
+            xi,
+            xj,
+            start,
+            end,
+            step,
             result,
         )
     }
@@ -593,15 +650,22 @@ impl Shape {
         label: &'static str,
         pipeline: &'a wgpu::ComputePipeline,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
-        start: usize, end: usize, step: isize,
+        xi: usize,
+        xj: usize,
+        start: usize,
+        end: usize,
+        step: isize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let device = &self.device;
         let params = SliceD2Params {
             start: start as u32,
             step: step as i32,
-            size: if step > 0 { (end - start) as u32 / step.unsigned_abs() as u32 + 1 } else { (start - end) as u32 / step.unsigned_abs() as u32 + 1 },
+            size: if step > 0 {
+                (end - start) as u32 / step.unsigned_abs() as u32 + 1
+            } else {
+                (start - end) as u32 / step.unsigned_abs() as u32 + 1
+            },
             xi: xi as u32,
             xj: xj as u32,
             _pad1: 0u32,
@@ -621,7 +685,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Shape::WORKGROUP_SIZE);
@@ -653,8 +717,12 @@ impl Shape {
     pub fn slice_d3<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize, xk: usize,
-        start: usize, end: usize, step: isize,
+        xi: usize,
+        xj: usize,
+        xk: usize,
+        start: usize,
+        end: usize,
+        step: isize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let label = "slice_d3";
@@ -662,7 +730,11 @@ impl Shape {
         let params = SliceD3Params {
             start: start as u32,
             step: step as i32,
-            size: if step > 0 { (end - start) as u32 / step.unsigned_abs() as u32 + 1 } else { (start - end) as u32 / step.unsigned_abs() as u32 + 1 },
+            size: if step > 0 {
+                (end - start) as u32 / step.unsigned_abs() as u32 + 1
+            } else {
+                (start - end) as u32 / step.unsigned_abs() as u32 + 1
+            },
             xi: xi as u32,
             xj: xj as u32,
             xk: xk as u32,
@@ -682,7 +754,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Shape::WORKGROUP_SIZE);
@@ -710,7 +782,8 @@ impl Shape {
     pub fn transpose_d2<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
+        xi: usize,
+        xj: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let label = "transpose_d2";
@@ -734,7 +807,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Shape::WORKGROUP_SIZE);
@@ -760,14 +833,25 @@ impl Shape {
     pub fn transpose_d3<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize, xk: usize,
-        axis_i: usize, axis_j: usize, axis_k: usize,
+        xi: usize,
+        xj: usize,
+        xk: usize,
+        axis_i: usize,
+        axis_j: usize,
+        axis_k: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         self.create_task(
             "transpose_d3",
-            x, 1,  xi, xj, xk,
-            0, axis_i + 1,  axis_j + 1, axis_k + 1,
+            x,
+            1,
+            xi,
+            xj,
+            xk,
+            0,
+            axis_i + 1,
+            axis_j + 1,
+            axis_k + 1,
             result,
         )
     }
@@ -775,14 +859,27 @@ impl Shape {
     pub fn transpose_d4<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize, xk: usize, xl: usize,
-        axis_i: usize, axis_j: usize, axis_k: usize, axis_l: usize,
+        xi: usize,
+        xj: usize,
+        xk: usize,
+        xl: usize,
+        axis_i: usize,
+        axis_j: usize,
+        axis_k: usize,
+        axis_l: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         self.create_task(
             "transpose_d4",
-            x,  xi, xj, xk, xl,
-            axis_i,  axis_j, axis_k, axis_l,
+            x,
+            xi,
+            xj,
+            xk,
+            xl,
+            axis_i,
+            axis_j,
+            axis_k,
+            axis_l,
             result,
         )
     }
@@ -791,17 +888,43 @@ impl Shape {
         &'a self,
         label: &'static str,
         x: &GPUBuffer,
-        xi: usize, xj: usize, xk: usize, xl: usize,
-        axis_i: usize, axis_j: usize, axis_k: usize, axis_l: usize,
+        xi: usize,
+        xj: usize,
+        xk: usize,
+        xl: usize,
+        axis_i: usize,
+        axis_j: usize,
+        axis_k: usize,
+        axis_l: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let device = &self.device;
         let old_shape = [xi, xj, xk, xl];
-        let new_shape = [old_shape[axis_i], old_shape[axis_j], old_shape[axis_k], old_shape[axis_l]];
+        let new_shape = [
+            old_shape[axis_i],
+            old_shape[axis_j],
+            old_shape[axis_k],
+            old_shape[axis_l],
+        ];
 
-        let old_stride = [old_shape[1] * old_shape[2] * old_shape[3], old_shape[2] * old_shape[3], old_shape[3], 1];
-        let new_stride = [new_shape[1] * new_shape[2] * new_shape[3], new_shape[2] * new_shape[3], new_shape[3], 1];
-        let permuted_stride = [old_stride[axis_i], old_stride[axis_j], old_stride[axis_k], old_stride[axis_l]];
+        let old_stride = [
+            old_shape[1] * old_shape[2] * old_shape[3],
+            old_shape[2] * old_shape[3],
+            old_shape[3],
+            1,
+        ];
+        let new_stride = [
+            new_shape[1] * new_shape[2] * new_shape[3],
+            new_shape[2] * new_shape[3],
+            new_shape[3],
+            1,
+        ];
+        let permuted_stride = [
+            old_stride[axis_i],
+            old_stride[axis_j],
+            old_stride[axis_k],
+            old_stride[axis_l],
+        ];
         let params = TransposeD4Params {
             new_stride: new_stride.map(|v| v as u32),
             permuted_stride: permuted_stride.map(|v| v as u32),
@@ -819,7 +942,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Shape::WORKGROUP_SIZE);
@@ -847,31 +970,21 @@ impl Shape {
     pub fn flip_d2_axis0<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
+        xi: usize,
+        xj: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.flip_d2(
-            "flip_d2_axis0",
-            &self.flip_d2_axis0,
-            x,
-            xi, xj,
-            result,
-        )
+        self.flip_d2("flip_d2_axis0", &self.flip_d2_axis0, x, xi, xj, result)
     }
 
     pub fn flip_d2_axis1<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
+        xi: usize,
+        xj: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.flip_d2(
-            "flip_d2_axis1",
-            &self.flip_d2_axis1,
-            x,
-            xi, xj,
-            result,
-        )
+        self.flip_d2("flip_d2_axis1", &self.flip_d2_axis1, x, xi, xj, result)
     }
 
     fn flip_d2<'a>(
@@ -879,7 +992,8 @@ impl Shape {
         label: &'static str,
         pipeline: &'a wgpu::ComputePipeline,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
+        xi: usize,
+        xj: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let device = &self.device;
@@ -902,7 +1016,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Shape::WORKGROUP_SIZE);
@@ -930,7 +1044,9 @@ impl Shape {
     pub fn flip_d3<'a>(
         &'a self,
         x: &GPUBuffer,
-        _xi: usize, xj: usize, xk: usize,
+        _xi: usize,
+        xj: usize,
+        xk: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let label = "flip_d3";
@@ -954,7 +1070,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Shape::WORKGROUP_SIZE);
@@ -986,8 +1102,13 @@ impl Shape {
     pub fn unfold_d1<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize, b: usize,
-        window: usize, stride: usize, dilation: usize, padding: usize,
+        xi: usize,
+        xj: usize,
+        b: usize,
+        window: usize,
+        stride: usize,
+        dilation: usize,
+        padding: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let label = "unfold_d1";
@@ -1015,7 +1136,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Shape::WORKGROUP_SIZE);
@@ -1047,8 +1168,14 @@ impl Shape {
     pub fn unfold_d2<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize, xk: usize, b: usize,
-        window: usize, stride: usize, dilation: usize, padding: usize,
+        xi: usize,
+        xj: usize,
+        xk: usize,
+        b: usize,
+        window: usize,
+        stride: usize,
+        dilation: usize,
+        padding: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let label = "unfold_d2";
@@ -1076,7 +1203,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Shape::WORKGROUP_SIZE);
@@ -1108,8 +1235,13 @@ impl Shape {
     pub fn fold_d1<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize, xk: usize, b: usize,
-        stride: usize, dilation: usize, padding: usize,
+        xi: usize,
+        xj: usize,
+        xk: usize,
+        b: usize,
+        stride: usize,
+        dilation: usize,
+        padding: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let label = "fold_d1";
@@ -1137,7 +1269,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = x.workgroup_count(Shape::WORKGROUP_SIZE);
@@ -1173,8 +1305,14 @@ impl Shape {
     pub fn fold_d2<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize, xk: usize, xl: usize, b: usize,
-        stride: usize, dilation: usize, padding: usize,
+        xi: usize,
+        xj: usize,
+        xk: usize,
+        xl: usize,
+        b: usize,
+        stride: usize,
+        dilation: usize,
+        padding: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let label = "fold_d2";
@@ -1206,7 +1344,7 @@ impl Shape {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = x.workgroup_count(Shape::WORKGROUP_SIZE);

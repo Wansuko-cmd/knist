@@ -60,7 +60,9 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
     _: JNIEnv,
     _class: JClass,
     x: jlong,
-    y: jlong, yi: jint, yj: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
     axis: jint,
     result: jlong,
     runtime: jlong,
@@ -72,7 +74,9 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
 
     ops::elementwise::operation::times_with_d1_to_d2(
         &x,
-        &y, yi as usize, yj as usize,
+        &y,
+        yi as usize,
+        yj as usize,
         axis as usize,
         &result,
         runtime,
@@ -84,7 +88,10 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
     _: JNIEnv,
     _class: JClass,
     x: jlong,
-    y: jlong, yi: jint, yj: jint, yk: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
+    yk: jint,
     axis: jint,
     result: jlong,
     runtime: jlong,
@@ -96,7 +103,10 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
 
     ops::elementwise::operation::times_with_d1_to_d3(
         &x,
-        &y, yi as usize, yj as usize, yk as usize,
+        &y,
+        yi as usize,
+        yj as usize,
+        yk as usize,
         axis as usize,
         &result,
         runtime,
@@ -107,7 +117,9 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
 pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_timesD2ToD1(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
     y: jlong,
     axis: jint,
     result: jlong,
@@ -119,8 +131,11 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
     let runtime = unsafe { &mut *(runtime as *mut Runtime) };
 
     ops::elementwise::operation::times_with_d2_to_d1(
-        &x, xi as usize, xj as usize,
-        &y, axis as usize,
+        &x,
+        xi as usize,
+        xj as usize,
+        &y,
+        axis as usize,
         &result,
         runtime,
     );
@@ -130,9 +145,15 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
 pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_timesD2ToD3(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint,
-    y: jlong, yi: jint, yj: jint, yk: jint,
-    axis1: jint, axis2: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
+    yk: jint,
+    axis1: jint,
+    axis2: jint,
     result: jlong,
     runtime: jlong,
 ) {
@@ -142,9 +163,15 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
     let runtime = unsafe { &mut *(runtime as *mut Runtime) };
 
     ops::elementwise::operation::times_with_d2_to_d3(
-        &x, xi as usize, xj as usize,
-        &y, yi as usize, yj as usize, yk as usize,
-        axis1 as usize, axis2 as usize,
+        &x,
+        xi as usize,
+        xj as usize,
+        &y,
+        yi as usize,
+        yj as usize,
+        yk as usize,
+        axis1 as usize,
+        axis2 as usize,
         &result,
         runtime,
     );
@@ -154,7 +181,10 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
 pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_timesD3ToD1(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
     y: jlong,
     axis: jint,
     result: jlong,
@@ -166,7 +196,10 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
     let runtime = unsafe { &mut *(runtime as *mut Runtime) };
 
     ops::elementwise::operation::times_with_d3_to_d1(
-        &x, xi as usize, xj as usize, xk as usize,
+        &x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
         &y,
         axis as usize,
         &result,
@@ -178,9 +211,15 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
 pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_timesD3ToD2(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint,
-    y: jlong, yi: jint, yj: jint,
-    axis1: jint, axis2: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
+    axis1: jint,
+    axis2: jint,
     result: jlong,
     runtime: jlong,
 ) {
@@ -190,9 +229,15 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
     let runtime = unsafe { &mut *(runtime as *mut Runtime) };
 
     ops::elementwise::operation::times_with_d3_to_d2(
-        &x, xi as usize, xj as usize, xk as usize,
-        &y, yi as usize, yj as usize,
-        axis1 as usize, axis2 as usize,
+        &x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        &y,
+        yi as usize,
+        yj as usize,
+        axis1 as usize,
+        axis2 as usize,
         &result,
         runtime,
     );
@@ -202,9 +247,18 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
 pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_timesD3ToD4(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint,
-    y: jlong, yi: jint, yj: jint, yk: jint, yl: jint,
-    axis1: jint, axis2: jint, axis3: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
+    yk: jint,
+    yl: jint,
+    axis1: jint,
+    axis2: jint,
+    axis3: jint,
     result: jlong,
     runtime: jlong,
 ) {
@@ -214,9 +268,18 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
     let runtime = unsafe { &mut *(runtime as *mut Runtime) };
 
     ops::elementwise::operation::times_with_d3_to_d4(
-        &x, xi as usize, xj as usize, xk as usize,
-        &y, yi as usize, yj as usize, yk as usize, yl as usize,
-        axis1 as usize, axis2 as usize, axis3 as usize,
+        &x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        &y,
+        yi as usize,
+        yj as usize,
+        yk as usize,
+        yl as usize,
+        axis1 as usize,
+        axis2 as usize,
+        axis3 as usize,
         &result,
         runtime,
     );
@@ -226,7 +289,11 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
 pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_timesD4ToD1(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint, xl: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
+    xl: jint,
     y: jlong,
     axis: jint,
     result: jlong,
@@ -238,7 +305,11 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
     let runtime = unsafe { &mut *(runtime as *mut Runtime) };
 
     ops::elementwise::operation::times_with_d4_to_d1(
-        &x, xi as usize, xj as usize, xk as usize, xl as usize,
+        &x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        xl as usize,
         &y,
         axis as usize,
         &result,
@@ -250,9 +321,16 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
 pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_timesD4ToD2(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint, xl: jint,
-    y: jlong, yi: jint, yj: jint,
-    axis1: jint, axis2: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
+    xl: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
+    axis1: jint,
+    axis2: jint,
     result: jlong,
     runtime: jlong,
 ) {
@@ -262,9 +340,16 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
     let runtime = unsafe { &mut *(runtime as *mut Runtime) };
 
     ops::elementwise::operation::times_with_d4_to_d2(
-        &x, xi as usize, xj as usize, xk as usize, xl as usize,
-        &y, yi as usize, yj as usize,
-        axis1 as usize, axis2 as usize,
+        &x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        xl as usize,
+        &y,
+        yi as usize,
+        yj as usize,
+        axis1 as usize,
+        axis2 as usize,
         &result,
         runtime,
     );
@@ -274,9 +359,18 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
 pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_timesD4ToD3(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint, xl: jint,
-    y: jlong, yi: jint, yj: jint, yk: jint,
-    axis1: jint, axis2: jint, axis3: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
+    xl: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
+    yk: jint,
+    axis1: jint,
+    axis2: jint,
+    axis3: jint,
     result: jlong,
     runtime: jlong,
 ) {
@@ -286,9 +380,18 @@ pub extern "system" fn Java_com_wsr_knist_gpu_elementwise_operation_JTimes_times
     let runtime = unsafe { &mut *(runtime as *mut Runtime) };
 
     ops::elementwise::operation::times_with_d4_to_d3(
-        &x, xi as usize, xj as usize, xk as usize, xl as usize,
-        &y, yi as usize, yj as usize, yk as usize,
-        axis1 as usize, axis2 as usize, axis3 as usize,
+        &x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        xl as usize,
+        &y,
+        yi as usize,
+        yj as usize,
+        yk as usize,
+        axis1 as usize,
+        axis2 as usize,
+        axis3 as usize,
         &result,
         runtime,
     );

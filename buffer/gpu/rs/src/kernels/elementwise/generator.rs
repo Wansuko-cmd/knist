@@ -19,18 +19,16 @@ impl Generator {
 
         let bind_group_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("Generator::new"),
-            entries: &[
-                wgpu::BindGroupLayoutEntry {
-                    binding: 0,
-                    visibility: wgpu::ShaderStages::COMPUTE,
-                    ty: wgpu::BindingType::Buffer {
-                        ty: wgpu::BufferBindingType::Storage { read_only: false },
-                        has_dynamic_offset: false,
-                        min_binding_size: None,
-                    },
-                    count: None,
+            entries: &[wgpu::BindGroupLayoutEntry {
+                binding: 0,
+                visibility: wgpu::ShaderStages::COMPUTE,
+                ty: wgpu::BindingType::Buffer {
+                    ty: wgpu::BufferBindingType::Storage { read_only: false },
+                    has_dynamic_offset: false,
+                    min_binding_size: None,
                 },
-            ],
+                count: None,
+            }],
         });
 
         let pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
@@ -66,19 +64,28 @@ struct Params {
 impl Generator {
     const WORKGROUP_SIZE: u32 = 64;
 
-    pub fn random_d1<'a>(&'a self, from: f32, until: f32, seed: u32, result: &GPUBuffer) -> ComputeTask<'a> {
+    pub fn random_d1<'a>(
+        &'a self,
+        from: f32,
+        until: f32,
+        seed: u32,
+        result: &GPUBuffer,
+    ) -> ComputeTask<'a> {
         let device = &self.device;
-        let params = Params { from: from, until: until, seed: seed, _pad: 0 };
+        let params = Params {
+            from: from,
+            until: until,
+            seed: seed,
+            _pad: 0,
+        };
 
         let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
             label: Some("random_d1"),
             layout: &self.bind_group_layout,
-            entries: &[
-                wgpu::BindGroupEntry {
-                    binding: 0,
-                    resource: result.buffer.as_entire_binding(),
-                },
-            ],
+            entries: &[wgpu::BindGroupEntry {
+                binding: 0,
+                resource: result.buffer.as_entire_binding(),
+            }],
         });
 
         let workgroups = result.workgroup_count(Generator::WORKGROUP_SIZE);

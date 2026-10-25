@@ -29,31 +29,32 @@ impl Operation {
             label: Some("Operation::new"),
             source: wgpu::ShaderSource::Wgsl(include_str!("operation_d0.wgsl").into()),
         });
-        let bind_group_layout_d0 = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
-            label: Some("Operation::new"),
-            entries: &[
-                wgpu::BindGroupLayoutEntry {
-                    binding: 0,
-                    visibility: wgpu::ShaderStages::COMPUTE,
-                    ty: wgpu::BindingType::Buffer {
-                        ty: wgpu::BufferBindingType::Storage { read_only: true },
-                        has_dynamic_offset: false,
-                        min_binding_size: None,
+        let bind_group_layout_d0 =
+            device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+                label: Some("Operation::new"),
+                entries: &[
+                    wgpu::BindGroupLayoutEntry {
+                        binding: 0,
+                        visibility: wgpu::ShaderStages::COMPUTE,
+                        ty: wgpu::BindingType::Buffer {
+                            ty: wgpu::BufferBindingType::Storage { read_only: true },
+                            has_dynamic_offset: false,
+                            min_binding_size: None,
+                        },
+                        count: None,
                     },
-                    count: None,
-                },
-                wgpu::BindGroupLayoutEntry {
-                    binding: 1,
-                    visibility: wgpu::ShaderStages::COMPUTE,
-                    ty: wgpu::BindingType::Buffer {
-                        ty: wgpu::BufferBindingType::Storage { read_only: false },
-                        has_dynamic_offset: false,
-                        min_binding_size: None,
+                    wgpu::BindGroupLayoutEntry {
+                        binding: 1,
+                        visibility: wgpu::ShaderStages::COMPUTE,
+                        ty: wgpu::BindingType::Buffer {
+                            ty: wgpu::BufferBindingType::Storage { read_only: false },
+                            has_dynamic_offset: false,
+                            min_binding_size: None,
+                        },
+                        count: None,
                     },
-                    count: None,
-                },
-            ],
-        });
+                ],
+            });
         let pipeline_layout_d0 = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
             label: Some("Operation::new"),
             bind_group_layouts: &[&bind_group_layout_d0],
@@ -64,41 +65,42 @@ impl Operation {
             label: Some("Operation::new"),
             source: wgpu::ShaderSource::Wgsl(include_str!("operation_d4.wgsl").into()),
         });
-        let bind_group_layout_d4 = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
-            label: Some("Operation::new"),
-            entries: &[
-                wgpu::BindGroupLayoutEntry {
-                    binding: 0,
-                    visibility: wgpu::ShaderStages::COMPUTE,
-                    ty: wgpu::BindingType::Buffer {
-                        ty: wgpu::BufferBindingType::Storage { read_only: true },
-                        has_dynamic_offset: false,
-                        min_binding_size: None,
+        let bind_group_layout_d4 =
+            device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+                label: Some("Operation::new"),
+                entries: &[
+                    wgpu::BindGroupLayoutEntry {
+                        binding: 0,
+                        visibility: wgpu::ShaderStages::COMPUTE,
+                        ty: wgpu::BindingType::Buffer {
+                            ty: wgpu::BufferBindingType::Storage { read_only: true },
+                            has_dynamic_offset: false,
+                            min_binding_size: None,
+                        },
+                        count: None,
                     },
-                    count: None,
-                },
-                wgpu::BindGroupLayoutEntry {
-                    binding: 1,
-                    visibility: wgpu::ShaderStages::COMPUTE,
-                    ty: wgpu::BindingType::Buffer {
-                        ty: wgpu::BufferBindingType::Storage { read_only: true },
-                        has_dynamic_offset: false,
-                        min_binding_size: None,
+                    wgpu::BindGroupLayoutEntry {
+                        binding: 1,
+                        visibility: wgpu::ShaderStages::COMPUTE,
+                        ty: wgpu::BindingType::Buffer {
+                            ty: wgpu::BufferBindingType::Storage { read_only: true },
+                            has_dynamic_offset: false,
+                            min_binding_size: None,
+                        },
+                        count: None,
                     },
-                    count: None,
-                },
-                wgpu::BindGroupLayoutEntry {
-                    binding: 2,
-                    visibility: wgpu::ShaderStages::COMPUTE,
-                    ty: wgpu::BindingType::Buffer {
-                        ty: wgpu::BufferBindingType::Storage { read_only: false },
-                        has_dynamic_offset: false,
-                        min_binding_size: None,
+                    wgpu::BindGroupLayoutEntry {
+                        binding: 2,
+                        visibility: wgpu::ShaderStages::COMPUTE,
+                        ty: wgpu::BindingType::Buffer {
+                            ty: wgpu::BufferBindingType::Storage { read_only: false },
+                            has_dynamic_offset: false,
+                            min_binding_size: None,
+                        },
+                        count: None,
                     },
-                    count: None,
-                },
-            ],
-        });
+                ],
+            });
         let pipeline_layout_d4 = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
             label: Some("Operation::new"),
             bind_group_layouts: &[&bind_group_layout_d4],
@@ -227,13 +229,7 @@ impl Operation {
         y: &GPUBuffer,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d0_to_d1(
-            "plus_d0_to_d1",
-            &self.plus_d0_to_d1,
-            x,
-            y,
-            result,
-        )
+        self.create_task_d0_to_d1("plus_d0_to_d1", &self.plus_d0_to_d1, x, y, result)
     }
 
     pub fn plus_d1_to_d0<'a>(
@@ -242,13 +238,7 @@ impl Operation {
         y: f32,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d1_to_d0(
-            "plus_d1_to_d0",
-            &self.plus_d1_to_d0,
-            x,
-            y,
-            result,
-        )
+        self.create_task_d1_to_d0("plus_d1_to_d0", &self.plus_d1_to_d0, x, y, result)
     }
 
     pub fn minus_d0_to_d1<'a>(
@@ -257,13 +247,7 @@ impl Operation {
         y: &GPUBuffer,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d0_to_d1(
-            "minus_d0_to_d1",
-            &self.minus_d0_to_d1,
-            x,
-            y,
-            result,
-        )
+        self.create_task_d0_to_d1("minus_d0_to_d1", &self.minus_d0_to_d1, x, y, result)
     }
 
     pub fn minus_d1_to_d0<'a>(
@@ -272,13 +256,7 @@ impl Operation {
         y: f32,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d1_to_d0(
-            "minus_d1_to_d0",
-            &self.minus_d1_to_d0,
-            x,
-            y,
-            result,
-        )
+        self.create_task_d1_to_d0("minus_d1_to_d0", &self.minus_d1_to_d0, x, y, result)
     }
 
     pub fn times_d0_to_d1<'a>(
@@ -287,13 +265,7 @@ impl Operation {
         y: &GPUBuffer,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d0_to_d1(
-            "times_d0_to_d1",
-            &self.times_d0_to_d1,
-            x,
-            y,
-            result,
-        )
+        self.create_task_d0_to_d1("times_d0_to_d1", &self.times_d0_to_d1, x, y, result)
     }
 
     pub fn times_d1_to_d0<'a>(
@@ -302,13 +274,7 @@ impl Operation {
         y: f32,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d1_to_d0(
-            "times_d1_to_d0",
-            &self.times_d1_to_d0,
-            x,
-            y,
-            result,
-        )
+        self.create_task_d1_to_d0("times_d1_to_d0", &self.times_d1_to_d0, x, y, result)
     }
 
     pub fn div_d0_to_d1<'a>(
@@ -317,13 +283,7 @@ impl Operation {
         y: &GPUBuffer,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d0_to_d1(
-            "div_d0_to_d1",
-            &self.div_d0_to_d1,
-            x,
-            y,
-            result,
-        )
+        self.create_task_d0_to_d1("div_d0_to_d1", &self.div_d0_to_d1, x, y, result)
     }
 
     pub fn div_d1_to_d0<'a>(
@@ -332,13 +292,7 @@ impl Operation {
         y: f32,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d1_to_d0(
-            "div_d1_to_d0",
-            &self.div_d1_to_d0,
-            x,
-            y,
-            result,
-        )
+        self.create_task_d1_to_d0("div_d1_to_d0", &self.div_d1_to_d0, x, y, result)
     }
 
     fn create_task_d0_to_d1<'a>(
@@ -351,7 +305,12 @@ impl Operation {
     ) -> ComputeTask<'a> {
         let device = &self.device;
 
-        let params = &ParamsD0 { d0: x, _pad1: 0, _pad2: 0, _pad3: 0 };
+        let params = &ParamsD0 {
+            d0: x,
+            _pad1: 0,
+            _pad2: 0,
+            _pad3: 0,
+        };
         let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
             label: Some(label),
             layout: &self.bind_group_layout_d0,
@@ -364,7 +323,7 @@ impl Operation {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Operation::WORKGROUP_SIZE_D0);
@@ -388,7 +347,12 @@ impl Operation {
     ) -> ComputeTask<'a> {
         let device = &self.device;
 
-        let params = &ParamsD0 { d0: y, _pad1: 0, _pad2: 0, _pad3: 0 };
+        let params = &ParamsD0 {
+            d0: y,
+            _pad1: 0,
+            _pad2: 0,
+            _pad3: 0,
+        };
         let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
             label: Some(label),
             layout: &self.bind_group_layout_d0,
@@ -401,7 +365,7 @@ impl Operation {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Operation::WORKGROUP_SIZE_D0);
@@ -441,7 +405,11 @@ impl Operation {
             &self.plus_d4,
             x,
             y,
-            &ParamsD4 { result_shape: result_shape, x_stride: x_stride, y_stride: y_stride },
+            &ParamsD4 {
+                result_shape: result_shape,
+                x_stride: x_stride,
+                y_stride: y_stride,
+            },
             result,
         )
     }
@@ -460,7 +428,11 @@ impl Operation {
             &self.minus_d4,
             x,
             y,
-            &ParamsD4 { result_shape: result_shape, x_stride: x_stride, y_stride: y_stride },
+            &ParamsD4 {
+                result_shape: result_shape,
+                x_stride: x_stride,
+                y_stride: y_stride,
+            },
             result,
         )
     }
@@ -479,7 +451,11 @@ impl Operation {
             &self.times_d4,
             x,
             y,
-            &ParamsD4 { result_shape: result_shape, x_stride: x_stride, y_stride: y_stride },
+            &ParamsD4 {
+                result_shape: result_shape,
+                x_stride: x_stride,
+                y_stride: y_stride,
+            },
             result,
         )
     }
@@ -498,7 +474,11 @@ impl Operation {
             &self.div_d4,
             x,
             y,
-            &ParamsD4 { result_shape: result_shape, x_stride: x_stride, y_stride: y_stride },
+            &ParamsD4 {
+                result_shape: result_shape,
+                x_stride: x_stride,
+                y_stride: y_stride,
+            },
             result,
         )
     }
@@ -530,7 +510,7 @@ impl Operation {
                     binding: 2,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Operation::WORKGROUP_SIZE);
@@ -544,4 +524,3 @@ impl Operation {
         }
     }
 }
-

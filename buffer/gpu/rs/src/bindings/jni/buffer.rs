@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use jni::{JNIEnv};
+use jni::JNIEnv;
 use jni::objects::{JClass, JFloatArray, ReleaseMode};
 use jni::sys::{jfloat, jfloatArray, jint, jlong};
 
@@ -27,7 +27,10 @@ pub extern "system" fn Java_com_wsr_knist_gpu_JBuffer_init(
     value: JFloatArray,
     runtime: jlong,
 ) -> jlong {
-    let value = unsafe { env.get_array_elements(&value, ReleaseMode::NoCopyBack).unwrap() };
+    let value = unsafe {
+        env.get_array_elements(&value, ReleaseMode::NoCopyBack)
+            .unwrap()
+    };
     let runtime = unsafe { &*(runtime as *const Runtime) };
     let buffer = ops::buffer::init(&value, runtime);
     Arc::into_raw(Arc::new(buffer)) as jlong

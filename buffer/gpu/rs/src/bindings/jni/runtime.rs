@@ -1,5 +1,5 @@
-use jni::{JNIEnv};
-use jni::objects::{JClass};
+use jni::JNIEnv;
+use jni::objects::JClass;
 use jni::sys::{jboolean, jlong};
 
 use crate::ops::runtime;

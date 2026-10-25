@@ -103,12 +103,19 @@ impl Index {
         &'a self,
         x: &GPUBuffer,
         y: &GPUBuffer,
-        i: usize, j: usize, k: usize,
+        i: usize,
+        j: usize,
+        k: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let label = "gather";
         let device = &self.device;
-        let params = Params { i: i as u32, j: j as u32, k: k as u32, b: 0 };
+        let params = Params {
+            i: i as u32,
+            j: j as u32,
+            k: k as u32,
+            b: 0,
+        };
 
         let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
             label: Some(label),
@@ -126,7 +133,7 @@ impl Index {
                     binding: 2,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Index::WORKGROUP_SIZE);
@@ -144,12 +151,20 @@ impl Index {
         &'a self,
         x: &GPUBuffer,
         y: &GPUBuffer,
-        i: usize, j: usize, k: usize, b: usize,
+        i: usize,
+        j: usize,
+        k: usize,
+        b: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let label = "scatter_add";
         let device = &self.device;
-        let params = Params { i: i as u32, j: j as u32, k: k as u32, b: b as u32 };
+        let params = Params {
+            i: i as u32,
+            j: j as u32,
+            k: k as u32,
+            b: b as u32,
+        };
 
         let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
             label: Some(label),
@@ -167,7 +182,7 @@ impl Index {
                     binding: 2,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = x.workgroup_count(Index::WORKGROUP_SIZE);

@@ -176,25 +176,30 @@ struct Params {
 
 impl Default for Params {
     fn default() -> Self {
-        Params { x_val: 0f32, y_val: 0f32, atol: 0f32, rtol: 0f32 }
+        Params {
+            x_val: 0f32,
+            y_val: 0f32,
+            atol: 0f32,
+            rtol: 0f32,
+        }
     }
 }
 
 impl Compare {
     const WORKGROUP_SIZE: u32 = 256;
 
-    pub fn gt_d1_to_d0<'a>(
-        &'a self,
-        x: &GPUBuffer,
-        y: f32,
-        result: &GPUBuffer,
-    ) -> ComputeTask<'a> {
+    pub fn gt_d1_to_d0<'a>(&'a self, x: &GPUBuffer, y: f32, result: &GPUBuffer) -> ComputeTask<'a> {
         self.create_task(
             "gt_d1_to_d0",
             &self.gt_d1_to_d0,
             // condition, yは使わない
-            x, x, x,
-            &Params { y_val: y, ..Params::default() },
+            x,
+            x,
+            x,
+            &Params {
+                y_val: y,
+                ..Params::default()
+            },
             result,
         )
     }
@@ -209,24 +214,26 @@ impl Compare {
             "gt_d1_to_d1",
             &self.gt_d1_to_d1,
             // conditionは使わない
-            x, x, y,
+            x,
+            x,
+            y,
             &Params::default(),
             result,
         )
     }
 
-    pub fn lt_d1_to_d0<'a>(
-        &'a self,
-        x: &GPUBuffer,
-        y: f32,
-        result: &GPUBuffer,
-    ) -> ComputeTask<'a> {
+    pub fn lt_d1_to_d0<'a>(&'a self, x: &GPUBuffer, y: f32, result: &GPUBuffer) -> ComputeTask<'a> {
         self.create_task(
             "lt_d1_to_d0",
             &self.lt_d1_to_d0,
             // condition, yは使わない
-            x, x, x,
-            &Params { y_val: y, ..Params::default() },
+            x,
+            x,
+            x,
+            &Params {
+                y_val: y,
+                ..Params::default()
+            },
             result,
         )
     }
@@ -241,7 +248,9 @@ impl Compare {
             "lt_d1_to_d1",
             &self.lt_d1_to_d1,
             // conditionは使わない
-            x, x, y,
+            x,
+            x,
+            y,
             &Params::default(),
             result,
         )
@@ -259,8 +268,15 @@ impl Compare {
             "eq_d1_to_d0",
             &self.eq_d1_to_d0,
             // condition, yは使わない
-            x, x, x,
-            &Params { y_val: y, atol: atol, rtol: rtol, ..Params::default() },
+            x,
+            x,
+            x,
+            &Params {
+                y_val: y,
+                atol: atol,
+                rtol: rtol,
+                ..Params::default()
+            },
             result,
         )
     }
@@ -277,8 +293,14 @@ impl Compare {
             "eq_d1_to_d1",
             &self.eq_d1_to_d1,
             // conditionは使わない
-            x, x, y,
-            &Params { atol: atol, rtol: rtol, ..Params::default() },
+            x,
+            x,
+            y,
+            &Params {
+                atol: atol,
+                rtol: rtol,
+                ..Params::default()
+            },
             result,
         )
     }
@@ -294,8 +316,14 @@ impl Compare {
             "where_d0_to_d0",
             &self.where_d0_to_d0,
             // x, yは使わない
-            condition, condition, condition,
-            &Params { x_val: x, y_val: y, ..Params::default() },
+            condition,
+            condition,
+            condition,
+            &Params {
+                x_val: x,
+                y_val: y,
+                ..Params::default()
+            },
             result,
         )
     }
@@ -311,8 +339,13 @@ impl Compare {
             "where_d0_to_d1",
             &self.where_d0_to_d1,
             // xは使わない
-            condition, y, y,
-            &Params { x_val: x, ..Params::default() },
+            condition,
+            y,
+            y,
+            &Params {
+                x_val: x,
+                ..Params::default()
+            },
             result,
         )
     }
@@ -328,8 +361,13 @@ impl Compare {
             "where_d1_to_d1",
             &self.where_d1_to_d0,
             // yは使わない
-            condition, x, x,
-            &Params { y_val: y, ..Params::default() },
+            condition,
+            x,
+            x,
+            &Params {
+                y_val: y,
+                ..Params::default()
+            },
             result,
         )
     }
@@ -344,7 +382,9 @@ impl Compare {
         self.create_task(
             "where_d1_to_d1",
             &self.where_d1_to_d1,
-            condition, x, y,
+            condition,
+            x,
+            y,
             &Params::default(),
             result,
         )
@@ -382,7 +422,7 @@ impl Compare {
                     binding: 3,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Compare::WORKGROUP_SIZE);

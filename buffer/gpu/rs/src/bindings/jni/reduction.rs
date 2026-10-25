@@ -25,7 +25,9 @@ pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_averageD1(
 pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_averageD2(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
     axis: jint,
     result: jlong,
     runtime: jlong,
@@ -41,7 +43,10 @@ pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_averageD2(
 pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_averageD3(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
     axis: jint,
     result: jlong,
     runtime: jlong,
@@ -50,7 +55,15 @@ pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_averageD3(
     let result = unsafe { &*(result as *const GPUBuffer) };
     let runtime = unsafe { &mut *(runtime as *mut Runtime) };
 
-    ops::reduction::average_d3(x, xi as usize, xj as usize, xk as usize, axis as usize, result, runtime);
+    ops::reduction::average_d3(
+        x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        axis as usize,
+        result,
+        runtime,
+    );
 }
 
 #[unsafe(no_mangle)]
@@ -72,7 +85,9 @@ pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_maxD1(
 pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_maxD2(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
     axis: jint,
     result: jlong,
     runtime: jlong,
@@ -88,7 +103,10 @@ pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_maxD2(
 pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_maxD3(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
     axis: jint,
     result: jlong,
     runtime: jlong,
@@ -97,7 +115,15 @@ pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_maxD3(
     let result = unsafe { &*(result as *const GPUBuffer) };
     let runtime = unsafe { &mut *(runtime as *mut Runtime) };
 
-    ops::reduction::max_d3(x, xi as usize, xj as usize, xk as usize, axis as usize, result, runtime);
+    ops::reduction::max_d3(
+        x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        axis as usize,
+        result,
+        runtime,
+    );
 }
 
 #[unsafe(no_mangle)]
@@ -119,7 +145,9 @@ pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_minD1(
 pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_minD2(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
     axis: jint,
     result: jlong,
     runtime: jlong,
@@ -135,7 +163,10 @@ pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_minD2(
 pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_minD3(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
     axis: jint,
     result: jlong,
     runtime: jlong,
@@ -144,7 +175,15 @@ pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_minD3(
     let result = unsafe { &*(result as *const GPUBuffer) };
     let runtime = unsafe { &mut *(runtime as *mut Runtime) };
 
-    ops::reduction::min_d3(x, xi as usize, xj as usize, xk as usize, axis as usize, result, runtime);
+    ops::reduction::min_d3(
+        x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        axis as usize,
+        result,
+        runtime,
+    );
 }
 
 #[unsafe(no_mangle)]
@@ -166,7 +205,9 @@ pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_sumD1(
 pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_sumD2(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
     axis: jint,
     result: jlong,
     runtime: jlong,
@@ -182,7 +223,10 @@ pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_sumD2(
 pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_sumD3(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
     axis: jint,
     result: jlong,
     runtime: jlong,
@@ -191,5 +235,13 @@ pub extern "system" fn Java_com_wsr_knist_gpu_reduction_JReduction_sumD3(
     let result = unsafe { &*(result as *const GPUBuffer) };
     let runtime = unsafe { &mut *(runtime as *mut Runtime) };
 
-    ops::reduction::sum_d3(x, xi as usize, xj as usize, xk as usize, axis as usize, result, runtime);
+    ops::reduction::sum_d3(
+        x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        axis as usize,
+        result,
+        runtime,
+    );
 }

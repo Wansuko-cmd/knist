@@ -1,7 +1,7 @@
 use std::sync::mpsc;
 
-use wgpu::{Device, Queue, util::DeviceExt};
 use bytemuck;
+use wgpu::{Device, Queue, util::DeviceExt};
 
 pub struct GPUBuffer {
     pub buffer: wgpu::Buffer,
@@ -16,7 +16,9 @@ impl GPUBuffer {
         let buffer = device.create_buffer(&wgpu::BufferDescriptor {
             label: Some("GPUBuffer::create"),
             size: byte_size,
-            usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_SRC | wgpu::BufferUsages::COPY_DST,
+            usage: wgpu::BufferUsages::STORAGE
+                | wgpu::BufferUsages::COPY_SRC
+                | wgpu::BufferUsages::COPY_DST,
             mapped_at_creation: false,
         });
         GPUBuffer { buffer }
@@ -37,7 +39,9 @@ impl GPUBuffer {
         let buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("GPUBuffer::init"),
             contents: bytemuck::cast_slice(&value),
-            usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_SRC | wgpu::BufferUsages::COPY_DST,
+            usage: wgpu::BufferUsages::STORAGE
+                | wgpu::BufferUsages::COPY_SRC
+                | wgpu::BufferUsages::COPY_DST,
         });
         GPUBuffer { buffer }
     }
@@ -51,9 +55,8 @@ impl GPUBuffer {
         receiver.recv().unwrap().unwrap();
 
         let data = map_buffer_slice.get_mapped_range();
-        dest.copy_from_slice( bytemuck::cast_slice(&data));
+        dest.copy_from_slice(bytemuck::cast_slice(&data));
     }
-
 
     pub fn write(self: &Self, index: usize, value: f32, queue: &Queue) {
         let offset = (index * GPUBuffer::SIZE_BYTES) as u64;

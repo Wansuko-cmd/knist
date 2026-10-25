@@ -7,7 +7,11 @@ use std::sync::{Arc, Mutex};
 use crate::kernels::task::ClearTask;
 use crate::kernels::{Kernels, task::Task};
 use crate::resource::buffer::GPUBuffer;
-use crate::runtime::{dispatcher::Dispatcher, pool::BufferPool, profiler::{CpuProfiler, GpuProfiler}};
+use crate::runtime::{
+    dispatcher::Dispatcher,
+    pool::BufferPool,
+    profiler::{CpuProfiler, GpuProfiler},
+};
 
 pub struct Runtime {
     pub device: Arc<wgpu::Device>,
@@ -41,7 +45,7 @@ impl Runtime {
                     })
                     .await
                     .unwrap()
-            },
+            }
         };
 
         let limits = adapter.limits();
@@ -104,7 +108,7 @@ impl Runtime {
     }
 
     pub fn wait(&self) {
-         let _ = self.device.poll(wgpu::PollType::wait_indefinitely());
+        let _ = self.device.poll(wgpu::PollType::wait_indefinitely());
     }
 }
 
@@ -114,7 +118,7 @@ impl Runtime {
             Some(buffer) => {
                 self.dispatch(ClearTask { buffer: &buffer });
                 buffer
-            },
+            }
             None => GPUBuffer::create(size, &self.device),
         }
     }

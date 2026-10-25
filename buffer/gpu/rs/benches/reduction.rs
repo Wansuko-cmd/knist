@@ -27,89 +27,153 @@ fn bench_reduction(c: &mut Criterion) {
     });
 
     // d2_axis0: [xi, xj] → [xj]
-    bench_d2(&mut group, "average_d2_axis0", &mut runtime, |x, xi, xj, res, rt| {
-        let task = rt.kernels.reduction.average_d2_axis0(x, xi, xj, res);
-        rt.dispatch(task);
-    });
-    bench_d2(&mut group, "max_d2_axis0", &mut runtime, |x, xi, xj, res, rt| {
-        let task = rt.kernels.reduction.max_d2_axis0(x, xi, xj, res);
-        rt.dispatch(task);
-    });
-    bench_d2(&mut group, "min_d2_axis0", &mut runtime, |x, xi, xj, res, rt| {
-        let task = rt.kernels.reduction.min_d2_axis0(x, xi, xj, res);
-        rt.dispatch(task);
-    });
-    bench_d2(&mut group, "sum_d2_axis0", &mut runtime, |x, xi, xj, res, rt| {
-        let task = rt.kernels.reduction.sum_d2_axis0(x, xi, xj, res);
-        rt.dispatch(task);
-    });
+    bench_d2(
+        &mut group,
+        "average_d2_axis0",
+        &mut runtime,
+        |x, xi, xj, res, rt| {
+            let task = rt.kernels.reduction.average_d2_axis0(x, xi, xj, res);
+            rt.dispatch(task);
+        },
+    );
+    bench_d2(
+        &mut group,
+        "max_d2_axis0",
+        &mut runtime,
+        |x, xi, xj, res, rt| {
+            let task = rt.kernels.reduction.max_d2_axis0(x, xi, xj, res);
+            rt.dispatch(task);
+        },
+    );
+    bench_d2(
+        &mut group,
+        "min_d2_axis0",
+        &mut runtime,
+        |x, xi, xj, res, rt| {
+            let task = rt.kernels.reduction.min_d2_axis0(x, xi, xj, res);
+            rt.dispatch(task);
+        },
+    );
+    bench_d2(
+        &mut group,
+        "sum_d2_axis0",
+        &mut runtime,
+        |x, xi, xj, res, rt| {
+            let task = rt.kernels.reduction.sum_d2_axis0(x, xi, xj, res);
+            rt.dispatch(task);
+        },
+    );
 
     // d2_axis1: [xi, xj] → [xi]
-    bench_d2_axis1(&mut group, "average_d2_axis1", &mut runtime, |x, xi, xj, res, rt| {
-        let task = rt.kernels.reduction.average_d2_axis1(x, xi, xj, res);
-        rt.dispatch(task);
-    });
-    bench_d2_axis1(&mut group, "max_d2_axis1", &mut runtime, |x, xi, xj, res, rt| {
-        let task = rt.kernels.reduction.max_d2_axis1(x, xi, xj, res);
-        rt.dispatch(task);
-    });
-    bench_d2_axis1(&mut group, "min_d2_axis1", &mut runtime, |x, xi, xj, res, rt| {
-        let task = rt.kernels.reduction.min_d2_axis1(x, xi, xj, res);
-        rt.dispatch(task);
-    });
-    bench_d2_axis1(&mut group, "sum_d2_axis1", &mut runtime, |x, xi, xj, res, rt| {
-        let task = rt.kernels.reduction.sum_d2_axis1(x, xi, xj, res);
-        rt.dispatch(task);
-    });
+    bench_d2_axis1(
+        &mut group,
+        "average_d2_axis1",
+        &mut runtime,
+        |x, xi, xj, res, rt| {
+            let task = rt.kernels.reduction.average_d2_axis1(x, xi, xj, res);
+            rt.dispatch(task);
+        },
+    );
+    bench_d2_axis1(
+        &mut group,
+        "max_d2_axis1",
+        &mut runtime,
+        |x, xi, xj, res, rt| {
+            let task = rt.kernels.reduction.max_d2_axis1(x, xi, xj, res);
+            rt.dispatch(task);
+        },
+    );
+    bench_d2_axis1(
+        &mut group,
+        "min_d2_axis1",
+        &mut runtime,
+        |x, xi, xj, res, rt| {
+            let task = rt.kernels.reduction.min_d2_axis1(x, xi, xj, res);
+            rt.dispatch(task);
+        },
+    );
+    bench_d2_axis1(
+        &mut group,
+        "sum_d2_axis1",
+        &mut runtime,
+        |x, xi, xj, res, rt| {
+            let task = rt.kernels.reduction.sum_d2_axis1(x, xi, xj, res);
+            rt.dispatch(task);
+        },
+    );
 
     // d3: [xi, xj, xk] → [xi, xk]
-    bench_d3(&mut group, "average_d3", &mut runtime, |x, xi, xj, xk, res, rt| {
-        let task = rt.kernels.reduction.average_d3(x, xi, xj, xk, res);
-        rt.dispatch(task);
-    });
-    bench_d3(&mut group, "max_d3", &mut runtime, |x, xi, xj, xk, res, rt| {
-        let task = rt.kernels.reduction.max_d3(x, xi, xj, xk, res);
-        rt.dispatch(task);
-    });
-    bench_d3(&mut group, "min_d3", &mut runtime, |x, xi, xj, xk, res, rt| {
-        let task = rt.kernels.reduction.min_d3(x, xi, xj, xk, res);
-        rt.dispatch(task);
-    });
-    bench_d3(&mut group, "sum_d3", &mut runtime, |x, xi, xj, xk, res, rt| {
-        let task = rt.kernels.reduction.sum_d3(x, xi, xj, xk, res);
-        rt.dispatch(task);
-    });
+    bench_d3(
+        &mut group,
+        "average_d3",
+        &mut runtime,
+        |x, xi, xj, xk, res, rt| {
+            let task = rt.kernels.reduction.average_d3(x, xi, xj, xk, res);
+            rt.dispatch(task);
+        },
+    );
+    bench_d3(
+        &mut group,
+        "max_d3",
+        &mut runtime,
+        |x, xi, xj, xk, res, rt| {
+            let task = rt.kernels.reduction.max_d3(x, xi, xj, xk, res);
+            rt.dispatch(task);
+        },
+    );
+    bench_d3(
+        &mut group,
+        "min_d3",
+        &mut runtime,
+        |x, xi, xj, xk, res, rt| {
+            let task = rt.kernels.reduction.min_d3(x, xi, xj, xk, res);
+            rt.dispatch(task);
+        },
+    );
+    bench_d3(
+        &mut group,
+        "sum_d3",
+        &mut runtime,
+        |x, xi, xj, xk, res, rt| {
+            let task = rt.kernels.reduction.sum_d3(x, xi, xj, xk, res);
+            rt.dispatch(task);
+        },
+    );
 
     group.finish();
 }
 
-fn bench_d1<M: Measurement, F>(group: &mut BenchmarkGroup<M>, func_name: &str, runtime: &mut Runtime, op: F)
-where
+fn bench_d1<M: Measurement, F>(
+    group: &mut BenchmarkGroup<M>,
+    func_name: &str,
+    runtime: &mut Runtime,
+    op: F,
+) where
     F: Fn(&GPUBuffer, &GPUBuffer, &mut Runtime),
 {
     for size in [1_000, 1_000_000] {
         let x = ops::buffer::init(&vec![1.0; size], runtime);
         let result = ops::buffer::create(1, runtime);
 
-        group.bench_with_input(
-            BenchmarkId::new(func_name, size),
-            &size,
-            |b, _| {
-                b.iter(|| {
-                    for _ in 0..100 {
-                        op(&x, &result, runtime);
-                    }
-                    runtime.submit();
-                    runtime.wait();
-                });
-            },
-        );
+        group.bench_with_input(BenchmarkId::new(func_name, size), &size, |b, _| {
+            b.iter(|| {
+                for _ in 0..100 {
+                    op(&x, &result, runtime);
+                }
+                runtime.submit();
+                runtime.wait();
+            });
+        });
     }
 }
 
 // [xi, xj] → [xj]
-fn bench_d2<M: Measurement, F>(group: &mut BenchmarkGroup<M>, func_name: &str, runtime: &mut Runtime, op: F)
-where
+fn bench_d2<M: Measurement, F>(
+    group: &mut BenchmarkGroup<M>,
+    func_name: &str,
+    runtime: &mut Runtime,
+    op: F,
+) where
     F: Fn(&GPUBuffer, usize, usize, &GPUBuffer, &mut Runtime),
 {
     for (xi, xj) in [(128, 128), (1024, 1024)] {
@@ -133,8 +197,12 @@ where
 }
 
 // [xi, xj] → [xi]
-fn bench_d2_axis1<M: Measurement, F>(group: &mut BenchmarkGroup<M>, func_name: &str, runtime: &mut Runtime, op: F)
-where
+fn bench_d2_axis1<M: Measurement, F>(
+    group: &mut BenchmarkGroup<M>,
+    func_name: &str,
+    runtime: &mut Runtime,
+    op: F,
+) where
     F: Fn(&GPUBuffer, usize, usize, &GPUBuffer, &mut Runtime),
 {
     for (xi, xj) in [(128, 128), (1024, 1024)] {
@@ -158,8 +226,12 @@ where
 }
 
 // [xi, xj, xk] → [xi, xk]
-fn bench_d3<M: Measurement, F>(group: &mut BenchmarkGroup<M>, func_name: &str, runtime: &mut Runtime, op: F)
-where
+fn bench_d3<M: Measurement, F>(
+    group: &mut BenchmarkGroup<M>,
+    func_name: &str,
+    runtime: &mut Runtime,
+    op: F,
+) where
     F: Fn(&GPUBuffer, usize, usize, usize, &GPUBuffer, &mut Runtime),
 {
     for (xi, xj, xk) in [(32, 32, 32), (128, 128, 128)] {
