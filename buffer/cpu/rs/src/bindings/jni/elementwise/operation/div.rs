@@ -50,7 +50,9 @@ pub extern "system" fn Java_com_wsr_knist_cpu_elementwise_operation_div_JDiv_div
     _env: JNIEnv,
     _class: JClass,
     x: jlong,
-    y: jlong, yi: jint, yj: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
     axis: jint,
     result: jlong,
 ) {
@@ -65,21 +67,34 @@ pub extern "system" fn Java_com_wsr_knist_cpu_elementwise_operation_div_JDiv_div
     _env: JNIEnv,
     _class: JClass,
     x: jlong,
-    y: jlong, yi: jint, yj: jint, yk: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
+    yk: jint,
     axis: jint,
     result: jlong,
 ) {
     let x = unsafe { &*(x as *const CPUBuffer) };
     let y = unsafe { &*(y as *const CPUBuffer) };
     let result = unsafe { &mut *(result as *mut CPUBuffer) };
-    div::div_with_d1_to_d3(x, y, yi as usize, yj as usize, yk as usize, axis as usize, result);
+    div::div_with_d1_to_d3(
+        x,
+        y,
+        yi as usize,
+        yj as usize,
+        yk as usize,
+        axis as usize,
+        result,
+    );
 }
 
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_wsr_knist_cpu_elementwise_operation_div_JDiv_divD2ToD1(
     _env: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
     y: jlong,
     axis: jint,
     result: jlong,
@@ -94,22 +109,42 @@ pub extern "system" fn Java_com_wsr_knist_cpu_elementwise_operation_div_JDiv_div
 pub extern "system" fn Java_com_wsr_knist_cpu_elementwise_operation_div_JDiv_divD2ToD3(
     _env: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint,
-    y: jlong, yi: jint, yj: jint, yk: jint,
-    axis1: jint, axis2: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
+    yk: jint,
+    axis1: jint,
+    axis2: jint,
     result: jlong,
 ) {
     let x = unsafe { &*(x as *const CPUBuffer) };
     let y = unsafe { &*(y as *const CPUBuffer) };
     let result = unsafe { &mut *(result as *mut CPUBuffer) };
-    div::div_with_d2_to_d3(x, xi as usize, xj as usize, y, yi as usize, yj as usize, yk as usize, axis1 as usize, axis2 as usize, result);
+    div::div_with_d2_to_d3(
+        x,
+        xi as usize,
+        xj as usize,
+        y,
+        yi as usize,
+        yj as usize,
+        yk as usize,
+        axis1 as usize,
+        axis2 as usize,
+        result,
+    );
 }
 
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_wsr_knist_cpu_elementwise_operation_div_JDiv_divD3ToD1(
     _env: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
     y: jlong,
     axis: jint,
     result: jlong,
@@ -117,44 +152,96 @@ pub extern "system" fn Java_com_wsr_knist_cpu_elementwise_operation_div_JDiv_div
     let x = unsafe { &*(x as *const CPUBuffer) };
     let y = unsafe { &*(y as *const CPUBuffer) };
     let result = unsafe { &mut *(result as *mut CPUBuffer) };
-    div::div_with_d3_to_d1(x, xi as usize, xj as usize, xk as usize, y, axis as usize, result);
+    div::div_with_d3_to_d1(
+        x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        y,
+        axis as usize,
+        result,
+    );
 }
 
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_wsr_knist_cpu_elementwise_operation_div_JDiv_divD3ToD2(
     _env: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint,
-    y: jlong, yi: jint, yj: jint,
-    axis1: jint, axis2: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
+    axis1: jint,
+    axis2: jint,
     result: jlong,
 ) {
     let x = unsafe { &*(x as *const CPUBuffer) };
     let y = unsafe { &*(y as *const CPUBuffer) };
     let result = unsafe { &mut *(result as *mut CPUBuffer) };
-    div::div_with_d3_to_d2(x, xi as usize, xj as usize, xk as usize, y, yi as usize, yj as usize, axis1 as usize, axis2 as usize, result);
+    div::div_with_d3_to_d2(
+        x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        y,
+        yi as usize,
+        yj as usize,
+        axis1 as usize,
+        axis2 as usize,
+        result,
+    );
 }
 
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_wsr_knist_cpu_elementwise_operation_div_JDiv_divD3ToD4(
     _env: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint,
-    y: jlong, yi: jint, yj: jint, yk: jint, yl: jint,
-    axis1: jint, axis2: jint, axis3: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
+    yk: jint,
+    yl: jint,
+    axis1: jint,
+    axis2: jint,
+    axis3: jint,
     result: jlong,
 ) {
     let x = unsafe { &*(x as *const CPUBuffer) };
     let y = unsafe { &*(y as *const CPUBuffer) };
     let result = unsafe { &mut *(result as *mut CPUBuffer) };
-    div::div_with_d3_to_d4(x, xi as usize, xj as usize, xk as usize, y, yi as usize, yj as usize, yk as usize, yl as usize, axis1 as usize, axis2 as usize, axis3 as usize, result);
+    div::div_with_d3_to_d4(
+        x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        y,
+        yi as usize,
+        yj as usize,
+        yk as usize,
+        yl as usize,
+        axis1 as usize,
+        axis2 as usize,
+        axis3 as usize,
+        result,
+    );
 }
 
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_wsr_knist_cpu_elementwise_operation_div_JDiv_divD4ToD1(
     _env: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint, xl: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
+    xl: jint,
     y: jlong,
     axis: jint,
     result: jlong,
@@ -162,35 +249,86 @@ pub extern "system" fn Java_com_wsr_knist_cpu_elementwise_operation_div_JDiv_div
     let x = unsafe { &*(x as *const CPUBuffer) };
     let y = unsafe { &*(y as *const CPUBuffer) };
     let result = unsafe { &mut *(result as *mut CPUBuffer) };
-    div::div_with_d4_to_d1(x, xi as usize, xj as usize, xk as usize, xl as usize, y, axis as usize, result);
+    div::div_with_d4_to_d1(
+        x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        xl as usize,
+        y,
+        axis as usize,
+        result,
+    );
 }
 
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_wsr_knist_cpu_elementwise_operation_div_JDiv_divD4ToD2(
     _env: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint, xl: jint,
-    y: jlong, yi: jint, yj: jint,
-    axis1: jint, axis2: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
+    xl: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
+    axis1: jint,
+    axis2: jint,
     result: jlong,
 ) {
     let x = unsafe { &*(x as *const CPUBuffer) };
     let y = unsafe { &*(y as *const CPUBuffer) };
     let result = unsafe { &mut *(result as *mut CPUBuffer) };
-    div::div_with_d4_to_d2(x, xi as usize, xj as usize, xk as usize, xl as usize, y, yi as usize, yj as usize, axis1 as usize, axis2 as usize, result);
+    div::div_with_d4_to_d2(
+        x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        xl as usize,
+        y,
+        yi as usize,
+        yj as usize,
+        axis1 as usize,
+        axis2 as usize,
+        result,
+    );
 }
 
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_wsr_knist_cpu_elementwise_operation_div_JDiv_divD4ToD3(
     _env: JNIEnv,
     _class: JClass,
-    x: jlong, xi: jint, xj: jint, xk: jint, xl: jint,
-    y: jlong, yi: jint, yj: jint, yk: jint,
-    axis1: jint, axis2: jint, axis3: jint,
+    x: jlong,
+    xi: jint,
+    xj: jint,
+    xk: jint,
+    xl: jint,
+    y: jlong,
+    yi: jint,
+    yj: jint,
+    yk: jint,
+    axis1: jint,
+    axis2: jint,
+    axis3: jint,
     result: jlong,
 ) {
     let x = unsafe { &*(x as *const CPUBuffer) };
     let y = unsafe { &*(y as *const CPUBuffer) };
     let result = unsafe { &mut *(result as *mut CPUBuffer) };
-    div::div_with_d4_to_d3(x, xi as usize, xj as usize, xk as usize, xl as usize, y, yi as usize, yj as usize, yk as usize, axis1 as usize, axis2 as usize, axis3 as usize, result);
+    div::div_with_d4_to_d3(
+        x,
+        xi as usize,
+        xj as usize,
+        xk as usize,
+        xl as usize,
+        y,
+        yi as usize,
+        yj as usize,
+        yk as usize,
+        axis1 as usize,
+        axis2 as usize,
+        axis3 as usize,
+        result,
+    );
 }

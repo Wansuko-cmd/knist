@@ -26,7 +26,11 @@ impl Task for ComputeTask<'_> {
             compute_pass.set_immediates(0, value);
         }
 
-        compute_pass.dispatch_workgroups(self.workgroups[0], self.workgroups[1], self.workgroups[2]);
+        compute_pass.dispatch_workgroups(
+            self.workgroups[0],
+            self.workgroups[1],
+            self.workgroups[2],
+        );
     }
 }
 

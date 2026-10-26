@@ -1,4 +1,7 @@
-use rayon::{iter::{IndexedParallelIterator, ParallelIterator}, slice::ParallelSliceMut};
+use rayon::{
+    iter::{IndexedParallelIterator, ParallelIterator},
+    slice::ParallelSliceMut,
+};
 
 use crate::resource::buffer::CPUBuffer;
 
@@ -39,13 +42,24 @@ pub fn mat_mul_d1_to_d2(
 
     unsafe {
         gemm::gemm(
-            m, n, k,
-            result.as_mut_ptr(), csc, rsc,
+            m,
+            n,
+            k,
+            result.as_mut_ptr(),
+            csc,
+            rsc,
             false,
-            x.as_ptr(), csa, rsa,
-            y.as_ptr(), csb, rsb,
-            0f32, 1f32,
-            false, false, false,
+            x.as_ptr(),
+            csa,
+            rsa,
+            y.as_ptr(),
+            csb,
+            rsb,
+            0f32,
+            1f32,
+            false,
+            false,
+            false,
             gemm::Parallelism::None,
         );
     }
@@ -63,7 +77,7 @@ pub fn mat_mul_d2_to_d1(
 
     let (rsa, csa) = match trans_x {
         true => (1, m as isize),
-        false => (k as isize, 1)
+        false => (k as isize, 1),
     };
 
     let rsb = 1;
@@ -74,13 +88,24 @@ pub fn mat_mul_d2_to_d1(
 
     unsafe {
         gemm::gemm(
-            m, n, k,
-            result.as_mut_ptr(), csc, rsc,
+            m,
+            n,
+            k,
+            result.as_mut_ptr(),
+            csc,
+            rsc,
             false,
-            x.as_ptr(), csa, rsa,
-            y.as_ptr(), csb, rsb,
-            0f32, 1f32,
-            false, false, false,
+            x.as_ptr(),
+            csa,
+            rsa,
+            y.as_ptr(),
+            csb,
+            rsb,
+            0f32,
+            1f32,
+            false,
+            false,
+            false,
             gemm::Parallelism::None,
         );
     }
@@ -103,11 +128,11 @@ pub fn mat_mul_d2_to_d2(
 
     let (rsa, csa) = match trans_x {
         true => (1, m as isize),
-        false => (k as isize, 1)
+        false => (k as isize, 1),
     };
     let (rsb, csb) = match trans_y {
         true => (1, k as isize),
-        false => (n as isize, 1)
+        false => (n as isize, 1),
     };
     let rsc = n as isize;
     let csc = 1;
@@ -119,13 +144,24 @@ pub fn mat_mul_d2_to_d2(
             let b_ptr = &y[i * stride_b..];
             unsafe {
                 gemm::gemm(
-                    m, n, k,
-                    c_ptr.as_mut_ptr(), csc, rsc,
+                    m,
+                    n,
+                    k,
+                    c_ptr.as_mut_ptr(),
+                    csc,
+                    rsc,
                     false,
-                    a_ptr.as_ptr(), csa, rsa,
-                    b_ptr.as_ptr(), csb, rsb,
-                    0f32, 1f32,
-                    false, false, false,
+                    a_ptr.as_ptr(),
+                    csa,
+                    rsa,
+                    b_ptr.as_ptr(),
+                    csb,
+                    rsb,
+                    0f32,
+                    1f32,
+                    false,
+                    false,
+                    false,
                     gemm::Parallelism::None,
                 );
             }
@@ -133,24 +169,44 @@ pub fn mat_mul_d2_to_d2(
     } else {
         let is_large_m = m > MAT_MUL_D2_TO_D2_B1_M_THRESHOLD;
         // mを分割してスレッドに割り当てる
-        let threads = if parallel { rayon::current_num_threads().max(1) } else { 1 };
+        let threads = if parallel {
+            rayon::current_num_threads().max(1)
+        } else {
+            1
+        };
         let m_per_threads = m.div_ceil(threads).max(1);
-        chunked_for_each(result, m_per_threads * n, parallel && is_large_m, |i, c_ptr| {
-            let m_offset = i * m_per_threads;
-            let a_ptr = &x[(m_offset as isize * rsa) as usize..];
-            unsafe {
-                gemm::gemm(
-                    c_ptr.len() / n, n, k,
-                    c_ptr.as_mut_ptr(), csc, rsc,
-                    false,
-                    a_ptr.as_ptr(), csa, rsa,
-                    y.as_ptr(), csb, rsb,
-                    0f32, 1f32,
-                    false, false, false,
-                    gemm::Parallelism::None,
-                );
-            }
-        });
+        chunked_for_each(
+            result,
+            m_per_threads * n,
+            parallel && is_large_m,
+            |i, c_ptr| {
+                let m_offset = i * m_per_threads;
+                let a_ptr = &x[(m_offset as isize * rsa) as usize..];
+                unsafe {
+                    gemm::gemm(
+                        c_ptr.len() / n,
+                        n,
+                        k,
+                        c_ptr.as_mut_ptr(),
+                        csc,
+                        rsc,
+                        false,
+                        a_ptr.as_ptr(),
+                        csa,
+                        rsa,
+                        y.as_ptr(),
+                        csb,
+                        rsb,
+                        0f32,
+                        1f32,
+                        false,
+                        false,
+                        false,
+                        gemm::Parallelism::None,
+                    );
+                }
+            },
+        );
     }
 }
 
@@ -159,8 +215,14 @@ where
     F: Fn(usize, &mut [f32]) + Sync,
 {
     if parallel {
-        result.par_chunks_mut(chunk_size).enumerate().for_each(|(i, c)| f(i, c));
+        result
+            .par_chunks_mut(chunk_size)
+            .enumerate()
+            .for_each(|(i, c)| f(i, c));
     } else {
-        result.chunks_mut(chunk_size).enumerate().for_each(|(i, c)| f(i, c));
+        result
+            .chunks_mut(chunk_size)
+            .enumerate()
+            .for_each(|(i, c)| f(i, c));
     }
 }

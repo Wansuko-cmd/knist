@@ -13,7 +13,10 @@ pub struct CpuProfiler {
 
 impl CpuProfiler {
     pub fn new(enabled: bool) -> Self {
-        CpuProfiler { enabled, acc: AtomicU64::new(0) }
+        CpuProfiler {
+            enabled,
+            acc: AtomicU64::new(0),
+        }
     }
 
     #[must_use = "bind to a variable (e.g. `let _t`), or the timer stops immediately"]
@@ -114,9 +117,15 @@ impl GpuProfiler {
     }
 
     pub fn take(&self, device: &wgpu::Device, queue: &wgpu::Queue) -> GpuProfileResult {
-        let count = self.query_set_index.load(Ordering::Relaxed).min(Self::TIMESTAMP_CAPACITY);
+        let count = self
+            .query_set_index
+            .load(Ordering::Relaxed)
+            .min(Self::TIMESTAMP_CAPACITY);
         if !self.enabled || count == 0 {
-            return GpuProfileResult { gpu_busy_ns: 0, gpu_span_ns: 0 };
+            return GpuProfileResult {
+                gpu_busy_ns: 0,
+                gpu_span_ns: 0,
+            };
         }
 
         let query_set = self.query_set.as_ref().unwrap();
@@ -171,7 +180,10 @@ impl GpuProfiler {
         staging_buffer.unmap();
         self.reset();
 
-        GpuProfileResult { gpu_busy_ns: gpu_busy_ns, gpu_span_ns: gpu_span_ns }
+        GpuProfileResult {
+            gpu_busy_ns: gpu_busy_ns,
+            gpu_span_ns: gpu_span_ns,
+        }
     }
 
     fn reset(&self) {

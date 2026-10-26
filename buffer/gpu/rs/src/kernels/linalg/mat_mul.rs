@@ -115,81 +115,73 @@ impl MatMul {
         &'a self,
         x: &GPUBuffer,
         y: &GPUBuffer,
-        m: usize, n: usize, k: usize, b: usize,
+        m: usize,
+        n: usize,
+        k: usize,
+        b: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task(
-            "mat_mul_nn",
-            &self.mat_mul_nn,
-            x,
-            y,
-            m, n, k, b,
-            result,
-        )
+        self.create_task("mat_mul_nn", &self.mat_mul_nn, x, y, m, n, k, b, result)
     }
 
     pub fn mat_mul_nt<'a>(
         &'a self,
         x: &GPUBuffer,
         y: &GPUBuffer,
-        m: usize, n: usize, k: usize, b: usize,
+        m: usize,
+        n: usize,
+        k: usize,
+        b: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task(
-            "mat_mul_nt",
-            &self.mat_mul_nt,
-            x,
-            y,
-            m, n, k, b,
-            result,
-        )
+        self.create_task("mat_mul_nt", &self.mat_mul_nt, x, y, m, n, k, b, result)
     }
 
     pub fn mat_mul_tn<'a>(
         &'a self,
         x: &GPUBuffer,
         y: &GPUBuffer,
-        m: usize, n: usize, k: usize, b: usize,
+        m: usize,
+        n: usize,
+        k: usize,
+        b: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task(
-            "mat_mul_tn",
-            &self.mat_mul_tn,
-            x,
-            y,
-            m, n, k, b,
-            result,
-        )
+        self.create_task("mat_mul_tn", &self.mat_mul_tn, x, y, m, n, k, b, result)
     }
 
     pub fn mat_mul_tt<'a>(
         &'a self,
         x: &GPUBuffer,
         y: &GPUBuffer,
-        m: usize, n: usize, k: usize, b: usize,
+        m: usize,
+        n: usize,
+        k: usize,
+        b: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task(
-            "mat_mul_tt",
-            &self.mat_mul_tt,
-            x,
-            y,
-            m, n, k, b,
-            result,
-        )
+        self.create_task("mat_mul_tt", &self.mat_mul_tt, x, y, m, n, k, b, result)
     }
-    
+
     fn create_task<'a>(
         &'a self,
         label: &'static str,
         pipeline: &'a wgpu::ComputePipeline,
         x: &GPUBuffer,
         y: &GPUBuffer,
-        m: usize, n: usize, k: usize, b: usize,
+        m: usize,
+        n: usize,
+        k: usize,
+        b: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let device = &self.device;
-        let params = Params { m: m as u32, n: n as u32, k: k as u32, b: b as u32 };
+        let params = Params {
+            m: m as u32,
+            n: n as u32,
+            k: k as u32,
+            b: b as u32,
+        };
 
         let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
             label: Some(label),
@@ -207,7 +199,7 @@ impl MatMul {
                     binding: 2,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = [((n + 63) / 64) as u32, ((m + 63) / 64) as u32, b as u32];

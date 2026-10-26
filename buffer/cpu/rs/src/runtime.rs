@@ -11,7 +11,9 @@ impl Runtime {
     pub async fn new(pool_size: u64) -> Self {
         let buffer_pool = BufferPool::new(pool_size);
 
-        Runtime { buffer_pool: buffer_pool }
+        Runtime {
+            buffer_pool: buffer_pool,
+        }
     }
 }
 
@@ -21,7 +23,7 @@ impl Runtime {
             Some(mut buffer) => {
                 buffer.fill(0f32);
                 buffer
-            },
+            }
             None => CPUBuffer::create(size),
         }
     }

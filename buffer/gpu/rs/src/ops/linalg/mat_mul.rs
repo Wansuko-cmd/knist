@@ -1,9 +1,14 @@
 use crate::{resource::buffer::GPUBuffer, runtime::Runtime};
 
 pub fn mat_mul(
-    x: &GPUBuffer, trans_x: bool,
-    y: &GPUBuffer, trans_y: bool,
-    m: usize, n: usize, k: usize, b: usize,
+    x: &GPUBuffer,
+    trans_x: bool,
+    y: &GPUBuffer,
+    trans_y: bool,
+    m: usize,
+    n: usize,
+    k: usize,
+    b: usize,
     result: &GPUBuffer,
     runtime: &mut Runtime,
 ) {

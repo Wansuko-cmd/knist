@@ -1,8 +1,8 @@
 use std::hint::black_box;
 
-use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
 use cpu::ops;
 use cpu::ops::elementwise::math;
+use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
 
 fn bench_math(c: &mut Criterion) {
     let runtime = ops::runtime::allocate(0);

@@ -2,8 +2,8 @@ use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
 use crate::ops::elementwise::generator::random_d1;
 use crate::ops::shape::{transpose_d2, transpose_d3};
-use crate::resource::buffer::CPUBuffer;
 use crate::ops::utils::FastForEachExt;
+use crate::resource::buffer::CPUBuffer;
 
 const SUM_D1_PAR_THRESHOLD: usize = 2_000_000;
 const REDUCE_D2_AXIS1_PAR_THRESHOLD: usize = 2_000_000;
@@ -12,12 +12,7 @@ pub fn average_d1(x: &[f32]) -> f32 {
     return sum_d1(x) / x.len() as f32;
 }
 
-pub fn average_d2(
-    x: &CPUBuffer,
-    xi: usize, xj: usize,
-    axis: usize,
-    result: &mut CPUBuffer,
-) {
+pub fn average_d2(x: &CPUBuffer, xi: usize, xj: usize, axis: usize, result: &mut CPUBuffer) {
     sum_d2(x, xi, xj, axis, result);
 
     let n = match axis {
@@ -34,7 +29,9 @@ pub fn average_d2(
 
 pub fn average_d3(
     x: &CPUBuffer,
-    xi: usize, xj: usize, xk: usize,
+    xi: usize,
+    xj: usize,
+    xk: usize,
     axis: usize,
     result: &mut CPUBuffer,
 ) {
@@ -57,22 +54,12 @@ pub fn max_d1(x: &[f32]) -> f32 {
     return x.iter().fold(f32::MIN, |acc, i| acc.max(*i));
 }
 
-pub fn max_d2(
-    x: &CPUBuffer,
-    xi: usize, xj: usize,
-    axis: usize,
-    result: &mut CPUBuffer,
-) {
+pub fn max_d2(x: &CPUBuffer, xi: usize, xj: usize, axis: usize, result: &mut CPUBuffer) {
     result.fill(f32::MIN);
     reduce_d2(x, xi, xj, axis, result, |acc, i| acc.max(i));
 }
 
-pub fn max_d3(
-    x: &CPUBuffer,
-    xi: usize, xj: usize, xk: usize,
-    axis: usize,
-    result: &mut CPUBuffer,
-) {
+pub fn max_d3(x: &CPUBuffer, xi: usize, xj: usize, xk: usize, axis: usize, result: &mut CPUBuffer) {
     result.fill(f32::MIN);
     reduce_d3(x, xi, xj, xk, axis, result, |acc, i| acc.max(i));
 }
@@ -81,22 +68,12 @@ pub fn min_d1(x: &[f32]) -> f32 {
     return x.iter().fold(f32::MAX, |acc, i| acc.min(*i));
 }
 
-pub fn min_d2(
-    x: &CPUBuffer,
-    xi: usize, xj: usize,
-    axis: usize,
-    result: &mut CPUBuffer,
-) {
+pub fn min_d2(x: &CPUBuffer, xi: usize, xj: usize, axis: usize, result: &mut CPUBuffer) {
     result.fill(f32::MAX);
     reduce_d2(x, xi, xj, axis, result, |acc, i| acc.min(i));
 }
 
-pub fn min_d3(
-    x: &CPUBuffer,
-    xi: usize, xj: usize, xk: usize,
-    axis: usize,
-    result: &mut CPUBuffer,
-) {
+pub fn min_d3(x: &CPUBuffer, xi: usize, xj: usize, xk: usize, axis: usize, result: &mut CPUBuffer) {
     result.fill(f32::MAX);
     reduce_d3(x, xi, xj, xk, axis, result, |acc, i| acc.min(i));
 }
@@ -108,22 +85,12 @@ pub fn sum_d1(x: &[f32]) -> f32 {
     return x.iter().sum();
 }
 
-pub fn sum_d2(
-    x: &CPUBuffer,
-    xi: usize, xj: usize,
-    axis: usize,
-    result: &mut CPUBuffer,
-) {
+pub fn sum_d2(x: &CPUBuffer, xi: usize, xj: usize, axis: usize, result: &mut CPUBuffer) {
     result.fill(0f32);
     reduce_d2(x, xi, xj, axis, result, |acc, i| acc + i);
 }
 
-pub fn sum_d3(
-    x: &CPUBuffer,
-    xi: usize, xj: usize, xk: usize,
-    axis: usize,
-    result: &mut CPUBuffer,
-) {
+pub fn sum_d3(x: &CPUBuffer, xi: usize, xj: usize, xk: usize, axis: usize, result: &mut CPUBuffer) {
     result.fill(0f32);
     reduce_d3(x, xi, xj, xk, axis, result, |acc, i| acc + i);
 }
@@ -142,7 +109,14 @@ pub fn max_index_d2(x: &CPUBuffer, xi: usize, xj: usize, axis: usize, result: &m
     reduce_index_d2(x, xi, xj, axis, result, |a| max_index_d1(a) as f32);
 }
 
-pub fn max_index_d3(x: &CPUBuffer, xi: usize, xj: usize, xk: usize, axis: usize, result: &mut CPUBuffer) {
+pub fn max_index_d3(
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    xk: usize,
+    axis: usize,
+    result: &mut CPUBuffer,
+) {
     reduce_index_d3(x, xi, xj, xk, axis, result, |a| max_index_d1(a) as f32);
 }
 
@@ -151,16 +125,37 @@ pub fn top_k_d1(x: &[f32], k: usize, seed: u64) -> usize {
     return top_k(x, k, unit);
 }
 
-pub fn top_k_d2(x: &CPUBuffer, xi: usize, xj: usize, k: usize, axis: usize, result: &mut CPUBuffer, seed: u64) {
+pub fn top_k_d2(
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    k: usize,
+    axis: usize,
+    result: &mut CPUBuffer,
+    seed: u64,
+) {
     let units = generate_units(seed, result.count());
     let mut units = units.iter();
-    reduce_index_d2(x, xi, xj, axis, result, |slice| top_k(slice, k, *units.next().unwrap()) as f32);
+    reduce_index_d2(x, xi, xj, axis, result, |slice| {
+        top_k(slice, k, *units.next().unwrap()) as f32
+    });
 }
 
-pub fn top_k_d3(x: &CPUBuffer, xi: usize, xj: usize, xk: usize, k: usize, axis: usize, result: &mut CPUBuffer, seed: u64) {
+pub fn top_k_d3(
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    xk: usize,
+    k: usize,
+    axis: usize,
+    result: &mut CPUBuffer,
+    seed: u64,
+) {
     let units = generate_units(seed, result.count());
     let mut units = units.iter();
-    reduce_index_d3(x, xi, xj, xk, axis, result, |slice| top_k(slice, k, *units.next().unwrap()) as f32);
+    reduce_index_d3(x, xi, xj, xk, axis, result, |slice| {
+        top_k(slice, k, *units.next().unwrap()) as f32
+    });
 }
 
 fn top_k(x: &[f32], k: usize, unit: f32) -> usize {
@@ -174,16 +169,37 @@ pub fn top_p_d1(x: &[f32], p: f32, seed: u64) -> usize {
     return top_p(x, p, unit);
 }
 
-pub fn top_p_d2(x: &CPUBuffer, xi: usize, xj: usize, p: f32, axis: usize, result: &mut CPUBuffer, seed: u64) {
+pub fn top_p_d2(
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    p: f32,
+    axis: usize,
+    result: &mut CPUBuffer,
+    seed: u64,
+) {
     let units = generate_units(seed, result.count());
     let mut units = units.iter();
-    reduce_index_d2(x, xi, xj, axis, result, |slice| top_p(slice, p, *units.next().unwrap()) as f32);
+    reduce_index_d2(x, xi, xj, axis, result, |slice| {
+        top_p(slice, p, *units.next().unwrap()) as f32
+    });
 }
 
-pub fn top_p_d3(x: &CPUBuffer, xi: usize, xj: usize, xk: usize, p: f32, axis: usize, result: &mut CPUBuffer, seed: u64) {
+pub fn top_p_d3(
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    xk: usize,
+    p: f32,
+    axis: usize,
+    result: &mut CPUBuffer,
+    seed: u64,
+) {
     let units = generate_units(seed, result.count());
     let mut units = units.iter();
-    reduce_index_d3(x, xi, xj, xk, axis, result, |slice| top_p(slice, p, *units.next().unwrap()) as f32);
+    reduce_index_d3(x, xi, xj, xk, axis, result, |slice| {
+        top_p(slice, p, *units.next().unwrap()) as f32
+    });
 }
 
 fn top_p(x: &[f32], p: f32, unit: f32) -> usize {
@@ -204,7 +220,8 @@ fn top_p(x: &[f32], p: f32, unit: f32) -> usize {
 
 fn reduce_d2<F: Fn(f32, f32) -> f32 + Sync>(
     x: &CPUBuffer,
-    xi: usize, xj: usize,
+    xi: usize,
+    xj: usize,
     axis: usize,
     result: &mut CPUBuffer,
     block: F,
@@ -225,13 +242,15 @@ fn reduce_d2<F: Fn(f32, f32) -> f32 + Sync>(
                 *v = x[i * xj..(i + 1) * xj].iter().copied().fold(*v, &block);
             });
         }
-        _ => panic!("invalid parameter. [axis: {}]", axis)
+        _ => panic!("invalid parameter. [axis: {}]", axis),
     }
 }
 
 fn reduce_d3<F: Fn(f32, f32) -> f32>(
     x: &CPUBuffer,
-    xi: usize, xj: usize, xk: usize,
+    xi: usize,
+    xj: usize,
+    xk: usize,
     axis: usize,
     result: &mut CPUBuffer,
     block: F,
@@ -241,7 +260,7 @@ fn reduce_d3<F: Fn(f32, f32) -> f32>(
         0 => {
             assert_eq!(result.count(), xj * xk);
             for reduction in x.chunks_exact(xj * xk) {
-                 for (res, &val) in result.iter_mut().zip(reduction) {
+                for (res, &val) in result.iter_mut().zip(reduction) {
                     *res = block(*res, val);
                 }
             }
@@ -259,17 +278,17 @@ fn reduce_d3<F: Fn(f32, f32) -> f32>(
         2 => {
             assert_eq!(result.count(), xi * xj);
             for (res, outer) in result.iter_mut().zip(x.chunks_exact(xk)) {
-                *res = outer.iter().copied()
-                    .fold(*res, |acc, i| block(acc, i));
+                *res = outer.iter().copied().fold(*res, |acc, i| block(acc, i));
             }
         }
-        _ => panic!("invalid parameter. [axis: {}]", axis)
+        _ => panic!("invalid parameter. [axis: {}]", axis),
     }
 }
 
 fn reduce_index_d2<F: FnMut(&[f32]) -> f32>(
     x: &CPUBuffer,
-    xi: usize, xj: usize,
+    xi: usize,
+    xj: usize,
     axis: usize,
     result: &mut CPUBuffer,
     mut block: F,
@@ -290,13 +309,15 @@ fn reduce_index_d2<F: FnMut(&[f32]) -> f32>(
                 *res = block(outer);
             }
         }
-        _ => panic!("invalid parameter. [axis: {}]", axis)
+        _ => panic!("invalid parameter. [axis: {}]", axis),
     }
 }
 
 fn reduce_index_d3<F: FnMut(&[f32]) -> f32>(
     x: &CPUBuffer,
-    xi: usize, xj: usize, xk: usize,
+    xi: usize,
+    xj: usize,
+    xk: usize,
     axis: usize,
     result: &mut CPUBuffer,
     mut block: F,
@@ -313,7 +334,7 @@ fn reduce_index_d3<F: FnMut(&[f32]) -> f32>(
             }
         }
         2 => reduce_index_d2(x, xi * xj, xk, 1, result, block),
-        _ => panic!("invalid parameter. [axis: {}]", axis)
+        _ => panic!("invalid parameter. [axis: {}]", axis),
     }
 }
 

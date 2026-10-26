@@ -1,5 +1,5 @@
-use crate::runtime::Runtime;
 use crate::resource::buffer::CPUBuffer;
+use crate::runtime::Runtime;
 
 pub fn create(size: usize, runtime: &Runtime) -> CPUBuffer {
     runtime.create_buffer(size)

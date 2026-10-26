@@ -1,4 +1,7 @@
-use criterion::{BenchmarkGroup, BenchmarkId, Criterion, criterion_group, criterion_main, measurement::Measurement};
+use criterion::{
+    BenchmarkGroup, BenchmarkId, Criterion, criterion_group, criterion_main,
+    measurement::Measurement,
+};
 use gpu::{ops, resource::buffer::GPUBuffer, runtime::Runtime};
 
 fn bench_mat_mul(c: &mut Criterion) {
@@ -6,19 +9,31 @@ fn bench_mat_mul(c: &mut Criterion) {
     let mut group = c.benchmark_group("mat_mul");
 
     bench(&mut group, "nn", &mut runtime, |x, y, res, config, rt| {
-        let task = rt.kernels.mat_mul.mat_mul_nn(x, y, config.m, config.n, config.k, config.b, res);
+        let task = rt
+            .kernels
+            .mat_mul
+            .mat_mul_nn(x, y, config.m, config.n, config.k, config.b, res);
         rt.dispatch(task);
     });
     bench(&mut group, "nt", &mut runtime, |x, y, res, config, rt| {
-        let task = rt.kernels.mat_mul.mat_mul_nt(x, y, config.m, config.n, config.k, config.b, res);
+        let task = rt
+            .kernels
+            .mat_mul
+            .mat_mul_nt(x, y, config.m, config.n, config.k, config.b, res);
         rt.dispatch(task);
     });
     bench(&mut group, "tn", &mut runtime, |x, y, res, config, rt| {
-        let task = rt.kernels.mat_mul.mat_mul_tn(x, y, config.m, config.n, config.k, config.b, res);
+        let task = rt
+            .kernels
+            .mat_mul
+            .mat_mul_tn(x, y, config.m, config.n, config.k, config.b, res);
         rt.dispatch(task);
     });
     bench(&mut group, "tt", &mut runtime, |x, y, res, config, rt| {
-        let task = rt.kernels.mat_mul.mat_mul_tt(x, y, config.m, config.n, config.k, config.b, res);
+        let task = rt
+            .kernels
+            .mat_mul
+            .mat_mul_tt(x, y, config.m, config.n, config.k, config.b, res);
         rt.dispatch(task);
     });
 
@@ -39,13 +54,29 @@ impl MatMulConfig {
     }
 }
 
-fn bench<M: Measurement, F>(group: &mut BenchmarkGroup<M>, func_name: &str, runtime: &mut Runtime, op: F)
-where
+fn bench<M: Measurement, F>(
+    group: &mut BenchmarkGroup<M>,
+    func_name: &str,
+    runtime: &mut Runtime,
+    op: F,
+) where
     F: Fn(&GPUBuffer, &GPUBuffer, &GPUBuffer, &MatMulConfig, &mut Runtime),
 {
     let configs = [
-        MatMulConfig { m: 128, n: 128, k: 128, b: 4, repeat: 50 },
-        MatMulConfig { m: 512, n: 512, k: 512, b: 4, repeat: 20 },
+        MatMulConfig {
+            m: 128,
+            n: 128,
+            k: 128,
+            b: 4,
+            repeat: 50,
+        },
+        MatMulConfig {
+            m: 512,
+            n: 512,
+            k: 512,
+            b: 4,
+            repeat: 20,
+        },
     ];
 
     for config in configs {

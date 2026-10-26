@@ -110,7 +110,11 @@ struct Params {
 
 impl Default for Params {
     fn default() -> Self {
-        Params { e: 0f32, n: 0f32, _pad: [0f32; 2] }
+        Params {
+            e: 0f32,
+            n: 0f32,
+            _pad: [0f32; 2],
+        }
     }
 }
 
@@ -118,53 +122,55 @@ impl Math {
     const WORKGROUP_SIZE: u32 = 64;
 
     pub fn exp_d1<'a>(&'a self, x: &GPUBuffer, result: &GPUBuffer) -> ComputeTask<'a> {
-       self.create_task(
-           "exp_d1",
-           &self.exp_d1,
-           x,
-           &Params::default(),
-           result,
-        )
+        self.create_task("exp_d1", &self.exp_d1, x, &Params::default(), result)
     }
 
     pub fn ln_d1<'a>(&'a self, x: &GPUBuffer, e: f32, result: &GPUBuffer) -> ComputeTask<'a> {
         self.create_task(
-           "ln_d1",
-           &self.ln_d1,
-           x,
-           &Params { e: e, ..Params::default() },
-           result,
+            "ln_d1",
+            &self.ln_d1,
+            x,
+            &Params {
+                e: e,
+                ..Params::default()
+            },
+            result,
         )
     }
 
-    
     pub fn sigmoid_d1<'a>(&'a self, x: &GPUBuffer, result: &GPUBuffer) -> ComputeTask<'a> {
         self.create_task(
-           "sigmoid_d1",
-           &self.sigmoid_d1,
-           x,
-           &Params::default(),
-           result,
+            "sigmoid_d1",
+            &self.sigmoid_d1,
+            x,
+            &Params::default(),
+            result,
         )
     }
 
     pub fn pow_d1<'a>(&'a self, x: &GPUBuffer, n: f32, result: &GPUBuffer) -> ComputeTask<'a> {
         self.create_task(
-           "pow_d1",
-           &self.pow_d1,
-           x,
-           &Params { n: n, ..Params::default() },
-           result,
+            "pow_d1",
+            &self.pow_d1,
+            x,
+            &Params {
+                n: n,
+                ..Params::default()
+            },
+            result,
         )
     }
 
     pub fn sqrt_d1<'a>(&'a self, x: &GPUBuffer, e: f32, result: &GPUBuffer) -> ComputeTask<'a> {
         self.create_task(
-           "sqrt_d1",
-           &self.sqrt_d1,
-           x,
-           &Params { e: e, ..Params::default() },
-           result,
+            "sqrt_d1",
+            &self.sqrt_d1,
+            x,
+            &Params {
+                e: e,
+                ..Params::default()
+            },
+            result,
         )
     }
 
@@ -190,7 +196,7 @@ impl Math {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Math::WORKGROUP_SIZE);

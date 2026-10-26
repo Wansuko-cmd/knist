@@ -1,11 +1,11 @@
 use std::hint::black_box;
 
-use criterion::measurement::Measurement;
-use criterion::{BenchmarkGroup, BenchmarkId, Criterion, criterion_group, criterion_main};
 use cpu::ops;
 use cpu::ops::reduction;
 use cpu::resource::buffer::CPUBuffer;
 use cpu::runtime::Runtime;
+use criterion::measurement::Measurement;
+use criterion::{BenchmarkGroup, BenchmarkId, Criterion, criterion_group, criterion_main};
 
 fn bench_reduction(c: &mut Criterion) {
     let runtime = ops::runtime::allocate(0);
@@ -18,13 +18,25 @@ fn bench_reduction(c: &mut Criterion) {
     bench_d1(&mut group, "sum_d1", &runtime, reduction::sum_d1);
 
     // d2_axis0: [xi, xj] → [xj]
-    bench_d2(&mut group, "average_d2_axis0", 0, &runtime, reduction::average_d2);
+    bench_d2(
+        &mut group,
+        "average_d2_axis0",
+        0,
+        &runtime,
+        reduction::average_d2,
+    );
     bench_d2(&mut group, "max_d2_axis0", 0, &runtime, reduction::max_d2);
     bench_d2(&mut group, "min_d2_axis0", 0, &runtime, reduction::min_d2);
     bench_d2(&mut group, "sum_d2_axis0", 0, &runtime, reduction::sum_d2);
 
     // d2_axis1: [xi, xj] → [xi]
-    bench_d2(&mut group, "average_d2_axis1", 1, &runtime, reduction::average_d2);
+    bench_d2(
+        &mut group,
+        "average_d2_axis1",
+        1,
+        &runtime,
+        reduction::average_d2,
+    );
     bench_d2(&mut group, "max_d2_axis1", 1, &runtime, reduction::max_d2);
     bench_d2(&mut group, "min_d2_axis1", 1, &runtime, reduction::min_d2);
     bench_d2(&mut group, "sum_d2_axis1", 1, &runtime, reduction::sum_d2);

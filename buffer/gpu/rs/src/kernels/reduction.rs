@@ -215,56 +215,20 @@ impl Reduction {
 }
 
 impl Reduction {
-    pub fn average_d1<'a>(
-        &'a self,
-        x: &GPUBuffer,
-        result: &GPUBuffer,
-    ) -> ComputeTask<'a> {
-        self.create_task_d1(
-            "average_d1",
-            &self.average_d1,
-            x,
-            result,
-        )
+    pub fn average_d1<'a>(&'a self, x: &GPUBuffer, result: &GPUBuffer) -> ComputeTask<'a> {
+        self.create_task_d1("average_d1", &self.average_d1, x, result)
     }
 
-    pub fn max_d1<'a>(
-        &'a self,
-        x: &GPUBuffer,
-        result: &GPUBuffer,
-    ) -> ComputeTask<'a> {
-        self.create_task_d1(
-            "max_d1",
-            &self.max_d1,
-            x,
-            result,
-        )
+    pub fn max_d1<'a>(&'a self, x: &GPUBuffer, result: &GPUBuffer) -> ComputeTask<'a> {
+        self.create_task_d1("max_d1", &self.max_d1, x, result)
     }
 
-    pub fn min_d1<'a>(
-        &'a self,
-        x: &GPUBuffer,
-        result: &GPUBuffer,
-    ) -> ComputeTask<'a> {
-        self.create_task_d1(
-            "min_d1",
-            &self.min_d1,
-            x,
-            result,
-        )
+    pub fn min_d1<'a>(&'a self, x: &GPUBuffer, result: &GPUBuffer) -> ComputeTask<'a> {
+        self.create_task_d1("min_d1", &self.min_d1, x, result)
     }
 
-    pub fn sum_d1<'a>(
-        &'a self,
-        x: &GPUBuffer,
-        result: &GPUBuffer,
-    ) -> ComputeTask<'a> {
-        self.create_task_d1(
-            "sum_d1",
-            &self.sum_d1,
-            x,
-            result,
-        )
+    pub fn sum_d1<'a>(&'a self, x: &GPUBuffer, result: &GPUBuffer) -> ComputeTask<'a> {
+        self.create_task_d1("sum_d1", &self.sum_d1, x, result)
     }
 
     fn create_task_d1<'a>(
@@ -288,10 +252,10 @@ impl Reduction {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
-        let workgroups = [1;3];
+        let workgroups = [1; 3];
 
         ComputeTask {
             label: label,
@@ -316,14 +280,16 @@ impl Reduction {
     pub fn average_d2_axis0<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
+        xi: usize,
+        xj: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         self.create_task_d2(
             "average_d2_axis0",
             &self.average_d2_axis0,
             x,
-            xi, xj,
+            xi,
+            xj,
             result,
         )
     }
@@ -331,14 +297,16 @@ impl Reduction {
     pub fn average_d2_axis1<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
+        xi: usize,
+        xj: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         self.create_task_d2(
             "average_d2_axis1",
             &self.average_d2_axis1,
             x,
-            xi, xj,
+            xi,
+            xj,
             result,
         )
     }
@@ -346,91 +314,61 @@ impl Reduction {
     pub fn max_d2_axis0<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
+        xi: usize,
+        xj: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d2(
-            "max_d2_axis0",
-            &self.max_d2_axis0,
-            x,
-            xi, xj,
-            result,
-        )
+        self.create_task_d2("max_d2_axis0", &self.max_d2_axis0, x, xi, xj, result)
     }
 
     pub fn max_d2_axis1<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
+        xi: usize,
+        xj: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d2(
-            "max_d2_axis1",
-            &self.max_d2_axis1,
-            x,
-            xi, xj,
-            result,
-        )
+        self.create_task_d2("max_d2_axis1", &self.max_d2_axis1, x, xi, xj, result)
     }
 
     pub fn min_d2_axis0<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
+        xi: usize,
+        xj: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d2(
-            "min_d2_axis0",
-            &self.min_d2_axis0,
-            x,
-            xi, xj,
-            result,
-        )
+        self.create_task_d2("min_d2_axis0", &self.min_d2_axis0, x, xi, xj, result)
     }
 
     pub fn min_d2_axis1<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
+        xi: usize,
+        xj: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d2(
-            "min_d2_axis1",
-            &self.min_d2_axis1,
-            x,
-            xi, xj,
-            result,
-        )
+        self.create_task_d2("min_d2_axis1", &self.min_d2_axis1, x, xi, xj, result)
     }
 
     pub fn sum_d2_axis0<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
+        xi: usize,
+        xj: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d2(
-            "sum_d2_axis0",
-            &self.sum_d2_axis0,
-            x,
-            xi, xj,
-            result,
-        )
+        self.create_task_d2("sum_d2_axis0", &self.sum_d2_axis0, x, xi, xj, result)
     }
 
     pub fn sum_d2_axis1<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
+        xi: usize,
+        xj: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d2(
-            "sum_d2_axis1",
-            &self.sum_d2_axis1,
-            x,
-            xi, xj,
-            result,
-        )
+        self.create_task_d2("sum_d2_axis1", &self.sum_d2_axis1, x, xi, xj, result)
     }
 
     fn create_task_d2<'a>(
@@ -438,11 +376,17 @@ impl Reduction {
         label: &'static str,
         pipeline: &'a wgpu::ComputePipeline,
         x: &GPUBuffer,
-        xi: usize, xj: usize,
+        xi: usize,
+        xj: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let device = &self.device;
-        let params = D2Params { xi: xi as u32, xj: xj as u32, _pad1: 0, _pad2: 0 };
+        let params = D2Params {
+            xi: xi as u32,
+            xj: xj as u32,
+            _pad1: 0,
+            _pad2: 0,
+        };
 
         let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
             label: Some(label),
@@ -456,7 +400,7 @@ impl Reduction {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Reduction::WORKGROUP_SIZE);
@@ -484,61 +428,45 @@ impl Reduction {
     pub fn average_d3<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize, xk: usize,
+        xi: usize,
+        xj: usize,
+        xk: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d3(
-            "average_d3",
-            &self.average_d3,
-            x,
-            xi, xj, xk,
-            result,
-        )
+        self.create_task_d3("average_d3", &self.average_d3, x, xi, xj, xk, result)
     }
 
     pub fn max_d3<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize, xk: usize,
+        xi: usize,
+        xj: usize,
+        xk: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d3(
-            "max_d3",
-            &self.max_d3,
-            x,
-            xi, xj, xk,
-            result,
-        )
+        self.create_task_d3("max_d3", &self.max_d3, x, xi, xj, xk, result)
     }
 
     pub fn min_d3<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize, xk: usize,
+        xi: usize,
+        xj: usize,
+        xk: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d3(
-            "min_d3",
-            &self.min_d3,
-            x,
-            xi, xj, xk,
-            result,
-        )
+        self.create_task_d3("min_d3", &self.min_d3, x, xi, xj, xk, result)
     }
 
     pub fn sum_d3<'a>(
         &'a self,
         x: &GPUBuffer,
-        xi: usize, xj: usize, xk: usize,
+        xi: usize,
+        xj: usize,
+        xk: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
-        self.create_task_d3(
-            "sum_d3",
-            &self.sum_d3,
-            x,
-            xi, xj, xk,
-            result,
-        )
+        self.create_task_d3("sum_d3", &self.sum_d3, x, xi, xj, xk, result)
     }
 
     fn create_task_d3<'a>(
@@ -546,11 +474,18 @@ impl Reduction {
         label: &'static str,
         pipeline: &'a wgpu::ComputePipeline,
         x: &GPUBuffer,
-        xi: usize, xj: usize, xk: usize,
+        xi: usize,
+        xj: usize,
+        xk: usize,
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         let device = &self.device;
-        let params = D3Params { xi: xi as u32, xj: xj as u32, xk: xk as u32, _pad: 0 };
+        let params = D3Params {
+            xi: xi as u32,
+            xj: xj as u32,
+            xk: xk as u32,
+            _pad: 0,
+        };
 
         let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
             label: Some(label),
@@ -564,7 +499,7 @@ impl Reduction {
                     binding: 1,
                     resource: result.buffer.as_entire_binding(),
                 },
-            ]
+            ],
         });
 
         let workgroups = result.workgroup_count(Reduction::WORKGROUP_SIZE);

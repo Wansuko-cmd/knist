@@ -7,12 +7,17 @@ pub struct Dispatcher {
 
 impl Dispatcher {
     pub fn new() -> Self {
-        Dispatcher { count: 0, active_encoder: None }
+        Dispatcher {
+            count: 0,
+            active_encoder: None,
+        }
     }
 
     pub fn dispatch<T: Task>(&mut self, task: T, device: &wgpu::Device, profiler: &GpuProfiler) {
         let encoder = self.active_encoder.get_or_insert_with(|| {
-            device.create_command_encoder(&wgpu::CommandEncoderDescriptor { label: Some("Dispatcher::dispatch") })
+            device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
+                label: Some("Dispatcher::dispatch"),
+            })
         });
 
         task.recode(encoder, profiler);

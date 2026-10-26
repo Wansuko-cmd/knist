@@ -1,4 +1,3 @@
-
 use crate::{kernels::task::CopyTask, resource::buffer::GPUBuffer, runtime::Runtime};
 
 pub fn create(size: usize, runtime: &Runtime) -> GPUBuffer {
@@ -18,20 +17,16 @@ pub fn release(buffer: GPUBuffer, runtime: &Runtime) {
 pub fn read_all(buffer: &GPUBuffer, runtime: &mut Runtime) -> Vec<f32> {
     let size = buffer.count();
     let map_buffer = runtime.create_map_read_buffer(size);
-    runtime.dispatch(
-        CopyTask {
-            src: buffer,
-            src_offset: 0,
-            dest: &map_buffer,
-            dest_offset: 0,
-            size: size,
-        },
-    );
+    runtime.dispatch(CopyTask {
+        src: buffer,
+        src_offset: 0,
+        dest: &map_buffer,
+        dest_offset: 0,
+        size: size,
+    });
     runtime.flush();
 
-    let mut dest = vec![0.0f32; buffer.count()];
-    map_buffer.copy_into(&mut dest, &runtime.device);
-    return dest;
+    map_buffer.to_vec(&runtime.device)
 }
 
 pub fn write(buffer: &GPUBuffer, index: usize, value: f32, runtime: &mut Runtime) {

@@ -44,7 +44,9 @@ pub(super) fn zip_with_d1_to_d1<F: Fn(f32, f32) -> f32>(
 
 pub(super) fn zip_with_d1_to_d2<F: Fn(f32, f32) -> f32>(
     x: &CPUBuffer,
-    y: &CPUBuffer, yi: usize, yj: usize,
+    y: &CPUBuffer,
+    yi: usize,
+    yj: usize,
     axis: usize,
     result: &mut CPUBuffer,
     block: F,
@@ -74,13 +76,16 @@ pub(super) fn zip_with_d1_to_d2<F: Fn(f32, f32) -> f32>(
                 }
             }
         }
-        _ => panic!("invalid parameter. [axis: {}]", axis)
+        _ => panic!("invalid parameter. [axis: {}]", axis),
     }
 }
 
 pub(super) fn zip_with_d1_to_d3<F: Fn(f32, f32) -> f32>(
     x: &CPUBuffer,
-    y: &CPUBuffer, yi: usize, yj: usize, yk: usize,
+    y: &CPUBuffer,
+    yi: usize,
+    yj: usize,
+    yk: usize,
     axis: usize,
     result: &mut CPUBuffer,
     block: F,
@@ -130,12 +135,14 @@ pub(super) fn zip_with_d1_to_d3<F: Fn(f32, f32) -> f32>(
                 }
             }
         }
-        _ => panic!("invalid parameter. [axis: {}]", axis)
+        _ => panic!("invalid parameter. [axis: {}]", axis),
     }
 }
 
 pub(super) fn zip_with_d2_to_d1<F: Fn(f32, f32) -> f32>(
-    x: &CPUBuffer, xi: usize, xj: usize,
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
     y: &CPUBuffer,
     axis: usize,
     result: &mut CPUBuffer,
@@ -166,14 +173,20 @@ pub(super) fn zip_with_d2_to_d1<F: Fn(f32, f32) -> f32>(
                 }
             }
         }
-        _ => panic!("invalid parameter. [axis: {}]", axis)
+        _ => panic!("invalid parameter. [axis: {}]", axis),
     }
 }
 
 pub(super) fn zip_with_d2_to_d3<F: Fn(f32, f32) -> f32>(
-    x: &CPUBuffer, xi: usize, xj: usize,
-    y: &CPUBuffer, yi: usize, yj: usize, yk: usize,
-    axis1: usize, axis2: usize,
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    y: &CPUBuffer,
+    yi: usize,
+    yj: usize,
+    yk: usize,
+    axis1: usize,
+    axis2: usize,
     result: &mut CPUBuffer,
     block: F,
 ) {
@@ -225,12 +238,15 @@ pub(super) fn zip_with_d2_to_d3<F: Fn(f32, f32) -> f32>(
                 }
             }
         }
-        _ => panic!("invalid parameter. [axis1: {}, axis2: {}]", axis1, axis2)
+        _ => panic!("invalid parameter. [axis1: {}, axis2: {}]", axis1, axis2),
     }
 }
 
 pub(super) fn zip_with_d3_to_d1<F: Fn(f32, f32) -> f32>(
-    x: &CPUBuffer, xi: usize, xj: usize, xk: usize,
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    xk: usize,
     y: &CPUBuffer,
     axis: usize,
     result: &mut CPUBuffer,
@@ -281,14 +297,20 @@ pub(super) fn zip_with_d3_to_d1<F: Fn(f32, f32) -> f32>(
                 }
             }
         }
-        _ => panic!("invalid parameter. [axis: {}]", axis)
+        _ => panic!("invalid parameter. [axis: {}]", axis),
     }
 }
 
 pub(super) fn zip_with_d3_to_d2<F: Fn(f32, f32) -> f32>(
-    x: &CPUBuffer, xi: usize, xj: usize, xk: usize,
-    y: &CPUBuffer, yi: usize, yj: usize,
-    axis1: usize, axis2: usize,
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    xk: usize,
+    y: &CPUBuffer,
+    yi: usize,
+    yj: usize,
+    axis1: usize,
+    axis2: usize,
     result: &mut CPUBuffer,
     block: F,
 ) {
@@ -340,14 +362,23 @@ pub(super) fn zip_with_d3_to_d2<F: Fn(f32, f32) -> f32>(
                 }
             }
         }
-        _ => panic!("invalid parameter. [axis1: {}, axis2: {}]", axis1, axis2)
+        _ => panic!("invalid parameter. [axis1: {}, axis2: {}]", axis1, axis2),
     }
 }
 
 pub(super) fn zip_with_d3_to_d4<F: Fn(f32, f32) -> f32>(
-    x: &CPUBuffer, xi: usize, xj: usize, xk: usize,
-    y: &CPUBuffer, yi: usize, yj: usize, yk: usize, yl: usize,
-    axis1: usize, axis2: usize, axis3: usize,
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    xk: usize,
+    y: &CPUBuffer,
+    yi: usize,
+    yj: usize,
+    yk: usize,
+    yl: usize,
+    axis1: usize,
+    axis2: usize,
+    axis3: usize,
     result: &mut CPUBuffer,
     block: F,
 ) {
@@ -429,12 +460,19 @@ pub(super) fn zip_with_d3_to_d4<F: Fn(f32, f32) -> f32>(
                 }
             }
         }
-        _ => panic!("invalid parameter. [axis1: {}, axis2: {}, axis3: {}]", axis1, axis2, axis3)
+        _ => panic!(
+            "invalid parameter. [axis1: {}, axis2: {}, axis3: {}]",
+            axis1, axis2, axis3
+        ),
     }
 }
 
 pub(super) fn zip_with_d4_to_d1<F: Fn(f32, f32) -> f32>(
-    x: &CPUBuffer, xi: usize, xj: usize, xk: usize, xl: usize,
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    xk: usize,
+    xl: usize,
     y: &CPUBuffer,
     axis: usize,
     result: &mut CPUBuffer,
@@ -511,14 +549,21 @@ pub(super) fn zip_with_d4_to_d1<F: Fn(f32, f32) -> f32>(
                 }
             }
         }
-        _ => panic!("invalid parameter. [axis: {}]", axis)
+        _ => panic!("invalid parameter. [axis: {}]", axis),
     }
 }
 
 pub(super) fn zip_with_d4_to_d2<F: Fn(f32, f32) -> f32>(
-    x: &CPUBuffer, xi: usize, xj: usize, xk: usize, xl: usize,
-    y: &CPUBuffer, yi: usize, yj: usize,
-    axis1: usize, axis2: usize,
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    xk: usize,
+    xl: usize,
+    y: &CPUBuffer,
+    yi: usize,
+    yj: usize,
+    axis1: usize,
+    axis2: usize,
     result: &mut CPUBuffer,
     block: F,
 ) {
@@ -632,14 +677,23 @@ pub(super) fn zip_with_d4_to_d2<F: Fn(f32, f32) -> f32>(
                 }
             }
         }
-        _ => panic!("invalid parameter. [axis1: {}, axis2: {}]", axis1, axis2)
+        _ => panic!("invalid parameter. [axis1: {}, axis2: {}]", axis1, axis2),
     }
 }
 
 pub(super) fn zip_with_d4_to_d3<F: Fn(f32, f32) -> f32>(
-    x: &CPUBuffer, xi: usize, xj: usize, xk: usize, xl: usize,
-    y: &CPUBuffer, yi: usize, yj: usize, yk: usize,
-    axis1: usize, axis2: usize, axis3: usize,
+    x: &CPUBuffer,
+    xi: usize,
+    xj: usize,
+    xk: usize,
+    xl: usize,
+    y: &CPUBuffer,
+    yi: usize,
+    yj: usize,
+    yk: usize,
+    axis1: usize,
+    axis2: usize,
+    axis3: usize,
     result: &mut CPUBuffer,
     block: F,
 ) {
@@ -721,6 +775,9 @@ pub(super) fn zip_with_d4_to_d3<F: Fn(f32, f32) -> f32>(
                 }
             }
         }
-        _ => panic!("invalid parameter. [axis1: {}, axis2: {}, axis3: {}]", axis1, axis2, axis3)
+        _ => panic!(
+            "invalid parameter. [axis1: {}, axis2: {}, axis3: {}]",
+            axis1, axis2, axis3
+        ),
     }
 }

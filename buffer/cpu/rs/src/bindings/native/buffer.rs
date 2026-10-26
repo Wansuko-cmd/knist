@@ -1,16 +1,23 @@
+use crate::ops;
 use crate::resource::buffer::CPUBuffer;
 use crate::runtime::Runtime;
-use crate::ops;
 
 #[unsafe(no_mangle)]
-pub extern "C" fn com_wsr_cpu_buffer_allocate(size: i32, runtime: *const Runtime) -> *mut CPUBuffer {
+pub extern "C" fn com_wsr_cpu_buffer_allocate(
+    size: i32,
+    runtime: *const Runtime,
+) -> *mut CPUBuffer {
     let runtime = unsafe { &*runtime };
     let buffer = ops::buffer::create(size as usize, runtime);
     Box::into_raw(Box::new(buffer))
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn com_wsr_cpu_buffer_init(value: *const f32, size: i32, runtime: *const Runtime) -> *mut CPUBuffer {
+pub extern "C" fn com_wsr_cpu_buffer_init(
+    value: *const f32,
+    size: i32,
+    runtime: *const Runtime,
+) -> *mut CPUBuffer {
     let value = unsafe { std::slice::from_raw_parts(value, size as usize) };
     let runtime = unsafe { &*runtime };
     let buffer = ops::buffer::init(value, runtime);

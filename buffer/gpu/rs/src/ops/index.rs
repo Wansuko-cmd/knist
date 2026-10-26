@@ -3,7 +3,9 @@ use crate::{resource::buffer::GPUBuffer, runtime::Runtime};
 pub fn gather(
     x: &GPUBuffer,
     y: &GPUBuffer,
-    i: usize, j: usize, k: usize,
+    i: usize,
+    j: usize,
+    k: usize,
     result: &GPUBuffer,
     runtime: &mut Runtime,
 ) {
@@ -15,7 +17,10 @@ pub fn gather(
 pub fn scatter_add(
     x: &GPUBuffer,
     y: &GPUBuffer,
-    i: usize, j: usize, k: usize, b: usize,
+    i: usize,
+    j: usize,
+    k: usize,
+    b: usize,
     result: &GPUBuffer,
     runtime: &mut Runtime,
 ) {

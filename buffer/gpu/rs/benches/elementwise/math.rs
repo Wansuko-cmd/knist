@@ -32,8 +32,12 @@ fn bench_math(c: &mut Criterion) {
     group.finish();
 }
 
-fn bench<M: Measurement, F>(group: &mut BenchmarkGroup<M>, func_name: &str, runtime: &mut Runtime, op: F)
-where
+fn bench<M: Measurement, F>(
+    group: &mut BenchmarkGroup<M>,
+    func_name: &str,
+    runtime: &mut Runtime,
+    op: F,
+) where
     F: Fn(&GPUBuffer, &GPUBuffer, &mut Runtime),
 {
     for size in [1_000, 1_000_000] {

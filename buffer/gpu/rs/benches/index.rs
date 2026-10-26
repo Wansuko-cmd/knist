@@ -6,8 +6,22 @@ fn bench_index(c: &mut Criterion) {
     let mut group = c.benchmark_group("index");
 
     let configs = [
-        IndexConfig { i: 128, j: 128, k: 128, n: 128, b: 1, repeat: 50 },
-        IndexConfig { i: 256, j: 256, k: 256, n: 256, b: 1, repeat: 20 },
+        IndexConfig {
+            i: 128,
+            j: 128,
+            k: 128,
+            n: 128,
+            b: 1,
+            repeat: 50,
+        },
+        IndexConfig {
+            i: 256,
+            j: 256,
+            k: 256,
+            n: 256,
+            b: 1,
+            repeat: 20,
+        },
     ];
 
     for config in configs {
@@ -46,7 +60,10 @@ fn bench_index(c: &mut Criterion) {
             |bencher, _| {
                 bencher.iter(|| {
                     for _ in 0..config.repeat {
-                        let task = runtime.kernels.index.scatter_add(&x, &y, i, j, k, b, &result);
+                        let task = runtime
+                            .kernels
+                            .index
+                            .scatter_add(&x, &y, i, j, k, b, &result);
                         runtime.dispatch(task);
                     }
                     runtime.submit();

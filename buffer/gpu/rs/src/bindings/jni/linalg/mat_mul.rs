@@ -10,9 +10,14 @@ use crate::runtime::Runtime;
 pub extern "system" fn Java_com_wsr_knist_gpu_linalg_JMatMul_matMul(
     _: JNIEnv,
     _class: JClass,
-    x: jlong, trans_x: jboolean,
-    y: jlong, trans_y: jboolean,
-    m: jint, n: jint, k: jint, b: jint,
+    x: jlong,
+    trans_x: jboolean,
+    y: jlong,
+    trans_y: jboolean,
+    m: jint,
+    n: jint,
+    k: jint,
+    b: jint,
     result: jlong,
     runtime: jlong,
 ) {
@@ -22,9 +27,14 @@ pub extern "system" fn Java_com_wsr_knist_gpu_linalg_JMatMul_matMul(
     let runtime = unsafe { &mut *(runtime as *mut Runtime) };
 
     ops::linalg::mat_mul::mat_mul(
-        x, trans_x != 0,
-        y, trans_y != 0,
-        m as usize, n as usize, k as usize, b as usize,
+        x,
+        trans_x != 0,
+        y,
+        trans_y != 0,
+        m as usize,
+        n as usize,
+        k as usize,
+        b as usize,
         result,
         runtime,
     );

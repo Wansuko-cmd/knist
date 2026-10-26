@@ -1,7 +1,7 @@
 use std::sync::mpsc;
 
-use wgpu::{Device, Queue, util::DeviceExt};
 use bytemuck;
+use wgpu::{Device, Queue, util::DeviceExt};
 
 pub struct GPUBuffer {
     pub buffer: wgpu::Buffer,
@@ -16,7 +16,9 @@ impl GPUBuffer {
         let buffer = device.create_buffer(&wgpu::BufferDescriptor {
             label: Some("GPUBuffer::create"),
             size: byte_size,
-            usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_SRC | wgpu::BufferUsages::COPY_DST,
+            usage: wgpu::BufferUsages::STORAGE
+                | wgpu::BufferUsages::COPY_SRC
+                | wgpu::BufferUsages::COPY_DST,
             mapped_at_creation: false,
         });
         GPUBuffer { buffer }
@@ -37,23 +39,22 @@ impl GPUBuffer {
         let buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("GPUBuffer::init"),
             contents: bytemuck::cast_slice(&value),
-            usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_SRC | wgpu::BufferUsages::COPY_DST,
+            usage: wgpu::BufferUsages::STORAGE
+                | wgpu::BufferUsages::COPY_SRC
+                | wgpu::BufferUsages::COPY_DST,
         });
         GPUBuffer { buffer }
     }
 
-    pub fn copy_into(self, dest: &mut Vec<f32>, device: &Device) {
-        let map_buffer_slice = self.buffer.slice(..);
-
+    pub fn to_vec(self, device: &Device) -> Vec<f32> {
         let (sender, receiver) = mpsc::sync_channel(1);
-        map_buffer_slice.map_async(wgpu::MapMode::Read, move |v| sender.send(v).unwrap());
+        self.buffer
+            .map_async(wgpu::MapMode::Read, .., move |v| sender.send(v).unwrap());
         let _ = device.poll(wgpu::PollType::wait_indefinitely());
         receiver.recv().unwrap().unwrap();
 
-        let data = map_buffer_slice.get_mapped_range();
-        dest.copy_from_slice( bytemuck::cast_slice(&data));
+        bytemuck::cast_slice(&self.buffer.get_mapped_range(..)).to_vec()
     }
-
 
     pub fn write(self: &Self, index: usize, value: f32, queue: &Queue) {
         let offset = (index * GPUBuffer::SIZE_BYTES) as u64;
