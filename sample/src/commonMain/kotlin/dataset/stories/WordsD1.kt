@@ -5,6 +5,7 @@ import com.wsr.knist.batch.shape.toBatch
 import com.wsr.knist.batch.shape.toList
 import com.wsr.knist.core.IOType
 import com.wsr.knist.core.d1
+import com.wsr.knist.core.unwrap
 import com.wsr.knist.network.converter.Converter
 import kotlinx.serialization.Serializable
 
@@ -24,7 +25,7 @@ class WordsD1(override val outputI: Int, private val words: List<String>, privat
     }.toBatch()
 
     override fun decode(input: Batch<IOType.D1>): List<List<String>> = input.toList().map { input ->
-        input.value.toFloatArray()
+        input.unwrap()
             .toList()
             .mapNotNull { id ->
                 val index = id.toInt()

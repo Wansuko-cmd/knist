@@ -5,6 +5,7 @@ import com.wsr.knist.batch.d2
 import com.wsr.knist.batch.reduction.maxIndex
 import com.wsr.knist.batch.shape.toList
 import com.wsr.knist.core.IOType
+import com.wsr.knist.core.unwrap
 import com.wsr.knist.network.converter.Converter
 import kotlinx.serialization.Serializable
 
@@ -29,7 +30,7 @@ class WordD2(private val words: List<String>, private val length: Int, private v
 
     override fun decode(input: Batch<IOType.D2>): List<List<String>> = input.maxIndex(axis = 1).toList()
         .map { input ->
-            val input = input.value.toFloatArray()
+            val input = input.unwrap()
             (0 until length).map { words[input[it].toInt()] }
         }
 }

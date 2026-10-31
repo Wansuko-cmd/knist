@@ -110,16 +110,17 @@ val network: Network.Src1.Sink1<List<List<Float>>, List<Int>> = Network.create(
 
 ```kotlin
 import com.wsr.knist.batch.Batch
+import com.wsr.knist.batch.d1
 import com.wsr.knist.core.IOType
-import com.wsr.knist.base.data.DataBuffer
 
 // バッチサイズ64・1サンプルの形状 [32] の D1 入力バッチ
-val inputs: Batch<IOType.D1> = Batch(
+val inputs: Batch<IOType.D1> = Batch.d1(
     size = 64,
-    shape = listOf(32),
-    value = DataBuffer.create(FloatArray(64 * 32) { /* 値 */ 0f }),
+    i = 32,
+    value = FloatArray(64 * 32) { /* 値 */ 0f },
 )
-// D2 は shape = listOf(i, j)、D3 は shape = listOf(i, j, k)
+// D2 は Batch.d2(size, i, j, value)、D3 は Batch.d3(size, i, j, k, value)、D4 は Batch.d4(size, i, j, k, l, value)
+// shape: List<Int> を渡す版もある（Batch.d2(size, shape, value) など）
 ```
 
 ### 学習
@@ -506,10 +507,11 @@ Raw 系は変換なし（`Batch<IOType.Dx>` をそのまま渡す）。カスタ
 
 ```kotlin
 import com.wsr.knist.batch.Batch                  // Batch<T>
+import com.wsr.knist.batch.d1                     // Batch.d1(size, i, floatArray)（D2 なら com.wsr.knist.batch.d2）
+import com.wsr.knist.batch.unwrap                 // Batch.unwrap(): 全要素を FloatArray で取り出す
 import com.wsr.knist.batch.shape.toList           // Batch.toList()
 import com.wsr.knist.core.IOType                  // IOType.D1 / D2 / D3
 import com.wsr.knist.batch.reduction.maxIndex     // Batch<IOType.D1>.maxIndex() 等（decode で使う。IOType 単体用は com.wsr.knist.core.reduction.maxIndex）
-import com.wsr.knist.base.data.DataBuffer         // DataBuffer.create(floatArray)
 import com.wsr.knist.network.converter.Converter  // Converter.D1<T> / D2<T>
 ```
 
@@ -527,10 +529,10 @@ data class LabelConverter(override val outputI: Int) : Converter.D1<List<Int>>()
         input.forEachIndexed { batchIndex, label ->
             value[batchIndex * outputI + label] = 1f
         }
-        return Batch(size = input.size, shape = listOf(outputI), value = DataBuffer.create(value))
+        return Batch.d1(size = input.size, i = outputI, value = value)
     }
     override fun decode(input: Batch<IOType.D1>): List<Int> =
-        input.maxIndex().value.toFloatArray().map { it.toInt() }
+        input.maxIndex().unwrap().map { it.toInt() }
 }
 ```
 
@@ -541,10 +543,10 @@ data class LabelConverter(override val outputI: Int) : Converter.D1<List<Int>>()
 data class PixelConverter(override val outputI: Int, override val outputJ: Int) : Converter.D2<List<List<Float>>>() {
     override fun encode(input: List<List<Float>>): Batch<IOType.D2> {
         val value = input.flatten().toFloatArray()
-        return Batch(size = input.size, shape = listOf(outputI, outputJ), value = DataBuffer.create(value))
+        return Batch.d2(size = input.size, i = outputI, j = outputJ, value = value)
     }
     override fun decode(input: Batch<IOType.D2>): List<List<Float>> =
-        input.value.toFloatArray().toList().chunked(outputI * outputJ)
+        input.unwrap().toList().chunked(outputI * outputJ)
 }
 ```
 

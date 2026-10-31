@@ -3,6 +3,7 @@
 package com.wsr.knist.network
 
 import com.wsr.knist.batch.Batch
+import com.wsr.knist.batch.unwrap
 import com.wsr.knist.core.IOType
 import com.wsr.knist.core.d1
 import com.wsr.knist.core.d2
@@ -372,8 +373,8 @@ class NetworkReplaceTest {
     }
 
     private fun <T : IOType> assertSameOutput(expected: Batch<T>, actual: Batch<T>) {
-        val e = expected.value.toFloatArray()
-        val a = actual.value.toFloatArray()
+        val e = expected.unwrap()
+        val a = actual.unwrap()
         assertTrue(
             e.size == a.size && e.indices.all { e[it] == a[it] },
             "expected ${e.toList()}, actual ${a.toList()}",
@@ -381,8 +382,8 @@ class NetworkReplaceTest {
     }
 
     private fun <T : IOType> assertDifferentOutput(before: Batch<T>, after: Batch<T>) {
-        val b = before.value.toFloatArray()
-        val a = after.value.toFloatArray()
+        val b = before.unwrap()
+        val a = after.unwrap()
         assertTrue(
             b.indices.any { abs(b[it] - a[it]) > 1e-6f },
             "output did not change: ${b.toList()}",
