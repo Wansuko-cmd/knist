@@ -80,10 +80,6 @@ operator fun IOType.D4.get(i: Int): IOType.D3 {
     )
 }
 
-operator fun IOType.D4.set(i: Int, j: Int, k: Int, l: Int, element: Float) {
-    value[((i * shape[1] + j) * shape[2] + k) * shape[3] + l] = element
-}
-
 @ScopeOp
 fun IOType.D4.concat(other: IOType.D4, axis: Int): IOType.D4.Global = when (axis) {
     0 -> {

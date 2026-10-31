@@ -53,19 +53,6 @@ operator fun IOType.D2.get(i: Int): IOType.D1 {
     return IOType.D1(result)
 }
 
-operator fun IOType.D2.set(i: Int, j: Int, element: Float) {
-    value[i * shape[1] + j] = element
-}
-
-operator fun IOType.D2.set(i: Int, element: IOType.D1) {
-    val start = i * shape[1]
-    Backend.copyInto(
-        x = element.value,
-        y = value,
-        indices = start until start + element.value.size,
-    )
-}
-
 @ScopeOp
 fun IOType.D2.concat(other: IOType.D2, axis: Int): IOType.D2.Global = when (axis) {
     0 -> {

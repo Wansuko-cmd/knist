@@ -22,10 +22,6 @@ internal fun IOType.Companion.d1Impl(value: FloatArray): IOType.D1.Global = IOTy
 
 operator fun IOType.D1.get(index: Int): IOType.D0 = IOType.d0(value[index])
 
-operator fun IOType.D1.set(index: Int, element: Float) {
-    value[index] = element
-}
-
 @ScopeOp
 fun IOType.D1.concat(other: IOType.D1): IOType.D1.Global {
     val newI = i + other.i

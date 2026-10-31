@@ -65,28 +65,6 @@ operator fun IOType.D3.get(i: Int): IOType.D2 {
     )
 }
 
-operator fun IOType.D3.set(i: Int, j: Int, z: Int, element: Float) {
-    value[(i * shape[1] + j) * shape[2] + z] = element
-}
-
-operator fun IOType.D3.set(i: Int, j: Int, element: IOType.D1) {
-    val start = (i * shape[1] + j) * shape[2]
-    Backend.copyInto(
-        x = element.value,
-        y = value,
-        indices = start until start + element.value.size,
-    )
-}
-
-operator fun IOType.D3.set(i: Int, element: IOType.D2) {
-    val start = i * shape[1] * shape[2]
-    Backend.copyInto(
-        x = element.value,
-        y = value,
-        indices = start until start + element.value.size,
-    )
-}
-
 @ScopeOp
 fun IOType.D3.concat(other: IOType.D3, axis: Int): IOType.D3.Global = when (axis) {
     0 -> {

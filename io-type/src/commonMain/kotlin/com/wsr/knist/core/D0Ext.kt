@@ -10,9 +10,5 @@ internal fun IOType.Companion.d0Impl(value: Float): IOType.D0.Global = d0Impl(fl
 
 fun IOType.D0.unwrap() = value[0]
 
-fun IOType.D0.set(element: Float) {
-    value[0] = element
-}
-
 @ScopeOp
 operator fun IOType.D0.unaryMinus(): IOType.D0 = -1f * this
