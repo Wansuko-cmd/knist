@@ -19,9 +19,5 @@ operator fun Batch<IOType.D0>.get(i: Int): IOType.D0 {
     return IOType.d0(value[index])
 }
 
-operator fun Batch<IOType.D0>.set(i: Int, element: IOType.D0) {
-    value[i] = element.value[0]
-}
-
 @ScopeOp
 operator fun Batch<IOType.D0>.unaryMinus(): Batch<IOType.D0> = -1f * this
