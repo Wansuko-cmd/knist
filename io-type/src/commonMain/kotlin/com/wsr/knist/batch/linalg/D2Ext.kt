@@ -6,6 +6,7 @@ import com.wsr.knist.batch.d1
 import com.wsr.knist.batch.d2
 import com.wsr.knist.batch.i
 import com.wsr.knist.batch.j
+import com.wsr.knist.batch.shape.transpose
 import com.wsr.knist.core.IOType
 import com.wsr.knist.scope.ScopeOp
 import com.wsr.knist.scope.ScopeOpDefault
@@ -31,12 +32,13 @@ fun IOType.D2.matMul(other: Batch<IOType.D1>, @ScopeOpDefault("false") trans: Bo
 @JvmName("batchD2sMatMulD2")
 @ScopeOp
 fun Batch<IOType.D2>.matMul(other: IOType.D2, @ScopeOpDefault("false") transA: Boolean = false, @ScopeOpDefault("false") transB: Boolean = false): Batch<IOType.D2.Global> {
-    val m = if (transA) j else i
+    val x = if (transA) this.transpose() else this
+    val m = x.i
     val n = if (transB) other.i else other.j
-    val k = if (transA) i else j
+    val k = x.j
     val result = Backend.matMul(
-        x = value,
-        transX = transA,
+        x = x.value,
+        transX = false,
         y = other.value,
         transY = transB,
         m = size * m,
