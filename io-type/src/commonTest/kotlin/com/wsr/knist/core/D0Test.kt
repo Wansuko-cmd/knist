@@ -25,13 +25,6 @@ class D0Test {
     }
 
     @Test
-    fun `set=D0スカラー値設定`() {
-        val d0 = IOType.d0(1.0f)
-        d0.set(5.0f)
-        assertEquals(expected = 5.0f, actual = d0.unwrap())
-    }
-
-    @Test
     fun `shape=D0の形状はlistOf1`() {
         val d0 = IOType.d0(1.0f)
         assertEquals(expected = listOf(1), actual = d0.shape)

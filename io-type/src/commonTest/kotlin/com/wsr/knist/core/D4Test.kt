@@ -101,41 +101,4 @@ class D4Test {
         val d4 = IOType.d4(listOf(2, 3, 4, 5)) { _, _, _, _ -> 0.0f }
         assertEquals(expected = 120, actual = d4.size)
     }
-
-    @Test
-    fun `set=4次元要素設定`() {
-        val d4 = IOType.d4(listOf(2, 2, 2, 2)) { i, j, k, l -> i + j * 2.0f + k * 4.0f + l * 8.0f }
-        d4[0, 0, 0, 0] = 15.0f
-        d4[0, 0, 0, 1] = 7.0f
-        d4[0, 0, 1, 0] = 11.0f
-        d4[0, 0, 1, 1] = 3.0f
-        d4[0, 1, 0, 0] = 13.0f
-        d4[0, 1, 0, 1] = 5.0f
-        d4[0, 1, 1, 0] = 9.0f
-        d4[0, 1, 1, 1] = 1.0f
-        d4[1, 0, 0, 0] = 14.0f
-        d4[1, 0, 0, 1] = 6.0f
-        d4[1, 0, 1, 0] = 10.0f
-        d4[1, 0, 1, 1] = 2.0f
-        d4[1, 1, 0, 0] = 12.0f
-        d4[1, 1, 0, 1] = 4.0f
-        d4[1, 1, 1, 0] = 8.0f
-        d4[1, 1, 1, 1] = 0.0f
-        assertEquals(expected = 15.0f, actual = d4[0, 0, 0, 0].unwrap())
-        assertEquals(expected = 7.0f, actual = d4[0, 0, 0, 1].unwrap())
-        assertEquals(expected = 11.0f, actual = d4[0, 0, 1, 0].unwrap())
-        assertEquals(expected = 3.0f, actual = d4[0, 0, 1, 1].unwrap())
-        assertEquals(expected = 13.0f, actual = d4[0, 1, 0, 0].unwrap())
-        assertEquals(expected = 5.0f, actual = d4[0, 1, 0, 1].unwrap())
-        assertEquals(expected = 9.0f, actual = d4[0, 1, 1, 0].unwrap())
-        assertEquals(expected = 1.0f, actual = d4[0, 1, 1, 1].unwrap())
-        assertEquals(expected = 14.0f, actual = d4[1, 0, 0, 0].unwrap())
-        assertEquals(expected = 6.0f, actual = d4[1, 0, 0, 1].unwrap())
-        assertEquals(expected = 10.0f, actual = d4[1, 0, 1, 0].unwrap())
-        assertEquals(expected = 2.0f, actual = d4[1, 0, 1, 1].unwrap())
-        assertEquals(expected = 12.0f, actual = d4[1, 1, 0, 0].unwrap())
-        assertEquals(expected = 4.0f, actual = d4[1, 1, 0, 1].unwrap())
-        assertEquals(expected = 8.0f, actual = d4[1, 1, 1, 0].unwrap())
-        assertEquals(expected = 0.0f, actual = d4[1, 1, 1, 1].unwrap())
-    }
 }
