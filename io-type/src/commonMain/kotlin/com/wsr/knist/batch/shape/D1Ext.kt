@@ -7,6 +7,7 @@ import com.wsr.knist.batch.Batch
 import com.wsr.knist.batch.d1
 import com.wsr.knist.batch.d2
 import com.wsr.knist.batch.d3
+import com.wsr.knist.batch.d4
 import com.wsr.knist.batch.get
 import com.wsr.knist.batch.i
 import com.wsr.knist.core.D2
@@ -36,6 +37,9 @@ fun IOType.D2.toBatch(): Batch<IOType.D1> = Batch.d1(size = i, j, value)
 @JvmName("batchD1sToList")
 fun Batch<IOType.D1>.toList(): List<IOType.D1> = List(size) { get(it) }
 
+@JvmName("batchD1sReshapeToD1")
+fun Batch<IOType.D1>.reshapeToD1(): Batch<IOType.D1> = Batch.d1(size, step, value)
+
 @JvmName("batchD1sReshapeToD2")
 fun Batch<IOType.D1>.reshapeToD2(i: Int, j: Int): Batch<IOType.D2> = reshapeToD2(listOf(i, j))
 
@@ -47,6 +51,12 @@ fun Batch<IOType.D1>.reshapeToD3(i: Int, j: Int, k: Int): Batch<IOType.D3> = res
 
 @JvmName("batchD1sReshapeToD3ByShape")
 fun Batch<IOType.D1>.reshapeToD3(shape: List<Int>): Batch<IOType.D3> = Batch.d3(size, shape, value)
+
+@JvmName("batchD1sReshapeToD4")
+fun Batch<IOType.D1>.reshapeToD4(i: Int, j: Int, k: Int, l: Int): Batch<IOType.D4> = reshapeToD4(listOf(i, j, k, l))
+
+@JvmName("batchD1sReshapeToD4ByShape")
+fun Batch<IOType.D1>.reshapeToD4(shape: List<Int>): Batch<IOType.D4> = Batch.d4(size, shape, value)
 
 @ScopeOp
 fun Batch<IOType.D1>.slice(indices: IntProgression): Batch<IOType.D1.Global> {

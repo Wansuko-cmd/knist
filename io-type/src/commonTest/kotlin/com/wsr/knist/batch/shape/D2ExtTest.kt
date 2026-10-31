@@ -48,17 +48,6 @@ class D2ExtTest {
     }
 
     @Test
-    fun `flatten=D2バッチをD1バッチにフラット化`() = ioTypeTestRule {
-        val batch = Batch.of(
-            IOType.d2(2, 3) { i, j -> i * 3f + j },
-            IOType.d2(2, 3) { i, j -> i * 3f + j + 6f },
-        )
-        val result = batch.flatten()
-        assertContentEquals(IOType.d1(listOf(0f, 1f, 2f, 3f, 4f, 5f)), result[0])
-        assertContentEquals(IOType.d1(listOf(6f, 7f, 8f, 9f, 10f, 11f)), result[1])
-    }
-
-    @Test
     fun `slice_axis0=D2バッチのaxis0スライス`() = ioTypeTestRule {
         val batch = Batch.of(
             IOType.d2(3, 2) { i, j -> i * 2f + j },

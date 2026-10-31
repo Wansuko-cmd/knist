@@ -537,7 +537,7 @@ D1 の例。D2/D3 は `axis: Int` 引数を取るバリアントも存在する�
 | `concat(other)` | D1 の結合（D2/D3 は `concat(other, axis)`） |
 | `transpose()` | D2 の転置（D3/D4 は `transpose(axisI, axisJ, axisK[, axisL])` で軸入れ替え） |
 | `flip(axis)` | D3/D4 の指定軸を反転 |
-| `reshapeToD3(i, j, k)` 等 | コピー無しの形状再解釈（要素数が同一であること） |
+| `reshapeToD1()` 〜 `reshapeToD4(i, j, k, l)` | コピー無しの形状再解釈。D1〜D4 のどの次元からどの次元へも変換でき、D2〜D4 へは `reshapeToD3(listOf(i, j, k))` のように `List<Int>` 版もある。D1 への変換は引数なし。戻り値は元とバッファを共有するため、保持するときは `toGlobal()` を呼ぶ |
 
 ### インデックス操作（埋め込み等で使用）
 
@@ -561,7 +561,6 @@ import: `com.wsr.knist.core.index.gather` / `com.wsr.knist.core.index.scatterAdd
 | `Batch<D2>.unfold(window, stride, dilation, padding)` | Batch<D2> → Batch<D3> | スライディングウィンドウ展開（im2col 相当。conv の実装で使用。D3→D4 版もあり） |
 | `Batch<D3>.fold(stride, dilation, padding)` | Batch<D3> → Batch<D2> | unfold の逆操作（重複位置は加算。D4→D3 版もあり） |
 | `Batch<D2>.padding(axis, left, right)` | Batch<D2> → Batch<D2> | 指定軸の前後にゼロパディングを追加（axis: 0=i, 1=j） |
-| `Batch<D2>.flatten()` | Batch<D2> → Batch<D1> | 各サンプルを1次元化 |
 | `IOType.D3.toBatch()` | D3 → Batch<D2> | 先頭軸をバッチ次元として再解釈（D2 → Batch<D1> 等もあり） |
 
 四則演算・数学関数・比較・集約には `Batch<IOType.Dx>` レシーバー版も同名で存在する（import は `com.wsr.knist.batch.elementwise.*` / `com.wsr.knist.batch.reduction.*` 等、`core` を `batch` に読み替える）。ここに載っていない演算が必要な場合は io-type モジュールの `core`（IOType 単体用）/ `batch`（Batch 用）パッケージを確認すること。

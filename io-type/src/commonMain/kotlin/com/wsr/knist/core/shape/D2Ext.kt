@@ -3,6 +3,7 @@
 import com.wsr.knist.Backend
 import com.wsr.knist.base.data.DataBuffer
 import com.wsr.knist.base.data.size
+import com.wsr.knist.core.D1
 import com.wsr.knist.core.D2
 import com.wsr.knist.core.D3
 import com.wsr.knist.core.D4
@@ -35,11 +36,19 @@ fun IOType.D2.transpose(): IOType.D2.Global {
     return IOType.D2(shape = listOf(j, i), value = result)
 }
 
-fun IOType.D2.reshapeToD3(i: Int, j: Int, k: Int): IOType.D3 = reshapeToD3(shape = listOf(i, j, k))
+fun IOType.D2.reshapeToD1(): IOType.D1 = IOType.D1(value = value)
+
+fun IOType.D2.reshapeToD2(i: Int, j: Int): IOType.D2 = reshapeToD2(listOf(i, j))
+
+fun IOType.D2.reshapeToD2(shape: List<Int>): IOType.D2 = IOType.D2(shape = shape, value = value)
+
+fun IOType.D2.reshapeToD3(i: Int, j: Int, k: Int): IOType.D3 = reshapeToD3(listOf(i, j, k))
 
 fun IOType.D2.reshapeToD3(shape: List<Int>): IOType.D3 = IOType.D3(shape = shape, value = value)
 
-fun IOType.D2.reshapeToD4(i: Int, j: Int, k: Int, l: Int): IOType.D4 = IOType.D4(shape = listOf(i, j, k, l), value = value)
+fun IOType.D2.reshapeToD4(i: Int, j: Int, k: Int, l: Int): IOType.D4 = reshapeToD4(listOf(i, j, k, l))
+
+fun IOType.D2.reshapeToD4(shape: List<Int>): IOType.D4 = IOType.D4(shape = shape, value = value)
 
 @ScopeOp
 fun IOType.D2.slice(indices: IntProgression, axis: Int): IOType.D2.Global {
