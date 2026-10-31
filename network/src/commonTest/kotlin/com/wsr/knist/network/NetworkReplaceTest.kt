@@ -359,14 +359,14 @@ class NetworkReplaceTest {
 
     @Test
     fun `replace=空ブロックで入出力形状が変わる層は例外`() = networkTestRule {
-        assertFailsWith<IllegalStateException> {
+        assertFailsWith<IllegalArgumentException> {
             createD1Network().replace<AffineD1>(condition = { it.id == "mid" }) { this }
         }
     }
 
     @Test
     fun `replace=差し替え後の形状が一致しない場合は例外`() = networkTestRule {
-        assertFailsWith<IllegalStateException> {
+        assertFailsWith<IllegalArgumentException> {
             createD1Network().replace<AffineD1>(condition = { it.id == "mid" }) { affine(neuron = 5) }
         }
     }

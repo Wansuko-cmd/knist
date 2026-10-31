@@ -22,7 +22,7 @@ class MaxPoolD3 internal constructor(val poolSize: Int, val channel: Int, val he
     override val outputK: Int = (width + 2 * padding - poolSize) / stride + 1
 
     init {
-        check(
+        require(
             (height + 2 * padding - poolSize) % stride == 0 &&
                 (width + 2 * padding - poolSize) % stride == 0,
         ) {

@@ -46,7 +46,7 @@ class DropoutD3 internal constructor(
 }
 
 fun GraphBuilder.Node.D3.dropout(ratio: Float, seed: Int? = null, id: String = Uuid.random().toString()): GraphBuilder.Node.D3 {
-    check(0 < ratio && ratio <= 1)
+    require(0 < ratio && ratio <= 1)
     return addCompute(
         compute =
             DropoutD3(

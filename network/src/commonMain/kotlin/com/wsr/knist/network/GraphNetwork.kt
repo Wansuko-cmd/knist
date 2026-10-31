@@ -388,7 +388,7 @@ abstract class GraphNetwork<T : GraphNetwork<T>> {
                     val from = redirect[node.from] ?: node.from
                     val result = seed(process, from).block(process)
                     if (result.nodes.isEmpty()) {
-                        check(process.inputShape == process.outputShape) {
+                        require(process.inputShape == process.outputShape) {
                             """
                                 invalid replace.
                                 input: ${process.inputShape}
@@ -401,7 +401,7 @@ abstract class GraphNetwork<T : GraphNetwork<T>> {
 
                     val first = (result.nodes.first() as Graph.Node.Attach).process
                     val last = (result.nodes.last() as Graph.Node.Attach).process
-                    check(first.inputShape == process.inputShape && last.outputShape == process.outputShape) {
+                    require(first.inputShape == process.inputShape && last.outputShape == process.outputShape) {
                         """
                             invalid replace.
                             input: ${process.inputShape}

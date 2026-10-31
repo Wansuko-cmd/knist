@@ -15,7 +15,7 @@ class MinMaxNormAxisD2 internal constructor(override val inputI: Int, override v
     override val outputJ: Int get() = inputJ
 
     init {
-        check(axis == 0 || axis == 1) {
+        require(axis == 0 || axis == 1) {
             """
             invalid parameter.
             axis: $axis

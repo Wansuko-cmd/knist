@@ -25,7 +25,7 @@ internal class ReshapeD1ToD3(override val inputI: Int, override val outputI: Int
 }
 
 fun GraphBuilder.Node.D1.reshapeToD3(i: Int = 1, j: Int = 1, k: Int = inputI, id: String = Uuid.random().toString()): GraphBuilder.Node.D3 {
-    check(i * j * k == inputI) {
+    require(i * j * k == inputI) {
         """
             invalid parameter.
             i: $i

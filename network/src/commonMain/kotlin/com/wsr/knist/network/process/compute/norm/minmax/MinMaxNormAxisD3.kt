@@ -22,7 +22,7 @@ class MinMaxNormAxisD3 internal constructor(
     override val outputK: Int get() = inputK
 
     init {
-        check(axis in 0..2) {
+        require(axis in 0..2) {
             """
             invalid parameter.
             axis: $axis

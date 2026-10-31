@@ -38,7 +38,7 @@ class DropoutD2 internal constructor(override val inputI: Int, override val inpu
 }
 
 fun GraphBuilder.Node.D2.dropout(ratio: Float, seed: Int? = null, id: String = Uuid.random().toString()): GraphBuilder.Node.D2 {
-    check(0 < ratio && ratio <= 1)
+    require(0 < ratio && ratio <= 1)
     return addCompute(
         compute =
             DropoutD2(

@@ -18,7 +18,7 @@ internal class GlobalAverageD3ToD2(override val inputI: Int, override val inputJ
     override val outputJ: Int = if (axis == 2) inputJ else inputK
 
     init {
-        check(axis in 0..2) {
+        require(axis in 0..2) {
             """
             invalid parameter.
             axis: $axis

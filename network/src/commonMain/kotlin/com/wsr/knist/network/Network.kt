@@ -163,8 +163,8 @@ interface Network {
             companion object {
                 @Suppress("UNCHECKED_CAST")
                 private fun <I, O> build(sources: List<Graph.Source<*>>, graph: List<Graph.Node>, sinks: List<Graph.Sink<*>>, optimizer: Optimizer, initializer: WeightInitializer): Sink1<I, O> {
-                    check(sources.size == 1) { "invalid Network format. sources.size=${sources.size}." }
-                    check(sinks.size == 1) { "invalid Network format. sinks.size=${sinks.size}." }
+                    require(sources.size == 1) { "invalid Network format. sources.size=${sources.size}." }
+                    require(sinks.size == 1) { "invalid Network format. sinks.size=${sinks.size}." }
                     return Sink1(
                         source = sources[0] as Graph.Source<I>,
                         graph = graph,
@@ -472,8 +472,8 @@ interface Network {
                     optimizer: Optimizer,
                     initializer: WeightInitializer,
                 ): Sink2<I, O1, O2> {
-                    check(sources.size == 1) { "invalid Network format. sources.size=${sources.size}." }
-                    check(sinks.size == 2) { "invalid Network format. sinks.size=${sinks.size}." }
+                    require(sources.size == 1) { "invalid Network format. sources.size=${sources.size}." }
+                    require(sinks.size == 2) { "invalid Network format. sinks.size=${sinks.size}." }
                     return Sink2(
                         source = sources[0] as Graph.Source<I>,
                         graph = graph,
@@ -899,8 +899,8 @@ interface Network {
                     optimizer: Optimizer,
                     initializer: WeightInitializer,
                 ): Sink3<I, O1, O2, O3> {
-                    check(sources.size == 1) { "invalid Network format. sources.size=${sources.size}." }
-                    check(sinks.size == 3) { "invalid Network format. sinks.size=${sinks.size}." }
+                    require(sources.size == 1) { "invalid Network format. sources.size=${sources.size}." }
+                    require(sinks.size == 3) { "invalid Network format. sinks.size=${sinks.size}." }
                     return Sink3(
                         source = sources[0] as Graph.Source<I>,
                         graph = graph,
@@ -1100,8 +1100,8 @@ interface Network {
                     optimizer: Optimizer,
                     initializer: WeightInitializer,
                 ): Sink1<I1, I2, O> {
-                    check(sources.size == 2) { "invalid Network format. sources.size=${sources.size}." }
-                    check(sinks.size == 1) { "invalid Network format. sinks.size=${sinks.size}." }
+                    require(sources.size == 2) { "invalid Network format. sources.size=${sources.size}." }
+                    require(sinks.size == 1) { "invalid Network format. sinks.size=${sinks.size}." }
                     return Sink1(
                         source1 = sources[0] as Graph.Source<I1>,
                         source2 = sources[1] as Graph.Source<I2>,
@@ -1433,8 +1433,8 @@ interface Network {
                     optimizer: Optimizer,
                     initializer: WeightInitializer,
                 ): Sink2<I1, I2, O1, O2> {
-                    check(sources.size == 2) { "invalid Network format. sources.size=${sources.size}." }
-                    check(sinks.size == 2) { "invalid Network format. sinks.size=${sinks.size}." }
+                    require(sources.size == 2) { "invalid Network format. sources.size=${sources.size}." }
+                    require(sinks.size == 2) { "invalid Network format. sinks.size=${sinks.size}." }
                     return Sink2(
                         source1 = sources[0] as Graph.Source<I1>,
                         source2 = sources[1] as Graph.Source<I2>,
@@ -1902,8 +1902,8 @@ interface Network {
                     optimizer: Optimizer,
                     initializer: WeightInitializer,
                 ): Sink3<I1, I2, O1, O2, O3> {
-                    check(sources.size == 2) { "invalid Network format. sources.size=${sources.size}." }
-                    check(sinks.size == 3) { "invalid Network format. sinks.size=${sinks.size}." }
+                    require(sources.size == 2) { "invalid Network format. sources.size=${sources.size}." }
+                    require(sinks.size == 3) { "invalid Network format. sinks.size=${sinks.size}." }
                     return Sink3(
                         source1 = sources[0] as Graph.Source<I1>,
                         source2 = sources[1] as Graph.Source<I2>,
@@ -2143,8 +2143,8 @@ interface Network {
                     optimizer: Optimizer,
                     initializer: WeightInitializer,
                 ): Sink1<I1, I2, I3, O> {
-                    check(sources.size == 3) { "invalid Network format. sources.size=${sources.size}." }
-                    check(sinks.size == 1) { "invalid Network format. sinks.size=${sinks.size}." }
+                    require(sources.size == 3) { "invalid Network format. sources.size=${sources.size}." }
+                    require(sinks.size == 1) { "invalid Network format. sinks.size=${sinks.size}." }
                     return Sink1(
                         source1 = sources[0] as Graph.Source<I1>,
                         source2 = sources[1] as Graph.Source<I2>,
@@ -2522,8 +2522,8 @@ interface Network {
                     optimizer: Optimizer,
                     initializer: WeightInitializer,
                 ): Sink2<I1, I2, I3, O1, O2> {
-                    check(sources.size == 3) { "invalid Network format. sources.size=${sources.size}." }
-                    check(sinks.size == 2) { "invalid Network format. sinks.size=${sinks.size}." }
+                    require(sources.size == 3) { "invalid Network format. sources.size=${sources.size}." }
+                    require(sinks.size == 2) { "invalid Network format. sinks.size=${sinks.size}." }
                     return Sink2(
                         source1 = sources[0] as Graph.Source<I1>,
                         source2 = sources[1] as Graph.Source<I2>,
@@ -3048,8 +3048,8 @@ interface Network {
                     optimizer: Optimizer,
                     initializer: WeightInitializer,
                 ): Sink3<I1, I2, I3, O1, O2, O3> {
-                    check(sources.size == 3) { "invalid Network format. sources.size=${sources.size}." }
-                    check(sinks.size == 3) { "invalid Network format. sinks.size=${sinks.size}." }
+                    require(sources.size == 3) { "invalid Network format. sources.size=${sources.size}." }
+                    require(sinks.size == 3) { "invalid Network format. sinks.size=${sinks.size}." }
                     return Sink3(
                         source1 = sources[0] as Graph.Source<I1>,
                         source2 = sources[1] as Graph.Source<I2>,

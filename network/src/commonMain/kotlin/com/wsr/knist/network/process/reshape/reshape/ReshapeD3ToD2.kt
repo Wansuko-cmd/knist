@@ -31,7 +31,7 @@ internal class ReshapeD3ToD2(
 }
 
 fun GraphBuilder.Node.D3.reshapeToD2(i: Int, j: Int, id: String = Uuid.random().toString()): GraphBuilder.Node.D2 {
-    check(inputI * inputJ * inputK == i * j) {
+    require(inputI * inputJ * inputK == i * j) {
         """
             invalid parameter.
             inputI: $inputI

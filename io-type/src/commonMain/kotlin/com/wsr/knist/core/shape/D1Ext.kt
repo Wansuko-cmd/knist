@@ -34,7 +34,7 @@ fun IOType.D1.slice(indices: IntProgression): IOType.D1.Global {
 
 @ScopeOp
 fun IOType.D1.interleave(other: IOType.D1): IOType.D1.Global {
-    check(i == other.i)
+    require(i == other.i)
 
     val result = DataBuffer.create(i + other.i)
     Backend.copyInto(x = value, y = result, indices = 0 until i * 2 step 2)

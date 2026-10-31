@@ -25,7 +25,7 @@ internal class MulD1(override val outputI: Int) : Join.D1() {
 }
 
 fun GraphScope.mul(vararg nodes: GraphBuilder.Node.D1): GraphBuilder.Node.D1 {
-    check(nodes.distinctBy { it.inputI }.size == 1)
+    require(nodes.distinctBy { it.inputI }.size == 1)
     return addJoin(
         join = MulD1(outputI = nodes[0].inputI),
         nodes = nodes,

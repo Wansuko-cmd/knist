@@ -39,7 +39,7 @@ class ConvD1 internal constructor(
     override val outputJ: Int = (inputSize - kernelSize + 2 * padding) / stride + 1
 
     init {
-        check((inputSize - kernelSize + 2 * padding) % stride == 0) {
+        require((inputSize - kernelSize + 2 * padding) % stride == 0) {
             val output = (inputSize - kernelSize + 2 * padding) / stride.toFloat() + 1.0
             """
             invalid parameter.

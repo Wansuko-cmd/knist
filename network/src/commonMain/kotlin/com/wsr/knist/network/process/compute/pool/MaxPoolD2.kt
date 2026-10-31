@@ -19,7 +19,7 @@ class MaxPoolD2 internal constructor(val poolSize: Int, val channel: Int, val in
     override val outputJ: Int = (inputSize + 2 * padding - poolSize) / stride + 1
 
     init {
-        check((inputSize + 2 * padding - poolSize) % stride == 0) {
+        require((inputSize + 2 * padding - poolSize) % stride == 0) {
             """
             invalid parameter.
             inputSize: $inputSize

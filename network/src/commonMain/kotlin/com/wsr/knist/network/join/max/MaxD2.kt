@@ -26,7 +26,7 @@ internal class MaxD2(override val outputI: Int, override val outputJ: Int) : Joi
 }
 
 fun GraphScope.max(vararg nodes: GraphBuilder.Node.D2): GraphBuilder.Node.D2 {
-    check(nodes.distinctBy { it.inputI to it.inputJ }.size == 1)
+    require(nodes.distinctBy { it.inputI to it.inputJ }.size == 1)
     return addJoin(
         join = MaxD2(outputI = nodes[0].inputI, outputJ = nodes[0].inputJ),
         nodes = nodes,

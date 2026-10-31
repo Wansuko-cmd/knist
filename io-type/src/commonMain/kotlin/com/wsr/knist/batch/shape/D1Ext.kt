@@ -65,7 +65,7 @@ fun Batch<IOType.D1>.concat(other: Batch<IOType.D1>): Batch<IOType.D1.Global> {
 
 @ScopeOp
 fun Batch<IOType.D1>.interleave(other: Batch<IOType.D1>): Batch<IOType.D1.Global> {
-    check(size == other.size && i == other.i)
+    require(size == other.size && i == other.i)
     val newI = i * 2
     val result = DataBuffer.create(value.size + other.value.size)
     Backend.copyInto(
