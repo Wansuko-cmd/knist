@@ -28,15 +28,45 @@ class LinalgTest {
     }
 
     @Test
-    fun `D2 matMul D1バッチ=行列とバッチベクトルの積`() = ioTypeTestRule {
+    fun `D1バッチ matMul D2=バッチベクトルと行列の積`() = ioTypeTestRule {
+        val d2 = IOType.d2(3, 2) { i, j -> i * 2f + j }
+        val batch = Batch.of(
+            IOType.d1(listOf(1f, 0f, 0f)),
+            IOType.d1(listOf(0f, 1f, 0f)),
+        )
+        val result = batch.matMul(d2)
+        assertContentEquals(IOType.d1(listOf(0f, 1f)), result[0])
+        assertContentEquals(IOType.d1(listOf(2f, 3f)), result[1])
+    }
+
+    @Test
+    fun `D1バッチ matMul D2を転置=バッチベクトルと転置行列の積`() = ioTypeTestRule {
         val d2 = IOType.d2(2, 3) { i, j -> i * 3f + j }
         val batch = Batch.of(
             IOType.d1(listOf(1f, 0f, 0f)),
             IOType.d1(listOf(0f, 1f, 0f)),
         )
-        val result = d2.matMul(batch)
+        val result = batch.matMul(d2, trans = true)
         assertContentEquals(IOType.d1(listOf(0f, 3f)), result[0])
         assertContentEquals(IOType.d1(listOf(1f, 4f)), result[1])
+    }
+
+    @Test
+    fun `D2バッチを転置 matMul D2=バッチごとに転置してから行列積`() = ioTypeTestRule {
+        val batchD2 = Batch.of(
+            IOType.d2(2, 3) { i, j -> i * 3f + j },
+            IOType.d2(2, 3) { i, j -> i * 3f + j + 6f },
+        )
+        val d2 = IOType.d2(2, 2) { i, j -> i * 2f + j }
+        val result = batchD2.matMul(d2, transA = true)
+        assertContentEquals(
+            IOType.d2(listOf(3, 2), listOf(6f, 9f, 8f, 13f, 10f, 17f)),
+            result[0],
+        )
+        assertContentEquals(
+            IOType.d2(listOf(3, 2), listOf(18f, 33f, 20f, 37f, 22f, 41f)),
+            result[1],
+        )
     }
 
     @Test

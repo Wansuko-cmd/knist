@@ -1,10 +1,20 @@
 package com.wsr.knist.network.process.compute.attention
 
 import com.wsr.knist.batch.Batch
+import com.wsr.knist.batch.i
+import com.wsr.knist.batch.j
+import com.wsr.knist.batch.k
+import com.wsr.knist.batch.linalg.matMul
 import com.wsr.knist.batch.shape.reshapeToD2
 import com.wsr.knist.batch.shape.reshapeToD3
+import com.wsr.knist.batch.shape.toBatch
+import com.wsr.knist.batch.shape.toD3
+import com.wsr.knist.batch.shape.toD4
 import com.wsr.knist.core.IOScope
 import com.wsr.knist.core.IOType
+import com.wsr.knist.core.shape.reshapeToD2
+import com.wsr.knist.core.shape.reshapeToD3
+import com.wsr.knist.core.shape.reshapeToD4
 import com.wsr.knist.network.Graph
 import com.wsr.knist.network.GraphBuilder
 import com.wsr.knist.network.GraphEnv
@@ -135,6 +145,16 @@ class AttentionD2 internal constructor(
         weightV = optimizerV.adapt(weightV, dwv).toGlobal()
 
         return dxq + dxk + dxv
+    }
+
+    context(scope: IOScope)
+    private fun Batch<IOType.D3>.matMul(other: Batch<IOType.D3>, transA: Boolean = false, transB: Boolean = false): Batch<IOType.D3> {
+        val x = this.toD4().reshapeToD3(size * i, j, k).toBatch()
+        val y = other.toD4().reshapeToD3(size * other.i, other.j, other.k).toBatch()
+        val result = with(scope) { x.matMul(other = y, transA = transA, transB = transB) }
+        return result.toD3()
+            .reshapeToD4(size, i, result.i, result.j)
+            .toBatch()
     }
 
     override fun update(optimizer: Optimizer) {
