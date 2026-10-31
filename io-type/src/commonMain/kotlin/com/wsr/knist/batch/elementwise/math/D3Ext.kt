@@ -45,17 +45,17 @@ fun Batch<IOType.D3>.sigmoid(): Batch<IOType.D3.Global> = Batch.d3(size, shape, 
 
 @JvmName("batchD3sSoftmax")
 @ScopeOp
-fun Batch<IOType.D3>.softmax(): Batch<IOType.D3.Global> = toD4()
-    .reshapeToD2(i = size, j = step)
-    .softmax(axis = 1)
-    .reshapeToD4(i = size, j = i, k = j, l = k)
-    .toBatch()
+fun Batch<IOType.D3>.softmax(): Batch<IOType.D3.Global> {
+    val result = toD4().reshapeToD2(i = size, j = step).softmax(axis = 1).value
+    return Batch.d3(size, shape, result)
+}
 
 @JvmName("batchD3sSoftmaxWithAxis")
 @ScopeOp
-fun Batch<IOType.D3>.softmax(axis: Int): Batch<IOType.D3.Global> = toD4()
-    .softmax(axis = axis + 1)
-    .toBatch()
+fun Batch<IOType.D3>.softmax(axis: Int): Batch<IOType.D3.Global> {
+    val result = toD4().softmax(axis = axis + 1).value
+    return Batch.d3(size, shape, result)
+}
 
 @JvmName("batchD3sSqrt")
 @ScopeOp
