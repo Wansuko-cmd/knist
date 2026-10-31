@@ -69,7 +69,7 @@ class MaxPoolD3 internal constructor(val poolSize: Int, val channel: Int, val he
 
         // 同値が複数ある場合は勾配を等分
         val windowSize = poolSize * poolSize
-        val mask = unfold eq output.broadcastToD4(axis = 3, size = windowSize)
+        val mask = unfold.eq(output.broadcastToD4(axis = 3, size = windowSize), absoluteTolerance = 0f, relativeTolerance = 0f)
         val count = mask.sum(axis = 3)
         val dx = (delta / count).broadcastToD4(axis = 3, size = windowSize)
             .where(condition = mask, onFalse = 0f)

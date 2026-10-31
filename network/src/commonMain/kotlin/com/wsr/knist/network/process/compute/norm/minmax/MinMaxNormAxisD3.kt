@@ -66,10 +66,10 @@ class MinMaxNormAxisD3 internal constructor(
         val dMin = dNumerator.plus(other = dDenominator - denominator * delta.sum(axis = axis), axis1 = axis1, axis2 = axis2)
         val dMax = dNumerator.minus(other = dDenominator, axis1 = axis1, axis2 = axis2)
         return where(
-            condition = numerator eq 0f,
+            condition = numerator.eq(0f, absoluteTolerance = 0f, relativeTolerance = 0f),
             onTrue = dMin,
             onFalse = where(
-                condition = input.minus(other = max, axis1 = axis1, axis2 = axis2) eq 0f,
+                condition = input.minus(other = max, axis1 = axis1, axis2 = axis2).eq(0f, absoluteTolerance = 0f, relativeTolerance = 0f),
                 onTrue = dMax,
                 onFalse = dNumerator,
             ),

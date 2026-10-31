@@ -40,7 +40,7 @@ interface AttentionBiasD2 {
     data class Mask(val nodeId: GraphId, val value: Float) : AttentionBiasD2 {
         override fun IOScope.forward(scaled: Batch<IOType.D3>, env: GraphEnv): Batch<IOType.D3> {
             val input: Batch<IOType.D1> = env[nodeId]
-            val mask = input.where(onTrue = -1e9f, onFalse = 0f) { it eq value }
+            val mask = input.where(onTrue = -1e9f, onFalse = 0f) { it.eq(value, absoluteTolerance = 0f, relativeTolerance = 0f) }
             return scaled.plus(other = mask, axis = 2)
         }
     }

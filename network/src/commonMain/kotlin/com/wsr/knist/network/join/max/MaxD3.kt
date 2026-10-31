@@ -18,7 +18,7 @@ internal class MaxD3(override val outputI: Int, override val outputJ: Int, overr
         val delta = calcDelta(output)
 
         // 同値が複数ある場合は勾配を等分
-        val masks = inputs.map { input -> input eq output }
+        val masks = inputs.map { input -> input.eq(output, absoluteTolerance = 0f, relativeTolerance = 0f) }
         val count = masks.reduce { acc, mask -> acc + mask }
         val onTrue = delta / count
         return masks.map { mask -> where(condition = mask, onTrue = onTrue, onFalse = 0f) }

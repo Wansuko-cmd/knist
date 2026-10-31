@@ -39,10 +39,10 @@ class MinMaxNormD2 internal constructor(override val inputI: Int, override val i
         val dMin = dNumerator + dDenominator - denominator * delta.sum()
         val dMax = dNumerator - dDenominator
         return where(
-            condition = (input - min) eq 0f,
+            condition = (input - min).eq(0f, absoluteTolerance = 0f, relativeTolerance = 0f),
             onTrue = dMin,
             onFalse = where(
-                condition = (input - max) eq 0f,
+                condition = (input - max).eq(0f, absoluteTolerance = 0f, relativeTolerance = 0f),
                 onTrue = dMax,
                 onFalse = dNumerator,
             ),
