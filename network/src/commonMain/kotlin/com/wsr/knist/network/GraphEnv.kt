@@ -36,11 +36,13 @@ value class GraphEnv(private val values: MutableMap<GraphId, Batch<IOType>> = mu
 @Suppress("UNCHECKED_CAST")
 context(scope: IOScope)
 private fun accumulate(a: Batch<IOType>, b: Batch<IOType>): Batch<IOType> {
-    check(a.shape == b.shape) { "GraphEnv: shape mismatch on accumulate. a=$a.shape, b=$b.shape" }
-    return when (a.shape.size) {
-        1 -> ((a as Batch<IOType.D1>) + (b as Batch<IOType.D1>)) as Batch<IOType>
-        2 -> ((a as Batch<IOType.D2>) + (b as Batch<IOType.D2>)) as Batch<IOType>
-        3 -> ((a as Batch<IOType.D3>) + (b as Batch<IOType.D3>)) as Batch<IOType>
-        else -> error("GraphEnv: unsupported rank for accumulate: $a.shape")
+    check(a.shape == b.shape) { "GraphEnv: shape mismatch on accumulate. a=${a.shape}, b=${b.shape}" }
+    return with(scope) {
+        when (a.shape.size) {
+            1 -> ((a as Batch<IOType.D1>) + (b as Batch<IOType.D1>)) as Batch<IOType>
+            2 -> ((a as Batch<IOType.D2>) + (b as Batch<IOType.D2>)) as Batch<IOType>
+            3 -> ((a as Batch<IOType.D3>) + (b as Batch<IOType.D3>)) as Batch<IOType>
+            else -> error("GraphEnv: unsupported rank for accumulate: ${a.shape}")
+        }
     }
 }
