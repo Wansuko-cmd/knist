@@ -26,10 +26,18 @@ sealed class IOType {
         fun toGlobal() = Global(value).also { scope.remove(it) }
 
         @Serializable
-        data class Local(override val value: DataBuffer) : D0()
+        data class Local(override val value: DataBuffer) : D0() {
+            init {
+                require(value.size == 1)
+            }
+        }
 
         @Serializable
-        data class Global(override val value: DataBuffer) : D0()
+        data class Global(override val value: DataBuffer) : D0() {
+            init {
+                require(value.size == 1)
+            }
+        }
     }
 
     @Serializable
@@ -66,10 +74,22 @@ sealed class IOType {
         fun toGlobal() = Global(value, shape).also { scope.remove(it) }
 
         @Serializable
-        data class Local(override val value: DataBuffer, override val shape: List<Int>) : D2()
+        data class Local(override val value: DataBuffer, override val shape: List<Int>) : D2() {
+            init {
+                require(shape.size == 2)
+                require(shape.all { it > 0 })
+                require(value.size == shape.reduce { acc, i -> acc * i })
+            }
+        }
 
         @Serializable
-        data class Global(override val value: DataBuffer, override val shape: List<Int>) : D2()
+        data class Global(override val value: DataBuffer, override val shape: List<Int>) : D2() {
+            init {
+                require(shape.size == 2)
+                require(shape.all { it > 0 })
+                require(value.size == shape.reduce { acc, i -> acc * i })
+            }
+        }
     }
 
     @Serializable
@@ -87,10 +107,22 @@ sealed class IOType {
         fun toGlobal() = Global(value, shape).also { scope.remove(it) }
 
         @Serializable
-        data class Local(override val value: DataBuffer, override val shape: List<Int>) : D3()
+        data class Local(override val value: DataBuffer, override val shape: List<Int>) : D3() {
+            init {
+                require(shape.size == 3)
+                require(shape.all { it > 0 })
+                require(value.size == shape.reduce { acc, i -> acc * i })
+            }
+        }
 
         @Serializable
-        data class Global(override val value: DataBuffer, override val shape: List<Int>) : D3()
+        data class Global(override val value: DataBuffer, override val shape: List<Int>) : D3() {
+            init {
+                require(shape.size == 3)
+                require(shape.all { it > 0 })
+                require(value.size == shape.reduce { acc, i -> acc * i })
+            }
+        }
     }
 
     @Serializable
@@ -109,10 +141,22 @@ sealed class IOType {
         fun toGlobal() = Global(value, shape).also { scope.remove(it) }
 
         @Serializable
-        data class Local(override val value: DataBuffer, override val shape: List<Int>) : D4()
+        data class Local(override val value: DataBuffer, override val shape: List<Int>) : D4() {
+            init {
+                require(shape.size == 4)
+                require(shape.all { it > 0 })
+                require(value.size == shape.reduce { acc, i -> acc * i })
+            }
+        }
 
         @Serializable
-        data class Global(override val value: DataBuffer, override val shape: List<Int>) : D4()
+        data class Global(override val value: DataBuffer, override val shape: List<Int>) : D4() {
+            init {
+                require(shape.size == 4)
+                require(shape.all { it > 0 })
+                require(value.size == shape.reduce { acc, i -> acc * i })
+            }
+        }
     }
 
     override fun equals(other: Any?): Boolean {

@@ -3,6 +3,8 @@
 import com.wsr.knist.Backend
 import com.wsr.knist.base.data.DataBuffer
 import com.wsr.knist.batch.Batch
+import com.wsr.knist.batch.d1
+import com.wsr.knist.batch.d2
 import com.wsr.knist.batch.d3
 import com.wsr.knist.batch.d4
 import com.wsr.knist.batch.i
@@ -13,8 +15,26 @@ import com.wsr.knist.core.IOType
 import com.wsr.knist.scope.ScopeOp
 import kotlin.jvm.JvmName
 
+@JvmName("batchD4sReshapeToD1")
+fun Batch<IOType.D4>.reshapeToD1(): Batch<IOType.D1> = Batch.d1(size, step, value)
+
+@JvmName("batchD4sReshapeToD2")
+fun Batch<IOType.D4>.reshapeToD2(i: Int, j: Int): Batch<IOType.D2> = reshapeToD2(listOf(i, j))
+
+@JvmName("batchD4sReshapeToD2ByShape")
+fun Batch<IOType.D4>.reshapeToD2(shape: List<Int>): Batch<IOType.D2> = Batch.d2(size, shape, value)
+
 @JvmName("batchD4sReshapeToD3")
-fun Batch<IOType.D4>.reshapeToD3(i: Int, j: Int, k: Int) = Batch.d3(size, i, j, k, value)
+fun Batch<IOType.D4>.reshapeToD3(i: Int, j: Int, k: Int): Batch<IOType.D3> = reshapeToD3(listOf(i, j, k))
+
+@JvmName("batchD4sReshapeToD3ByShape")
+fun Batch<IOType.D4>.reshapeToD3(shape: List<Int>): Batch<IOType.D3> = Batch.d3(size, shape, value)
+
+@JvmName("batchD4sReshapeToD4")
+fun Batch<IOType.D4>.reshapeToD4(i: Int, j: Int, k: Int, l: Int): Batch<IOType.D4> = reshapeToD4(listOf(i, j, k, l))
+
+@JvmName("batchD4sReshapeToD4ByShape")
+fun Batch<IOType.D4>.reshapeToD4(shape: List<Int>): Batch<IOType.D4> = Batch.d4(size, shape, value)
 
 @ScopeOp
 fun Batch<IOType.D4>.concat(other: Batch<IOType.D4>, axis: Int): Batch<IOType.D4.Global> = when (axis) {

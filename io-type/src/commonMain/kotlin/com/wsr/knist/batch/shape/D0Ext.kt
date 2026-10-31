@@ -12,7 +12,7 @@ import com.wsr.knist.core.IOType
 import com.wsr.knist.scope.ScopeOp
 import kotlin.jvm.JvmName
 
-fun IOType.D1.toBatch(): Batch<IOType.D0.Global> = Batch.d0(size = i, value = value)
+fun IOType.D1.toBatch(): Batch<IOType.D0> = Batch.d0(size = i, value = value)
 
 @JvmName("batchD0sToList")
 fun Batch<IOType.D0>.toList(): List<IOType.D0> = List(size) { get(it) }

@@ -81,7 +81,12 @@ class Batch<out T : IOType>(@PublishedApi internal val value: DataBuffer, val si
     }
 
     val step = shape.reduce { acc, i -> acc * i }
-    val indices = 0 until size
+
+    init {
+        require(size >= 0)
+        require(shape.all { it > 0 })
+        require(value.size == size * step)
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

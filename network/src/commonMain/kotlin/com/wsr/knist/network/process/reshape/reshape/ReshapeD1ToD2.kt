@@ -1,7 +1,7 @@
 package com.wsr.knist.network.process.reshape.reshape
 
 import com.wsr.knist.batch.Batch
-import com.wsr.knist.batch.shape.flatten
+import com.wsr.knist.batch.shape.reshapeToD1
 import com.wsr.knist.batch.shape.reshapeToD2
 import com.wsr.knist.core.IOScope
 import com.wsr.knist.core.IOType
@@ -19,7 +19,7 @@ internal class ReshapeD1ToD2(override val inputI: Int, override val outputI: Int
     override fun IOScope.train(input: Batch<IOType.D1>, env: GraphEnv, calcDelta: IOScope.(Batch<IOType.D2>) -> Batch<IOType.D2>): Batch<IOType.D1> {
         val output = input.reshapeToD2(i = outputI, j = outputJ)
         val delta = calcDelta(output)
-        return delta.flatten()
+        return delta.reshapeToD1()
     }
 }
 

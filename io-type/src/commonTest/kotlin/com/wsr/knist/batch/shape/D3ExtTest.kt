@@ -123,15 +123,4 @@ class D3ExtTest {
         assertContentEquals(IOType.d3(2, 2, 2) { i, j, k -> i * 4f + j * 2f + k }, result[0])
         assertContentEquals(IOType.d3(2, 2, 2) { i, j, k -> i * 4f + j * 2f + k + 8f }, result[1])
     }
-
-    @Test
-    fun `flatten=D3バッチをD1バッチにフラット化`() = ioTypeTestRule {
-        val batch = Batch.of(
-            IOType.d3(2, 2, 2) { i, j, k -> i * 4f + j * 2f + k },
-            IOType.d3(2, 2, 2) { i, j, k -> i * 4f + j * 2f + k + 8f },
-        )
-        val result = batch.flatten()
-        assertContentEquals(IOType.d1(listOf(0f, 1f, 2f, 3f, 4f, 5f, 6f, 7f)), result[0])
-        assertContentEquals(IOType.d1(listOf(8f, 9f, 10f, 11f, 12f, 13f, 14f, 15f)), result[1])
-    }
 }

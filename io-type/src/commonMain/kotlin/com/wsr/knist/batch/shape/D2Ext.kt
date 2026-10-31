@@ -7,6 +7,7 @@ import com.wsr.knist.batch.Batch
 import com.wsr.knist.batch.d1
 import com.wsr.knist.batch.d2
 import com.wsr.knist.batch.d3
+import com.wsr.knist.batch.d4
 import com.wsr.knist.batch.get
 import com.wsr.knist.batch.i
 import com.wsr.knist.batch.j
@@ -38,19 +39,31 @@ fun Batch<IOType.D2>.broadcastToD3(axis: Int, size: Int): Batch<IOType.D3.Global
 
 fun Batch<IOType.D2>.toD3(): IOType.D3 = IOType.D3(shape = listOf(size, i, j), value = value)
 
-fun IOType.D3.toBatch(): Batch<IOType.D2.Global> = Batch.d2(i, j, k, value)
+fun IOType.D3.toBatch(): Batch<IOType.D2> = Batch.d2(i, j, k, value)
 
 @JvmName("batchD2sToList")
 fun Batch<IOType.D2>.toList(): List<IOType.D2> = List(size) { get(it) }
 
-@JvmName("batchD2sFlatten")
-fun Batch<IOType.D2>.flatten() = Batch.d1(size, step, value)
+@JvmName("batchD2sReshapeToD1")
+fun Batch<IOType.D2>.reshapeToD1(): Batch<IOType.D1> = Batch.d1(size, step, value)
+
+@JvmName("batchD2sReshapeToD2")
+fun Batch<IOType.D2>.reshapeToD2(i: Int, j: Int): Batch<IOType.D2> = reshapeToD2(listOf(i, j))
+
+@JvmName("batchD2sReshapeToD2ByShape")
+fun Batch<IOType.D2>.reshapeToD2(shape: List<Int>): Batch<IOType.D2> = Batch.d2(size, shape, value)
 
 @JvmName("batchD2sReshapeToD3")
-fun Batch<IOType.D2>.reshapeToD3(i: Int, j: Int, k: Int) = reshapeToD3(listOf(i, j, k))
+fun Batch<IOType.D2>.reshapeToD3(i: Int, j: Int, k: Int): Batch<IOType.D3> = reshapeToD3(listOf(i, j, k))
 
 @JvmName("batchD2sReshapeToD3ByShape")
-fun Batch<IOType.D2>.reshapeToD3(shape: List<Int>) = Batch.d3(size, shape, value)
+fun Batch<IOType.D2>.reshapeToD3(shape: List<Int>): Batch<IOType.D3> = Batch.d3(size, shape, value)
+
+@JvmName("batchD2sReshapeToD4")
+fun Batch<IOType.D2>.reshapeToD4(i: Int, j: Int, k: Int, l: Int): Batch<IOType.D4> = reshapeToD4(listOf(i, j, k, l))
+
+@JvmName("batchD2sReshapeToD4ByShape")
+fun Batch<IOType.D2>.reshapeToD4(shape: List<Int>): Batch<IOType.D4> = Batch.d4(size, shape, value)
 
 @ScopeOp
 fun Batch<IOType.D2>.slice(indices: IntProgression, axis: Int): Batch<IOType.D2.Global> {
