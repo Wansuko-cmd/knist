@@ -63,8 +63,8 @@ pub extern "system" fn Java_com_wsr_knist_cpu_linalg_JMatMul_matMulD2ToD2(
     y: jlong,
     trans_y: jboolean,
     m: jint,
-    k: jint,
     n: jint,
+    k: jint,
     b: jint,
     result: jlong,
 ) {
@@ -77,8 +77,8 @@ pub extern "system" fn Java_com_wsr_knist_cpu_linalg_JMatMul_matMulD2ToD2(
         y,
         trans_y != 0,
         m as usize,
-        k as usize,
         n as usize,
+        k as usize,
         b as usize,
         result,
     );

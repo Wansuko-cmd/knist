@@ -27,7 +27,7 @@ internal class GlobalAverageD3ToD1(
     }
 
     init {
-        check(axis1 in 0..2 && axis2 in 0..2 && axis1 < axis2) {
+        require(axis1 in 0..2 && axis2 in 0..2 && axis1 < axis2) {
             """
             invalid parameter.
             axis1: $axis1

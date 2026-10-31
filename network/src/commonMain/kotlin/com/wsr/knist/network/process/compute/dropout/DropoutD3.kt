@@ -45,14 +45,17 @@ class DropoutD3 internal constructor(
     }
 }
 
-fun GraphBuilder.Node.D3.dropout(ratio: Float, seed: Int? = null, id: String = Uuid.random().toString()) = addCompute(
-    compute =
-        DropoutD3(
-            inputI = inputI,
-            inputJ = inputJ,
-            inputK = inputK,
-            ratio = ratio,
-            seed = seed,
-            id = id,
-        ),
-)
+fun GraphBuilder.Node.D3.dropout(ratio: Float, seed: Int? = null, id: String = Uuid.random().toString()): GraphBuilder.Node.D3 {
+    require(0 < ratio && ratio <= 1)
+    return addCompute(
+        compute =
+            DropoutD3(
+                inputI = inputI,
+                inputJ = inputJ,
+                inputK = inputK,
+                ratio = ratio,
+                seed = seed,
+                id = id,
+            ),
+    )
+}

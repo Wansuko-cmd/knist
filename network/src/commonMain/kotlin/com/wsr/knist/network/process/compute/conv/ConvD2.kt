@@ -44,7 +44,7 @@ class ConvD2 internal constructor(
     init {
         val numH = height - kernelSize + 2 * padding
         val numW = width - kernelSize + 2 * padding
-        check(numH % stride == 0 && numW % stride == 0) {
+        require(numH % stride == 0 && numW % stride == 0) {
             """
             invalid parameter.
             height: $height

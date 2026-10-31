@@ -55,7 +55,7 @@ fun IOType.D2.slice(indices: IntProgression, axis: Int): IOType.D2.Global {
 
 @ScopeOp
 fun IOType.D2.interleave(other: IOType.D2, axis: Int): IOType.D2.Global {
-    check(i == other.i && j == other.j)
+    require(i == other.i && j == other.j)
     val result = DataBuffer.create(size + other.size)
     val newShape = when (axis) {
         0 -> listOf(i * 2, j)

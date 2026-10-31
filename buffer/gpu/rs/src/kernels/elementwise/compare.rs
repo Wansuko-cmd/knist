@@ -358,7 +358,7 @@ impl Compare {
         result: &GPUBuffer,
     ) -> ComputeTask<'a> {
         self.create_task(
-            "where_d1_to_d1",
+            "where_d1_to_d0",
             &self.where_d1_to_d0,
             // yは使わない
             condition,

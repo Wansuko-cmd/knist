@@ -1240,7 +1240,9 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
                 )
             }
 
-            else -> KotlinBackend.copyInto(x = x, y, indices)
+            else -> {
+                fallback.copyInto(x = x, y = y, yi = yi, yj = yj, axis = axis, indices = indices)
+            }
         }
     }
 
@@ -1261,7 +1263,9 @@ class GPUBackend(private val fallback: IBackend, maxPoolBytes: Long, enableProfi
                 )
             }
 
-            else -> KotlinBackend.copyInto(x = x, y, indices)
+            else -> {
+                fallback.copyInto(x = x, y = y, yi = yi, yj = yj, yk = yk, axis = axis, indices = indices)
+            }
         }
     }
 

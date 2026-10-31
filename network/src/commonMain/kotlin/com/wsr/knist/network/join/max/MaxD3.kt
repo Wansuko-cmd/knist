@@ -18,7 +18,7 @@ internal class MaxD3(override val outputI: Int, override val outputJ: Int, overr
         val delta = calcDelta(output)
 
         // 同値が複数ある場合は勾配を等分
-        val masks = inputs.map { input -> input eq output }
+        val masks = inputs.map { input -> input.eq(output, absoluteTolerance = 0f, relativeTolerance = 0f) }
         val count = masks.reduce { acc, mask -> acc + mask }
         val onTrue = delta / count
         return masks.map { mask -> where(condition = mask, onTrue = onTrue, onFalse = 0f) }
@@ -26,7 +26,7 @@ internal class MaxD3(override val outputI: Int, override val outputJ: Int, overr
 }
 
 fun GraphScope.max(vararg nodes: GraphBuilder.Node.D3): GraphBuilder.Node.D3 {
-    check(nodes.distinctBy { Triple(it.inputI, it.inputJ, it.inputK) }.size == 1)
+    require(nodes.distinctBy { Triple(it.inputI, it.inputJ, it.inputK) }.size == 1)
     return addJoin(
         join = MaxD3(outputI = nodes[0].inputI, outputJ = nodes[0].inputJ, outputK = nodes[0].inputK),
         nodes = nodes,

@@ -58,7 +58,7 @@ fn eq_d1_to_d0(@builtin(global_invocation_id) id: vec3<u32>, @builtin(num_workgr
     if (index >= arrayLength(&result)) {
         return;
     }
-    let tolerance = params.atol + params.rtol * abs(y[index]);
+    let tolerance = params.atol + params.rtol * abs(params.y_val);
     result[index] = select(0f, 1f, abs(x[index] - params.y_val) <= tolerance);
 }
 

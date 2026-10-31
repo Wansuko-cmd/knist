@@ -15,7 +15,7 @@ class MinMaxNormAxisD2 internal constructor(override val inputI: Int, override v
     override val outputJ: Int get() = inputJ
 
     init {
-        check(axis == 0 || axis == 1) {
+        require(axis == 0 || axis == 1) {
             """
             invalid parameter.
             axis: $axis
@@ -52,10 +52,10 @@ class MinMaxNormAxisD2 internal constructor(override val inputI: Int, override v
         val dMin = dNumerator.plus(other = dDenominator - denominator * delta.sum(axis = axis), axis = basicOpAxis)
         val dMax = dNumerator.minus(other = dDenominator, axis = basicOpAxis)
         return where(
-            condition = numerator eq 0f,
+            condition = numerator.eq(0f, absoluteTolerance = 0f, relativeTolerance = 0f),
             onTrue = dMin,
             onFalse = where(
-                condition = input.minus(other = max, axis = basicOpAxis) eq 0f,
+                condition = input.minus(other = max, axis = basicOpAxis).eq(0f, absoluteTolerance = 0f, relativeTolerance = 0f),
                 onTrue = dMax,
                 onFalse = dNumerator,
             ),

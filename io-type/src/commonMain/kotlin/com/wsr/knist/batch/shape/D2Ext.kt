@@ -105,7 +105,7 @@ fun Batch<IOType.D2>.padding(axis: Int, left: Int, right: Int, @ScopeOpDefault("
 
 @ScopeOp
 fun Batch<IOType.D2>.interleave(other: Batch<IOType.D2>, axis: Int): Batch<IOType.D2.Global> {
-    check(size == other.size && i == other.i && j == other.j)
+    require(size == other.size && i == other.i && j == other.j)
     val result = DataBuffer.create(value.size + other.value.size)
     val newShape = when (axis) {
         0 -> listOf(i * 2, j)

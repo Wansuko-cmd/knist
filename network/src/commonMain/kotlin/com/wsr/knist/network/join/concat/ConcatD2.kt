@@ -35,7 +35,7 @@ internal class ConcatD2(override val outputI: Int, override val outputJ: Int, pr
 
 fun GraphScope.concat(vararg nodes: GraphBuilder.Node.D2, axis: Int): GraphBuilder.Node.D2 = when (axis) {
     0 -> {
-        check(nodes.distinctBy { it.inputJ }.size == 1)
+        require(nodes.distinctBy { it.inputJ }.size == 1)
         return addJoin(
             join = ConcatD2(
                 outputI = nodes.sumOf { it.inputI },
@@ -47,7 +47,7 @@ fun GraphScope.concat(vararg nodes: GraphBuilder.Node.D2, axis: Int): GraphBuild
     }
 
     1 -> {
-        check(nodes.distinctBy { it.inputI }.size == 1)
+        require(nodes.distinctBy { it.inputI }.size == 1)
         return addJoin(
             join = ConcatD2(
                 outputI = nodes[0].inputI,
@@ -58,5 +58,5 @@ fun GraphScope.concat(vararg nodes: GraphBuilder.Node.D2, axis: Int): GraphBuild
         )
     }
 
-    else -> error("axis is $axis, not 0 or 1.")
+    else -> throw IllegalArgumentException("axis is $axis, not 0 or 1.")
 }

@@ -34,12 +34,15 @@ class DropoutD1 internal constructor(override val inputI: Int, private val ratio
     }
 }
 
-fun GraphBuilder.Node.D1.dropout(ratio: Float, seed: Int? = null, id: String = Uuid.random().toString()) = addCompute(
-    compute =
-        DropoutD1(
-            inputI = inputI,
-            ratio = ratio,
-            seed = seed,
-            id = id,
-        ),
-)
+fun GraphBuilder.Node.D1.dropout(ratio: Float, seed: Int? = null, id: String = Uuid.random().toString()): GraphBuilder.Node.D1 {
+    require(0 < ratio && ratio <= 1)
+    return addCompute(
+        compute =
+            DropoutD1(
+                inputI = inputI,
+                ratio = ratio,
+                seed = seed,
+                id = id,
+            ),
+    )
+}

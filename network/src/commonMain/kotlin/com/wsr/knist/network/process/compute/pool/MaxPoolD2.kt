@@ -19,7 +19,7 @@ class MaxPoolD2 internal constructor(val poolSize: Int, val channel: Int, val in
     override val outputJ: Int = (inputSize + 2 * padding - poolSize) / stride + 1
 
     init {
-        check((inputSize + 2 * padding - poolSize) % stride == 0) {
+        require((inputSize + 2 * padding - poolSize) % stride == 0) {
             """
             invalid parameter.
             inputSize: $inputSize
@@ -44,7 +44,7 @@ class MaxPoolD2 internal constructor(val poolSize: Int, val channel: Int, val in
         val delta = calcDelta(output)
 
         // 同値が複数ある場合は勾配を等分
-        val mask = unfold eq output.broadcastToD3(axis = 2, size = poolSize)
+        val mask = unfold.eq(output.broadcastToD3(axis = 2, size = poolSize), absoluteTolerance = 0f, relativeTolerance = 0f)
         val count = mask.sum(axis = 2)
         val dx = (delta / count).broadcastToD3(axis = 2, size = poolSize)
             .where(condition = mask, onFalse = 0f)

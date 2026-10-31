@@ -25,7 +25,7 @@ internal class MulD3(override val outputI: Int, override val outputJ: Int, overr
 }
 
 fun GraphScope.mul(vararg nodes: GraphBuilder.Node.D3): GraphBuilder.Node.D3 {
-    check(nodes.distinctBy { Triple(it.inputI, it.inputJ, it.inputK) }.size == 1)
+    require(nodes.distinctBy { Triple(it.inputI, it.inputJ, it.inputK) }.size == 1)
     return addJoin(
         join = MulD3(outputI = nodes[0].inputI, outputJ = nodes[0].inputJ, outputK = nodes[0].inputK),
         nodes = nodes,

@@ -18,7 +18,7 @@ internal class MaxD2(override val outputI: Int, override val outputJ: Int) : Joi
         val delta = calcDelta(output)
 
         // 同値が複数ある場合は勾配を等分
-        val masks = inputs.map { input -> input eq output }
+        val masks = inputs.map { input -> input.eq(output, absoluteTolerance = 0f, relativeTolerance = 0f) }
         val count = masks.reduce { acc, mask -> acc + mask }
         val onTrue = delta / count
         return masks.map { mask -> where(condition = mask, onTrue = onTrue, onFalse = 0f) }
@@ -26,7 +26,7 @@ internal class MaxD2(override val outputI: Int, override val outputJ: Int) : Joi
 }
 
 fun GraphScope.max(vararg nodes: GraphBuilder.Node.D2): GraphBuilder.Node.D2 {
-    check(nodes.distinctBy { it.inputI to it.inputJ }.size == 1)
+    require(nodes.distinctBy { it.inputI to it.inputJ }.size == 1)
     return addJoin(
         join = MaxD2(outputI = nodes[0].inputI, outputJ = nodes[0].inputJ),
         nodes = nodes,

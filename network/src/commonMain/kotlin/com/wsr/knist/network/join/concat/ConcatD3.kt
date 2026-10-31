@@ -41,7 +41,7 @@ internal class ConcatD3(override val outputI: Int, override val outputJ: Int, ov
 
 fun GraphScope.concat(vararg nodes: GraphBuilder.Node.D3, axis: Int): GraphBuilder.Node.D3 = when (axis) {
     0 -> {
-        check(nodes.distinctBy { it.inputJ to it.inputK }.size == 1)
+        require(nodes.distinctBy { it.inputJ to it.inputK }.size == 1)
         return addJoin(
             join = ConcatD3(
                 outputI = nodes.sumOf { it.inputI },
@@ -54,7 +54,7 @@ fun GraphScope.concat(vararg nodes: GraphBuilder.Node.D3, axis: Int): GraphBuild
     }
 
     1 -> {
-        check(nodes.distinctBy { it.inputI to it.inputK }.size == 1)
+        require(nodes.distinctBy { it.inputI to it.inputK }.size == 1)
         return addJoin(
             join = ConcatD3(
                 outputI = nodes[0].inputI,
@@ -67,7 +67,7 @@ fun GraphScope.concat(vararg nodes: GraphBuilder.Node.D3, axis: Int): GraphBuild
     }
 
     2 -> {
-        check(nodes.distinctBy { it.inputI to it.inputJ }.size == 1)
+        require(nodes.distinctBy { it.inputI to it.inputJ }.size == 1)
         return addJoin(
             join = ConcatD3(
                 outputI = nodes[0].inputI,
@@ -79,5 +79,5 @@ fun GraphScope.concat(vararg nodes: GraphBuilder.Node.D3, axis: Int): GraphBuild
         )
     }
 
-    else -> error("axis is $axis, not 0, 1 or 2.")
+    else -> throw IllegalArgumentException("axis is $axis, not 0, 1 or 2.")
 }

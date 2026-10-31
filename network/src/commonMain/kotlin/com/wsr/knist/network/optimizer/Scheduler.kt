@@ -15,16 +15,30 @@ sealed interface Scheduler {
 
     @Serializable
     data class Step(val rate: Float, val gamma: Float, val stepCount: Int) : Scheduler {
+        init {
+            require(stepCount > 0)
+        }
+
         override fun calcRate(step: Int): Float = rate * gamma.pow(step / stepCount)
     }
 
     @Serializable
     data class MultiStep(val rate: Float, val gamma: Float, val milestones: List<Int>) : Scheduler {
+        init {
+            require(milestones.all { it >= 0 })
+        }
+
         override fun calcRate(step: Int): Float = rate * gamma.pow(milestones.count { it <= step })
     }
 
     @Serializable
     data class CosineAnnealing(val minRate: Float, val maxRate: Float, val stepSize: Int, val warmUp: Int = 0, val initialRate: Float = minRate) : Scheduler {
+        init {
+            require(minRate <= maxRate)
+            require(stepSize > 0)
+            require(warmUp >= 0)
+        }
+
         override fun calcRate(step: Int): Float = if (step < warmUp) {
             initialRate + (maxRate - initialRate) * (step / warmUp.toFloat())
         } else {

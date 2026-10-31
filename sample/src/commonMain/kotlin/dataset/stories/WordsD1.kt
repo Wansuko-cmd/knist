@@ -34,8 +34,8 @@ class WordsD1(override val outputI: Int, private val words: List<String>, privat
 }
 
 fun wordsD1(maxLength: Int, words: List<String>, unknownIndex: Int, paddingIndex: Int): WordsD1 {
-    check(unknownIndex in words.indices) { "unknownIndex must be within words range." }
-    check(paddingIndex in words.indices) { "paddingIndex must be within words range." }
+    require(unknownIndex in words.indices) { "unknownIndex must be within words range." }
+    require(paddingIndex in words.indices) { "paddingIndex must be within words range." }
 
     return WordsD1(
         outputI = maxLength,

@@ -23,7 +23,7 @@ class PaddingD2 internal constructor(
     override val outputJ: Int = if (axis == 1) inputJ + left + right else inputJ
 
     init {
-        check(axis == 0 || axis == 1) {
+        require(axis == 0 || axis == 1) {
             """
             invalid parameter.
             axis: $axis
