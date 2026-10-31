@@ -29,15 +29,4 @@ class D3Test {
         assertContentEquals(d3a, batch[0])
         assertContentEquals(d3b, batch[1])
     }
-
-    @Test
-    fun `set=D3バッチ要素設定`() = ioTypeTestRule {
-        val d3a = IOType.d3(2, 2, 2) { i, j, k -> i * 4f + j * 2f + k }
-        val d3b = IOType.d3(2, 2, 2) { i, j, k -> i * 4f + j * 2f + k + 8f }
-        val batch = Batch.of(d3a, d3b)
-        val d3c = IOType.d3(2, 2, 2) { _, _, _ -> 99f }
-        batch[0] = d3c
-        assertContentEquals(d3c, batch[0])
-        assertContentEquals(d3b, batch[1])
-    }
 }

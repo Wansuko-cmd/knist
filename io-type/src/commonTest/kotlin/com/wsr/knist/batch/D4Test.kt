@@ -30,13 +30,4 @@ class D4Test {
         assertContentEquals(d4a, batch[0])
         assertContentEquals(d4b, batch[1])
     }
-
-    @Test
-    fun `set=D4バッチ要素設定`() = ioTypeTestRule {
-        val d4a = IOType.d4(2, 2, 2, 2) { i, j, k, l -> i * 8f + j * 4f + k * 2f + l }
-        val d4b = IOType.d4(2, 2, 2, 2) { _, _, _, _ -> 99f }
-        val batch = Batch.of(d4a, IOType.d4(2, 2, 2, 2) { _, _, _, _ -> 0f })
-        batch[0] = d4b
-        assertContentEquals(d4b, batch[0])
-    }
 }

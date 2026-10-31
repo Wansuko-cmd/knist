@@ -48,6 +48,8 @@ internal fun IOType.Companion.d3Impl(vararg elements: IOType.D2): IOType.D3.Glob
 @PublishedApi
 internal fun IOType.Companion.d3Impl(shape: List<Int>, value: FloatArray): IOType.D3.Global = IOType.D3.Global(shape = shape, value = DataBuffer.create(value))
 
+fun IOType.D3.unwrap(): FloatArray = value.toFloatArray()
+
 operator fun IOType.D3.get(i: Int, j: Int, k: Int): IOType.D0 = IOType.d0(value[(i * shape[1] + j) * shape[2] + k])
 
 operator fun IOType.D3.get(i: Int, j: Int): IOType.D1 {
@@ -62,28 +64,6 @@ operator fun IOType.D3.get(i: Int): IOType.D2 {
     return IOType.D2(
         shape = listOf(shape[1], shape[2]),
         value = result,
-    )
-}
-
-operator fun IOType.D3.set(i: Int, j: Int, z: Int, element: Float) {
-    value[(i * shape[1] + j) * shape[2] + z] = element
-}
-
-operator fun IOType.D3.set(i: Int, j: Int, element: IOType.D1) {
-    val start = (i * shape[1] + j) * shape[2]
-    Backend.copyInto(
-        x = element.value,
-        y = value,
-        indices = start until start + element.value.size,
-    )
-}
-
-operator fun IOType.D3.set(i: Int, element: IOType.D2) {
-    val start = i * shape[1] * shape[2]
-    Backend.copyInto(
-        x = element.value,
-        y = value,
-        indices = start until start + element.value.size,
     )
 }
 

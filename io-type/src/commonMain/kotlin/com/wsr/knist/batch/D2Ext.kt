@@ -33,10 +33,5 @@ operator fun Batch<IOType.D2>.get(i: Int): IOType.D2 {
     return IOType.D2(shape = shape, value = result)
 }
 
-operator fun Batch<IOType.D2>.set(i: Int, element: IOType.D2) {
-    val start = i * step
-    Backend.copyInto(element.value, value, start until start + element.value.size)
-}
-
 @ScopeOp
 operator fun Batch<IOType.D2>.unaryMinus(): Batch<IOType.D2> = -1f * this

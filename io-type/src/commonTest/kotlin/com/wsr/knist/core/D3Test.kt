@@ -63,23 +63,8 @@ class D3Test {
     }
 
     @Test
-    fun `set=3次元要素設定`() {
-        val d3 = IOType.d3(listOf(2, 2, 2)) { x, y, z -> x + y * 2.0f + z * 4.0f }
-        d3[0, 0, 0] = 7.0f
-        d3[0, 0, 1] = 3.0f
-        d3[0, 1, 0] = 5.0f
-        d3[0, 1, 1] = 1.0f
-        d3[1, 0, 0] = 6.0f
-        d3[1, 0, 1] = 2.0f
-        d3[1, 1, 0] = 4.0f
-        d3[1, 1, 1] = 0.0f
-        assertEquals(expected = 7.0f, actual = d3[0, 0, 0].unwrap())
-        assertEquals(expected = 3.0f, actual = d3[0, 0, 1].unwrap())
-        assertEquals(expected = 5.0f, actual = d3[0, 1, 0].unwrap())
-        assertEquals(expected = 1.0f, actual = d3[0, 1, 1].unwrap())
-        assertEquals(expected = 6.0f, actual = d3[1, 0, 0].unwrap())
-        assertEquals(expected = 2.0f, actual = d3[1, 0, 1].unwrap())
-        assertEquals(expected = 4.0f, actual = d3[1, 1, 0].unwrap())
-        assertEquals(expected = 0.0f, actual = d3[1, 1, 1].unwrap())
+    fun `unwrap=D3の全要素を平坦なFloatArrayで取得`() {
+        val d3 = IOType.d3(listOf(2, 2, 2)) { i, j, k -> i * 4.0f + j * 2.0f + k }
+        assertEquals(expected = (0 until 8).map { it.toFloat() }, actual = d3.unwrap().toList())
     }
 }

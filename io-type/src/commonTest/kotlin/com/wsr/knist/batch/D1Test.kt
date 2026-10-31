@@ -28,15 +28,4 @@ class D1Test {
         assertContentEquals(IOType.d1(listOf(1f, 2f, 3f)), batch[0])
         assertContentEquals(IOType.d1(listOf(4f, 5f, 6f)), batch[1])
     }
-
-    @Test
-    fun `set=D1バッチ要素設定`() = ioTypeTestRule {
-        val batch = Batch.of(
-            IOType.d1(listOf(1f, 2f, 3f)),
-            IOType.d1(listOf(4f, 5f, 6f)),
-        )
-        batch[0] = IOType.d1(listOf(7f, 8f, 9f))
-        assertContentEquals(IOType.d1(listOf(7f, 8f, 9f)), batch[0])
-        assertContentEquals(IOType.d1(listOf(4f, 5f, 6f)), batch[1])
-    }
 }

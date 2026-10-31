@@ -28,15 +28,4 @@ class D2Test {
         assertContentEquals(d2a, batch[0])
         assertContentEquals(d2b, batch[1])
     }
-
-    @Test
-    fun `set=D2バッチ要素設定`() = ioTypeTestRule {
-        val d2a = IOType.d2(2, 3) { i, j -> i * 3f + j }
-        val d2b = IOType.d2(2, 3) { i, j -> i * 3f + j + 6f }
-        val batch = Batch.of(d2a, d2b)
-        val d2c = IOType.d2(2, 3) { _, _ -> 99f }
-        batch[0] = d2c
-        assertContentEquals(d2c, batch[0])
-        assertContentEquals(d2b, batch[1])
-    }
 }
