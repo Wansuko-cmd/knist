@@ -101,4 +101,10 @@ class D4Test {
         val d4 = IOType.d4(listOf(2, 3, 4, 5)) { _, _, _, _ -> 0.0f }
         assertEquals(expected = 120, actual = d4.size)
     }
+
+    @Test
+    fun `unwrap=D4の全要素を平坦なFloatArrayで取得`() {
+        val d4 = IOType.d4(listOf(2, 2, 2, 2)) { i, j, k, l -> i * 8.0f + j * 4.0f + k * 2.0f + l }
+        assertEquals(expected = (0 until 16).map { it.toFloat() }, actual = d4.unwrap().toList())
+    }
 }

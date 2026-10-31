@@ -20,6 +20,8 @@ internal fun IOType.Companion.d1Impl(value: List<Float>): IOType.D1.Global = d1I
 @PublishedApi
 internal fun IOType.Companion.d1Impl(value: FloatArray): IOType.D1.Global = IOType.D1.Global(value = DataBuffer.create(value))
 
+fun IOType.D1.unwrap(): FloatArray = value.toFloatArray()
+
 operator fun IOType.D1.get(index: Int): IOType.D0 = IOType.d0(value[index])
 
 @ScopeOp

@@ -61,4 +61,10 @@ class D3Test {
         val d3 = IOType.d3(listOf(2, 3, 4)) { _, _, _ -> 0.0f }
         assertEquals(expected = 24, actual = d3.size)
     }
+
+    @Test
+    fun `unwrap=D3の全要素を平坦なFloatArrayで取得`() {
+        val d3 = IOType.d3(listOf(2, 2, 2)) { i, j, k -> i * 4.0f + j * 2.0f + k }
+        assertEquals(expected = (0 until 8).map { it.toFloat() }, actual = d3.unwrap().toList())
+    }
 }

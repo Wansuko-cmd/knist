@@ -42,4 +42,17 @@ class D1Test {
         val d1 = IOType.d1(listOf(1.0f, 2.0f, 3.0f))
         assertEquals(expected = 3, actual = d1.size)
     }
+
+    @Test
+    fun `unwrap=D1の全要素をFloatArrayで取得`() {
+        val d1 = IOType.d1(listOf(1.0f, 2.0f, 3.0f))
+        assertEquals(expected = listOf(1.0f, 2.0f, 3.0f), actual = d1.unwrap().toList())
+    }
+
+    @Test
+    fun `unwrap=返されたFloatArrayを書き換えても元の値は変わらない`() {
+        val d1 = IOType.d1(listOf(1.0f, 2.0f, 3.0f))
+        d1.unwrap()[0] = 99.0f
+        assertEquals(expected = listOf(1.0f, 2.0f, 3.0f), actual = d1.unwrap().toList())
+    }
 }

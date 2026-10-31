@@ -48,6 +48,8 @@ internal fun IOType.Companion.d3Impl(vararg elements: IOType.D2): IOType.D3.Glob
 @PublishedApi
 internal fun IOType.Companion.d3Impl(shape: List<Int>, value: FloatArray): IOType.D3.Global = IOType.D3.Global(shape = shape, value = DataBuffer.create(value))
 
+fun IOType.D3.unwrap(): FloatArray = value.toFloatArray()
+
 operator fun IOType.D3.get(i: Int, j: Int, k: Int): IOType.D0 = IOType.d0(value[(i * shape[1] + j) * shape[2] + k])
 
 operator fun IOType.D3.get(i: Int, j: Int): IOType.D1 {

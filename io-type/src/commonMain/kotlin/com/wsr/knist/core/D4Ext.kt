@@ -51,6 +51,8 @@ internal fun IOType.Companion.d4Impl(vararg elements: IOType.D3): IOType.D4.Glob
 @PublishedApi
 internal fun IOType.Companion.d4Impl(shape: List<Int>, value: FloatArray): IOType.D4.Global = IOType.D4.Global(shape = shape, value = DataBuffer.create(value))
 
+fun IOType.D4.unwrap(): FloatArray = value.toFloatArray()
+
 operator fun IOType.D4.get(i: Int, j: Int, k: Int, l: Int): IOType.D0 {
     val index = ((i * shape[1] + j) * shape[2] + k) * shape[3] + l
     return IOType.d0(value[index])

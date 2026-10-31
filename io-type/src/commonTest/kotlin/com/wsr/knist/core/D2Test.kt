@@ -41,4 +41,10 @@ class D2Test {
         val d2 = IOType.d2(listOf(2, 3)) { _, _ -> 0.0f }
         assertEquals(expected = 6, actual = d2.size)
     }
+
+    @Test
+    fun `unwrap=D2の全要素を平坦なFloatArrayで取得`() {
+        val d2 = IOType.d2(listOf(2, 3)) { i, j -> i * 3.0f + j }
+        assertEquals(expected = listOf(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f), actual = d2.unwrap().toList())
+    }
 }

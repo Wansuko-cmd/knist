@@ -45,6 +45,8 @@ internal fun IOType.Companion.d2Impl(vararg elements: IOType.D1): IOType.D2.Glob
 @PublishedApi
 internal fun IOType.Companion.d2Impl(shape: List<Int>, value: FloatArray): IOType.D2.Global = IOType.D2.Global(shape = shape, value = DataBuffer.create(value))
 
+fun IOType.D2.unwrap(): FloatArray = value.toFloatArray()
+
 operator fun IOType.D2.get(i: Int, j: Int): IOType.D0 = IOType.d0(value[i * shape[1] + j])
 
 operator fun IOType.D2.get(i: Int): IOType.D1 {
