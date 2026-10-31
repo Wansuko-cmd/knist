@@ -54,7 +54,7 @@ weight = optimizer.adapt(weight = weight, dw = delta).toGlobal()
 
 ```kotlin
 class Batch<out T : IOType>(
-    val value: DataBuffer,  // バッチ全体のデータを連続メモリで保持
+    internal val value: DataBuffer,  // バッチ全体のデータを連続メモリで保持（外部からは unwrap() で FloatArray として取り出す）
     val size: Int,          // バッチサイズ
     val shape: List<Int>,   // 1要素の形状
 )

@@ -7,7 +7,7 @@ import com.wsr.knist.core.IOScope
 import com.wsr.knist.core.IOType
 import kotlin.jvm.JvmName
 
-class Batch<out T : IOType>(val value: DataBuffer, val size: Int, val shape: List<Int>) {
+class Batch<out T : IOType>(@PublishedApi internal val value: DataBuffer, val size: Int, val shape: List<Int>) {
     companion object {
         fun <T : IOType> of(vararg elements: T): Batch<T> {
             val size = elements.size

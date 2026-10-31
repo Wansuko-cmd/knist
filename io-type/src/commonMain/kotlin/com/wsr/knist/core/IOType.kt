@@ -8,7 +8,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class IOType {
-    abstract val value: DataBuffer
+    @PublishedApi
+    internal abstract val value: DataBuffer
     abstract val shape: List<Int>
     abstract val size: Int
 
