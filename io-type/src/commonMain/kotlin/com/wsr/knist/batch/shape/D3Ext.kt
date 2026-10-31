@@ -45,22 +45,22 @@ fun Batch<IOType.D3>.broadcastToD4(axis: Int, size: Int): Batch<IOType.D4.Global
     else -> throw IllegalArgumentException("Batch<IOType.D3>.broadcastToD4 axis is $axis not 0, 1, 2 or 3.")
 }
 
-fun IOType.D4.toBatch(): Batch<IOType.D3.Global> = Batch.d3(i, j, k, l, value)
+fun IOType.D4.toBatch(): Batch<IOType.D3> = Batch.d3(i, j, k, l, value)
 
 @JvmName("batchD3sToList")
 fun Batch<IOType.D3>.toList(): List<IOType.D3> = List(size) { get(it) }
 
 @JvmName("batchD3sFlatten")
-fun Batch<IOType.D3>.flatten() = Batch.d1(size, step, value)
+fun Batch<IOType.D3>.flatten(): Batch<IOType.D1> = Batch.d1(size, step, value)
 
 @JvmName("batchD3sReshapeToD4")
-fun Batch<IOType.D3>.reshapeToD4(i: Int, j: Int, k: Int, l: Int) = Batch.d4(size, i, j, k, l, value)
+fun Batch<IOType.D3>.reshapeToD4(i: Int, j: Int, k: Int, l: Int): Batch<IOType.D4> = Batch.d4(size, i, j, k, l, value)
 
 @JvmName("batchD3sReshapeToD2")
-fun Batch<IOType.D3>.reshapeToD2(i: Int, j: Int) = reshapeToD2(listOf(i, j))
+fun Batch<IOType.D3>.reshapeToD2(i: Int, j: Int): Batch<IOType.D2> = reshapeToD2(listOf(i, j))
 
 @JvmName("batchD3sReshapeToD2ByShape")
-fun Batch<IOType.D3>.reshapeToD2(shape: List<Int>) = Batch.d2(size, shape, value)
+fun Batch<IOType.D3>.reshapeToD2(shape: List<Int>): Batch<IOType.D2> = Batch.d2(size, shape, value)
 
 @ScopeOp
 fun Batch<IOType.D3>.slice(indices: IntProgression, axis: Int): Batch<IOType.D3.Global> = when (axis) {

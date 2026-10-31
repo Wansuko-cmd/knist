@@ -31,22 +31,22 @@ fun Batch<IOType.D1>.broadcastToD2(axis: Int, size: Int): Batch<IOType.D2.Global
 
 fun Batch<IOType.D1>.toD2(): IOType.D2 = IOType.D2(shape = listOf(size, i), value = value)
 
-fun IOType.D2.toBatch(): Batch<IOType.D1.Global> = Batch.d1(size = i, j, value)
+fun IOType.D2.toBatch(): Batch<IOType.D1> = Batch.d1(size = i, j, value)
 
 @JvmName("batchD1sToList")
 fun Batch<IOType.D1>.toList(): List<IOType.D1> = List(size) { get(it) }
 
 @JvmName("batchD1sReshapeToD2")
-fun Batch<IOType.D1>.reshapeToD2(i: Int, j: Int) = reshapeToD2(listOf(i, j))
+fun Batch<IOType.D1>.reshapeToD2(i: Int, j: Int): Batch<IOType.D2> = reshapeToD2(listOf(i, j))
 
 @JvmName("batchD1sReshapeToD2ByShape")
-fun Batch<IOType.D1>.reshapeToD2(shape: List<Int>) = Batch.d2(size, shape, value)
+fun Batch<IOType.D1>.reshapeToD2(shape: List<Int>): Batch<IOType.D2> = Batch.d2(size, shape, value)
 
 @JvmName("batchD1sReshapeToD3")
-fun Batch<IOType.D1>.reshapeToD3(i: Int, j: Int, k: Int) = reshapeToD3(listOf(i, j, k))
+fun Batch<IOType.D1>.reshapeToD3(i: Int, j: Int, k: Int): Batch<IOType.D3> = reshapeToD3(listOf(i, j, k))
 
 @JvmName("batchD1sReshapeToD3ByShape")
-fun Batch<IOType.D1>.reshapeToD3(shape: List<Int>) = Batch.d3(size, shape, value)
+fun Batch<IOType.D1>.reshapeToD3(shape: List<Int>): Batch<IOType.D3> = Batch.d3(size, shape, value)
 
 @ScopeOp
 fun Batch<IOType.D1>.slice(indices: IntProgression): Batch<IOType.D1.Global> {

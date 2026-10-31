@@ -22,9 +22,9 @@ fun IOType.D1.broadcastToD2(axis: Int, i: Int): IOType.D2.Global = when (axis) {
     else -> throw IllegalArgumentException("IOType.D1.broadcastToD2 axis is $axis not 0 or 1.")
 }
 
-fun IOType.D1.reshapeToD2(i: Int, j: Int): IOType.D2.Global = reshapeToD2(listOf(i, j))
+fun IOType.D1.reshapeToD2(i: Int, j: Int): IOType.D2 = reshapeToD2(listOf(i, j))
 
-fun IOType.D1.reshapeToD2(shape: List<Int>): IOType.D2.Global = IOType.D2(shape = shape, value = value)
+fun IOType.D1.reshapeToD2(shape: List<Int>): IOType.D2 = IOType.D2(shape = shape, value = value)
 
 @ScopeOp
 fun IOType.D1.slice(indices: IntProgression): IOType.D1.Global {

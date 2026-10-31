@@ -14,7 +14,7 @@ import com.wsr.knist.scope.ScopeOp
 import kotlin.jvm.JvmName
 
 @JvmName("batchD4sReshapeToD3")
-fun Batch<IOType.D4>.reshapeToD3(i: Int, j: Int, k: Int) = Batch.d3(size, i, j, k, value)
+fun Batch<IOType.D4>.reshapeToD3(i: Int, j: Int, k: Int): Batch<IOType.D3> = Batch.d3(size, i, j, k, value)
 
 @ScopeOp
 fun Batch<IOType.D4>.concat(other: Batch<IOType.D4>, axis: Int): Batch<IOType.D4.Global> = when (axis) {

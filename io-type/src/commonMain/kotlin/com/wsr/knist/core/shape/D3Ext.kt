@@ -19,6 +19,6 @@ fun IOType.D3.flip(axis: Int): IOType.D3.Global {
     return IOType.D3(shape = shape, value = result)
 }
 
-fun IOType.D3.reshapeToD2(i: Int, j: Int): IOType.D2.Global = IOType.D2(shape = listOf(i, j), value = value)
+fun IOType.D3.reshapeToD2(i: Int, j: Int): IOType.D2 = IOType.D2(shape = listOf(i, j), value = value)
 
-fun IOType.D3.reshapeToD4(i: Int, j: Int, k: Int, l: Int): IOType.D4.Global = IOType.D4(shape = listOf(i, j, k, l), value = value)
+fun IOType.D3.reshapeToD4(i: Int, j: Int, k: Int, l: Int): IOType.D4 = IOType.D4(shape = listOf(i, j, k, l), value = value)
