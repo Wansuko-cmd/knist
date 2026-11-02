@@ -159,6 +159,9 @@ jobs:
           path: buffer/cpu/cpp/build/rs/target
           key: cpu-native-${{ hashFiles('buffer/cpu/rs/Cargo.toml') }}-${{ matrix.os_name }}-${{ matrix.arch }}
 
+      - name: llvm-toolsのセットアップ (シンボル改名に使用)
+        run: rustup component add llvm-tools
+
       - name: ネイティブライブラリをビルド(Windows以外)
         if: runner.os != 'Windows'
         shell: bash
@@ -176,8 +179,7 @@ jobs:
       - name: ネイティブライブラリをビルド(Windows)
         if: runner.os == 'Windows'
         shell: bash
-        run: cargo build --release --features native --target x86_64-pc-windows-gnu
-        working-directory: buffer/cpu/rs
+        run: ./gradlew buffer:cpu:rs:cargoNativeBuild -Ptarget=x86_64-pc-windows-gnu
 
       - name: 成果物をアップロード (Windows以外)
         if: runner.os != 'Windows'
