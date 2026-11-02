@@ -159,6 +159,9 @@ jobs:
           path: buffer/cpu/cpp/build/rs/target
           key: cpu-native-${{ hashFiles('buffer/cpu/rs/Cargo.toml') }}-${{ matrix.os_name }}-${{ matrix.arch }}
 
+      - name: llvm-toolsのセットアップ (シンボル改名に使用)
+        run: rustup component add llvm-tools
+
       - name: ネイティブライブラリをビルド(Windows以外)
         if: runner.os != 'Windows'
         shell: bash
