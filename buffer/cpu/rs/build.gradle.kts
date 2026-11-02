@@ -31,18 +31,18 @@ val cargoAndroidX64Build by tasks.registering(Exec::class) {
 /**
  * Native
  **/
+val target = providers.gradleProperty("target")
+
 val cargoNativeBuild by tasks.registering(Exec::class) {
     group = "build"
     description = "Native環境向けにビルド"
     workingDir = sourceDir
-    commandLine = listOf("cargo", "build", "--release", "--features", "native")
+    val targetArgs = target.map { listOf("--target", it) }.getOrElse(emptyList())
+    commandLine = listOf("cargo", "build", "--release") + targetArgs + listOf("--features", "native")
 }
 
 tasks.register<Delete>("clean") {
     group = "build"
     description = "ビルド成果物の削除"
-    val target = fileTree(targetDir) {
-
-    }
-    delete(target)
+    fileTree(targetDir).also { delete(it) }
 }
