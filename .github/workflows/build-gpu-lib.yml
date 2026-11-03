@@ -100,6 +100,93 @@ jobs:
             buffer/gpu/rs/target/release/gpu.${{ matrix.lib_extension }}
           if-no-files-found: error
 
+  build-native:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # macOS
+          - os: macos-latest
+            os_name: macos
+            arch: Arm64
+            lib_extension: a
+          - os: macos-15-intel
+            os_name: macos
+            arch: X64
+            lib_extension: a
+          # Linux
+          - os: ubuntu-latest
+            os_name: linux
+            arch: X64
+            lib_extension: a
+          - os: ubuntu-24.04-arm
+            os_name: linux
+            arch: Arm64
+            lib_extension: a
+          # Windows
+          - os: windows-latest
+            os_name: mingw
+            arch: X64
+            lib_extension: a
+
+    runs-on: ${{ matrix.os }}
+    name: Build Native (${{ matrix.os_name }}/${{ matrix.arch }})
+
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+
+      - name: Javaのセットアップ
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          cache: 'gradle'
+
+      - name: gradlewに権限を付与 (Unix)
+        if: runner.os != 'Windows'
+        run: chmod 777 ./gradlew
+
+      - name: llvm-toolsのセットアップ (シンボル改名に使用)
+        run: rustup component add llvm-tools
+
+      - name: ネイティブライブラリをビルド(Windows以外)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: ./gradlew buffer:gpu:rs:cargoNativeBuild
+
+      - name: MinGWをPATHに追加 (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: echo "C:/Program Files/Git/mingw64/bin" >> $GITHUB_PATH
+
+      - name: MinGW Rustターゲットを追加 (Windows)
+        if: runner.os == 'Windows'
+        run: rustup target add x86_64-pc-windows-gnu
+
+      - name: ネイティブライブラリをビルド(Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: ./gradlew buffer:gpu:rs:cargoNativeBuild -Ptarget=x86_64-pc-windows-gnu
+
+      - name: 成果物をアップロード (Windows以外)
+        if: runner.os != 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpu-native-${{ matrix.os_name }}-${{ matrix.arch }}
+          path: |
+            buffer/gpu/rs/target/release/libgpu.${{ matrix.lib_extension }}
+          if-no-files-found: error
+
+      - name: 成果物をアップロード (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpu-native-${{ matrix.os_name }}-${{ matrix.arch }}
+          path: |
+            buffer/gpu/rs/target/x86_64-pc-windows-gnu/release/libgpu.${{ matrix.lib_extension }}
+          if-no-files-found: error
+
   build-android:
     runs-on: ubuntu-latest
     name: Build Android
@@ -157,7 +244,7 @@ jobs:
           if-no-files-found: error
 
   commit:
-    needs: [build-jvm, build-android]
+    needs: [build-jvm, build-native, build-android]
     runs-on: ubuntu-latest
     name: Commit native libraries
 
@@ -200,6 +287,26 @@ jobs:
           echo "=== JVM Resources structure ==="
           find buffer/gpu/src/jvmMain/resources -type f
 
+      - name: 成果物をresourcesに配置 (Native)
+        run: |
+          mkdir -p buffer/gpu/src/nativeMain/resources/gpu/macosArm64
+          find artifacts/gpu-native-macos-Arm64 -name "libgpu.a" -exec cp {} buffer/gpu/src/nativeMain/resources/gpu/macosArm64/ \;
+
+          mkdir -p buffer/gpu/src/nativeMain/resources/gpu/macosX64
+          find artifacts/gpu-native-macos-X64 -name "libgpu.a" -exec cp {} buffer/gpu/src/nativeMain/resources/gpu/macosX64/ \;
+
+          mkdir -p buffer/gpu/src/nativeMain/resources/gpu/linuxX64
+          find artifacts/gpu-native-linux-X64 -name "libgpu.a" -exec cp {} buffer/gpu/src/nativeMain/resources/gpu/linuxX64/ \;
+
+          mkdir -p buffer/gpu/src/nativeMain/resources/gpu/linuxArm64
+          find artifacts/gpu-native-linux-Arm64 -name "libgpu.a" -exec cp {} buffer/gpu/src/nativeMain/resources/gpu/linuxArm64/ \;
+
+          mkdir -p buffer/gpu/src/nativeMain/resources/gpu/mingwX64
+          find artifacts/gpu-native-mingw-X64 -name "libgpu.a" -exec cp {} buffer/gpu/src/nativeMain/resources/gpu/mingwX64/ \;
+
+          echo "=== Native Resources structure ==="
+          find buffer/gpu/src/nativeMain/resources -type f
+
       - name: 成果物をjniLibsに配置 (Android)
         run: |
           # arm64-v8a
@@ -218,7 +325,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git pull
-          git add buffer/gpu/src/jvmMain/resources/ buffer/gpu/src/androidMain/jniLibs/
+          git add buffer/gpu/src/jvmMain/resources/ buffer/gpu/src/nativeMain/resources/ buffer/gpu/src/androidMain/jniLibs/
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
