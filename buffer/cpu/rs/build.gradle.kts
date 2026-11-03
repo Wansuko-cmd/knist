@@ -38,7 +38,12 @@ val cargoNativeBuild by tasks.registering(Exec::class) {
     description = "Native環境向けにビルド"
     workingDir = sourceDir
     val targetArgs = target.map { listOf("--target", it) }.getOrElse(emptyList())
-    commandLine = listOf("cargo", "build", "--release") + targetArgs + listOf("--no-default-features", "--features", "native")
+    commandLine = buildList {
+        addAll(listOf("cargo", "+nightly-2026-11-03", "rustc", "--release", "--crate-type", "staticlib"))
+        addAll(targetArgs)
+        addAll(listOf("--no-default-features", "--features", "native"))
+        addAll(listOf("--", "-Zstaticlib-rename-internal-symbols=yes"))
+    }
 }
 
 tasks.register<Delete>("clean") {
