@@ -159,8 +159,9 @@ jobs:
           path: buffer/cpu/cpp/build/rs/target
           key: cpu-native-${{ hashFiles('buffer/cpu/rs/Cargo.toml') }}-${{ matrix.os_name }}-${{ matrix.arch }}
 
-      - name: llvm-toolsのセットアップ (シンボル改名に使用)
-        run: rustup component add llvm-tools
+      # 日付は buffer/cpu/rs/build.gradle.kts 内と同期させる
+      - name: nightlyのセットアップ (シンボル改名に使用)
+        run: rustup toolchain install nightly-2026-11-03 --profile minimal
 
       - name: ネイティブライブラリをビルド(Windows以外)
         if: runner.os != 'Windows'
@@ -174,7 +175,7 @@ jobs:
 
       - name: MinGW Rustターゲットを追加 (Windows)
         if: runner.os == 'Windows'
-        run: rustup target add x86_64-pc-windows-gnu
+        run: rustup target add --toolchain nightly-2026-11-03 x86_64-pc-windows-gnu
 
       - name: ネイティブライブラリをビルド(Windows)
         if: runner.os == 'Windows'
