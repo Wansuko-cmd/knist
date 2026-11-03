@@ -41,23 +41,6 @@ val cargoNativeBuild by tasks.registering(Exec::class) {
     commandLine = listOf("cargo", "build", "--release") + targetArgs + listOf("--no-default-features", "--features", "native")
 }
 
-val cargoNativeRename by tasks.registering(Exec::class) {
-    group = "build"
-    description = "Native用 staticlib の公開API以外のシンボルを改名する"
-    dependsOn(cargoNativeBuild)
-
-    val lib = targetDir.resolve(target.getOrElse(""))
-        .resolve("release")
-        .resolve("libcpu.a")
-    inputs.file(lib)
-
-    // Windows の "bash" は WSL の入口 (System32\bash.exe) に解決されることがあるため、Git 同梱の sh を使う
-    val shell = if (System.getProperty("os.name").startsWith("Windows")) "sh" else "bash"
-    commandLine(shell, rootProject.file("script/rename-static-symbols.sh").path, lib.path, "com_wsr_cpu_")
-}
-
-cargoNativeBuild { finalizedBy(cargoNativeRename) }
-
 tasks.register<Delete>("clean") {
     group = "build"
     description = "ビルド成果物の削除"
