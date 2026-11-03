@@ -8,7 +8,7 @@ val cargoJvmBuild by tasks.registering(Exec::class) {
     group = "build"
     description = "JVM環境向けにビルド"
     workingDir = sourceDir
-    commandLine = listOf("cargo", "build", "--release", "--features", "jni")
+    commandLine = listOf("cargo", "build", "--release", "--no-default-features", "--features", "jni")
 }
 
 /**
@@ -18,14 +18,14 @@ val cargoAndroidArm64Build by tasks.registering(Exec::class) {
     group = "build"
     description = "Android (arm64-v8a) 向けにビルド"
     workingDir = sourceDir
-    commandLine = listOf("cargo", "build", "--release", "--target", "aarch64-linux-android", "--features", "jni")
+    commandLine = listOf("cargo", "build", "--release", "--target", "aarch64-linux-android", "--no-default-features", "--features", "jni")
 }
 
 val cargoAndroidX64Build by tasks.registering(Exec::class) {
     group = "build"
     description = "Android (x86_64) 向けにビルド"
     workingDir = sourceDir
-    commandLine = listOf("cargo", "build", "--release", "--target", "x86_64-linux-android", "--features", "jni")
+    commandLine = listOf("cargo", "build", "--release", "--target", "x86_64-linux-android", "--no-default-features", "--features", "jni")
 }
 
 /**
@@ -38,7 +38,7 @@ val cargoNativeBuild by tasks.registering(Exec::class) {
     description = "Native環境向けにビルド"
     workingDir = sourceDir
     val targetArgs = target.map { listOf("--target", it) }.getOrElse(emptyList())
-    commandLine = listOf("cargo", "build", "--release") + targetArgs + listOf("--features", "native")
+    commandLine = listOf("cargo", "build", "--release") + targetArgs + listOf("--no-default-features", "--features", "native")
 }
 
 val cargoNativeRename by tasks.registering(Exec::class) {
