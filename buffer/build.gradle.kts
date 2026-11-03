@@ -32,13 +32,13 @@ kotlin {
             dependencies {
                 api(projects.buffer.base)
                 api(projects.buffer.cpu)
-                api(projects.buffer.gpu)
             }
         }
 
         val commonTest by getting {
             dependencies {
                 implementation(libs.kotlin.test)
+                implementation(projects.buffer.gpu)
             }
         }
     }

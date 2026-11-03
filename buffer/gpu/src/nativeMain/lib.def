@@ -11,4 +11,6 @@ staticLibraries.linux_arm64 = libgpu.a
 staticLibraries.macos_arm64 = libgpu.a
 staticLibraries.macos_x64 = libgpu.a
 staticLibraries.mingw_x64 = libgpu.a
+linkerOpts.macos_arm64 = -framework Metal -framework Foundation -framework QuartzCore -framework CoreGraphics -framework CoreFoundation -lobjc
+linkerOpts.macos_x64 = -framework Metal -framework Foundation -framework QuartzCore -framework CoreGraphics -framework CoreFoundation -lobjc
 linkerOpts.mingw_x64 = -lntdll -lws2_32 -luserenv

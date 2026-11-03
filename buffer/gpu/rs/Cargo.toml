@@ -51,3 +51,8 @@ criterion = "0.8.2"
 default = ["jni", "native"]
 jni = []
 native = []
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = "symbols"

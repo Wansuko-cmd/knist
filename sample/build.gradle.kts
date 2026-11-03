@@ -51,6 +51,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(projects.network)
+                implementation(projects.buffer.gpu)
 
                 implementation(libs.serialization)
                 implementation(libs.okio)
