@@ -8,7 +8,10 @@ val cargoJvmBuild by tasks.registering(Exec::class) {
     group = "build"
     description = "JVM環境向けにビルド"
     workingDir = sourceDir
-    commandLine = listOf("cargo", "build", "--release", "--no-default-features", "--features", "jni")
+    commandLine = buildList {
+        addAll(listOf("cargo", "rustc", "--release", "--crate-type", "cdylib"))
+        addAll(listOf("--no-default-features", "--features", "jni"))
+    }
 }
 
 /**
@@ -18,14 +21,22 @@ val cargoAndroidArm64Build by tasks.registering(Exec::class) {
     group = "build"
     description = "Android (arm64-v8a) 向けにビルド"
     workingDir = sourceDir
-    commandLine = listOf("cargo", "build", "--release", "--target", "aarch64-linux-android", "--no-default-features", "--features", "jni")
+    commandLine = buildList {
+        addAll(listOf("cargo", "rustc", "--release", "--crate-type", "cdylib"))
+        addAll(listOf("--target", "aarch64-linux-android"))
+        addAll(listOf("--no-default-features", "--features", "jni"))
+    }
 }
 
 val cargoAndroidX64Build by tasks.registering(Exec::class) {
     group = "build"
     description = "Android (x86_64) 向けにビルド"
     workingDir = sourceDir
-    commandLine = listOf("cargo", "build", "--release", "--target", "x86_64-linux-android", "--no-default-features", "--features", "jni")
+    commandLine = buildList {
+        addAll(listOf("cargo", "rustc", "--release", "--crate-type", "cdylib"))
+        addAll(listOf("--target", "x86_64-linux-android"))
+        addAll(listOf("--no-default-features", "--features", "jni"))
+    }
 }
 
 /**
