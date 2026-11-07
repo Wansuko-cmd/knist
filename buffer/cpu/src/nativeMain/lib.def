@@ -1,14 +1,20 @@
 package = com.wsr.knist.cpu.rs
 
 libraryPaths.linux_x64 = src/nativeMain/resources/cpu/linuxX64
-libraryPaths.linux_arm64 = src/nativeMain/resources/cpu/linuxX64
-libraryPaths.macos_arm64 = src/nativeMain/resources/cpu/macosArm64
+libraryPaths.linux_arm64 = src/nativeMain/resources/cpu/linuxArm64
 libraryPaths.macos_x64 = src/nativeMain/resources/cpu/macosX64
+libraryPaths.macos_arm64 = src/nativeMain/resources/cpu/macosArm64
+libraryPaths.ios_x64 = src/nativeMain/resources/cpu/iosX64
+libraryPaths.ios_arm64 = src/nativeMain/resources/cpu/iosArm64
+libraryPaths.ios_simulator_arm64 = src/nativeMain/resources/cpu/iosSimulatorArm64
 libraryPaths.mingw_x64 = src/nativeMain/resources/cpu/mingwX64
 
 staticLibraries.linux_x64 = libcpu.a
 staticLibraries.linux_arm64 = libcpu.a
-staticLibraries.macos_arm64 = libcpu.a
 staticLibraries.macos_x64 = libcpu.a
+staticLibraries.macos_arm64 = libcpu.a
+staticLibraries.ios_x64 = libcpu.a
+staticLibraries.ios_arm64 = libcpu.a
+staticLibraries.ios_simulator_arm64 = libcpu.a
 staticLibraries.mingw_x64 = libcpu.a
 linkerOpts.mingw_x64 = -lntdll -lws2_32 -luserenv

@@ -200,6 +200,56 @@ jobs:
             buffer/cpu/rs/target/x86_64-pc-windows-gnu/release/libcpu.${{ matrix.lib_extension }}
           if-no-files-found: error
 
+  build-ios:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: aarch64-apple-ios
+            name: ios-Arm64
+            os: macos-latest
+          - target: aarch64-apple-ios-sim
+            name: iossim-Arm64
+            os: macos-latest
+          - target: x86_64-apple-ios
+            name: ios-X64
+            os: macos-15-intel
+
+    runs-on: ${{ matrix.os }}
+    name: Build iOS (${{ matrix.target }})
+
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+
+      - name: Javaのセットアップ
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          cache: 'gradle'
+
+      - name: gradlewに権限を付与
+        run: chmod 777 ./gradlew
+
+      # 日付は buffer/cpu/rs/build.gradle.kts 内と同期させる
+      - name: nightlyのセットアップ (シンボル改名に使用)
+        run: rustup toolchain install nightly-2026-11-03 --profile minimal
+
+      - name: iOS Rustターゲットを追加
+        run: rustup target add --toolchain nightly-2026-11-03 ${{ matrix.target }}
+
+      - name: ネイティブライブラリをビルド
+        run: ./gradlew buffer:cpu:rs:cargoNativeBuild -Ptarget=${{ matrix.target }}
+
+      - name: 成果物をアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpu-native-${{ matrix.name }}
+          path: |
+            buffer/cpu/rs/target/${{ matrix.target }}/release/libcpu.a
+          if-no-files-found: error
+
   build-android:
     runs-on: ubuntu-latest
     name: Build Android
@@ -257,7 +307,7 @@ jobs:
           if-no-files-found: error
 
   commit:
-    needs: [build-jvm, build-native, build-android]
+    needs: [build-jvm, build-native, build-ios, build-android]
     runs-on: ubuntu-latest
     name: Commit native libraries
 
@@ -321,6 +371,18 @@ jobs:
           # Windows/X64
           mkdir -p buffer/cpu/src/nativeMain/resources/cpu/mingwX64
           find artifacts/cpu-native-mingw-X64 -name "libcpu.a" -exec cp {} buffer/cpu/src/nativeMain/resources/cpu/mingwX64/ \;
+
+          # iOS/Arm64 (実機)
+          mkdir -p buffer/cpu/src/nativeMain/resources/cpu/iosArm64
+          find artifacts/cpu-native-ios-Arm64 -name "libcpu.a" -exec cp {} buffer/cpu/src/nativeMain/resources/cpu/iosArm64/ \;
+
+          # iOS/Arm64 (シミュレータ)
+          mkdir -p buffer/cpu/src/nativeMain/resources/cpu/iosSimulatorArm64
+          find artifacts/cpu-native-iossim-Arm64 -name "libcpu.a" -exec cp {} buffer/cpu/src/nativeMain/resources/cpu/iosSimulatorArm64/ \;
+
+          # iOS/X64 (シミュレータ)
+          mkdir -p buffer/cpu/src/nativeMain/resources/cpu/iosX64
+          find artifacts/cpu-native-ios-X64 -name "libcpu.a" -exec cp {} buffer/cpu/src/nativeMain/resources/cpu/iosX64/ \;
 
           echo "=== Native Resources structure ==="
           find buffer/cpu/src/nativeMain/resources -type f
