@@ -1,4 +1,6 @@
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
 plugins {
     kotlin("multiplatform")
@@ -6,7 +8,15 @@ plugins {
 }
 
 kotlin {
-    applyDefaultHierarchyTemplate()
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    applyDefaultHierarchyTemplate {
+        common {
+            group("jvmAndroid") {
+                withJvm()
+                withCompilations { it.platformType == KotlinPlatformType.androidJvm }
+            }
+        }
+    }
     jvm()
 
     android {
@@ -59,16 +69,6 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.test)
             }
-        }
-
-        val jvmAndroidMain by creating {
-            dependsOn(commonMain)
-        }
-        jvmMain {
-            dependsOn(jvmAndroidMain)
-        }
-        androidMain {
-            dependsOn(jvmAndroidMain)
         }
     }
 
