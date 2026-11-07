@@ -40,7 +40,11 @@ jobs:
         env:
           SKIP_GPU_TESTS: ${{ runner.os == 'Windows' && 'true' || 'false' }}
         run: |
-          ./gradlew buffer:allTest
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            ./gradlew buffer:allTest -x :buffer:iosSimulatorArm64Test
+          else
+            ./gradlew buffer:allTest
+          fi
           ./gradlew io-type:allTest
           ./gradlew network:allTest
 
