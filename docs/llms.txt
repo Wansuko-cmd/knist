@@ -3,7 +3,8 @@
 > Kotlin Multiplatform製ニューラルネットワークライブラリ。DSLでレイヤーを積み上げてモデルを構築する。
 > 型がチェーン全体で追跡され、IO型の不整合はコンパイルエラーになる。
 
-- 対応プラットフォーム: JVM / Android（JitPack経由で導入可能）。Kotlin/Native（macOS / Linux / Windows）はJitPackでは配布されておらず、リポジトリをローカルビルドした場合のみ利用できる。JS / wasm は非対応
+- 対応プラットフォーム: JVM / Android（JitPack経由で導入可能）。Kotlin/Native（macOS / iOS / Linux / Windows）はJitPackでは配布されておらず、リポジトリをローカルビルドした場合のみ利用できる。JS / wasm は非対応
+- GPU バックエンドは別アーティファクト（`com.github.Wansuko-cmd.knist:gpu`）。CPU バックエンドは `network` に含まれる
 - 最新バージョンは https://jitpack.io/#Wansuko-cmd/knist または GitHub Releases で確認する
 
 ## Docs
@@ -17,5 +18,6 @@
 
 完全に動作するコードはリポジトリの `sample/` にある。
 
-- [MNIST（3層MLP）](../sample/src/commonMain/kotlin/dataset/mnist/): カスタムConverter（`PixelConverter` / `LabelConverter`）の実装例を含む
+- [Iris（MLP）](../sample/src/commonMain/kotlin/dataset/iris/): `RawD1` による Raw 入力と `batchNorm` + 全結合の最小構成の例
+- [MNIST（CNN）](../sample/src/commonMain/kotlin/dataset/mnist/): `RawD3` による Raw 入力と `convD2` の使用例。カスタムConverter（`PixelConverter` / `LabelConverter`）の実装例も含む
 - [TinyStories（Transformer言語モデル）](../sample/src/commonMain/kotlin/dataset/stories/): トークナイズと `WordsD1` / `WordD2` Converterの実装例を含む

@@ -11,21 +11,21 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class WordD2(private val words: List<String>, private val length: Int, private val unknownIndex: Int) : Converter.D2<List<List<String>>>() {
-    override val outputI = length
-    override val outputJ = words.size
+    override val i = length
+    override val j = words.size
     private val wordToId = words.mapIndexed { index, word -> word to index }.toMap()
 
     override fun encode(input: List<List<String>>): Batch<IOType.D2> {
-        val result = FloatArray(input.size * outputI * outputJ)
+        val result = FloatArray(input.size * i * j)
         repeat(input.size) { b ->
-            val offset = b * outputI * outputJ
+            val offset = b * i * j
             val text = input[b]
             text.forEachIndexed { index, word ->
                 val id = wordToId[word] ?: unknownIndex
-                result[offset + index * outputJ + id] = 1f
+                result[offset + index * j + id] = 1f
             }
         }
-        return Batch.d2(size = input.size, i = outputI, j = outputJ, value = result)
+        return Batch.d2(size = input.size, i = i, j = j, value = result)
     }
 
     override fun decode(input: Batch<IOType.D2>): List<List<String>> = input.maxIndex(axis = 1).toList()

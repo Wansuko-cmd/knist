@@ -7,9 +7,9 @@
 
 Kotlin Multiplatformライブラリ。JitPackからGradle依存として導入できる。
 
-- 対応プラットフォーム: JVM / Android。Kotlin/Native（macOS / Linux / Windows）はJitPackでは配布されておらず、リポジトリをローカルで `publishToMavenLocal` した場合のみ利用できる。JS / wasm は非対応。
+- 対応プラットフォーム: JVM / Android。Kotlin/Native（macOS / iOS / Linux / Windows）はJitPackでは配布されておらず、リポジトリをローカルで `publishToMavenLocal` した場合のみ利用できる（ビルドされるのはビルドしたホストOS向けのターゲットのみ。iOS（`iosX64` / `iosArm64` / `iosSimulatorArm64`）は macOS 上でビルドした場合に含まれる）。JS / wasm は非対応。
 - `<version>` には最新リリースを指定する（https://jitpack.io/#Wansuko-cmd/knist または GitHub Releases で確認）。
-- この文書は v0.0.32-alpha05 以降（2026-08 時点の main）の API を記述している。
+- この文書は v0.0.32-alpha06 以降（2026-11 時点の main）の API を記述している。
 
 ```kotlin
 // settings.gradle.kts
@@ -22,6 +22,7 @@ dependencyResolutionManagement {
 // build.gradle.kts
 dependencies {
     implementation("com.github.Wansuko-cmd.knist:network:<version>")
+    implementation("com.github.Wansuko-cmd.knist:gpu:<version>")  // GPU バックエンドを使う場合のみ
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:<version>")  // train / loss / expect が suspend 関数のため必須
 }
 ```
@@ -32,12 +33,12 @@ dependencies {
 
 ## バックエンド設定
 
-演算の実行バックエンドを切り替えられる。デフォルトは CPU（Rust ネイティブ）。どのバックエンドも `network` の依存に含まれるため、追加の Gradle 依存は不要。
+演算の実行バックエンドを切り替えられる。デフォルトは CPU（Rust ネイティブ）。CPU と `KotlinBackend` は `network` の依存に含まれる。**GPU は `network` に含まれないため、使う場合は `com.github.Wansuko-cmd.knist:gpu` を別途依存に追加する**（追加しないと `com.wsr.knist.gpu.loadGPUBackend` が解決できずコンパイルエラーになる）。
 
 | バックエンド | 生成関数 | import | 説明 | フォールバック |
 |------------|--------|--------|------|--------------|
 | CPU | `loadCPUBackend(fallback, maxReservedBytes = 4_000_000_000L, maxPoolBytes = maxReservedBytes)` | `com.wsr.knist.cpu.loadCPUBackend` | Rust ネイティブ CPU 実装 | 引数で指定 |
-| GPU | `loadGPUBackend(fallback, maxReservedBytes = 4_000_000_000L, maxPoolBytes = maxReservedBytes, enableProfiler = false)` | `com.wsr.knist.gpu.loadGPUBackend` | WebGPU（wgpu）GPU 実装 | 引数で指定 |
+| GPU | `loadGPUBackend(fallback, maxReservedBytes = 4_000_000_000L, maxPoolBytes = maxReservedBytes, enableProfiler = false)` | `com.wsr.knist.gpu.loadGPUBackend` | WebGPU（wgpu）GPU 実装。`gpu` アーティファクトが必要 | 引数で指定 |
 | `KotlinBackend` | — | `com.wsr.knist.base.KotlinBackend` | 純 Kotlin 実装 | — |
 
 呼び出し側で `loadCPUBackend` / `loadGPUBackend` を明示的に呼んでバックエンドを生成し、`Backend.set()` に渡す。
@@ -60,6 +61,7 @@ Backend.set(loadGPUBackend(KotlinBackend))
 （例: `loadCPUBackend(KotlinBackend, maxReservedBytes = 10_000_000_000L)`）。
 
 `loadCPUBackend` / `loadGPUBackend` はネイティブライブラリが利用不可の環境では自動的に `fallback`（通常 `KotlinBackend`）を返す。
+CPU・GPU とも JVM / Android / Kotlin/Native（iOS を含む）のすべてで利用できる。
 ※ GPUは不安定で、稀に実行速度が非常に遅くなることがある。その際にはCPUに書き換える。
 
 ---
@@ -205,7 +207,7 @@ port(MyPixelConverter(28, 28)) // Port<List<List<Float>>, GraphBuilder.Node.D2>�
 
 `create()` に `port` を複数渡すと、複数の入力口を持つモデルを構築できる。ブロックは入力の数だけノードを引数で受け取り、出力を複数返したい場合は末尾で `outputs(...)` を呼ぶ（出力1個の場合はそのブロックの戻り値がそのまま `Network` になる、単入力の場合と同じ省略ルール）。
 
-戻り値の型は `Network.Src{入力数}.Sink{出力数}<...>`（現状 入力・出力とも最大2まで）。
+戻り値の型は `Network.Src{入力数}.Sink{出力数}<...>`（現状 入力・出力とも最大3まで。3出力の場合は `outputs(o1, o2, o3)`）。
 
 ```kotlin
 // 2入力・2出力（two-tower風。2つのSourceを合流させたうえで2つのheadへ出力する例）
@@ -240,7 +242,7 @@ network.train(input1 = inputA, input2 = inputB, label1 = labelA, label2 = labelB
 
 `train` / `loss` にはラベルジェネレータ版（現在の出力を受け取って目標値を返す）もあり、`Sink2`（2出力）モデルでも `label1` / `label2` の両方をラムダで渡せる。
 
-`Sink2` 系の `train` / `loss` は `Pair<IOType.D0.Global, IOType.D0.Global>`（`sink1` 側・`sink2` 側の損失）を返す。
+`Sink2` 系の `train` / `loss` は `Pair<IOType.D0.Global, IOType.D0.Global>`（`sink1` 側・`sink2` 側の損失）を返す。`Sink3` 系は同様に `Triple` を返す（`expect` の戻り値も `Sink2` は `Pair<O1, O2>`、`Sink3` は `Triple<O1, O2, O3>`）。
 
 どの出力にも繋がっていない port を作ってもエラーにはならず、その入力は単に無視される。
 
@@ -382,9 +384,9 @@ D2/D3 の `softmax(axis?)` は `layerNorm(axis?)` と同じ規約：`axis=null`�
 | `rmsNorm(e?)` | `com.wsr.knist.network.process.compute.norm.rms.d1.rmsNorm` | D1(n)→D1(n) | e=1e-6f |
 | `rmsNorm(axis?, e?)` | `com.wsr.knist.network.process.compute.norm.rms.d2.rmsNorm` | D2→D2 | axis=null, e=1e-6f |
 | `rmsNorm(axis?, e?)` | `com.wsr.knist.network.process.compute.norm.rms.d3.rmsNorm` | D3→D3 | axis=null, e=1e-6f |
-| `minMaxNorm()` | `com.wsr.knist.network.process.compute.norm.minmax.minMaxNorm` | D1→D1 | — |
-| `minMaxNorm(axis?)` | `com.wsr.knist.network.process.compute.norm.minmax.minMaxNorm` | D2→D2 | axis=null |
-| `minMaxNorm(axis?)` | `com.wsr.knist.network.process.compute.norm.minmax.minMaxNorm` | D3→D3 | axis=null |
+| `minMaxNorm(e?)` | `com.wsr.knist.network.process.compute.norm.minmax.minMaxNorm` | D1→D1 | e=1e-6f |
+| `minMaxNorm(axis?, e?)` | `com.wsr.knist.network.process.compute.norm.minmax.minMaxNorm` | D2→D2 | axis=null, e=1e-6f |
+| `minMaxNorm(axis?, e?)` | `com.wsr.knist.network.process.compute.norm.minmax.minMaxNorm` | D3→D3 | axis=null, e=1e-6f |
 | `batchNorm(e?, momentum?)` | `com.wsr.knist.network.process.compute.norm.batch.d1.batchNorm` | D1(n)→D1(n) | e=1e-6f, momentum=0.9f |
 | `batchNorm(axis?, e?, momentum?)` | `com.wsr.knist.network.process.compute.norm.batch.d2.batchNorm` | D2→D2 | axis=null, e=1e-6f, momentum=0.9f |
 | `batchNorm(axis?, e?, momentum?)` | `com.wsr.knist.network.process.compute.norm.batch.d3.batchNorm` | D3→D3 | axis=null, e=1e-6f, momentum=0.9f |
@@ -473,6 +475,11 @@ reshapeToD3 (D2→D3) の制約: `i * j * k == inputI * inputJ`
 | `huber(threshold?, converter?)` | `com.wsr.knist.network.output.huber.huber` | D1(n) | `Network.Src1.Sink1<I, Batch<IOType.D1>>` |
 | `huber(threshold?, converter?)` | 同上 | D2(i, j) | `Network.Src1.Sink1<I, Batch<IOType.D2>>` |
 | `huber(threshold?, converter?)` | 同上 | D3(i, j, k) | `Network.Src1.Sink1<I, Batch<IOType.D3>>` |
+| `meanAbsolute(converter?)` | `com.wsr.knist.network.output.mean.meanAbsolute` | D1(n) | `Network.Src1.Sink1<I, Batch<IOType.D1>>` |
+| `meanAbsolute(converter?)` | 同上 | D2(i, j) | `Network.Src1.Sink1<I, Batch<IOType.D2>>` |
+| `meanAbsolute(converter?)` | 同上 | D3(i, j, k) | `Network.Src1.Sink1<I, Batch<IOType.D3>>` |
+
+`meanAbsolute` は平均絶対誤差（MAE）。`meanSquare` と同じく推論時は入力をそのまま返す。
 
 `huber` デフォルト値: `threshold=1f`
 `|diff| < threshold` では二乗誤差、`|diff| >= threshold` では絶対誤差（Huber損失）として扱う。
@@ -497,11 +504,13 @@ reshapeToD3 (D2→D3) の制約: `i * j * k == inputI * inputJ`
 
 | クラス | import | 入力型(T) | 次元 |
 |--------|--------|----------|------|
-| `RawD1(outputI)` | `com.wsr.knist.network.converter.raw.RawD1` | `Batch<IOType.D1>` | D1 |
-| `RawD2(outputI, outputJ)` | `com.wsr.knist.network.converter.raw.RawD2` | `Batch<IOType.D2>` | D2 |
-| `RawD3(outputI, outputJ, outputK)` | `com.wsr.knist.network.converter.raw.RawD3` | `Batch<IOType.D3>` | D3 |
+| `RawD1(i)` | `com.wsr.knist.network.converter.raw.RawD1` | `Batch<IOType.D1>` | D1 |
+| `RawD2(i, j)` | `com.wsr.knist.network.converter.raw.RawD2` | `Batch<IOType.D2>` | D2 |
+| `RawD3(i, j, k)` | `com.wsr.knist.network.converter.raw.RawD3` | `Batch<IOType.D3>` | D3 |
 
 Raw 系は変換なし（`Batch<IOType.Dx>` をそのまま渡す）。カスタム型を使う場合はカスタム Converter を実装する。
+
+カスタム Converter が override する形状プロパティは `Converter.D1` が `i`、`Converter.D2` が `i` / `j`、`Converter.D3` が `i` / `j` / `k`（旧名 `outputI` / `outputJ` / `outputK` は廃止された）。
 
 ### カスタムConverter実装に必要な import
 
@@ -523,13 +532,13 @@ T はバッチ型なので `List<Int>`（バッチ分のラベルをまとめて
 
 ```kotlin
 @Serializable
-data class LabelConverter(override val outputI: Int) : Converter.D1<List<Int>>() {
+data class LabelConverter(override val i: Int) : Converter.D1<List<Int>>() {
     override fun encode(input: List<Int>): Batch<IOType.D1> {
-        val value = FloatArray(input.size * outputI)
+        val value = FloatArray(input.size * i)
         input.forEachIndexed { batchIndex, label ->
-            value[batchIndex * outputI + label] = 1f
+            value[batchIndex * i + label] = 1f
         }
-        return Batch.d1(size = input.size, i = outputI, value = value)
+        return Batch.d1(size = input.size, i = i, value = value)
     }
     override fun decode(input: Batch<IOType.D1>): List<Int> =
         input.maxIndex().unwrap().map { it.toInt() }
@@ -540,13 +549,13 @@ data class LabelConverter(override val outputI: Int) : Converter.D1<List<Int>>()
 
 ```kotlin
 @Serializable
-data class PixelConverter(override val outputI: Int, override val outputJ: Int) : Converter.D2<List<List<Float>>>() {
+data class PixelConverter(override val i: Int, override val j: Int) : Converter.D2<List<List<Float>>>() {
     override fun encode(input: List<List<Float>>): Batch<IOType.D2> {
         val value = input.flatten().toFloatArray()
-        return Batch.d2(size = input.size, i = outputI, j = outputJ, value = value)
+        return Batch.d2(size = input.size, i = i, j = j, value = value)
     }
     override fun decode(input: Batch<IOType.D2>): List<List<Float>> =
-        input.unwrap().toList().chunked(outputI * outputJ)
+        input.unwrap().toList().chunked(i * j)
 }
 ```
 
@@ -758,7 +767,7 @@ val newNetwork: Network.Src1.Sink1<I, O> = network.replace<TokenEmbeddingD1ToD2>
 
 ### Source（入力）の差し替え
 
-`I` を変えたい場合（入力の前処理・Converterを変える等）に使う。層はそのまま、Converterだけ差し替わる。単入力なら `replaceSource`、多入力（`Src2` 系）なら対象のportごとに `replaceSource1` / `replaceSource2` を呼ぶ。
+`I` を変えたい場合（入力の前処理・Converterを変える等）に使う。層はそのまま、Converterだけ差し替わる。単入力なら `replaceSource`、多入力なら対象のportごとに `replaceSource1` / `replaceSource2`（`Src3` 系ではさらに `replaceSource3`）を呼ぶ。
 
 ```kotlin
 val network2: Network.Src1.Sink1<NewInput, O> = network.replaceSource(newInputConverter)
@@ -796,7 +805,8 @@ val network6: Network.Src1.Sink1<I, NewLabel> = network.replaceSink<Output.D1, N
 
 完全に動作するコードはリポジトリの `sample/` にある:
 
-- MNIST（3層MLP）: `sample/src/commonMain/kotlin/dataset/mnist/MnistUtils.kt`（`PixelConverter` / `LabelConverter` の実装は同ディレクトリの `MnistConverter.kt`）
+- Iris（MLP）: `sample/src/commonMain/kotlin/dataset/iris/IrisUtils.kt`（`RawD1(i = 4)` で `Batch<IOType.D1>` を直接入力し、`batchNorm` → 全結合で3クラス分類する。データ `iris.data`（UCI）は同梱しておらず、`sample/src/commonMain/resources/iris/` に置いて使う）
+- MNIST（CNN）: `sample/src/commonMain/kotlin/dataset/mnist/MnistUtils.kt`（`RawD3(i = 1, j = 28, k = 28)` で `Batch<IOType.D3>` を直接入力し、`convD2` ×2 → 全結合で分類する。カスタム Converter の実装例 `PixelConverter` / `LabelConverter` は同ディレクトリの `MnistConverter.kt` にある（モデル本体では未使用））
 - TinyStories（Transformer言語モデル）: `sample/src/commonMain/kotlin/dataset/stories/TinyStoriesUtils.kt`（`WordsD1` / `WordD2` の実装も同ディレクトリ）
 
 ### MLP（全結合分類）

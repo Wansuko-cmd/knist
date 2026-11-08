@@ -10,15 +10,15 @@ import com.wsr.knist.core.IOType
 import com.wsr.knist.scope.ScopeOp
 
 @ScopeOp
-fun IOType.D1.broadcastToD2(axis: Int, i: Int): IOType.D2.Global = when (axis) {
+fun IOType.D1.broadcastToD2(axis: Int, size: Int): IOType.D2.Global = when (axis) {
     0 -> {
-        val result = Backend.gather(x = DataBuffer.create(i), y = value, i = 1, j = 1, k = this.i)
-        IOType.D2(shape = listOf(i, this.i), value = result)
+        val result = Backend.gather(x = DataBuffer.create(size), y = value, i = 1, j = 1, k = i)
+        IOType.D2(shape = listOf(size, i), value = result)
     }
 
     1 -> {
-        val result = Backend.gather(x = DataBuffer.create(i), y = value, i = this.i, j = 1, k = 1)
-        IOType.D2(shape = listOf(this.i, i), value = result)
+        val result = Backend.gather(x = DataBuffer.create(size), y = value, i = i, j = 1, k = 1)
+        IOType.D2(shape = listOf(i, size), value = result)
     }
 
     else -> throw IllegalArgumentException("IOType.D1.broadcastToD2 axis is $axis not 0 or 1.")
