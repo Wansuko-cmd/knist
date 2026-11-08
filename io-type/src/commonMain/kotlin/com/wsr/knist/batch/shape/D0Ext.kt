@@ -8,9 +8,14 @@ import com.wsr.knist.batch.d1
 import com.wsr.knist.batch.d2
 import com.wsr.knist.batch.d3
 import com.wsr.knist.batch.get
+import com.wsr.knist.batch.i
+import com.wsr.knist.core.D1
+import com.wsr.knist.core.D2
 import com.wsr.knist.core.IOType
 import com.wsr.knist.scope.ScopeOp
 import kotlin.jvm.JvmName
+
+fun Batch<IOType.D0>.toD1(): IOType.D1 = IOType.D1(value = value)
 
 fun IOType.D1.toBatch(): Batch<IOType.D0> = Batch.d0(size = i, value = value)
 

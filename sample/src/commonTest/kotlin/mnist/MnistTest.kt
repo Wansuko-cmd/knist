@@ -27,7 +27,7 @@ import com.wsr.knist.network.process.reshape.reshape.reshapeToD1
 import com.wsr.knist.network.process.reshape.reshape.reshapeToD2
 import com.wsr.knist.network.process.reshape.reshape.reshapeToD3
 import dataset.mnist.LabelConverter
-import dataset.mnist.MnistDataset
+import dataset.mnist.MnistData
 import dataset.mnist.PixelConverter
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -58,7 +58,7 @@ class MnistTest {
             .also { println(Network.Src1.Sink1.fromJson<List<List<Float>>, List<Int>>(it)) }
 
         println("訓練開始")
-        val train = MnistDataset.read(imagePath = TRAIN_IMAGE_PATH, labelPath = TRAIN_LABEL_PATH)
+        val train = MnistData.read(imagePath = TRAIN_IMAGE_PATH, labelPath = TRAIN_LABEL_PATH)
         val trainTime = measureTime {
             repeat(2) { epoch ->
                 println("epoch: $epoch")
@@ -73,7 +73,7 @@ class MnistTest {
         }
 
         println("評価開始")
-        val test = MnistDataset
+        val test = MnistData
             .read(imagePath = TEST_IMAGE_PATH, labelPath = TEST_LABEL_PATH)
             .take(1000)
 
