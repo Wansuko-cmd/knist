@@ -109,22 +109,6 @@ class Batch<out T : IOType>(@PublishedApi internal val value: DataBuffer, val si
     override fun toString(): String = "Batch(shape=$shape, size=$size, value=$value)"
 }
 
-inline fun <T : IOType> Batch(size: Int, init: (index: Int) -> T): Batch<T> {
-    val first = init(0)
-    val value = DataBuffer.create(size * first.value.size)
-    if (size > 0) Backend.copyInto(first.value, value, first.value.indices)
-    for (i in 1 until size) {
-        val src = init(i).value
-        val start = i * first.value.size
-        Backend.copyInto(src, value, start until start + src.size)
-    }
-    return Batch(
-        value = value,
-        size = size,
-        shape = first.shape,
-    )
-}
-
 @PublishedApi
 @JvmName("batchD0ToLocal")
 context(scope: IOScope)

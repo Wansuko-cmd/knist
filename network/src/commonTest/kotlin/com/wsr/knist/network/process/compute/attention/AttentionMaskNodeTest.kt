@@ -34,7 +34,7 @@ class AttentionMaskNodeTest {
         }
 
         runTest {
-            val actual = network.expect(Batch(1) { IOType.d1(0f, 1f, 2f, 1f) })
+            val actual = network.expect(Batch.of(IOType.d1(0f, 1f, 2f, 1f)))
 
             assertEquals(expected = listOf(4, 4), actual = actual.shape)
         }

@@ -30,7 +30,7 @@ class NetworkSerializerTest {
         builder.affine(neuron = 4).reLU().affine(neuron = 2).meanSquare()
     }
 
-    private val input = Batch(1) { IOType.d1(1f, 2f, 3f) }
+    private val input = Batch.of(IOType.d1(1f, 2f, 3f))
 
     private fun createPaddingNetwork(): Network.Src1.Sink1<Batch<IOType.D2>, Batch<IOType.D2>> = Network.create(
         port = port(RawD2(2, 3)),
@@ -40,7 +40,7 @@ class NetworkSerializerTest {
         builder.padding(axis = 1, left = 1, right = 2).meanSquare()
     }
 
-    private val paddingInput = Batch(1) { IOType.d2(2, 3) { i, j -> i * 3f + j } }
+    private val paddingInput = Batch.of(IOType.d2(2, 3) { i, j -> i * 3f + j })
 
     @Test
     fun `JSON=文字列にシリアライズして復元できる`() = networkTestRule {
