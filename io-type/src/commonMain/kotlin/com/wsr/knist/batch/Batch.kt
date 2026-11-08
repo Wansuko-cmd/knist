@@ -56,13 +56,13 @@ class Batch<out T : IOType>(@PublishedApi internal val value: DataBuffer, val si
         fun d2(size: Int, shape: List<Int>, value: FloatArray): Batch<IOType.D2.Local> = d2Impl(size, shape, DataBuffer.create(value)).toLocal()
 
         context(_: IOScope)
-        inline fun d3(size: Int, i: Int, j: Int, k: Int, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): Batch<IOType.D3.Local> = d3Impl(size, i, j, k, init).toLocal()
+        inline fun d3(size: Int, i: Int, j: Int, k: Int, init: (b: Int, i: Int, j: Int, k: Int) -> Float = { _, _, _, _ -> 0f }): Batch<IOType.D3.Local> = d3Impl(size, i, j, k, init).toLocal()
 
         context(_: IOScope)
-        inline fun d3(size: Int, shape: List<Int>, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): Batch<IOType.D3.Local> = d3Impl(size, shape, init).toLocal()
+        inline fun d3(size: Int, shape: List<Int>, init: (b: Int, i: Int, j: Int, k: Int) -> Float = { _, _, _, _ -> 0f }): Batch<IOType.D3.Local> = d3Impl(size, shape, init).toLocal()
 
         context(_: IOScope)
-        fun d3(size: Int, i: Int, j: Int, k: Int, value: FloatArray): Batch<IOType.D3.Local> = d3Impl(size, i, j, k, DataBuffer.create(value)).toLocal()
+        fun d3(size: Int, i: Int, j: Int, k: Int, value: FloatArray): Batch<IOType.D3.Local> = d3Impl(size, i, j, k, value).toLocal()
 
         context(_: IOScope)
         fun d3(size: Int, shape: List<Int>, value: FloatArray): Batch<IOType.D3.Local> = d3Impl(size, shape, DataBuffer.create(value)).toLocal()
@@ -194,11 +194,11 @@ fun Batch.Companion.d2(size: Int, i: Int, j: Int, value: FloatArray): Batch<IOTy
 
 fun Batch.Companion.d2(size: Int, shape: List<Int>, value: FloatArray): Batch<IOType.D2.Global> = d2Impl(size, shape, DataBuffer.create(value))
 
-inline fun Batch.Companion.d3(size: Int, i: Int, j: Int, k: Int, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): Batch<IOType.D3.Global> = d3Impl(size, i, j, k, init)
+inline fun Batch.Companion.d3(size: Int, i: Int, j: Int, k: Int, init: (b: Int, i: Int, j: Int, k: Int) -> Float = { _, _, _, _ -> 0f }): Batch<IOType.D3.Global> = d3Impl(size, i, j, k, init)
 
-inline fun Batch.Companion.d3(size: Int, shape: List<Int>, init: (Int, Int, Int) -> Float = { _, _, _ -> 0f }): Batch<IOType.D3.Global> = d3Impl(size, shape, init)
+inline fun Batch.Companion.d3(size: Int, shape: List<Int>, init: (b: Int, i: Int, j: Int, k: Int) -> Float = { _, _, _, _ -> 0f }): Batch<IOType.D3.Global> = d3Impl(size, shape, init)
 
-fun Batch.Companion.d3(size: Int, i: Int, j: Int, k: Int, value: FloatArray): Batch<IOType.D3.Global> = d3Impl(size, i, j, k, DataBuffer.create(value))
+fun Batch.Companion.d3(size: Int, i: Int, j: Int, k: Int, value: FloatArray): Batch<IOType.D3.Global> = d3Impl(size, i, j, k, value)
 
 fun Batch.Companion.d3(size: Int, shape: List<Int>, value: FloatArray): Batch<IOType.D3.Global> = d3Impl(size, shape, DataBuffer.create(value))
 
