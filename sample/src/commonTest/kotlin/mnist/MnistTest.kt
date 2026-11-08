@@ -26,10 +26,7 @@ import com.wsr.knist.network.process.compute.skip.skip
 import com.wsr.knist.network.process.reshape.reshape.reshapeToD1
 import com.wsr.knist.network.process.reshape.reshape.reshapeToD2
 import com.wsr.knist.network.process.reshape.reshape.reshapeToD3
-import dataset.mnist.LabelConverter
-import dataset.mnist.MnistData
 import dataset.mnist.MnistDatasets
-import dataset.mnist.PixelConverter
 import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlin.time.measureTime
@@ -79,8 +76,8 @@ class MnistTest {
             .take(1000)
 
         val (accuracy, evalTime) = measureTimedValue {
-            test.count { data -> network.expect(input = listOf(data.pixels))[0] == data.label }
-                .let { it.toFloat() / test.size.toFloat() }
+            val correct = test.count { data -> network.expect(input = listOf(data.pixels))[0] == data.label }
+            correct / test.size.toFloat()
         }
 
         println("${accuracy * 100}%")

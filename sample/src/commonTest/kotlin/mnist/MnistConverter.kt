@@ -1,4 +1,4 @@
-package dataset.mnist
+package mnist
 
 import com.wsr.knist.batch.Batch
 import com.wsr.knist.batch.d1
