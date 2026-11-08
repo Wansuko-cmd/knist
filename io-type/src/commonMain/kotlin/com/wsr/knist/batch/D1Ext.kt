@@ -9,11 +9,7 @@ import com.wsr.knist.scope.ScopeOp
 import kotlin.jvm.JvmName
 
 @PublishedApi
-internal inline fun Batch.Companion.d1Impl(
-    size: Int,
-    i: Int,
-    init: (b: Int, i: Int) -> Float = { _, _ -> 0f },
-): Batch<IOType.D1.Global> {
+internal inline fun Batch.Companion.d1Impl(size: Int, i: Int, init: (b: Int, i: Int) -> Float = { _, _ -> 0f }): Batch<IOType.D1.Global> {
     val value = FloatArray(size * i)
 
     @Suppress("LocalVariableName")
@@ -27,11 +23,7 @@ internal inline fun Batch.Companion.d1Impl(
 }
 
 @PublishedApi
-internal inline fun Batch.Companion.d1Impl(
-    size: Int,
-    shape: List<Int>,
-    init: (b: Int, i: Int) -> Float = { _, _ -> 0f },
-): Batch<IOType.D1.Global> = d1Impl(size, shape[0], init)
+internal inline fun Batch.Companion.d1Impl(size: Int, shape: List<Int>, init: (b: Int, i: Int) -> Float = { _, _ -> 0f }): Batch<IOType.D1.Global> = d1Impl(size, shape[0], init)
 
 @PublishedApi
 internal fun Batch.Companion.d1Impl(size: Int, i: Int, value: FloatArray): Batch<IOType.D1.Global> = Batch(value = DataBuffer.create(value), size = size, shape = listOf(i))

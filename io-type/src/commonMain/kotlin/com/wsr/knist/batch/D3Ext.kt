@@ -10,13 +10,7 @@ import com.wsr.knist.scope.ScopeOp
 import kotlin.jvm.JvmName
 
 @PublishedApi
-internal inline fun Batch.Companion.d3Impl(
-    size: Int,
-    i: Int,
-    j: Int,
-    k: Int,
-    init: (b: Int, i: Int, j: Int, k: Int) -> Float = { _, _, _, _ -> 0f },
-): Batch<IOType.D3.Global> {
+internal inline fun Batch.Companion.d3Impl(size: Int, i: Int, j: Int, k: Int, init: (b: Int, i: Int, j: Int, k: Int) -> Float = { _, _, _, _ -> 0f }): Batch<IOType.D3.Global> {
     val value = FloatArray(size * i * j * k)
 
     @Suppress("LocalVariableName")
@@ -34,11 +28,8 @@ internal inline fun Batch.Companion.d3Impl(
 }
 
 @PublishedApi
-internal inline fun Batch.Companion.d3Impl(
-    size: Int,
-    shape: List<Int>,
-    init: (b: Int, i: Int, j: Int, k: Int) -> Float = { _, _, _, _ -> 0f },
-): Batch<IOType.D3.Global> = d3Impl(size, shape[0], shape[1], shape[2], init)
+internal inline fun Batch.Companion.d3Impl(size: Int, shape: List<Int>, init: (b: Int, i: Int, j: Int, k: Int) -> Float = { _, _, _, _ -> 0f }): Batch<IOType.D3.Global> =
+    d3Impl(size, shape[0], shape[1], shape[2], init)
 
 @PublishedApi
 internal fun Batch.Companion.d3Impl(size: Int, i: Int, j: Int, k: Int, value: FloatArray): Batch<IOType.D3.Global> = Batch(value = DataBuffer.create(value), size = size, shape = listOf(i, j, k))

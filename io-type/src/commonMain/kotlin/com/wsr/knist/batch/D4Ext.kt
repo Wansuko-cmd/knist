@@ -9,14 +9,7 @@ import com.wsr.knist.scope.ScopeOp
 import kotlin.jvm.JvmName
 
 @PublishedApi
-internal inline fun Batch.Companion.d4Impl(
-    size: Int,
-    i: Int,
-    j: Int,
-    k: Int,
-    l: Int,
-    init: (b: Int, i: Int, j: Int, k: Int, l: Int) -> Float = { _, _, _, _, _ -> 0f },
-): Batch<IOType.D4.Global> {
+internal inline fun Batch.Companion.d4Impl(size: Int, i: Int, j: Int, k: Int, l: Int, init: (b: Int, i: Int, j: Int, k: Int, l: Int) -> Float = { _, _, _, _, _ -> 0f }): Batch<IOType.D4.Global> {
     val value = FloatArray(size * i * j * k * l)
 
     @Suppress("LocalVariableName")
@@ -36,14 +29,12 @@ internal inline fun Batch.Companion.d4Impl(
 }
 
 @PublishedApi
-internal inline fun Batch.Companion.d4Impl(
-    size: Int,
-    shape: List<Int>,
-    init: (b: Int, i: Int, j: Int, k: Int, l: Int) -> Float = { _, _, _, _, _ -> 0f },
-): Batch<IOType.D4.Global> = d4Impl(size, shape[0], shape[1], shape[2], shape[3], init)
+internal inline fun Batch.Companion.d4Impl(size: Int, shape: List<Int>, init: (b: Int, i: Int, j: Int, k: Int, l: Int) -> Float = { _, _, _, _, _ -> 0f }): Batch<IOType.D4.Global> =
+    d4Impl(size, shape[0], shape[1], shape[2], shape[3], init)
 
 @PublishedApi
-internal fun Batch.Companion.d4Impl(size: Int, i: Int, j: Int, k: Int, l: Int, value: FloatArray): Batch<IOType.D4.Global> = Batch(value = DataBuffer.create(value), size = size, shape = listOf(i, j, k, l))
+internal fun Batch.Companion.d4Impl(size: Int, i: Int, j: Int, k: Int, l: Int, value: FloatArray): Batch<IOType.D4.Global> =
+    Batch(value = DataBuffer.create(value), size = size, shape = listOf(i, j, k, l))
 
 @PublishedApi
 internal fun Batch.Companion.d4Impl(size: Int, i: Int, j: Int, k: Int, l: Int, value: DataBuffer): Batch<IOType.D4.Global> = Batch(value = value, size = size, shape = listOf(i, j, k, l))
