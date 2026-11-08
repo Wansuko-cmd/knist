@@ -32,10 +32,10 @@ class Batch<out T : IOType>(@PublishedApi internal val value: DataBuffer, val si
         fun d0(size: Int, value: FloatArray): Batch<IOType.D0.Local> = d0Impl(size, DataBuffer.create(value)).toLocal()
 
         context(_: IOScope)
-        inline fun d1(size: Int, i: Int, init: (Int) -> Float = { 0f }): Batch<IOType.D1.Local> = d1Impl(size, i, init).toLocal()
+        inline fun d1(size: Int, i: Int, init: (b: Int, i: Int) -> Float = { _, _ -> 0f }): Batch<IOType.D1.Local> = d1Impl(size, i, init).toLocal()
 
         context(_: IOScope)
-        inline fun d1(size: Int, shape: List<Int>, init: (Int) -> Float = { 0f }): Batch<IOType.D1.Local> = d1Impl(size, shape, init).toLocal()
+        inline fun d1(size: Int, shape: List<Int>, init: (b: Int, i: Int) -> Float = { _, _ -> 0f }): Batch<IOType.D1.Local> = d1Impl(size, shape, init).toLocal()
 
         context(_: IOScope)
         fun d1(size: Int, i: Int, value: FloatArray): Batch<IOType.D1.Local> = d1Impl(size, i, value).toLocal()
@@ -174,14 +174,12 @@ inline fun Batch.Companion.d0(size: Int, init: (Int) -> Float = { 0f }): Batch<I
 
 fun Batch.Companion.d0(size: Int, value: FloatArray): Batch<IOType.D0.Global> = d0Impl(size, DataBuffer.create(value))
 
-inline fun Batch.Companion.d1(size: Int, i: Int, init: (Int) -> Float = { 0f }): Batch<IOType.D1.Global> = d1Impl(size, i, init)
+inline fun Batch.Companion.d1(size: Int, i: Int, init: (b: Int, i: Int) -> Float = { _, _ -> 0f }): Batch<IOType.D1.Global> = d1Impl(size, i, init)
 
 inline fun Batch.Companion.d1(
     size: Int,
     shape: List<Int>,
-    init: (Int) -> Float = {
-        0f
-    },
+    init: (b: Int, i: Int) -> Float = { _, _ -> 0f },
 ): Batch<IOType.D1.Global> = d1Impl(size, shape, init)
 
 fun Batch.Companion.d1(size: Int, i: Int, value: FloatArray): Batch<IOType.D1.Global> = d1Impl(size, i, value)
