@@ -75,10 +75,10 @@ class NetworkReplaceTest {
         builder.scale(id = "mid").meanSquare()
     }
 
-    private val inputD1 = Batch(1) { IOType.d1(1f, 2f, 3f) }
-    private val inputD2 = Batch(1) { IOType.d2(2, 3) { i, j -> (i * 3 + j + 1).toFloat() } }
-    private val inputD3 = Batch(1) { IOType.d3(2, 2, 2) { i, j, k -> (i * 4 + j * 2 + k + 1).toFloat() } }
-    private val labelD1 = Batch(1) { IOType.d1(0f, 1f) }
+    private val inputD1 = Batch.of(IOType.d1(1f, 2f, 3f))
+    private val inputD2 = Batch.of(IOType.d2(2, 3) { i, j -> (i * 3 + j + 1).toFloat() })
+    private val inputD3 = Batch.of(IOType.d3(2, 2, 2) { i, j, k -> (i * 4 + j * 2 + k + 1).toFloat() })
+    private val labelD1 = Batch.of(IOType.d1(0f, 1f))
 
     /**
      * Optimizer の差し替え・凍結
@@ -202,8 +202,8 @@ class NetworkReplaceTest {
             .meanSquare()
     }
 
-    private val inputD1x6 = Batch(1) { IOType.d1(6) { it + 1f } }
-    private val inputD1x8 = Batch(1) { IOType.d1(8) { it + 1f } }
+    private val inputD1x6 = Batch.of(IOType.d1(6) { it + 1f })
+    private val inputD1x8 = Batch.of(IOType.d1(8) { it + 1f })
 
     @Test
     fun `replace_ReshapeD1ToD2=層をDSLで差し替えられる`() = networkTestRule {

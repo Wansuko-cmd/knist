@@ -47,7 +47,7 @@ class BatchTest {
 
     @Test
     fun `Batch init=サイズ0でも例外にならず形状を保つ`() = ioTypeTestRule {
-        val batch = Batch.d1(size = 0, i = 3) { j -> j.toFloat() }
+        val batch = Batch.d1(size = 0, i = 3) { _, j -> j.toFloat() }
         assertEquals(0, batch.size)
         assertEquals(listOf(3), batch.shape)
     }

@@ -18,7 +18,7 @@ internal class SigmoidWithLossD3 internal constructor(val outputI: Int, val outp
     override fun IOScope.train(input: Batch<IOType.D3>, label: (Batch<IOType.D3>) -> Batch<IOType.D3>): TResult<IOType.D3> {
         val output = input.sigmoid()
         val label = label(output)
-        val one = Batch.d3(label.size, outputI, outputJ, outputK) { _, _, _ -> 1f }
+        val one = Batch.d3(label.size, outputI, outputJ, outputK) { _, _, _, _ -> 1f }
         val loss = run {
             val y = label * output.ln(1e-7f)
             val p = (one - label) * (one - output).ln(1e-7f)

@@ -46,8 +46,8 @@ class GraphJoinFanOutTest {
         add(h, f).meanSquare()
     }
 
-    private val input = Batch(1) { IOType.d1(x) }
-    private val labelBatch = Batch(1) { IOType.d1(label) }
+    private val input = Batch.of(IOType.d1(x))
+    private val labelBatch = Batch.of(IOType.d1(label))
 
     @Test
     fun `add=hを直接とf経由の両方で消費しても正しい値に合流する`() = networkTestRule {
