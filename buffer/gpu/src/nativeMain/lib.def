@@ -2,15 +2,24 @@ package = com.wsr.knist.gpu.rs
 
 libraryPaths.linux_x64 = src/nativeMain/resources/gpu/linuxX64
 libraryPaths.linux_arm64 = src/nativeMain/resources/gpu/linuxArm64
-libraryPaths.macos_arm64 = src/nativeMain/resources/gpu/macosArm64
 libraryPaths.macos_x64 = src/nativeMain/resources/gpu/macosX64
+libraryPaths.macos_arm64 = src/nativeMain/resources/gpu/macosArm64
+libraryPaths.ios_x64 = src/nativeMain/resources/gpu/iosX64
+libraryPaths.ios_arm64 = src/nativeMain/resources/gpu/iosArm64
+libraryPaths.ios_simulator_arm64 = src/nativeMain/resources/gpu/iosSimulatorArm64
 libraryPaths.mingw_x64 = src/nativeMain/resources/gpu/mingwX64
 
 staticLibraries.linux_x64 = libgpu.a
 staticLibraries.linux_arm64 = libgpu.a
-staticLibraries.macos_arm64 = libgpu.a
 staticLibraries.macos_x64 = libgpu.a
+staticLibraries.macos_arm64 = libgpu.a
+staticLibraries.ios_x64 = libgpu.a
+staticLibraries.ios_arm64 = libgpu.a
+staticLibraries.ios_simulator_arm64 = libgpu.a
 staticLibraries.mingw_x64 = libgpu.a
-linkerOpts.macos_arm64 = -framework Metal -framework Foundation -framework QuartzCore -framework CoreGraphics -framework CoreFoundation -lobjc
 linkerOpts.macos_x64 = -framework Metal -framework Foundation -framework QuartzCore -framework CoreGraphics -framework CoreFoundation -lobjc
+linkerOpts.macos_arm64 = -framework Metal -framework Foundation -framework QuartzCore -framework CoreGraphics -framework CoreFoundation -lobjc
+linkerOpts.ios_x64 = -framework Metal -framework Foundation -framework QuartzCore -framework CoreGraphics -framework CoreFoundation -lobjc
+linkerOpts.ios_arm64 = -framework Metal -framework Foundation -framework QuartzCore -framework CoreGraphics -framework CoreFoundation -lobjc
+linkerOpts.ios_simulator_arm64 = -framework Metal -framework Foundation -framework QuartzCore -framework CoreGraphics -framework CoreFoundation -lobjc
 linkerOpts.mingw_x64 = -lntdll -lws2_32 -luserenv

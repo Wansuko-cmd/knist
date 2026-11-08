@@ -1,4 +1,6 @@
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
 plugins {
     kotlin("multiplatform")
@@ -6,7 +8,15 @@ plugins {
 }
 
 kotlin {
-    applyDefaultHierarchyTemplate()
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    applyDefaultHierarchyTemplate {
+        common {
+            group("jvmAndroid") {
+                withJvm()
+                withCompilations { it.platformType == KotlinPlatformType.androidJvm }
+            }
+        }
+    }
     jvm()
 
     android {
@@ -17,33 +27,35 @@ kotlin {
 
     val hostOs = DefaultNativePlatform.getCurrentOperatingSystem()
     val hostArch = DefaultNativePlatform.getCurrentArchitecture()
-    val hostTarget = when {
-        hostOs.isMacOsX && hostArch.isAmd64 -> macosX64()
-        hostOs.isMacOsX && hostArch.isArm64 -> macosArm64()
-        hostOs.isLinux && hostArch.isAmd64 -> linuxX64()
-        hostOs.isLinux && hostArch.isArm64 -> linuxArm64()
-        hostOs.isWindows && hostArch.isAmd64 -> mingwX64()
+    val hostTargets = when {
+        hostOs.isMacOsX && hostArch.isAmd64 -> listOf(macosX64(), iosX64())
+        hostOs.isMacOsX && hostArch.isArm64 -> listOf(macosArm64(), iosArm64(), iosSimulatorArm64())
+        hostOs.isLinux && hostArch.isAmd64 -> listOf(linuxX64())
+        hostOs.isLinux && hostArch.isArm64 -> listOf(linuxArm64())
+        hostOs.isWindows && hostArch.isAmd64 -> listOf(mingwX64())
         else -> throw GradleException("$hostOs:$hostArch is not supported in Kotlin/Native.")
     }
 
-    hostTarget.compilations.getByName("main") {
-        cinterops {
-            val lib by creating {
-                val headersDir = "$projectDir/rs/src/bindings/native/headers"
-                headers(
-                    "$headersDir/buffer_native.h",
-                    "$headersDir/runtime_native.h",
-                    "$headersDir/profiler_native.h",
-                    "$headersDir/compare_native.h",
-                    "$headersDir/generator_native.h",
-                    "$headersDir/index_native.h",
-                    "$headersDir/mat_mul_native.h",
-                    "$headersDir/math_native.h",
-                    "$headersDir/operation_native.h",
-                    "$headersDir/reduction_native.h",
-                    "$headersDir/shape_native.h",
-                )
-                defFile(project.file("src/nativeMain/lib.def"))
+    hostTargets.forEach { target ->
+        target.compilations.getByName("main") {
+            cinterops {
+                val lib by creating {
+                    val headersDir = "$projectDir/rs/src/bindings/native/headers"
+                    headers(
+                        "$headersDir/buffer_native.h",
+                        "$headersDir/runtime_native.h",
+                        "$headersDir/profiler_native.h",
+                        "$headersDir/compare_native.h",
+                        "$headersDir/generator_native.h",
+                        "$headersDir/index_native.h",
+                        "$headersDir/mat_mul_native.h",
+                        "$headersDir/math_native.h",
+                        "$headersDir/operation_native.h",
+                        "$headersDir/reduction_native.h",
+                        "$headersDir/shape_native.h",
+                    )
+                    defFile(project.file("src/nativeMain/lib.def"))
+                }
             }
         }
     }
@@ -59,16 +71,6 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.test)
             }
-        }
-
-        val jvmAndroidMain by creating {
-            dependsOn(commonMain)
-        }
-        jvmMain {
-            dependsOn(jvmAndroidMain)
-        }
-        androidMain {
-            dependsOn(jvmAndroidMain)
         }
     }
 
