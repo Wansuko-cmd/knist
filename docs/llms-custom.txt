@@ -178,6 +178,8 @@ class MyLayerD3 internal constructor(
 
 ### GraphBuilder.Node への登録
 
+`addCompute` / `addReshape` / `addOutput` / `addJoin` は `object GraphScope` のメンバー拡張関数なので、トップレベルで拡張関数を定義する場合は `import com.wsr.knist.network.GraphScope.addCompute` のように個別に import する（組み込み層も同じ方法で定義されている）。
+
 ```kotlin
 fun GraphBuilder.Node.D1.myLayer(id: String = Uuid.random().toString()) =
     addCompute(MyLayerD1(inputI = inputI, id = id))
@@ -308,7 +310,7 @@ NetworkSerializer.apply { register(MyJoinD1::class) }
 
 ## Output（カスタム出力層）
 
-`com.wsr.knist.network.output.Output.D1` または `Output.D2` を継承する。
+`com.wsr.knist.network.output.Output.D1` / `Output.D2` / `Output.D3` のいずれかを継承する（以下は D1 の例。D2 / D3 も型が変わるだけで同じ形）。
 
 ```kotlin
 @Serializable
@@ -365,6 +367,7 @@ NetworkSerializer.apply { register(MyOutputD1::class) }
 `com.wsr.knist.network.optimizer.Optimizer` インターフェースを実装する。`d1` 〜 `d4` で各次元のオプティマイザインスタンスを生成する。
 
 ```kotlin
+@Serializable
 class MyOptimizer(private val rate: Float) : Optimizer {
     override fun d1(i: Int): D1 = MyD1(rate)
     override fun d2(i: Int, j: Int): D2 = MyD2(rate)
@@ -531,7 +534,7 @@ D1 の例。D2/D3 は `axis: Int` 引数を取るバリアントも存在する�
 
 | 関数 | 説明 |
 |------|------|
-| `broadcastToD2(axis, size)` | D1 → D2 に broadcast（D2 → D3 は `broadcastToD3(axis, size)`） |
+| `broadcastToD2(axis, i)` | D1 → D2 に broadcast（第2引数は増やす軸のサイズ。D2 → D3 は `broadcastToD3(axis, size)`） |
 | `slice(indices: IntProgression)` | D1 の部分取り出し（D2 版は `slice(indices, axis)`） |
 | `interleave(other: D1)` | 2つの D1 を交互に結合（D2 版は `interleave(other, axis)`） |
 | `concat(other)` | D1 の結合（D2/D3 は `concat(other, axis)`） |
@@ -562,6 +565,7 @@ import: `com.wsr.knist.core.index.gather` / `com.wsr.knist.core.index.scatterAdd
 | `Batch<D3>.fold(stride, dilation, padding)` | Batch<D3> → Batch<D2> | unfold の逆操作（重複位置は加算。D4→D3 版もあり） |
 | `Batch<D2>.padding(axis, left, right)` | Batch<D2> → Batch<D2> | 指定軸の前後にゼロパディングを追加（axis: 0=i, 1=j） |
 | `IOType.D3.toBatch()` | D3 → Batch<D2> | 先頭軸をバッチ次元として再解釈（D2 → Batch<D1> 等もあり） |
+| `Batch<D0>.toD1()` | Batch<D0> → D1 | バッチ次元を D1 として再解釈（`IOType.D1.toBatch()` の逆。import: `com.wsr.knist.batch.shape.toD1`） |
 
 四則演算・数学関数・比較・集約には `Batch<IOType.Dx>` レシーバー版も同名で存在する（import は `com.wsr.knist.batch.elementwise.*` / `com.wsr.knist.batch.reduction.*` 等、`core` を `batch` に読み替える）。ここに載っていない演算が必要な場合は io-type モジュールの `core`（IOType 単体用）/ `batch`（Batch 用）パッケージを確認すること。
 
@@ -601,6 +605,8 @@ import com.wsr.knist.core.d2
 
 // GraphBuilder（拡張関数追加時）
 import com.wsr.knist.network.GraphBuilder
+import com.wsr.knist.network.GraphScope.addCompute  // Compute 登録時
+import com.wsr.knist.network.GraphScope.addOutput   // Output 登録時
 
 // 層の id 生成（Compute 実装時）
 import kotlin.uuid.Uuid
