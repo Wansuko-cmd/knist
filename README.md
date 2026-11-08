@@ -4,7 +4,7 @@
 
 Kotlin製ニューラルネットワークライブラリ。
 
-元々はKotlinでMNIST識別をしたくて作ったためknistとしています
+元々はKotlinでMNIST識別をしたくて作ったためknistとしています。
 
 ※ 現在開発中のため、予告なく破壊的変更が加わる可能性が非常に高いです。あらかじめご了承ください。
 
@@ -19,32 +19,29 @@ Kotlin製ニューラルネットワークライブラリ。
 1. モデルを定義
 
 ```kotlin
-val network: Network.Src1.Sink1<List<List<Float>>, List<Int>> = Network.create(
-    port = port(PixelConverter(28, 28)),
-    optimizer = AdamW(Scheduler.Fix(0.001f)),
+val network = Network.create(
+    port = port(RawD3(i = 1, j = 28, k = 28)),
+    optimizer = AdamW(scheduler = Scheduler.Fix(0.001f)),
     initializer = He(seed = seed),
 ) { input ->
-    input.reshapeToD1()
+    input
+        .convD2(filter = 16, kernel = 5, padding = 2).bias().reLU()
+        .convD2(filter = 32, kernel = 3, padding = 1).bias().reLU()
+        .reshapeToD1()
         .layerNorm()
-        .affine(neuron = 256).bias().reLU()
         .affine(neuron = 128).bias().reLU()
         .affine(neuron = 10)
-        .softmaxWithLoss(converter = { LabelConverter(inputI) })
+        .softmaxWithLoss()
 }
 ```
 
 2. `train`関数を用いて学習
 
 ```kotlin
-runBlocking {
-    repeat(epoch) { epoch ->
-        println("epoch: $epoch")
-        train.chunked(256).forEach { data ->
-            network.train(
-                input = data.map { it.pixels },
-                label = data.map { it.label },
-            )
-        }
+repeat(epoch) { epoch ->
+    println("epoch: $epoch")
+    train.chunked(256).forEach { data ->
+        network.train(input = data.toImages(), label = data.toLabels())
     }
 }
 ```
@@ -52,11 +49,12 @@ runBlocking {
 3. `expect`関数を用いて推測（入力・出力ともにバッチ単位）
 
 ```kotlin
-val expected: List<Int> = network.expect(input = data.map { it.pixels })
+val expected = network.expect(input = data.toImages())
 ```
 
-sampleにてMNIST(3層NN)とTinyStories(Transformer)の例を載せています
+sampleにてIris(MLP)とMNIST(CNN)とTinyStories(Transformer)の例を載せている
 
+- [Iris](sample/src/commonMain/kotlin/dataset/iris/IrisUtils.kt)
 - [MNIST](sample/src/commonMain/kotlin/dataset/mnist/MnistUtils.kt)
 - [TinyStories](sample/src/commonMain/kotlin/dataset/stories/TinyStoriesUtils.kt)
 
