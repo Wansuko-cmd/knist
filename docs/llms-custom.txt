@@ -534,7 +534,7 @@ D1 の例。D2/D3 は `axis: Int` 引数を取るバリアントも存在する�
 
 | 関数 | 説明 |
 |------|------|
-| `broadcastToD2(axis, i)` | D1 → D2 に broadcast（第2引数は増やす軸のサイズ。D2 → D3 は `broadcastToD3(axis, size)`） |
+| `broadcastToD2(axis, size)` | D1 → D2 に broadcast（D2 → D3 は `broadcastToD3(axis, size)`） |
 | `slice(indices: IntProgression)` | D1 の部分取り出し（D2 版は `slice(indices, axis)`） |
 | `interleave(other: D1)` | 2つの D1 を交互に結合（D2 版は `interleave(other, axis)`） |
 | `concat(other)` | D1 の結合（D2/D3 は `concat(other, axis)`） |

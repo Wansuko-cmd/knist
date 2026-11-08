@@ -13,7 +13,7 @@ class ShapeD1Test {
     @Test
     fun `broadcastToD2_axis0=1次元を2次元にブロードキャスト`() = ioTypeTestRule {
         val d1 = IOType.d1(listOf(1f, 2f, 3f))
-        val actual = d1.broadcastToD2(axis = 0, i = 2)
+        val actual = d1.broadcastToD2(axis = 0, size = 2)
         assertContentEquals(
             expected = IOType.d2(2, 3) { _, j -> j + 1f },
             actual = actual,
@@ -23,7 +23,7 @@ class ShapeD1Test {
     @Test
     fun `broadcastToD2_axis1=1次元を2次元にブロードキャスト`() = ioTypeTestRule {
         val d1 = IOType.d1(listOf(1f, 2f, 3f))
-        val actual = d1.broadcastToD2(axis = 1, i = 2)
+        val actual = d1.broadcastToD2(axis = 1, size = 2)
         assertContentEquals(
             expected = IOType.d2(3, 2) { i, _ -> i + 1f },
             actual = actual,
