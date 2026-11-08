@@ -13,13 +13,17 @@ import okio.buffer
 import okio.use
 
 fun List<MnistData>.toImages(): Batch<IOType.D3> = Batch.d3(
-    size = size, i = 1, j = 28, k = 28,
+    size = size,
+    i = 1,
+    j = 28,
+    k = 28,
     value = flatMap { it.pixels }.toFloatArray(),
 )
 
 // 複数ラベル -> [バッチ, label]
 fun List<MnistData>.toLabels(): Batch<IOType.D1> = Batch.d1(
-    size = size, i = 10,
+    size = size,
+    i = 10,
     value = FloatArray(size * 10).also { value ->
         repeat(size) { b ->
             val label = this[b].label

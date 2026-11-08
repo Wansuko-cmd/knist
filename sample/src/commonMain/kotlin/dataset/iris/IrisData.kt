@@ -13,13 +13,15 @@ private val LABELS = listOf("Iris-setosa", "Iris-versicolor", "Iris-virginica")
 
 // 複数特徴量 -> [バッチ, 4]
 fun List<IrisData>.toFeatures(): Batch<IOType.D1> = Batch.d1(
-    size = size, i = 4,
+    size = size,
+    i = 4,
     value = flatMap { it.features }.toFloatArray(),
 )
 
 // 複数ラベル -> [バッチ, 3]
 fun List<IrisData>.toLabels(): Batch<IOType.D1> = Batch.d1(
-    size = size, i = 3,
+    size = size,
+    i = 3,
     value = FloatArray(size * 3).also { value ->
         repeat(size) { b ->
             val label = this[b].label
