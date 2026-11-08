@@ -10,10 +10,10 @@ import com.wsr.knist.network.converter.Converter
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PixelConverter(override val outputI: Int, override val outputJ: Int) : Converter.D2<List<List<Float>>>() {
+data class PixelConverter(override val i: Int, override val j: Int) : Converter.D2<List<List<Float>>>() {
     override fun encode(input: List<List<Float>>): Batch<IOType.D2> {
         val value = input.flatten().toFloatArray()
-        return Batch.d2(size = input.size, i = outputI, j = outputJ, value = value)
+        return Batch.d2(size = input.size, i = i, j = j, value = value)
     }
 
     override fun decode(input: Batch<IOType.D2>): List<List<Float>> = input.unwrap()
@@ -22,14 +22,14 @@ data class PixelConverter(override val outputI: Int, override val outputJ: Int) 
 }
 
 @Serializable
-data class LabelConverter(override val outputI: Int) : Converter.D1<List<Int>>() {
+data class LabelConverter(override val i: Int) : Converter.D1<List<Int>>() {
     override fun encode(input: List<Int>): Batch<IOType.D1> {
-        val value = FloatArray(input.size * outputI)
+        val value = FloatArray(input.size * i)
         repeat(input.size) { batchIndex ->
             val label = input[batchIndex]
-            value[batchIndex * outputI + label] = 1f
+            value[batchIndex * i + label] = 1f
         }
-        return Batch.d1(size = input.size, i = outputI, value = value)
+        return Batch.d1(size = input.size, i = i, value = value)
     }
 
     override fun decode(input: Batch<IOType.D1>): List<Int> = input.maxIndex()

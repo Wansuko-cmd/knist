@@ -444,7 +444,7 @@ sealed interface Port<T, D : GraphBuilder.Node> {
                 nodes = listOf(),
                 optimizer = optimizer,
                 initializer = initializer,
-                inputI = converter.outputI,
+                inputI = converter.i,
             )
             return source to node
         }
@@ -458,8 +458,8 @@ sealed interface Port<T, D : GraphBuilder.Node> {
                 nodes = listOf(),
                 optimizer = optimizer,
                 initializer = initializer,
-                inputI = converter.outputI,
-                inputJ = converter.outputJ,
+                inputI = converter.i,
+                inputJ = converter.j,
             )
             return source to node
         }
@@ -473,9 +473,9 @@ sealed interface Port<T, D : GraphBuilder.Node> {
                 nodes = listOf(),
                 optimizer = optimizer,
                 initializer = initializer,
-                inputI = converter.outputI,
-                inputJ = converter.outputJ,
-                inputK = converter.outputK,
+                inputI = converter.i,
+                inputJ = converter.j,
+                inputK = converter.k,
             )
             return source to node
         }

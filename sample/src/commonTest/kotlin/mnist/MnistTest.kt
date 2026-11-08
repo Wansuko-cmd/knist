@@ -28,6 +28,7 @@ import com.wsr.knist.network.process.reshape.reshape.reshapeToD2
 import com.wsr.knist.network.process.reshape.reshape.reshapeToD3
 import dataset.mnist.LabelConverter
 import dataset.mnist.MnistData
+import dataset.mnist.MnistDatasets
 import dataset.mnist.PixelConverter
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -58,7 +59,7 @@ class MnistTest {
             .also { println(Network.Src1.Sink1.fromJson<List<List<Float>>, List<Int>>(it)) }
 
         println("訓練開始")
-        val train = MnistData.read(imagePath = TRAIN_IMAGE_PATH, labelPath = TRAIN_LABEL_PATH)
+        val train = MnistDatasets.read(imagePath = TRAIN_IMAGE_PATH, labelPath = TRAIN_LABEL_PATH)
         val trainTime = measureTime {
             repeat(2) { epoch ->
                 println("epoch: $epoch")
@@ -73,7 +74,7 @@ class MnistTest {
         }
 
         println("評価開始")
-        val test = MnistData
+        val test = MnistDatasets
             .read(imagePath = TEST_IMAGE_PATH, labelPath = TEST_LABEL_PATH)
             .take(1000)
 
@@ -90,7 +91,7 @@ class MnistTest {
     }
 
     private fun createNetwork(): Network.Src1.Sink1<List<List<Float>>, List<Int>> = Network.create(
-        port = port(PixelConverter(outputI = 28, outputJ = 28)),
+        port = port(PixelConverter(i = 28, j = 28)),
         optimizer = AdamW(scheduler = Scheduler.Fix(0.001f)),
         initializer = He(seed = 0),
     ) { input ->

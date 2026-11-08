@@ -10,16 +10,16 @@ import com.wsr.knist.network.converter.Converter
 import kotlinx.serialization.Serializable
 
 @Serializable
-class WordsD1(override val outputI: Int, private val words: List<String>, private val unknownIndex: Int, private val paddingIndex: Int) : Converter.D1<List<List<String>>>() {
+class WordsD1(override val i: Int, private val words: List<String>, private val unknownIndex: Int, private val paddingIndex: Int) : Converter.D1<List<List<String>>>() {
     val vocabSize = words.size
     private val wordToId = words.mapIndexed { index, word -> word to index.toFloat() }.toMap()
 
     override fun encode(input: List<List<String>>): Batch<IOType.D1> = input.map { sentence ->
         val tokenIds = sentence
-            .take(outputI)
+            .take(i)
             .map { wordToId[it] ?: unknownIndex.toFloat() }
 
-        FloatArray(outputI) { paddingIndex.toFloat() }
+        FloatArray(i) { paddingIndex.toFloat() }
             .apply { tokenIds.toFloatArray().copyInto(this) }
             .let { IOType.d1(it) }
     }.toBatch()
@@ -39,7 +39,7 @@ fun wordsD1(maxLength: Int, words: List<String>, unknownIndex: Int, paddingIndex
     require(paddingIndex in words.indices) { "paddingIndex must be within words range." }
 
     return WordsD1(
-        outputI = maxLength,
+        i = maxLength,
         words = words,
         unknownIndex = unknownIndex,
         paddingIndex = paddingIndex,

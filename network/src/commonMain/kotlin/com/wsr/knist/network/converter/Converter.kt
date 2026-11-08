@@ -13,7 +13,7 @@ sealed interface Converter<T> {
     fun _decode(input: Batch<IOType>): T
 
     abstract class D1<T> : Converter<T> {
-        abstract val outputI: Int
+        abstract val i: Int
         abstract fun encode(input: T): Batch<IOType.D1>
         abstract fun decode(input: Batch<IOType.D1>): T
 
@@ -22,8 +22,8 @@ sealed interface Converter<T> {
     }
 
     abstract class D2<T> : Converter<T> {
-        abstract val outputI: Int
-        abstract val outputJ: Int
+        abstract val i: Int
+        abstract val j: Int
         abstract fun encode(input: T): Batch<IOType.D2>
         abstract fun decode(input: Batch<IOType.D2>): T
 
@@ -32,9 +32,9 @@ sealed interface Converter<T> {
     }
 
     abstract class D3<T> : Converter<T> {
-        abstract val outputI: Int
-        abstract val outputJ: Int
-        abstract val outputK: Int
+        abstract val i: Int
+        abstract val j: Int
+        abstract val k: Int
         abstract fun encode(input: T): Batch<IOType.D3>
         abstract fun decode(input: Batch<IOType.D3>): T
 

@@ -37,7 +37,7 @@ fun createMnistModel(epoch: Int, seed: Int? = null): Network.Src1.Sink1<Batch<IO
 
     // ニューラルネットワークを構築
     val network = Network.create(
-        port = port(RawD3(outputI = 1, outputJ = 28, outputK = 28)),
+        port = port(RawD3(i = 1, j = 28, k = 28)),
         optimizer = AdamW(scheduler = Scheduler.Fix(0.001f)),
         initializer = He(seed = seed),
     ) { input ->
