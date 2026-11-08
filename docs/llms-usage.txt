@@ -805,6 +805,7 @@ val network6: Network.Src1.Sink1<I, NewLabel> = network.replaceSink<Output.D1, N
 
 完全に動作するコードはリポジトリの `sample/` にある:
 
+- Iris（MLP）: `sample/src/commonMain/kotlin/dataset/iris/IrisUtils.kt`（`RawD1(i = 4)` で `Batch<IOType.D1>` を直接入力し、`batchNorm` → 全結合で3クラス分類する。データ `iris.data`（UCI）は同梱しておらず、`sample/src/commonMain/resources/iris/` に置いて使う）
 - MNIST（CNN）: `sample/src/commonMain/kotlin/dataset/mnist/MnistUtils.kt`（`RawD3(i = 1, j = 28, k = 28)` で `Batch<IOType.D3>` を直接入力し、`convD2` ×2 → 全結合で分類する。カスタム Converter の実装例 `PixelConverter` / `LabelConverter` は同ディレクトリの `MnistConverter.kt` にある（モデル本体では未使用））
 - TinyStories（Transformer言語モデル）: `sample/src/commonMain/kotlin/dataset/stories/TinyStoriesUtils.kt`（`WordsD1` / `WordD2` の実装も同ディレクトリ）
 

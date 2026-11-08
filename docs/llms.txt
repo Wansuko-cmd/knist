@@ -18,5 +18,6 @@
 
 完全に動作するコードはリポジトリの `sample/` にある。
 
+- [Iris（MLP）](../sample/src/commonMain/kotlin/dataset/iris/): `RawD1` による Raw 入力と `batchNorm` + 全結合の最小構成の例
 - [MNIST（CNN）](../sample/src/commonMain/kotlin/dataset/mnist/): `RawD3` による Raw 入力と `convD2` の使用例。カスタムConverter（`PixelConverter` / `LabelConverter`）の実装例も含む
 - [TinyStories（Transformer言語モデル）](../sample/src/commonMain/kotlin/dataset/stories/): トークナイズと `WordsD1` / `WordD2` Converterの実装例を含む
