@@ -44,10 +44,10 @@ class Batch<out T : IOType>(@PublishedApi internal val value: DataBuffer, val si
         fun d1(size: Int, shape: List<Int>, value: FloatArray): Batch<IOType.D1.Local> = d1Impl(size, shape, DataBuffer.create(value)).toLocal()
 
         context(_: IOScope)
-        inline fun d2(size: Int, i: Int, j: Int, init: (Int, Int) -> Float = { _, _ -> 0f }): Batch<IOType.D2.Local> = d2Impl(size, i, j, init).toLocal()
+        inline fun d2(size: Int, i: Int, j: Int, init: (b: Int, i: Int, j: Int) -> Float = { _, _, _ -> 0f }): Batch<IOType.D2.Local> = d2Impl(size, i, j, init).toLocal()
 
         context(_: IOScope)
-        inline fun d2(size: Int, shape: List<Int>, init: (Int, Int) -> Float = { _, _ -> 0f }): Batch<IOType.D2.Local> = d2Impl(size, shape, init).toLocal()
+        inline fun d2(size: Int, shape: List<Int>, init: (b: Int, i: Int, j: Int) -> Float = { _, _, _ -> 0f }): Batch<IOType.D2.Local> = d2Impl(size, shape, init).toLocal()
 
         context(_: IOScope)
         fun d2(size: Int, i: Int, j: Int, value: FloatArray): Batch<IOType.D2.Local> = d2Impl(size, i, j, value).toLocal()
@@ -186,9 +186,9 @@ fun Batch.Companion.d1(size: Int, i: Int, value: FloatArray): Batch<IOType.D1.Gl
 
 fun Batch.Companion.d1(size: Int, shape: List<Int>, value: FloatArray): Batch<IOType.D1.Global> = d1Impl(size, shape, DataBuffer.create(value))
 
-inline fun Batch.Companion.d2(size: Int, i: Int, j: Int, init: (Int, Int) -> Float = { _, _ -> 0f }): Batch<IOType.D2.Global> = d2Impl(size, i, j, init)
+inline fun Batch.Companion.d2(size: Int, i: Int, j: Int, init: (b: Int, i: Int, j: Int) -> Float = { _, _, _ -> 0f }): Batch<IOType.D2.Global> = d2Impl(size, i, j, init)
 
-inline fun Batch.Companion.d2(size: Int, shape: List<Int>, init: (Int, Int) -> Float = { _, _ -> 0f }): Batch<IOType.D2.Global> = d2Impl(size, shape, init)
+inline fun Batch.Companion.d2(size: Int, shape: List<Int>, init: (b: Int, i: Int, j: Int) -> Float = { _, _, _ -> 0f }): Batch<IOType.D2.Global> = d2Impl(size, shape, init)
 
 fun Batch.Companion.d2(size: Int, i: Int, j: Int, value: FloatArray): Batch<IOType.D2.Global> = d2Impl(size, i, j, value)
 
